@@ -344,7 +344,7 @@ curl https://api.supabase.com/v1/projects/abcdefghijklmnopqrst/analytics/endpoin
 {
   "result": [
     {
-      "timestamp": "1970-01-01T00:00:00Z",
+      "timestamp": "string",
       "total_auth_requests": 0,
       "total_realtime_requests": 0,
       "total_rest_requests": 0,
@@ -1214,6 +1214,7 @@ curl https://api.supabase.com/v1/projects/abcdefghijklmnopqrst/config/auth \
   "saml_external_url": "string",
   "saml_allow_encrypted_assertions": true,
   "security_sb_forwarded_for_enabled": true,
+  "external_email_magic_link_disabled": true,
   "security_captcha_enabled": true,
   "security_captcha_provider": "turnstile",
   "security_captcha_secret": "string",
@@ -1369,6 +1370,7 @@ curl https://api.supabase.com/v1/projects/abcdefghijklmnopqrst/config/auth \
 |» saml_enabled|body|boolean \| null|false|none|
 |» saml_external_url|body|string \| null|false|none|
 |» security_sb_forwarded_for_enabled|body|boolean \| null|false|none|
+|» external_email_magic_link_disabled|body|boolean|false|none|
 |» security_captcha_enabled|body|boolean \| null|false|none|
 |» security_captcha_provider|body|string \| null|false|none|
 |» security_captcha_secret|body|string \| null|false|none|
@@ -1771,6 +1773,7 @@ curl https://api.supabase.com/v1/projects/abcdefghijklmnopqrst/config/auth \
   "saml_external_url": "string",
   "saml_allow_encrypted_assertions": true,
   "security_sb_forwarded_for_enabled": true,
+  "external_email_magic_link_disabled": true,
   "security_captcha_enabled": true,
   "security_captcha_provider": "turnstile",
   "security_captcha_secret": "string",
@@ -1821,12 +1824,26 @@ curl https://api.supabase.com/v1/projects/abcdefghijklmnopqrst/config/auth \
 }
 ```
 
+> 402 Response
+
+```json
+{
+  "message": "string",
+  "error": {
+    "code": "entitlement_required",
+    "feature": "string",
+    "upgrade_url": "string"
+  }
+}
+```
+
 <h3 id="updates-a-projects-auth-config-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK||[AuthConfigResponse_Output](#schemaauthconfigresponse_output)|
 |401|Unauthorized|Unauthorized|None|
+|402|Payment Required|An auth setting in the request is not available on the organization plan|[PlanGateErrorBody](#schemaplangateerrorbody)|
 |403|Forbidden|Forbidden action|None|
 |429|Too Many Requests|Rate limit exceeded|None|
 |500|Internal Server Error|Failed to update project's auth config|None|
@@ -5326,6 +5343,163 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearer
 </aside>
 
+## Partially updates project's Postgres config
+
+<a id="opIdv1-patch-postgres-config"></a>
+
+> Code samples
+
+```bash
+curl https://api.supabase.com/v1/projects/abcdefghijklmnopqrst/config/database/postgres \
+  -X PATCH \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "max_connections": 120,
+    "shared_buffers": "256MB",
+    "work_mem": "4MB",
+    "statement_timeout": "60000ms"
+  }'
+```
+
+`PATCH /v1/projects/{ref}/config/database/postgres`
+
+> Body parameter
+
+```json
+{
+  "max_connections": 120,
+  "shared_buffers": "256MB",
+  "work_mem": "4MB",
+  "statement_timeout": "60000ms"
+}
+```
+
+<h3 id="partially-updates-projects-postgres-config-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|ref|path|string|true|Project ref|
+|body|body|[UpdatePostgresConfigBody](#schemaupdatepostgresconfigbody)|true|none|
+|» effective_cache_size|body|string|false|none|
+|» logical_decoding_work_mem|body|string|false|none|
+|» pg_stat_statements.max|body|integer|false|none|
+|» pg_net.batch_size|body|integer|false|none|
+|» autovacuum_max_workers|body|integer|false|none|
+|» autovacuum_work_mem|body|string|false|none|
+|» cron.log_statement|body|boolean|false|none|
+|» log_autovacuum_min_duration|body|string|false|Default unit: ms|
+|» log_checkpoints|body|boolean|false|none|
+|» log_connections|body|boolean|false|none|
+|» log_disconnections|body|boolean|false|none|
+|» log_duration|body|boolean|false|none|
+|» log_lock_waits|body|boolean|false|none|
+|» log_recovery_conflict_waits|body|boolean|false|none|
+|» log_replication_commands|body|boolean|false|none|
+|» log_startup_progress_interval|body|string|false|Default unit: ms|
+|» log_temp_files|body|string|false|none|
+|» maintenance_work_mem|body|string|false|none|
+|» track_activity_query_size|body|string|false|none|
+|» max_connections|body|integer|false|none|
+|» max_locks_per_transaction|body|integer|false|none|
+|» max_logical_replication_workers|body|integer|false|none|
+|» max_parallel_maintenance_workers|body|integer|false|none|
+|» max_parallel_workers|body|integer|false|none|
+|» max_parallel_workers_per_gather|body|integer|false|none|
+|» max_replication_slots|body|integer|false|none|
+|» max_slot_wal_keep_size|body|string|false|none|
+|» max_standby_archive_delay|body|string|false|none|
+|» max_standby_streaming_delay|body|string|false|none|
+|» max_sync_workers_per_subscription|body|integer|false|none|
+|» max_wal_size|body|string|false|none|
+|» max_wal_senders|body|integer|false|none|
+|» max_worker_processes|body|integer|false|none|
+|» session_replication_role|body|string|false|none|
+|» shared_buffers|body|string|false|none|
+|» statement_timeout|body|string|false|Default unit: ms|
+|» track_commit_timestamp|body|boolean|false|none|
+|» wal_keep_size|body|string|false|none|
+|» wal_sender_timeout|body|string|false|Default unit: ms|
+|» work_mem|body|string|false|none|
+|» checkpoint_timeout|body|string|false|Default unit: s|
+|» hot_standby_feedback|body|boolean|false|none|
+|» restart_database|body|boolean|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» session_replication_role|origin|
+|» session_replication_role|replica|
+|» session_replication_role|local|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "effective_cache_size": "string",
+  "logical_decoding_work_mem": "string",
+  "pg_stat_statements.max": 100,
+  "pg_net.batch_size": 0,
+  "autovacuum_max_workers": 1,
+  "autovacuum_work_mem": "string",
+  "cron.log_statement": true,
+  "log_autovacuum_min_duration": "string",
+  "log_checkpoints": true,
+  "log_connections": true,
+  "log_disconnections": true,
+  "log_duration": true,
+  "log_lock_waits": true,
+  "log_recovery_conflict_waits": true,
+  "log_replication_commands": true,
+  "log_startup_progress_interval": "string",
+  "log_temp_files": "string",
+  "maintenance_work_mem": "string",
+  "track_activity_query_size": "string",
+  "max_connections": 1,
+  "max_locks_per_transaction": 10,
+  "max_logical_replication_workers": 0,
+  "max_parallel_maintenance_workers": 0,
+  "max_parallel_workers": 0,
+  "max_parallel_workers_per_gather": 0,
+  "max_replication_slots": -9007199254740000,
+  "max_slot_wal_keep_size": "string",
+  "max_standby_archive_delay": "string",
+  "max_standby_streaming_delay": "string",
+  "max_sync_workers_per_subscription": 0,
+  "max_wal_size": "string",
+  "max_wal_senders": -9007199254740000,
+  "max_worker_processes": 0,
+  "session_replication_role": "origin",
+  "shared_buffers": "string",
+  "statement_timeout": "string",
+  "track_commit_timestamp": true,
+  "wal_keep_size": "string",
+  "wal_sender_timeout": "string",
+  "work_mem": "string",
+  "checkpoint_timeout": "string",
+  "hot_standby_feedback": true
+}
+```
+
+<h3 id="partially-updates-projects-postgres-config-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[PostgresConfigResponse_Output](#schemapostgresconfigresponse_output)|
+|401|Unauthorized|Unauthorized|None|
+|403|Forbidden|Forbidden action|None|
+|429|Too Many Requests|Rate limit exceeded|None|
+|500|Internal Server Error|Failed to update project's Postgres config|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearer
+</aside>
+
 ## Lists all backups
 
 <a id="opIdv1-list-all-backups"></a>
@@ -6614,13 +6788,26 @@ Bulk update functions. It will create a new function or replace existing. The op
 }
 ```
 
+> 402 Response
+
+```json
+{
+  "message": "string",
+  "error": {
+    "code": "entitlement_required",
+    "feature": "string",
+    "upgrade_url": "string"
+  }
+}
+```
+
 <h3 id="bulk-update-functions-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK||[BulkUpdateFunctionResponse_Output](#schemabulkupdatefunctionresponse_output)|
 |401|Unauthorized|Unauthorized|None|
-|402|Payment Required|Maximum number of functions reached for Plan|None|
+|402|Payment Required|Maximum number of functions reached for Plan|[PlanGateErrorBody](#schemaplangateerrorbody)|
 |403|Forbidden|Forbidden action|None|
 |429|Too Many Requests|Rate limit exceeded|None|
 |500|Internal Server Error|Failed to update functions|None|
@@ -6708,13 +6895,26 @@ This endpoint is deprecated - use the deploy endpoint. Creates a function and ad
 }
 ```
 
+> 402 Response
+
+```json
+{
+  "message": "string",
+  "error": {
+    "code": "entitlement_required",
+    "feature": "string",
+    "upgrade_url": "string"
+  }
+}
+```
+
 <h3 id="create-a-function-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created||[FunctionResponse_Output](#schemafunctionresponse_output)|
 |401|Unauthorized|Unauthorized|None|
-|402|Payment Required|Maximum number of functions reached for Plan|None|
+|402|Payment Required|Maximum number of functions reached for Plan|[PlanGateErrorBody](#schemaplangateerrorbody)|
 |403|Forbidden|Forbidden action|None|
 |429|Too Many Requests|Rate limit exceeded|None|
 |500|Internal Server Error|Failed to create project's function|None|
@@ -6791,13 +6991,26 @@ metadata:
 }
 ```
 
+> 402 Response
+
+```json
+{
+  "message": "string",
+  "error": {
+    "code": "entitlement_required",
+    "feature": "string",
+    "upgrade_url": "string"
+  }
+}
+```
+
 <h3 id="deploy-a-function-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created||[DeployFunctionResponse_Output](#schemadeployfunctionresponse_output)|
 |401|Unauthorized|Unauthorized|None|
-|402|Payment Required|Maximum number of functions reached for Plan|None|
+|402|Payment Required|Maximum number of functions reached for Plan|[PlanGateErrorBody](#schemaplangateerrorbody)|
 |403|Forbidden|Forbidden action|None|
 |429|Too Many Requests|Rate limit exceeded|None|
 |500|Internal Server Error|Failed to deploy function|None|
@@ -7234,12 +7447,26 @@ Updates the configuration of the specified database branch
 }
 ```
 
+> 402 Response
+
+```json
+{
+  "message": "string",
+  "error": {
+    "code": "entitlement_required",
+    "feature": "string",
+    "upgrade_url": "string"
+  }
+}
+```
+
 <h3 id="update-database-branch-config-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK||[BranchResponse_Output](#schemabranchresponse_output)|
 |401|Unauthorized|Unauthorized|None|
+|402|Payment Required|Persistent branches are not available on the organization plan|[PlanGateErrorBody](#schemaplangateerrorbody)|
 |403|Forbidden|Forbidden action|None|
 |429|Too Many Requests|Rate limit exceeded|None|
 |500|Internal Server Error|Failed to update database branch|None|
@@ -8051,12 +8278,26 @@ Creates a database branch from the specified project.
 }
 ```
 
+> 402 Response
+
+```json
+{
+  "message": "string",
+  "error": {
+    "code": "entitlement_required",
+    "feature": "string",
+    "upgrade_url": "string"
+  }
+}
+```
+
 <h3 id="create-a-database-branch-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created||[BranchResponse_Output](#schemabranchresponse_output)|
 |401|Unauthorized|Unauthorized|None|
+|402|Payment Required|Branching or persistent branches are not available on the organization plan|[PlanGateErrorBody](#schemaplangateerrorbody)|
 |403|Forbidden|Forbidden action|None|
 |429|Too Many Requests|Rate limit exceeded|None|
 |500|Internal Server Error|Failed to create database branch|None|
@@ -8200,6 +8441,7 @@ This endpoint is currently in its **Beta** stage.
 |code_challenge|query|string|false|none|
 |code_challenge_method|query|string|false|none|
 |organization_slug|query|string|false|Organization slug|
+|project_ref|query|string|false|Project ref|
 |target_flow|query|string|false|none|
 |resource|query|string(uri)|false|Resource indicator for MCP (Model Context Protocol) clients|
 
@@ -8292,7 +8534,11 @@ scope: "projects:read projects:write"
   "access_token": "string",
   "refresh_token": "string",
   "expires_in": -9007199254740000,
-  "token_type": "Bearer"
+  "token_type": "Bearer",
+  "scope": "projects:read projects:write",
+  "project_refs": [
+    "string"
+  ]
 }
 ```
 
@@ -8527,6 +8773,7 @@ curl https://api.supabase.com/v1/organizations \
 |201|Created||[OrganizationResponseV1_Output](#schemaorganizationresponsev1_output)|
 |401|Unauthorized|Unauthorized|None|
 |403|Forbidden|Forbidden action|None|
+|404|Not Found|User not found|None|
 |429|Too Many Requests|Rate limit exceeded|None|
 |500|Internal Server Error|Unexpected error creating an organization|None|
 
@@ -9028,12 +9275,26 @@ curl https://api.supabase.com/v1/projects \
 }
 ```
 
+> 402 Response
+
+```json
+{
+  "message": "string",
+  "error": {
+    "code": "entitlement_required",
+    "feature": "string",
+    "upgrade_url": "string"
+  }
+}
+```
+
 <h3 id="create-a-project-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created||[V1ProjectResponse_Output](#schemav1projectresponse_output)|
 |401|Unauthorized|Unauthorized|None|
+|402|Payment Required|The instance size is not available on the organization plan, or the organization has overdue invoices|[PlanGateErrorBody](#schemaplangateerrorbody)|
 |403|Forbidden|Forbidden action|None|
 |429|Too Many Requests|Rate limit exceeded|None|
 
@@ -9369,6 +9630,15 @@ This endpoint is currently in its **Beta** stage.
       "2001:db8::/32"
     ]
   },
+  "pending_config": {
+    "dbAllowedCidrs": [
+      "203.0.113.0/24"
+    ],
+    "dbAllowedCidrsV6": [
+      "2001:db8::/32"
+    ]
+  },
+  "pending_requested_at": "1970-01-01T00:00:00Z",
   "status": "stored",
   "updated_at": "1970-01-01T00:00:00Z",
   "applied_at": "1970-01-01T00:00:00Z"
@@ -9569,6 +9839,15 @@ This endpoint is currently in its **Beta** stage.
       "2001:db8::/32"
     ]
   },
+  "pending_config": {
+    "dbAllowedCidrs": [
+      "203.0.113.0/24"
+    ],
+    "dbAllowedCidrsV6": [
+      "2001:db8::/32"
+    ]
+  },
+  "pending_requested_at": "1970-01-01T00:00:00Z",
   "status": "stored",
   "updated_at": "1970-01-01T00:00:00Z",
   "applied_at": "1970-01-01T00:00:00Z"
@@ -9584,6 +9863,108 @@ This endpoint is currently in its **Beta** stage.
 |403|Forbidden|Forbidden action|None|
 |429|Too Many Requests|Rate limit exceeded|None|
 |500|Internal Server Error|Failed to update project network restrictions|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearer
+</aside>
+
+## Applies or rejects the change in review in a project's network restrictions
+
+<a id="opIdv1-review-network-restrictions"></a>
+
+> Code samples
+
+```bash
+curl https://api.supabase.com/v1/projects/abcdefghijklmnopqrst/network-restrictions/review \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "action": "apply",
+    "requested_at": "2026-10-21T20:31:51.116+00:00"
+  }'
+```
+
+`POST /v1/projects/{ref}/network-restrictions/review`
+
+This is an **experimental** endpoint. It is subject to change or removal in future versions. Use it with caution, as it may not remain supported or stable.
+
+This endpoint is currently in its **Alpha** stage.
+
+> Body parameter
+
+```json
+{
+  "action": "apply",
+  "requested_at": "2026-10-21T20:31:51.116+00:00"
+}
+```
+
+<h3 id="applies-or-rejects-the-change-in-review-in-a-projects-network-restrictions-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|ref|path|string|true|Project ref|
+|body|body|[NetworkRestrictionsReviewRequest](#schemanetworkrestrictionsreviewrequest)|true|none|
+|» action|body|string|true|`apply` replaces the enforced list with the pending one and applies it. `reject` discards the pending one and keeps the enforced list.|
+|» requested_at|body|string(date-time)|true|The `pending_requested_at` of the change being reviewed. Only that change is resolved: if another one has replaced it, the request gets a 409.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» action|apply|
+|» action|reject|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "entitlement": "disallowed",
+  "config": {
+    "dbAllowedCidrs": [
+      "203.0.113.0/24"
+    ],
+    "dbAllowedCidrsV6": [
+      "2001:db8::/32"
+    ]
+  },
+  "old_config": {
+    "dbAllowedCidrs": [
+      "203.0.113.0/24"
+    ],
+    "dbAllowedCidrsV6": [
+      "2001:db8::/32"
+    ]
+  },
+  "pending_config": {
+    "dbAllowedCidrs": [
+      "203.0.113.0/24"
+    ],
+    "dbAllowedCidrsV6": [
+      "2001:db8::/32"
+    ]
+  },
+  "pending_requested_at": "1970-01-01T00:00:00Z",
+  "status": "stored",
+  "updated_at": "1970-01-01T00:00:00Z",
+  "applied_at": "1970-01-01T00:00:00Z"
+}
+```
+
+<h3 id="applies-or-rejects-the-change-in-review-in-a-projects-network-restrictions-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[NetworkRestrictionsResponse_Output](#schemanetworkrestrictionsresponse_output)|
+|401|Unauthorized|Unauthorized|None|
+|403|Forbidden|Forbidden action|None|
+|429|Too Many Requests|Rate limit exceeded|None|
+|500|Internal Server Error|Failed to resolve the network restrictions review|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -10169,6 +10550,7 @@ bearer
 ```bash
 curl https://api.supabase.com/v1/projects/abcdefghijklmnopqrst/restore \
   -X POST \
+  -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
@@ -10180,12 +10562,28 @@ curl https://api.supabase.com/v1/projects/abcdefghijklmnopqrst/restore \
 |---|---|---|---|---|
 |ref|path|string|true|Project ref|
 
+> Example responses
+
+> 402 Response
+
+```json
+{
+  "message": "string",
+  "error": {
+    "code": "entitlement_required",
+    "feature": "string",
+    "upgrade_url": "string"
+  }
+}
+```
+
 <h3 id="restores-the-given-project-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK||None|
 |401|Unauthorized|Unauthorized|None|
+|402|Payment Required|The restore is not available on the organization plan, or the organization has overdue invoices or a service restriction|[PlanGateErrorBody](#schemaplangateerrorbody)|
 |403|Forbidden|Forbidden action|None|
 |429|Too Many Requests|Rate limit exceeded|None|
 
@@ -10419,6 +10817,7 @@ bearer
 curl https://api.supabase.com/v1/projects/abcdefghijklmnopqrst/config/disk \
   -X POST \
   -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "attributes": {
@@ -10469,12 +10868,28 @@ curl https://api.supabase.com/v1/projects/abcdefghijklmnopqrst/config/disk \
 |» » type|gp3|
 |» » type|io2|
 
+> Example responses
+
+> 402 Response
+
+```json
+{
+  "message": "string",
+  "error": {
+    "code": "entitlement_required",
+    "feature": "string",
+    "upgrade_url": "string"
+  }
+}
+```
+
 <h3 id="modify-database-disk-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created||None|
 |401|Unauthorized|Unauthorized|None|
+|402|Payment Required|Disk modifications are not available on the organization plan|[PlanGateErrorBody](#schemaplangateerrorbody)|
 |403|Forbidden|Forbidden action|None|
 |429|Too Many Requests|Rate limit exceeded|None|
 |500|Internal Server Error|Failed to modify database disk|None|
@@ -10949,12 +11364,26 @@ curl https://api.supabase.com/v1/projects/abcdefghijklmnopqrst/api-keys \
 }
 ```
 
+> 402 Response
+
+```json
+{
+  "message": "string",
+  "error": {
+    "code": "entitlement_required",
+    "feature": "string",
+    "upgrade_url": "string"
+  }
+}
+```
+
 <h3 id="creates-a-new-api-key-for-the-project-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created||[ApiKeyResponse_Output](#schemaapikeyresponse_output)|
 |401|Unauthorized|Unauthorized|None|
+|402|Payment Required|Custom JWT templates for secret API keys are not available on the organization plan|[PlanGateErrorBody](#schemaplangateerrorbody)|
 |403|Forbidden|Forbidden action|None|
 |429|Too Many Requests|Rate limit exceeded|None|
 
@@ -11238,12 +11667,26 @@ curl https://api.supabase.com/v1/projects/abcdefghijklmnopqrst/api-keys/22222222
 }
 ```
 
+> 402 Response
+
+```json
+{
+  "message": "string",
+  "error": {
+    "code": "entitlement_required",
+    "feature": "string",
+    "upgrade_url": "string"
+  }
+}
+```
+
 <h3 id="updates-an-api-key-for-the-project-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK||[ApiKeyResponse_Output](#schemaapikeyresponse_output)|
 |401|Unauthorized|Unauthorized|None|
+|402|Payment Required|Custom JWT templates for secret API keys are not available on the organization plan|[PlanGateErrorBody](#schemaplangateerrorbody)|
 |403|Forbidden|Forbidden action|None|
 |404|Not Found|API key not found for project|None|
 |429|Too Many Requests|Rate limit exceeded|None|
@@ -11691,6 +12134,7 @@ bearer
 curl https://api.supabase.com/v1/projects/abcdefghijklmnopqrst/config/storage \
   -X PATCH \
   -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "fileSizeLimit": 10485760,
@@ -11750,12 +12194,28 @@ curl https://api.supabase.com/v1/projects/abcdefghijklmnopqrst/config/storage \
 |» » upstreamTarget|main|
 |» » upstreamTarget|canary|
 
+> Example responses
+
+> 402 Response
+
+```json
+{
+  "message": "string",
+  "error": {
+    "code": "entitlement_required",
+    "feature": "string",
+    "upgrade_url": "string"
+  }
+}
+```
+
 <h3 id="updates-projects-storage-config-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK||None|
 |401|Unauthorized|Unauthorized|None|
+|402|Payment Required|A storage feature or file size limit in the request is not available on the organization plan|[PlanGateErrorBody](#schemaplangateerrorbody)|
 |403|Forbidden|Forbidden action|None|
 |429|Too Many Requests|Rate limit exceeded|None|
 |500|Internal Server Error|Failed to update project's storage config|None|
@@ -12018,6 +12478,7 @@ bearer
 |status|RESTARTING|
 |status|PAUSE_FAILED|
 |status|RESIZING|
+|status|PROMOTING|
 
 <h2 id="tocS_UpdateBranchBody">UpdateBranchBody</h2>
 <!-- backwards compatibility -->
@@ -12135,6 +12596,32 @@ bearer
 |preview_project_status|RESTARTING|
 |preview_project_status|PAUSE_FAILED|
 |preview_project_status|RESIZING|
+|preview_project_status|PROMOTING|
+
+<h2 id="tocS_PlanGateErrorBody">PlanGateErrorBody</h2>
+<!-- backwards compatibility -->
+<a id="schemaplangateerrorbody"></a>
+<a id="schema_PlanGateErrorBody"></a>
+<a id="tocSplangateerrorbody"></a>
+<a id="tocsplangateerrorbody"></a>
+
+```json
+{
+  "message": "string",
+  "error": {
+    "code": "entitlement_required",
+    "feature": "string",
+    "upgrade_url": "string"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|true|none|Human-readable explanation of the plan gate|
+|error|object|false|none|Present on entitlement denials. Other errors with this status code (validation, billing state) carry only message.|
 
 <h2 id="tocS_BranchDeleteResponse_Output">BranchDeleteResponse_Output</h2>
 <!-- backwards compatibility -->
@@ -12291,6 +12778,7 @@ bearer
 |status|RESTARTING|
 |status|PAUSE_FAILED|
 |status|RESIZING|
+|status|PROMOTING|
 
 <h2 id="tocS_V1CreateProjectBody">V1CreateProjectBody</h2>
 <!-- backwards compatibility -->
@@ -12422,6 +12910,7 @@ bearer
 |status|RESTARTING|
 |status|PAUSE_FAILED|
 |status|RESIZING|
+|status|PROMOTING|
 
 <h2 id="tocS_RegionsInfoV1_Output">RegionsInfoV1_Output</h2>
 <!-- backwards compatibility -->
@@ -12572,7 +13061,11 @@ bearer
   "access_token": "string",
   "refresh_token": "string",
   "expires_in": -9007199254740000,
-  "token_type": "Bearer"
+  "token_type": "Bearer",
+  "scope": "projects:read projects:write",
+  "project_refs": [
+    "string"
+  ]
 }
 ```
 
@@ -12584,6 +13077,8 @@ bearer
 |refresh_token|string|false|none|The `urn:ietf:params:oauth:grant-type:jwt-bearer` grant type issues access tokens only, no refresh token is returned and the token cannot be revoked via `/v1/oauth/revoke`.|
 |expires_in|integer|true|none|none|
 |token_type|string|true|none|none|
+|scope|string|false|none|Space-delimited scopes granted to the token. Omitted when no scopes were granted.|
+|project_refs|[string]|true|none|Project refs the token is limited to. `null` means all projects.|
 
 #### Enumerated Values
 
@@ -13344,6 +13839,15 @@ Any JSON-serializable value
       "2001:db8::/32"
     ]
   },
+  "pending_config": {
+    "dbAllowedCidrs": [
+      "203.0.113.0/24"
+    ],
+    "dbAllowedCidrsV6": [
+      "2001:db8::/32"
+    ]
+  },
+  "pending_requested_at": "1970-01-01T00:00:00Z",
   "status": "stored",
   "updated_at": "1970-01-01T00:00:00Z",
   "applied_at": "1970-01-01T00:00:00Z"
@@ -13357,6 +13861,8 @@ Any JSON-serializable value
 |entitlement|string|true|none|none|
 |config|object|true|none|At any given point in time, this is the config that the user has requested be applied to their project. The `status` field indicates if it has been applied to the project, or is pending. When an updated config is received, the applied config is moved to `old_config`.|
 |old_config|object|false|none|Populated when a new config has been received, but not registered as successfully applied to a project.|
+|pending_config|object|false|none|Present when a change that was never applied is waiting for review. `config` is the list the project enforces. Apply or reject the change with `POST /v1/projects/{ref}/network-restrictions/review`; submitting a new config also replaces it.|
+|pending_requested_at|string(date-time)|false|none|When the change in `pending_config` was requested. Send it as `requested_at` to the review endpoint.|
 |status|string|true|none|none|
 |updated_at|string(date-time)|false|none|none|
 |applied_at|string(date-time)|false|none|none|
@@ -13475,6 +13981,34 @@ Any JSON-serializable value
 |entitlement|allowed|
 |status|stored|
 |status|applied|
+
+<h2 id="tocS_NetworkRestrictionsReviewRequest">NetworkRestrictionsReviewRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemanetworkrestrictionsreviewrequest"></a>
+<a id="schema_NetworkRestrictionsReviewRequest"></a>
+<a id="tocSnetworkrestrictionsreviewrequest"></a>
+<a id="tocsnetworkrestrictionsreviewrequest"></a>
+
+```json
+{
+  "action": "apply",
+  "requested_at": "2026-10-21T20:31:51.116+00:00"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|action|string|true|none|`apply` replaces the enforced list with the pending one and applies it. `reject` discards the pending one and keeps the enforced list.|
+|requested_at|string(date-time)|true|none|The `pending_requested_at` of the change being reviewed. Only that change is resolved: if another one has replaced it, the request gets a 409.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|action|apply|
+|action|reject|
 
 <h2 id="tocS_PgsodiumConfigResponse_Output">PgsodiumConfigResponse_Output</h2>
 <!-- backwards compatibility -->
@@ -13794,31 +14328,6 @@ Any JSON-serializable value
 |status|not-used|
 |status|custom-domain-used|
 |status|active|
-
-<h2 id="tocS_PlanGateErrorBody">PlanGateErrorBody</h2>
-<!-- backwards compatibility -->
-<a id="schemaplangateerrorbody"></a>
-<a id="schema_PlanGateErrorBody"></a>
-<a id="tocSplangateerrorbody"></a>
-<a id="tocsplangateerrorbody"></a>
-
-```json
-{
-  "message": "string",
-  "error": {
-    "code": "entitlement_required",
-    "feature": "string",
-    "upgrade_url": "string"
-  }
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|message|string|true|none|Human-readable explanation of the plan gate|
-|error|object|false|none|Present on entitlement denials. Other errors with this status code (validation, billing state) carry only message.|
 
 <h2 id="tocS_VanitySubdomainBody">VanitySubdomainBody</h2>
 <!-- backwards compatibility -->
@@ -14493,6 +15002,7 @@ Any JSON-serializable value
   "saml_external_url": "string",
   "saml_allow_encrypted_assertions": true,
   "security_sb_forwarded_for_enabled": true,
+  "external_email_magic_link_disabled": true,
   "security_captcha_enabled": true,
   "security_captcha_provider": "turnstile",
   "security_captcha_secret": "string",
@@ -14738,6 +15248,7 @@ Any JSON-serializable value
 |saml_external_url|string \| null|true|none|none|
 |saml_allow_encrypted_assertions|boolean \| null|true|none|none|
 |security_sb_forwarded_for_enabled|boolean \| null|true|none|none|
+|external_email_magic_link_disabled|boolean \| null|true|none|none|
 |security_captcha_enabled|boolean \| null|true|none|none|
 |security_captcha_provider|string \| null|true|none|none|
 |security_captcha_secret|string \| null|true|none|none|
@@ -14880,6 +15391,7 @@ Any JSON-serializable value
 |saml_enabled|boolean \| null|false|none|none|
 |saml_external_url|string \| null|false|none|none|
 |security_sb_forwarded_for_enabled|boolean \| null|false|none|none|
+|external_email_magic_link_disabled|boolean|false|none|none|
 |security_captcha_enabled|boolean \| null|false|none|none|
 |security_captcha_provider|string \| null|false|none|none|
 |security_captcha_secret|string \| null|false|none|none|
@@ -15385,7 +15897,7 @@ Any JSON-serializable value
 {
   "result": [
     {
-      "timestamp": "1970-01-01T00:00:00Z",
+      "timestamp": "string",
       "total_auth_requests": 0,
       "total_realtime_requests": 0,
       "total_rest_requests": 0,

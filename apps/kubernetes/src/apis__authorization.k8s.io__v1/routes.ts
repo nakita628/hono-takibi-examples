@@ -123,8 +123,9 @@ const IoK8sApiAuthorizationV1NamedConditionsAwareDecisionSchema: z.ZodType<IoK8s
               description:
                 'authorizerName details the name of the authorizer that authored the condition, such that the right Decision can be paired with the right authorizer when evaluating the conditions, even across API server replicas. The name must be stable over time. This name must be unique within a given union authorizer, not necessarily globally.',
             }),
-          decision: IoK8sApiAuthorizationV1ConditionsAwareDecisionSchema.default({}).openapi({
+          decision: IoK8sApiAuthorizationV1ConditionsAwareDecisionSchema.openapi({
             description: 'decision carries the inner decision returned from the authorizer.',
+            default: {},
           }),
         })
         .openapi({
@@ -329,7 +330,7 @@ const IoK8sApimachineryPkgApisMetaV1TimeSchema = z.iso
   .openapi('IoK8sApimachineryPkgApisMetaV1Time')
 
 const IoK8sApimachineryPkgApisMetaV1FieldsV1Schema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       "FieldsV1 stores a set of fields in a data structure like a Trie, in JSON format.\n\nEach key is either a '.' representing the field itself, and will always map to an empty set, or a string representing a sub-field or item. The string will follow one of these four formats: 'f:<name>', where <name> is the name of a field in a struct, or key in a map 'v:<value>', where <value> is the exact json formatted value of a list item 'i:<index>', where <index> is position of a item in a list 'k:<keys>', where <keys> is a map of  a list item's key fields to their unique values If a key maps to an empty Fields value, the field that key represents is part of the set.\n\nThe exact format is defined in sigs.k8s.io/structured-merge-diff",
@@ -976,8 +977,9 @@ const IoK8sApiAuthorizationV1SelfSubjectRulesReviewSchema = z
         description:
           'metadata is the standard list metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata',
       }),
-    spec: IoK8sApiAuthorizationV1SelfSubjectRulesReviewSpecSchema.default({}).openapi({
+    spec: IoK8sApiAuthorizationV1SelfSubjectRulesReviewSpecSchema.openapi({
       description: 'spec holds information about the request being evaluated.',
+      default: {},
     }),
     status: IoK8sApiAuthorizationV1SubjectRulesReviewStatusSchema.default({})
       .exactOptional()

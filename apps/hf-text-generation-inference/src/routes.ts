@@ -1,56 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const FinishReasonSchema = z
-  .enum(['length', 'eos_token', 'stop_sequence'])
-  .openapi({ example: 'Length' })
-  .openapi('FinishReason')
-
-const PrefillTokenSchema = z
-  .object({
-    id: z.int32().min(0).openapi({ example: 0 }),
-    logprob: z.float32().nullable().openapi({ example: -0.34 }),
-    text: z.string().openapi({ example: 'test' }),
-  })
-  .openapi({ required: ['id', 'text', 'logprob'] })
-  .openapi('PrefillToken')
-
-const TokenSchema = z
-  .object({
-    id: z.int32().min(0).openapi({ example: 0 }),
-    logprob: z.float32().nullable().openapi({ example: -0.34 }),
-    special: z.boolean().openapi({ example: 'false' }),
-    text: z.string().openapi({ example: 'test' }),
-  })
-  .openapi({ required: ['id', 'text', 'logprob', 'special'] })
-  .openapi('Token')
-
-const BestOfSequenceSchema = z
-  .object({
-    finish_reason: FinishReasonSchema,
-    generated_text: z.string().openapi({ example: 'test' }),
-    generated_tokens: z.int32().min(0).openapi({ example: 1 }),
-    prefill: z.array(PrefillTokenSchema),
-    seed: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64().min(0n),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({ type: ['integer', 'null'], format: 'int64', minimum: 0, example: 42 }),
-    tokens: z.array(TokenSchema),
-    top_tokens: z.array(z.array(TokenSchema)).exactOptional(),
-  })
-  .openapi({
-    required: ['generated_text', 'finish_reason', 'generated_tokens', 'prefill', 'tokens'],
-  })
-  .openapi('BestOfSequence')
-
 const ChatCompletionTopLogprobSchema = z
   .object({ logprob: z.float32(), token: z.string() })
   .openapi({ required: ['token', 'logprob'] })
@@ -124,27 +73,14 @@ const UsageSchema = z
   .openapi({ required: ['prompt_tokens', 'completion_tokens', 'total_tokens'] })
   .openapi('Usage')
 
-const ChatCompletionSchema = z
-  .object({
-    choices: z.array(ChatCompletionCompleteSchema),
-    created: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64().min(0n),
-      )
-      .openapi({ type: 'integer', format: 'int64', minimum: 0, example: '1706270835' }),
-    id: z.string(),
-    model: z.string().openapi({ example: 'mistralai/Mistral-7B-Instruct-v0.2' }),
-    system_fingerprint: z.string(),
-    usage: UsageSchema,
-  })
-  .openapi({ required: ['id', 'created', 'model', 'system_fingerprint', 'choices', 'usage'] })
-  .openapi('ChatCompletion')
+type ChatCompletionType = {
+  choices: z.infer<typeof ChatCompletionCompleteSchema>[]
+  created: bigint
+  id: string
+  model: string
+  system_fingerprint: string
+  usage: z.infer<typeof UsageSchema>
+}
 
 const FunctionSchema = z
   .object({ arguments: z.string(), name: z.string().nullable().exactOptional() })
@@ -178,7 +114,197 @@ const ChatCompletionChoiceSchema = z
   .openapi({ required: ['index', 'delta'] })
   .openapi('ChatCompletionChoice')
 
-const ChatCompletionChunkSchema = z
+type ChatCompletionChunkType = {
+  choices: z.infer<typeof ChatCompletionChoiceSchema>[]
+  created: bigint
+  id: string
+  model: string
+  system_fingerprint: string
+  usage?: z.infer<typeof UsageSchema> | null
+}
+
+const FinishReasonSchema = z
+  .enum(['length', 'eos_token', 'stop_sequence'])
+  .openapi({ example: 'Length' })
+  .openapi('FinishReason')
+
+const PrefillTokenSchema = z
+  .object({
+    id: z.int32().min(0).openapi({ example: 0 }),
+    logprob: z.float32().nullable().openapi({ example: -0.34 }),
+    text: z.string().openapi({ example: 'test' }),
+  })
+  .openapi({ required: ['id', 'text', 'logprob'] })
+  .openapi('PrefillToken')
+
+const TokenSchema = z
+  .object({
+    id: z.int32().min(0).openapi({ example: 0 }),
+    logprob: z.float32().nullable().openapi({ example: -0.34 }),
+    special: z.boolean().openapi({ example: 'false' }),
+    text: z.string().openapi({ example: 'test' }),
+  })
+  .openapi({ required: ['id', 'text', 'logprob', 'special'] })
+  .openapi('Token')
+
+const BestOfSequenceSchema = z
+  .object({
+    finish_reason: FinishReasonSchema,
+    generated_text: z.string().openapi({ example: 'test' }),
+    generated_tokens: z.int32().min(0).openapi({ example: 1 }),
+    prefill: z.array(PrefillTokenSchema),
+    seed: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(0n),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({ type: ['integer', 'null'], format: 'int64', minimum: 0, example: 42 }),
+    tokens: z.array(TokenSchema),
+    top_tokens: z.array(z.array(TokenSchema)).exactOptional(),
+  })
+  .openapi({
+    required: ['generated_text', 'finish_reason', 'generated_tokens', 'prefill', 'tokens'],
+  })
+  .openapi('BestOfSequence')
+
+const DetailsSchema = z
+  .object({
+    best_of_sequences: z.array(BestOfSequenceSchema).nullable().exactOptional(),
+    finish_reason: FinishReasonSchema,
+    generated_tokens: z.int32().min(0).openapi({ example: 1 }),
+    prefill: z.array(PrefillTokenSchema),
+    seed: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(0n),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({ type: ['integer', 'null'], format: 'int64', minimum: 0, example: 42 }),
+    tokens: z.array(TokenSchema),
+    top_tokens: z.array(z.array(TokenSchema)).exactOptional(),
+  })
+  .openapi({ required: ['finish_reason', 'generated_tokens', 'prefill', 'tokens'] })
+  .openapi('Details')
+
+const GenerateResponseSchema = z
+  .object({
+    details: DetailsSchema.nullable().exactOptional(),
+    generated_text: z.string().openapi({ example: 'test' }),
+  })
+  .openapi({ required: ['generated_text'] })
+  .openapi('GenerateResponse')
+
+const ChatCompletionSchema: z.ZodType<ChatCompletionType> = z
+  .object({
+    choices: z.array(ChatCompletionCompleteSchema),
+    created: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(0n),
+      )
+      .openapi({ type: 'integer', format: 'int64', minimum: 0, example: '1706270835' }),
+    id: z.string(),
+    model: z.string().openapi({ example: 'mistralai/Mistral-7B-Instruct-v0.2' }),
+    system_fingerprint: z.string(),
+    usage: UsageSchema,
+  })
+  .openapi({ required: ['id', 'created', 'model', 'system_fingerprint', 'choices', 'usage'] })
+  .openapi('ChatCompletion')
+
+const CompletionCompleteSchema = z
+  .object({
+    finish_reason: z.string(),
+    index: z.int32().min(0),
+    logprobs: z.array(z.float32()).nullable().exactOptional(),
+    text: z.string(),
+  })
+  .openapi({ required: ['index', 'text', 'finish_reason'] })
+  .openapi('CompletionComplete')
+
+const CompletionFinalSchema = z
+  .object({
+    choices: z.array(CompletionCompleteSchema),
+    created: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(0n),
+      )
+      .openapi({ type: 'integer', format: 'int64', minimum: 0, example: '1706270835' }),
+    id: z.string(),
+    model: z.string().openapi({ example: 'mistralai/Mistral-7B-Instruct-v0.2' }),
+    system_fingerprint: z.string(),
+    usage: UsageSchema,
+  })
+  .openapi({ required: ['id', 'created', 'model', 'system_fingerprint', 'choices', 'usage'] })
+  .openapi('CompletionFinal')
+
+type SagemakerResponseType =
+  | z.infer<typeof GenerateResponseSchema>
+  | z.infer<typeof ChatCompletionSchema>
+  | z.infer<typeof CompletionFinalSchema>
+
+const StreamDetailsSchema = z
+  .object({
+    finish_reason: FinishReasonSchema,
+    generated_tokens: z.int32().min(0).openapi({ example: 1 }),
+    input_length: z.int32().min(0).openapi({ example: 1 }),
+    seed: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(0n),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({ type: ['integer', 'null'], format: 'int64', minimum: 0, example: 42 }),
+  })
+  .openapi({ required: ['finish_reason', 'generated_tokens', 'input_length'] })
+  .openapi('StreamDetails')
+
+const StreamResponseSchema = z
+  .object({
+    details: StreamDetailsSchema.nullable().exactOptional().openapi({ default: 'null' }),
+    generated_text: z
+      .string()
+      .nullable()
+      .default('null')
+      .exactOptional()
+      .openapi({ example: 'test' }),
+    index: z.int32().min(0),
+    token: TokenSchema,
+    top_tokens: z.array(TokenSchema).exactOptional(),
+  })
+  .openapi({ required: ['index', 'token'] })
+  .openapi('StreamResponse')
+
+const ChatCompletionChunkSchema: z.ZodType<ChatCompletionChunkType> = z
   .object({
     choices: z.array(ChatCompletionChoiceSchema),
     created: z
@@ -199,6 +325,32 @@ const ChatCompletionChunkSchema = z
   })
   .openapi({ required: ['id', 'created', 'model', 'system_fingerprint', 'choices'] })
   .openapi('ChatCompletionChunk')
+
+const ChunkSchema = z
+  .object({
+    choices: z.array(CompletionCompleteSchema),
+    created: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(0n),
+      )
+      .openapi({ type: 'integer', format: 'int64', minimum: 0 }),
+    id: z.string(),
+    model: z.string(),
+    system_fingerprint: z.string(),
+  })
+  .openapi({ required: ['id', 'created', 'choices', 'model', 'system_fingerprint'] })
+  .openapi('Chunk')
+
+type SagemakerStreamResponseType =
+  | z.infer<typeof StreamResponseSchema>
+  | z.infer<typeof ChatCompletionChunkSchema>
+  | z.infer<typeof ChunkSchema>
 
 const UrlSchema = z
   .object({ url: z.string() })
@@ -388,7 +540,7 @@ const ChatRequestSchema = z
           "Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far,\nincreasing the model's likelihood to talk about new topics",
         example: 0.1,
       }),
-    response_format: GrammarTypeSchema.nullable().default('null').exactOptional(),
+    response_format: GrammarTypeSchema.nullable().exactOptional().openapi({ default: 'null' }),
     seed: z
       .preprocess(
         (val) =>
@@ -480,37 +632,6 @@ const ChatTokenizeResponseSchema = z
   .openapi({ required: ['tokenize_response', 'templated_text'] })
   .openapi('ChatTokenizeResponse')
 
-const CompletionCompleteSchema = z
-  .object({
-    finish_reason: z.string(),
-    index: z.int32().min(0),
-    logprobs: z.array(z.float32()).nullable().exactOptional(),
-    text: z.string(),
-  })
-  .openapi({ required: ['index', 'text', 'finish_reason'] })
-  .openapi('CompletionComplete')
-
-const ChunkSchema = z
-  .object({
-    choices: z.array(CompletionCompleteSchema),
-    created: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64().min(0n),
-      )
-      .openapi({ type: 'integer', format: 'int64', minimum: 0 }),
-    id: z.string(),
-    model: z.string(),
-    system_fingerprint: z.string(),
-  })
-  .openapi({ required: ['id', 'created', 'choices', 'model', 'system_fingerprint'] })
-  .openapi('Chunk')
-
 const GenerateParametersSchema = z
   .object({
     adapter_id: z
@@ -555,7 +676,7 @@ const GenerateParametersSchema = z
         example: 0.1,
         default: 'null',
       }),
-    grammar: GrammarTypeSchema.nullable().default('null').exactOptional(),
+    grammar: GrammarTypeSchema.nullable().exactOptional().openapi({ default: 'null' }),
     max_new_tokens: z
       .int32()
       .min(0)
@@ -603,7 +724,6 @@ const GenerateParametersSchema = z
         default: 'null',
         description: 'Random sampling seed.',
         example: 'null',
-        default: 'null',
       }),
     stop: z
       .array(z.string())
@@ -699,28 +819,6 @@ const CompatGenerateRequestSchema = z
   })
   .openapi({ required: ['inputs'] })
   .openapi('CompatGenerateRequest')
-
-const CompletionFinalSchema = z
-  .object({
-    choices: z.array(CompletionCompleteSchema),
-    created: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64().min(0n),
-      )
-      .openapi({ type: 'integer', format: 'int64', minimum: 0, example: '1706270835' }),
-    id: z.string(),
-    model: z.string().openapi({ example: 'mistralai/Mistral-7B-Instruct-v0.2' }),
-    system_fingerprint: z.string(),
-    usage: UsageSchema,
-  })
-  .openapi({ required: ['id', 'created', 'model', 'system_fingerprint', 'choices', 'usage'] })
-  .openapi('CompletionFinal')
 
 const CompletionSchema = z
   .xor([
@@ -820,31 +918,6 @@ const CompletionRequestSchema = z
   .openapi({ required: ['prompt'] })
   .openapi('CompletionRequest')
 
-const DetailsSchema = z
-  .object({
-    best_of_sequences: z.array(BestOfSequenceSchema).nullable().exactOptional(),
-    finish_reason: FinishReasonSchema,
-    generated_tokens: z.int32().min(0).openapi({ example: 1 }),
-    prefill: z.array(PrefillTokenSchema),
-    seed: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64().min(0n),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({ type: ['integer', 'null'], format: 'int64', minimum: 0, example: 42 }),
-    tokens: z.array(TokenSchema),
-    top_tokens: z.array(z.array(TokenSchema)).exactOptional(),
-  })
-  .openapi({ required: ['finish_reason', 'generated_tokens', 'prefill', 'tokens'] })
-  .openapi('Details')
-
 const ErrorResponseSchema = z
   .object({ error: z.string(), error_type: z.string() })
   .openapi({ required: ['error', 'error_type'] })
@@ -857,14 +930,6 @@ const GenerateRequestSchema = z
   })
   .openapi({ required: ['inputs'] })
   .openapi('GenerateRequest')
-
-const GenerateResponseSchema = z
-  .object({
-    details: DetailsSchema.nullable().exactOptional(),
-    generated_text: z.string().openapi({ example: 'test' }),
-  })
-  .openapi({ required: ['generated_text'] })
-  .openapi('GenerateResponse')
 
 const InfoSchema = z
   .object({
@@ -934,49 +999,11 @@ const SagemakerRequestSchema = z
   .xor([CompatGenerateRequestSchema, ChatRequestSchema, CompletionRequestSchema])
   .openapi('SagemakerRequest')
 
-const SagemakerResponseSchema = z
+const SagemakerResponseSchema: z.ZodType<SagemakerResponseType> = z
   .xor([GenerateResponseSchema, ChatCompletionSchema, CompletionFinalSchema])
   .openapi('SagemakerResponse')
 
-const StreamDetailsSchema = z
-  .object({
-    finish_reason: FinishReasonSchema,
-    generated_tokens: z.int32().min(0).openapi({ example: 1 }),
-    input_length: z.int32().min(0).openapi({ example: 1 }),
-    seed: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64().min(0n),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({ type: ['integer', 'null'], format: 'int64', minimum: 0, example: 42 }),
-  })
-  .openapi({ required: ['finish_reason', 'generated_tokens', 'input_length'] })
-  .openapi('StreamDetails')
-
-const StreamResponseSchema = z
-  .object({
-    details: StreamDetailsSchema.nullable().default('null').exactOptional(),
-    generated_text: z
-      .string()
-      .nullable()
-      .default('null')
-      .exactOptional()
-      .openapi({ example: 'test' }),
-    index: z.int32().min(0),
-    token: TokenSchema,
-    top_tokens: z.array(TokenSchema).exactOptional(),
-  })
-  .openapi({ required: ['index', 'token'] })
-  .openapi('StreamResponse')
-
-const SagemakerStreamResponseSchema = z
+const SagemakerStreamResponseSchema: z.ZodType<SagemakerStreamResponseType> = z
   .xor([StreamResponseSchema, ChatCompletionChunkSchema, ChunkSchema])
   .openapi('SagemakerStreamResponse')
 

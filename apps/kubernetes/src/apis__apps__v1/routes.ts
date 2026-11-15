@@ -1,13 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const IoK8sApimachineryPkgRuntimeRawExtensionSchema = z
-  .object({})
-  .openapi({
-    description:
-      'RawExtension is used to hold extensions in external versions.\n\nTo use this, make a field which has RawExtension as its type in your external, versioned struct, and Object in your internal struct. You also need to register your various plugin types.\n\n// Internal package:\n\n\ttype MyAPIObject struct {\n\t\truntime.TypeMeta `json:""`\n\t\tMyPlugin runtime.Object `json:"myPlugin"`\n\t}\n\n\ttype PluginA struct {\n\t\tAOption string `json:"aOption"`\n\t}\n\n// External package:\n\n\ttype MyAPIObject struct {\n\t\truntime.TypeMeta `json:""`\n\t\tMyPlugin runtime.RawExtension `json:"myPlugin"`\n\t}\n\n\ttype PluginA struct {\n\t\tAOption string `json:"aOption"`\n\t}\n\n// On the wire, the JSON will look something like this:\n\n\t{\n\t\t"kind":"MyAPIObject",\n\t\t"apiVersion":"v1",\n\t\t"myPlugin": {\n\t\t\t"kind":"PluginA",\n\t\t\t"aOption":"foo",\n\t\t},\n\t}\n\nSo what happens? Decode first uses json or yaml to unmarshal the serialized data into your external MyAPIObject. That causes the raw JSON to be stored, but not unpacked. The next step is to copy (using pkg/conversion) into the internal struct. The runtime package\'s DefaultScheme has conversion functions installed which will unpack the JSON stored in RawExtension, turning it into the correct object type, and storing it in the Object. (TODO: In the case where the object is of an unknown type, a runtime.Unknown object will be created and stored.)',
-  })
-  .openapi('IoK8sApimachineryPkgRuntimeRawExtension')
-
 const IoK8sApimachineryPkgApisMetaV1TimeSchema = z.iso
   .datetime({ offset: true })
   .openapi({
@@ -17,7 +9,7 @@ const IoK8sApimachineryPkgApisMetaV1TimeSchema = z.iso
   .openapi('IoK8sApimachineryPkgApisMetaV1Time')
 
 const IoK8sApimachineryPkgApisMetaV1FieldsV1Schema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       "FieldsV1 stores a set of fields in a data structure like a Trie, in JSON format.\n\nEach key is either a '.' representing the field itself, and will always map to an empty set, or a string representing a sub-field or item. The string will follow one of these four formats: 'f:<name>', where <name> is the name of a field in a struct, or key in a map 'v:<value>', where <value> is the exact json formatted value of a list item 'i:<index>', where <index> is position of a item in a list 'k:<keys>', where <keys> is a map of  a list item's key fields to their unique values If a key maps to an empty Fields value, the field that key represents is part of the set.\n\nThe exact format is defined in sigs.k8s.io/structured-merge-diff",
@@ -254,165 +246,6 @@ const IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema = z
   })
   .openapi('IoK8sApimachineryPkgApisMetaV1ObjectMeta')
 
-const IoK8sApiAppsV1ControllerRevisionSchema = z
-  .object({
-    apiVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
-      }),
-    data: IoK8sApimachineryPkgRuntimeRawExtensionSchema.openapi({
-      description: 'data is the serialized representation of the state.',
-    }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          'metadata is the standard object metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata',
-      }),
-    revision: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .default(0n)
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        default: 0,
-        description: 'revision indicates the revision of the state represented by Data.',
-      }),
-  })
-  .openapi({
-    description:
-      'ControllerRevision implements an immutable snapshot of state data. Clients are responsible for serializing and deserializing the objects that contain their internal state. Once a ControllerRevision has been successfully created, it can not be updated. The API Server will fail validation of all requests that attempt to mutate the Data field. ControllerRevisions may, however, be deleted. Note that, due to its use by both the DaemonSet and StatefulSet controllers for update and rollback, this object is beta. However, it may be subject to name and representation changes in future releases, and clients should not depend on its stability. It is primarily for internal use by controllers.',
-    required: ['data'],
-    'x-kubernetes-group-version-kind': [
-      { group: 'apps', kind: 'ControllerRevision', version: 'v1' },
-    ],
-  })
-  .openapi('IoK8sApiAppsV1ControllerRevision')
-
-const IoK8sApimachineryPkgApisMetaV1ShardInfoSchema = z
-  .object({
-    selector: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'selector is the shard selector string from the request, echoed back so clients can verify which shard they received and merge responses from multiple shards.',
-      }),
-  })
-  .openapi({
-    description:
-      'ShardInfo describes the shard selector that was applied to produce a list response. Its presence on a list response indicates the list is a filtered subset.',
-    required: ['selector'],
-  })
-  .openapi('IoK8sApimachineryPkgApisMetaV1ShardInfo')
-
-const IoK8sApimachineryPkgApisMetaV1ListMetaSchema = z
-  .object({
-    continue: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'continue may be set if the user set a limit on the number of items returned, and indicates that the server has more data available. The value is opaque and may be used to issue another request to the endpoint that served this list to retrieve the next set of available objects. Continuing a consistent list may not be possible if the server configuration has changed or more than a few minutes have passed. The resourceVersion field returned when using this continue value will be identical to the value in the first response, unless you have received this token from an error message.',
-      }),
-    remainingItemCount: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'remainingItemCount is the number of subsequent items in the list which are not included in this list response. If the list request contained label or field selectors, then the number of remaining items is unknown and the field will be left unset and omitted during serialization. If the list is complete (either because it is not chunking or because this is the last chunk), then there are no more remaining items and this field will be left unset and omitted during serialization. Servers older than v1.15 do not set this field. The intended use of the remainingItemCount is *estimating* the size of a collection. Clients should not rely on the remainingItemCount to be set or to be exact.',
-      }),
-    resourceVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "String that identifies the server's internal version of this object that can be used by clients to determine when objects have changed. Value must be treated as opaque by clients and passed unmodified back to the server. Populated by the system. Read-only. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency",
-      }),
-    selfLink: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Deprecated: selfLink is a legacy read-only field that is no longer populated by the system.',
-      }),
-    shardInfo: IoK8sApimachineryPkgApisMetaV1ShardInfoSchema.exactOptional().openapi({
-      description:
-        'shardInfo is set when the list is a filtered subset of the full collection, as selected by a shard selector on the request. It echoes back the selector so clients can verify which shard they received and merge sharded responses. Clients should not cache sharded list responses as a full representation of the collection.\n\nThis is a beta field and is enabled by default via the ShardedListAndWatch feature gate.',
-    }),
-  })
-  .openapi({
-    description:
-      'ListMeta describes metadata that synthetic resources must have, including lists and various status objects. A resource may have only one of {ObjectMeta, ListMeta}.',
-    required: [],
-  })
-  .openapi('IoK8sApimachineryPkgApisMetaV1ListMeta')
-
-const IoK8sApiAppsV1ControllerRevisionListSchema = z
-  .object({
-    apiVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
-      }),
-    items: z
-      .array(IoK8sApiAppsV1ControllerRevisionSchema)
-      .openapi({ description: 'Items is the list of ControllerRevisions' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          'More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata',
-      }),
-  })
-  .openapi({
-    description:
-      'ControllerRevisionList is a resource containing a list of ControllerRevision objects.',
-    required: ['items'],
-    'x-kubernetes-group-version-kind': [
-      { group: 'apps', kind: 'ControllerRevisionList', version: 'v1' },
-    ],
-  })
-  .openapi('IoK8sApiAppsV1ControllerRevisionList')
-
 const IoK8sApimachineryPkgApisMetaV1LabelSelectorRequirementSchema = z
   .object({
     key: z
@@ -633,9 +466,10 @@ const IoK8sApiCoreV1PodAffinityTermSchema = z
 
 const IoK8sApiCoreV1WeightedPodAffinityTermSchema = z
   .object({
-    podAffinityTerm: IoK8sApiCoreV1PodAffinityTermSchema.default({}).openapi({
+    podAffinityTerm: IoK8sApiCoreV1PodAffinityTermSchema.openapi({
       description:
         'podAffinityTerm is a pod affinity term, associated with the corresponding weight. required.',
+      default: {},
     }),
     weight: z
       .int32()
@@ -652,7 +486,16 @@ const IoK8sApiCoreV1WeightedPodAffinityTermSchema = z
   })
   .openapi('IoK8sApiCoreV1WeightedPodAffinityTerm')
 
-const IoK8sApiCoreV1PodAffinitySchema = z
+type IoK8sApiCoreV1PodAffinityType = {
+  preferredDuringSchedulingIgnoredDuringExecution?: z.infer<
+    typeof IoK8sApiCoreV1WeightedPodAffinityTermSchema
+  >[]
+  requiredDuringSchedulingIgnoredDuringExecution?: z.infer<
+    typeof IoK8sApiCoreV1PodAffinityTermSchema
+  >[]
+}
+
+const IoK8sApiCoreV1PodAffinitySchema: z.ZodType<IoK8sApiCoreV1PodAffinityType> = z
   .object({
     preferredDuringSchedulingIgnoredDuringExecution: z
       .array(IoK8sApiCoreV1WeightedPodAffinityTermSchema)
@@ -677,7 +520,16 @@ const IoK8sApiCoreV1PodAffinitySchema = z
   })
   .openapi('IoK8sApiCoreV1PodAffinity')
 
-const IoK8sApiCoreV1PodAntiAffinitySchema = z
+type IoK8sApiCoreV1PodAntiAffinityType = {
+  preferredDuringSchedulingIgnoredDuringExecution?: z.infer<
+    typeof IoK8sApiCoreV1WeightedPodAffinityTermSchema
+  >[]
+  requiredDuringSchedulingIgnoredDuringExecution?: z.infer<
+    typeof IoK8sApiCoreV1PodAffinityTermSchema
+  >[]
+}
+
+const IoK8sApiCoreV1PodAntiAffinitySchema: z.ZodType<IoK8sApiCoreV1PodAntiAffinityType> = z
   .object({
     preferredDuringSchedulingIgnoredDuringExecution: z
       .array(IoK8sApiCoreV1WeightedPodAffinityTermSchema)
@@ -702,7 +554,13 @@ const IoK8sApiCoreV1PodAntiAffinitySchema = z
   })
   .openapi('IoK8sApiCoreV1PodAntiAffinity')
 
-const IoK8sApiCoreV1AffinitySchema = z
+type IoK8sApiCoreV1AffinityType = {
+  nodeAffinity?: z.infer<typeof IoK8sApiCoreV1NodeAffinitySchema>
+  podAffinity?: z.infer<typeof IoK8sApiCoreV1PodAffinitySchema>
+  podAntiAffinity?: z.infer<typeof IoK8sApiCoreV1PodAntiAffinitySchema>
+}
+
+const IoK8sApiCoreV1AffinitySchema: z.ZodType<IoK8sApiCoreV1AffinityType> = z
   .object({
     nodeAffinity: IoK8sApiCoreV1NodeAffinitySchema.exactOptional().openapi({
       description: 'nodeAffinity describes node affinity scheduling rules for the pod.',
@@ -815,7 +673,7 @@ const IoK8sApimachineryPkgApiResourceQuantitySchema = z
   .xor([z.string(), z.number()])
   .openapi({
     description:
-      'Quantity is a fixed-point representation of a number. It provides convenient marshaling/unmarshaling in JSON and YAML, in addition to String() and AsInt64() accessors.\n\nThe serialization format is:\n\n- `<quantity>`: `<signedNumber><suffix>`\n\n- `<digit>`: `0 | 1 | ... | 9`\n\n- `<digits>`: `<digit> | <digit><digits>`\n\n- `<number>`: `<digits> | <digits>.<digits> | <digits>. | .<digits>`\n\n- `<sign>`: `"+" | "-"`\n\n- `<signedNumber>`: `<number> | <sign><number>`\n\n- `<signedDigits>`: `<digits> | <sign><digits>`\n\n- `<suffix>`: `<binarySI> | <decimalExponent> | <decimalSI>`\n\n- `<binarySI>`: `Ki | Mi | Gi | Ti | Pi | Ei`\n\n- `<decimalSI>`: `n | u | m | "" | k | M | G | T | P | E`\n\n- `<decimalExponent>`: `"e" <signedDigits> | "E" <signedDigits>`\n\nNote that `<suffix>` may be empty, from the `""` case in `<decimalSI>`. For `<binarySI>`, 1024 = 1Ki but 1000 = 1k; I didn\'t choose the capitalization. See http://physics.nist.gov/cuu/Units/binary.html.\n\nA decimal quantity is not capped at 2^63-1 in magnitude, and no quantity is limited to three decimal places: "18446744073709551616" keeps its value, and "1.2345" keeps its precision (String reports it as "1234500u"). Parsing does cap a binarySI quantity, silently, at 2^63-1: "8Ei" parses as 2^63-1. Parsing also preserves a value only down to nano, rounding a finer non-zero value away from zero, so "0.9n" becomes "1n". The int64 accessors round and may overflow on top of that: see Value, MilliValue and ScaledValue.\n\nWhen a Quantity is parsed from a string, it will remember the type of suffix it had, and will use the same type again when it is serialized.\n\nBefore serializing, Quantity will be put in "canonical form". This means that Exponent/suffix will be adjusted up or down (with a corresponding increase or decrease in Mantissa) such that:\n\n- No precision is lost\n\n- No fractional digits will be emitted\n\n- The exponent (or suffix) is as large as possible.\n\nThe sign will be omitted unless the number is negative.\n\nExamples:\n\n- 1.5 will be serialized as "1500m"\n\n- 1.5Gi will be serialized as "1536Mi"\n\nNote that the quantity will NEVER be internally represented by a floating point number. That is the whole point of this exercise.\n\nNon-canonical values will still parse as long as they are well formed, but will be re-emitted in their canonical form. (So always use canonical form, or don\'t diff.)\n\nThis format is intended to make it difficult to use these numbers without writing some sort of special handling code in the hopes that that will cause implementors to also use a fixed point implementation.',
+      'Quantity is a fixed-point representation of a number. It provides convenient marshaling/unmarshaling in JSON and YAML, in addition to String() and AsInt64() accessors.\n\nThe serialization format is:\n\n- `<quantity>`: `<signedNumber><suffix>`\n\n- `<digit>`: `0 | 1 | ... | 9`\n\n- `<digits>`: `<digit> | <digit><digits>`\n\n- `<number>`: `<digits> | <digits>.<digits> | <digits>. | .<digits>`\n\n- `<sign>`: `"+" | "-"`\n\n- `<signedNumber>`: `<number> | <sign><number>`\n\n- `<signedDigits>`: `<digits> | <sign><digits>`\n\n- `<suffix>`: `<binarySI> | <decimalExponent> | <decimalSI>`\n\n- `<binarySI>`: `Ki | Mi | Gi | Ti | Pi | Ei`\n\n- `<decimalSI>`: `n | u | m | "" | k | M | G | T | P | E`\n\n- `<decimalExponent>`: `"e" <signedDigits> | "E" <signedDigits>`\n\nNote that `<suffix>` may be empty, from the `""` case in `<decimalSI>`. For `<binarySI>`, 1024 = 1Ki but 1000 = 1k; I didn\'t choose the capitalization. See http://physics.nist.gov/cuu/Units/binary.html.\n\nA decimal quantity is not capped at 2^63-1 in magnitude, and no quantity is limited to three decimal places: "18446744073709551616" keeps its value, and "1.2345" keeps its precision (String reports it as "1234500u"). Parsing does cap a binarySI quantity, silently, at 2^63-1: "8Ei" parses as 2^63-1. Parsing keeps at most 29 significant digits, enough for any int64 value at nano precision, and rounds any precision beyond this away from zero. Parsing also preserves a value only down to nano, rounding a finer non-zero value away from zero, so "0.9n" becomes "1n". Parsing saturates the exponent to [-2147483647, 2147483647] after accounting for any digits after the decimal point, so "0.01e2147483649" keeps its value but "1e4294967297" parses as 1e2147483647. The int64 accessors round and may overflow on top of that: see Value, MilliValue and ScaledValue.\n\nWhen a Quantity is parsed from a string, it will remember the type of suffix it had, and will use the same type again when it is serialized.\n\nBefore serializing, Quantity will be put in "canonical form". This means that Exponent/suffix will be adjusted up or down (with a corresponding increase or decrease in Mantissa) such that:\n\n- No precision is lost\n\n- No fractional digits will be emitted\n\n- The exponent (or suffix) is as large as possible.\n\nThe sign will be omitted unless the number is negative.\n\nExamples:\n\n- 1.5 will be serialized as "1500m"\n\n- 1.5Gi will be serialized as "1536Mi"\n\nNote that the quantity will NEVER be internally represented by a floating point number. That is the whole point of this exercise.\n\nNon-canonical values will still parse as long as they are well formed, but will be re-emitted in their canonical form. (So always use canonical form, or don\'t diff.)\n\nThis format is intended to make it difficult to use these numbers without writing some sort of special handling code in the hopes that that will cause implementors to also use a fixed point implementation.',
   })
   .openapi('IoK8sApimachineryPkgApiResourceQuantity')
 
@@ -1483,6 +1341,22 @@ const IoK8sApiCoreV1CapabilitiesSchema = z
   })
   .openapi('IoK8sApiCoreV1Capabilities')
 
+const IoK8sApiCoreV1CgroupOptionsSchema = z
+  .object({
+    mountMode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'mountMode controls how the cgroup filesystem is mounted in the container. Valid values are "ReadOnly" and "ReadWrite". If not specified, the container runtime\'s default mount mode is used. The kubelet refuses to create a container with an unrecognized value. "ReadOnly" cannot be set when the container\'s privileged field is true. "ReadWrite" cannot be set when spec.hostNetwork is true and spec.hostUsers is false.',
+      }),
+  })
+  .openapi({
+    description: 'CgroupOptions defines options for cgroup filesystem access.',
+    required: [],
+  })
+  .openapi('IoK8sApiCoreV1CgroupOptions')
+
 const IoK8sApiCoreV1SELinuxOptionsSchema = z
   .object({
     level: z
@@ -1508,6 +1382,56 @@ const IoK8sApiCoreV1SELinuxOptionsSchema = z
   })
   .openapi('IoK8sApiCoreV1SELinuxOptions')
 
+const IoK8sApiCoreV1SecurityProfileOCIBaseSchema = z
+  .object({
+    localhostProfile: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'localhostProfile indicates a base profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a non-empty descending path, relative to the kubelet\'s configured seccomp profile location, of at most 4096 characters. Must be set if type is "Localhost". Must NOT be set for any other type.',
+      }),
+    type: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'type indicates which kind of base profile will be applied. Valid options are:\n\nLocalhost - a profile defined in a file on the node should be used. RuntimeDefault - the container runtime default profile should be used.',
+      }),
+  })
+  .openapi({
+    description: 'SecurityProfileOCIBase specifies the base profile of an OCI security profile.',
+    required: ['type'],
+    'x-kubernetes-unions': [
+      {
+        discriminator: 'type',
+        'fields-to-discriminateBy': { localhostProfile: 'LocalhostProfile' },
+      },
+    ],
+  })
+  .openapi('IoK8sApiCoreV1SecurityProfileOCIBase')
+
+const IoK8sApiCoreV1SecurityProfileOCISchema = z
+  .object({
+    baseProfile: IoK8sApiCoreV1SecurityProfileOCIBaseSchema.exactOptional().openapi({
+      description:
+        'baseProfile optionally specifies the base profile that the container runtime merges with the OCI profile. The effective profile permits an operation only if both permit it. When omitted, the container runtime default profile is the base; a Localhost base profile takes its place.',
+    }),
+    ref: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'ref is the OCI reference of the profile. It must be a digest-pinned reference in canonical form, registry/repository@<algorithm>:<digest>, with the registry spelled out (for example docker.io/library/profile, not profile or docker.io/profile). Tags are rejected. The digest algorithm must be sha256, sha384, or sha512. The maximum length is 1024 characters. Pull secrets are assembled in the same way as for the container image by looking up node credentials, service account image pull secrets, and pod spec image pull secrets.',
+      }),
+  })
+  .openapi({
+    description:
+      'SecurityProfileOCI references a security profile stored as an artifact in an OCI registry, with an optional base profile.',
+    required: ['ref'],
+  })
+  .openapi('IoK8sApiCoreV1SecurityProfileOCI')
+
 const IoK8sApiCoreV1SeccompProfileSchema = z
   .object({
     localhostProfile: z
@@ -1517,12 +1441,16 @@ const IoK8sApiCoreV1SeccompProfileSchema = z
         description:
           'localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet\'s configured seccomp profile location. Must be set if type is "Localhost". Must NOT be set for any other type.',
       }),
+    oci: IoK8sApiCoreV1SecurityProfileOCISchema.exactOptional().openapi({
+      description:
+        'oci specifies a seccomp profile stored as an artifact in an OCI registry. The container runtime merges the profile with a base profile, so the effective profile permits an operation only if both permit it. Must be set if type is "OCI". Must NOT be set for any other type. This is an alpha field and requires enabling the SecurityProfileOCI feature gate.',
+    }),
     type: z
       .string()
       .default('')
       .openapi({
         description:
-          'type indicates which kind of seccomp profile will be applied. Valid options are:\n\nLocalhost - a profile defined in a file on the node should be used. RuntimeDefault - the container runtime default profile should be used. Unconfined - no profile should be applied.',
+          'type indicates which kind of seccomp profile will be applied. Valid options are:\n\nLocalhost - a profile defined in a file on the node should be used. RuntimeDefault - the container runtime default profile should be used. Unconfined - no profile should be applied. OCI - a profile pulled from an OCI registry should be used, merged with a base profile (see oci.baseProfile). Privileged containers cannot use it, whether it is set on the container or inherited from the pod. This is an alpha value and requires enabling the SecurityProfileOCI feature gate.',
       }),
   })
   .openapi({
@@ -1532,7 +1460,7 @@ const IoK8sApiCoreV1SeccompProfileSchema = z
     'x-kubernetes-unions': [
       {
         discriminator: 'type',
-        'fields-to-discriminateBy': { localhostProfile: 'LocalhostProfile' },
+        'fields-to-discriminateBy': { localhostProfile: 'LocalhostProfile', oci: 'OCI' },
       },
     ],
   })
@@ -1590,6 +1518,10 @@ const IoK8sApiCoreV1SecurityContextSchema = z
     capabilities: IoK8sApiCoreV1CapabilitiesSchema.exactOptional().openapi({
       description:
         'capabilities is the capabilities to add/drop when running containers. Defaults to the default set of capabilities granted by the container runtime. Note that this field cannot be set when spec.os.name is windows.',
+    }),
+    cgroupOptions: IoK8sApiCoreV1CgroupOptionsSchema.exactOptional().openapi({
+      description:
+        'cgroupOptions holds the cgroup options for this container. If mountMode is specified, the scheduler only places the pod on a node whose status.declaredFeatures includes CgroupOptions. (Alpha) This field requires the CgroupOptions feature gate to be enabled. This field cannot be set for ephemeral containers or when spec.os.name is windows.',
     }),
     privileged: z
       .boolean()
@@ -2828,7 +2760,7 @@ const IoK8sApiCoreV1KeyToPathSchema = z
         type: 'integer',
         format: 'int64',
         description:
-          'user is Optional: The owner UID of the created file. If specified, the item-level user field takes precedence over defaultUser. (Alpha) This field requires the AtomicWriteVolumeUserFields feature gate to be enabled.',
+          'user is Optional: The owner UID of the created file. If specified, the item-level user field takes precedence over defaultUser. (Beta) This field requires the AtomicWriteVolumeUserFields feature gate to be enabled.',
       }),
   })
   .openapi({
@@ -2861,7 +2793,7 @@ const IoK8sApiCoreV1ConfigMapVolumeSourceSchema = z
         type: 'integer',
         format: 'int64',
         description:
-          'defaultUser is Optional: The owner UID of the created files by default. The defaultUser field is only used as a fallback when the item-level user field is unset. (Alpha) This field requires the AtomicWriteVolumeUserFields feature gate to be enabled.',
+          'defaultUser is Optional: The owner UID of the created files by default. The defaultUser field is only used as a fallback when the item-level user field is unset. (Beta) This field requires the AtomicWriteVolumeUserFields feature gate to be enabled.',
       }),
     items: z
       .array(IoK8sApiCoreV1KeyToPathSchema)
@@ -2974,7 +2906,7 @@ const IoK8sApiCoreV1DownwardAPIVolumeFileSchema = z
         type: 'integer',
         format: 'int64',
         description:
-          'user is Optional: The owner UID of the created file. If specified, the item-level user field takes precedence over defaultUser. (Alpha) This field requires the AtomicWriteVolumeUserFields feature gate to be enabled.',
+          'user is Optional: The owner UID of the created file. If specified, the item-level user field takes precedence over defaultUser. (Beta) This field requires the AtomicWriteVolumeUserFields feature gate to be enabled.',
       }),
   })
   .openapi({
@@ -3008,7 +2940,7 @@ const IoK8sApiCoreV1DownwardAPIVolumeSourceSchema = z
         type: 'integer',
         format: 'int64',
         description:
-          'defaultUser is Optional: The owner UID of the created files by default. The defaultUser field is only used as a fallback when the item-level user field is unset. (Alpha) This field requires the AtomicWriteVolumeUserFields feature gate to be enabled.',
+          'defaultUser is Optional: The owner UID of the created files by default. The defaultUser field is only used as a fallback when the item-level user field is unset. (Beta) This field requires the AtomicWriteVolumeUserFields feature gate to be enabled.',
       }),
     items: z
       .array(IoK8sApiCoreV1DownwardAPIVolumeFileSchema)
@@ -3693,7 +3625,7 @@ const IoK8sApiCoreV1ClusterTrustBundleProjectionSchema = z
         type: 'integer',
         format: 'int64',
         description:
-          'user is Optional: The owner UID of the created file. If specified, the item-level user field takes precedence over defaultUser. (Alpha) This field requires the AtomicWriteVolumeUserFields feature gate to be enabled.',
+          'user is Optional: The owner UID of the created file. If specified, the item-level user field takes precedence over defaultUser. (Beta) This field requires the AtomicWriteVolumeUserFields feature gate to be enabled.',
       }),
   })
   .openapi({
@@ -3809,7 +3741,7 @@ const IoK8sApiCoreV1PodCertificateProjectionSchema = z
         type: 'integer',
         format: 'int64',
         description:
-          'user is Optional: The owner UID of the created file. If specified, the item-level user field takes precedence over defaultUser. (Alpha) This field requires the AtomicWriteVolumeUserFields feature gate to be enabled.',
+          'user is Optional: The owner UID of the created file. If specified, the item-level user field takes precedence over defaultUser. (Beta) This field requires the AtomicWriteVolumeUserFields feature gate to be enabled.',
       }),
     userAnnotations: z
       .record(z.string(), z.string())
@@ -3906,7 +3838,7 @@ const IoK8sApiCoreV1ServiceAccountTokenProjectionSchema = z
         type: 'integer',
         format: 'int64',
         description:
-          'user is Optional: The owner UID of the created file. If specified, the item-level user field takes precedence over defaultUser. (Alpha) This field requires the AtomicWriteVolumeUserFields feature gate to be enabled.',
+          'user is Optional: The owner UID of the created file. If specified, the item-level user field takes precedence over defaultUser. (Beta) This field requires the AtomicWriteVolumeUserFields feature gate to be enabled.',
       }),
   })
   .openapi({
@@ -3947,43 +3879,50 @@ const IoK8sApiCoreV1VolumeProjectionSchema = z
   })
   .openapi('IoK8sApiCoreV1VolumeProjection')
 
-const IoK8sApiCoreV1ProjectedVolumeSourceSchema = z
-  .object({
-    defaultMode: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'defaultMode are the mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.',
-      }),
-    defaultUser: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
+type IoK8sApiCoreV1ProjectedVolumeSourceType = {
+  defaultMode?: number
+  defaultUser?: bigint
+  sources?: z.infer<typeof IoK8sApiCoreV1VolumeProjectionSchema>[]
+}
+
+const IoK8sApiCoreV1ProjectedVolumeSourceSchema: z.ZodType<IoK8sApiCoreV1ProjectedVolumeSourceType> =
+  z
+    .object({
+      defaultMode: z
+        .int32()
+        .exactOptional()
+        .openapi({
+          description:
+            'defaultMode are the mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.',
+        }),
+      defaultUser: z
+        .preprocess(
+          (val) =>
+            typeof val === 'number' && Number.isSafeInteger(val)
               ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'defaultUser is Optional: The owner UID of the created files by default. The defaultUser field is only used as a fallback when the item-level user field is unset. (Alpha) This field requires the AtomicWriteVolumeUserFields feature gate to be enabled.',
-      }),
-    sources: z
-      .array(IoK8sApiCoreV1VolumeProjectionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'sources is the list of volume projections. Each entry in this list handles one source.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-  })
-  .openapi({ description: 'Represents a projected volume source', required: [] })
-  .openapi('IoK8sApiCoreV1ProjectedVolumeSource')
+              : typeof val === 'string' && /^-?\d+$/.test(val)
+                ? BigInt(val)
+                : val,
+          z.int64(),
+        )
+        .exactOptional()
+        .openapi({
+          type: 'integer',
+          format: 'int64',
+          description:
+            'defaultUser is Optional: The owner UID of the created files by default. The defaultUser field is only used as a fallback when the item-level user field is unset. (Beta) This field requires the AtomicWriteVolumeUserFields feature gate to be enabled.',
+        }),
+      sources: z
+        .array(IoK8sApiCoreV1VolumeProjectionSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'sources is the list of volume projections. Each entry in this list handles one source.',
+          'x-kubernetes-list-type': 'atomic',
+        }),
+    })
+    .openapi({ description: 'Represents a projected volume source', required: [] })
+    .openapi('IoK8sApiCoreV1ProjectedVolumeSource')
 
 const IoK8sApiCoreV1QuobyteVolumeSourceSchema = z
   .object({
@@ -4193,7 +4132,7 @@ const IoK8sApiCoreV1SecretVolumeSourceSchema = z
         type: 'integer',
         format: 'int64',
         description:
-          'defaultUser is Optional: The owner UID of the created files by default. The defaultUser field is only used as a fallback when the item-level user field is unset. (Alpha) This field requires the AtomicWriteVolumeUserFields feature gate to be enabled.',
+          'defaultUser is Optional: The owner UID of the created files by default. The defaultUser field is only used as a fallback when the item-level user field is unset. (Beta) This field requires the AtomicWriteVolumeUserFields feature gate to be enabled.',
       }),
     items: z
       .array(IoK8sApiCoreV1KeyToPathSchema)
@@ -4295,7 +4234,41 @@ const IoK8sApiCoreV1VsphereVirtualDiskVolumeSourceSchema = z
   .openapi({ description: 'Represents a vSphere volume resource.', required: ['volumePath'] })
   .openapi('IoK8sApiCoreV1VsphereVirtualDiskVolumeSource')
 
-const IoK8sApiCoreV1VolumeSchema = z
+type IoK8sApiCoreV1VolumeType = {
+  awsElasticBlockStore?: z.infer<typeof IoK8sApiCoreV1AWSElasticBlockStoreVolumeSourceSchema>
+  azureDisk?: z.infer<typeof IoK8sApiCoreV1AzureDiskVolumeSourceSchema>
+  azureFile?: z.infer<typeof IoK8sApiCoreV1AzureFileVolumeSourceSchema>
+  cephfs?: z.infer<typeof IoK8sApiCoreV1CephFSVolumeSourceSchema>
+  cinder?: z.infer<typeof IoK8sApiCoreV1CinderVolumeSourceSchema>
+  configMap?: z.infer<typeof IoK8sApiCoreV1ConfigMapVolumeSourceSchema>
+  csi?: z.infer<typeof IoK8sApiCoreV1CSIVolumeSourceSchema>
+  downwardAPI?: z.infer<typeof IoK8sApiCoreV1DownwardAPIVolumeSourceSchema>
+  emptyDir?: z.infer<typeof IoK8sApiCoreV1EmptyDirVolumeSourceSchema>
+  ephemeral?: z.infer<typeof IoK8sApiCoreV1EphemeralVolumeSourceSchema>
+  fc?: z.infer<typeof IoK8sApiCoreV1FCVolumeSourceSchema>
+  flexVolume?: z.infer<typeof IoK8sApiCoreV1FlexVolumeSourceSchema>
+  flocker?: z.infer<typeof IoK8sApiCoreV1FlockerVolumeSourceSchema>
+  gcePersistentDisk?: z.infer<typeof IoK8sApiCoreV1GCEPersistentDiskVolumeSourceSchema>
+  gitRepo?: z.infer<typeof IoK8sApiCoreV1GitRepoVolumeSourceSchema>
+  glusterfs?: z.infer<typeof IoK8sApiCoreV1GlusterfsVolumeSourceSchema>
+  hostPath?: z.infer<typeof IoK8sApiCoreV1HostPathVolumeSourceSchema>
+  image?: z.infer<typeof IoK8sApiCoreV1ImageVolumeSourceSchema>
+  iscsi?: z.infer<typeof IoK8sApiCoreV1ISCSIVolumeSourceSchema>
+  name: string
+  nfs?: z.infer<typeof IoK8sApiCoreV1NFSVolumeSourceSchema>
+  persistentVolumeClaim?: z.infer<typeof IoK8sApiCoreV1PersistentVolumeClaimVolumeSourceSchema>
+  photonPersistentDisk?: z.infer<typeof IoK8sApiCoreV1PhotonPersistentDiskVolumeSourceSchema>
+  portworxVolume?: z.infer<typeof IoK8sApiCoreV1PortworxVolumeSourceSchema>
+  projected?: z.infer<typeof IoK8sApiCoreV1ProjectedVolumeSourceSchema>
+  quobyte?: z.infer<typeof IoK8sApiCoreV1QuobyteVolumeSourceSchema>
+  rbd?: z.infer<typeof IoK8sApiCoreV1RBDVolumeSourceSchema>
+  scaleIO?: z.infer<typeof IoK8sApiCoreV1ScaleIOVolumeSourceSchema>
+  secret?: z.infer<typeof IoK8sApiCoreV1SecretVolumeSourceSchema>
+  storageos?: z.infer<typeof IoK8sApiCoreV1StorageOSVolumeSourceSchema>
+  vsphereVolume?: z.infer<typeof IoK8sApiCoreV1VsphereVirtualDiskVolumeSourceSchema>
+}
+
+const IoK8sApiCoreV1VolumeSchema: z.ZodType<IoK8sApiCoreV1VolumeType> = z
   .object({
     awsElasticBlockStore:
       IoK8sApiCoreV1AWSElasticBlockStoreVolumeSourceSchema.exactOptional().openapi({
@@ -4433,7 +4406,53 @@ const IoK8sApiCoreV1VolumeSchema = z
   })
   .openapi('IoK8sApiCoreV1Volume')
 
-const IoK8sApiCoreV1PodSpecSchema = z
+type IoK8sApiCoreV1PodSpecType = {
+  activeDeadlineSeconds?: bigint
+  affinity?: z.infer<typeof IoK8sApiCoreV1AffinitySchema>
+  automountServiceAccountToken?: boolean
+  containers: z.infer<typeof IoK8sApiCoreV1ContainerSchema>[]
+  dnsConfig?: z.infer<typeof IoK8sApiCoreV1PodDNSConfigSchema>
+  dnsPolicy?: string
+  enableServiceLinks?: boolean
+  ephemeralContainers?: z.infer<typeof IoK8sApiCoreV1EphemeralContainerSchema>[]
+  evictionResponders?: z.infer<typeof IoK8sApiCoreV1EvictionResponderSchema>[]
+  hostAliases?: z.infer<typeof IoK8sApiCoreV1HostAliasSchema>[]
+  hostIPC?: boolean
+  hostNetwork?: boolean
+  hostPID?: boolean
+  hostUsers?: boolean
+  hostname?: string
+  hostnameOverride?: string
+  imagePullSecrets?: z.infer<typeof IoK8sApiCoreV1LocalObjectReferenceSchema>[]
+  initContainers?: z.infer<typeof IoK8sApiCoreV1ContainerSchema>[]
+  nodeName?: string
+  nodeSelector?: { [key: string]: string }
+  os?: z.infer<typeof IoK8sApiCoreV1PodOSSchema>
+  overhead?: { [key: string]: z.infer<typeof IoK8sApimachineryPkgApiResourceQuantitySchema> }
+  preemptionPolicy?: string
+  priority?: number
+  priorityClassName?: string
+  readinessGates?: z.infer<typeof IoK8sApiCoreV1PodReadinessGateSchema>[]
+  resourceClaims?: z.infer<typeof IoK8sApiCoreV1PodResourceClaimSchema>[]
+  resources?: z.infer<typeof IoK8sApiCoreV1ResourceRequirementsSchema>
+  restartPolicy?: string
+  runtimeClassName?: string
+  schedulerName?: string
+  schedulingGates?: z.infer<typeof IoK8sApiCoreV1PodSchedulingGateSchema>[]
+  schedulingGroup?: z.infer<typeof IoK8sApiCoreV1PodSchedulingGroupSchema>
+  securityContext?: z.infer<typeof IoK8sApiCoreV1PodSecurityContextSchema>
+  serviceAccount?: string
+  serviceAccountName?: string
+  setHostnameAsFQDN?: boolean
+  shareProcessNamespace?: boolean
+  subdomain?: string
+  terminationGracePeriodSeconds?: bigint
+  tolerations?: z.infer<typeof IoK8sApiCoreV1TolerationSchema>[]
+  topologySpreadConstraints?: z.infer<typeof IoK8sApiCoreV1TopologySpreadConstraintSchema>[]
+  volumes?: z.infer<typeof IoK8sApiCoreV1VolumeSchema>[]
+}
+
+const IoK8sApiCoreV1PodSpecSchema: z.ZodType<IoK8sApiCoreV1PodSpecType> = z
   .object({
     activeDeadlineSeconds: z
       .preprocess(
@@ -4602,7 +4621,7 @@ const IoK8sApiCoreV1PodSpecSchema = z
       }),
     os: IoK8sApiCoreV1PodOSSchema.exactOptional().openapi({
       description:
-        'os specifies the OS of the containers in the pod. Some pod and container fields are restricted if this is set.\n\nIf the OS field is set to linux, the following fields must be unset: -securityContext.windowsOptions\n\nIf the OS field is set to windows, following fields must be unset: - spec.hostPID - spec.hostIPC - spec.hostUsers - spec.resources - spec.securityContext.appArmorProfile - spec.securityContext.seLinuxOptions - spec.securityContext.seccompProfile - spec.securityContext.fsGroup - spec.securityContext.fsGroupChangePolicy - spec.securityContext.sysctls - spec.shareProcessNamespace - spec.securityContext.runAsUser - spec.securityContext.runAsGroup - spec.securityContext.supplementalGroups - spec.securityContext.supplementalGroupsPolicy - spec.containers[*].securityContext.appArmorProfile - spec.containers[*].securityContext.seLinuxOptions - spec.containers[*].securityContext.seccompProfile - spec.containers[*].securityContext.capabilities - spec.containers[*].securityContext.readOnlyRootFilesystem - spec.containers[*].securityContext.privileged - spec.containers[*].securityContext.allowPrivilegeEscalation - spec.containers[*].securityContext.procMount - spec.containers[*].securityContext.runAsUser - spec.containers[*].securityContext.runAsGroup',
+        'os specifies the OS of the containers in the pod. Some pod and container fields are restricted if this is set.\n\nIf the OS field is set to linux, the following fields must be unset: -securityContext.windowsOptions\n\nIf the OS field is set to windows, following fields must be unset: - spec.hostPID - spec.hostIPC - spec.hostUsers - spec.resources - spec.securityContext.appArmorProfile - spec.securityContext.seLinuxOptions - spec.securityContext.seccompProfile - spec.securityContext.fsGroup - spec.securityContext.fsGroupChangePolicy - spec.securityContext.sysctls - spec.shareProcessNamespace - spec.securityContext.runAsUser - spec.securityContext.runAsGroup - spec.securityContext.supplementalGroups - spec.securityContext.supplementalGroupsPolicy - spec.containers[*].securityContext.appArmorProfile - spec.containers[*].securityContext.seLinuxOptions - spec.containers[*].securityContext.seccompProfile - spec.containers[*].securityContext.capabilities - spec.containers[*].securityContext.readOnlyRootFilesystem - spec.containers[*].securityContext.privileged - spec.containers[*].securityContext.allowPrivilegeEscalation - spec.containers[*].securityContext.procMount - spec.containers[*].securityContext.runAsUser - spec.containers[*].securityContext.runAsGroup - spec.containers[*].securityContext.cgroupOptions',
     }),
     overhead: z
       .record(z.string(), IoK8sApimachineryPkgApiResourceQuantitySchema)
@@ -4780,7 +4799,12 @@ const IoK8sApiCoreV1PodSpecSchema = z
   .openapi({ description: 'PodSpec is a description of a pod.', required: ['containers'] })
   .openapi('IoK8sApiCoreV1PodSpec')
 
-const IoK8sApiCoreV1PodTemplateSpecSchema = z
+type IoK8sApiCoreV1PodTemplateSpecType = {
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema>
+  spec?: z.infer<typeof IoK8sApiCoreV1PodSpecSchema>
+}
+
+const IoK8sApiCoreV1PodTemplateSpecSchema: z.ZodType<IoK8sApiCoreV1PodTemplateSpecType> = z
   .object({
     metadata: IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema.default({})
       .exactOptional()
@@ -4788,12 +4812,11 @@ const IoK8sApiCoreV1PodTemplateSpecSchema = z
         description:
           "metadata is the standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata",
       }),
-    spec: IoK8sApiCoreV1PodSpecSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          'spec is the specification of the desired behavior of the pod. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status',
-      }),
+    spec: IoK8sApiCoreV1PodSpecSchema.exactOptional().openapi({
+      description:
+        'spec is the specification of the desired behavior of the pod. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status',
+      default: {},
+    }),
   })
   .openapi({
     description:
@@ -4839,7 +4862,15 @@ const IoK8sApiAppsV1DaemonSetUpdateStrategySchema = z
   })
   .openapi('IoK8sApiAppsV1DaemonSetUpdateStrategy')
 
-const IoK8sApiAppsV1DaemonSetSpecSchema = z
+type IoK8sApiAppsV1DaemonSetSpecType = {
+  minReadySeconds?: number
+  revisionHistoryLimit?: number
+  selector: z.infer<typeof IoK8sApimachineryPkgApisMetaV1LabelSelectorSchema>
+  template: z.infer<typeof IoK8sApiCoreV1PodTemplateSpecSchema>
+  updateStrategy?: z.infer<typeof IoK8sApiAppsV1DaemonSetUpdateStrategySchema>
+}
+
+const IoK8sApiAppsV1DaemonSetSpecSchema: z.ZodType<IoK8sApiAppsV1DaemonSetSpecType> = z
   .object({
     minReadySeconds: z
       .int32()
@@ -5004,7 +5035,15 @@ const IoK8sApiAppsV1DaemonSetStatusSchema = z
   })
   .openapi('IoK8sApiAppsV1DaemonSetStatus')
 
-const IoK8sApiAppsV1DaemonSetSchema = z
+type IoK8sApiAppsV1DaemonSetType = {
+  apiVersion?: string
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema>
+  spec: z.infer<typeof IoK8sApiAppsV1DaemonSetSpecSchema>
+  status?: z.infer<typeof IoK8sApiAppsV1DaemonSetStatusSchema>
+}
+
+const IoK8sApiAppsV1DaemonSetSchema: z.ZodType<IoK8sApiAppsV1DaemonSetType> = z
   .object({
     apiVersion: z
       .string()
@@ -5026,16 +5065,16 @@ const IoK8sApiAppsV1DaemonSetSchema = z
         description:
           'metadata is the standard object metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata',
       }),
-    spec: IoK8sApiAppsV1DaemonSetSpecSchema.default({}).openapi({
+    spec: IoK8sApiAppsV1DaemonSetSpecSchema.openapi({
       description:
         'spec defines the desired behavior of this daemon set. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status',
+      default: {},
     }),
-    status: IoK8sApiAppsV1DaemonSetStatusSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          'status is the current status of this daemon set. This data may be out of date by some window of time. Populated by the system. Read-only. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status',
-      }),
+    status: IoK8sApiAppsV1DaemonSetStatusSchema.exactOptional().openapi({
+      description:
+        'status is the current status of this daemon set. This data may be out of date by some window of time. Populated by the system. Read-only. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status',
+      default: {},
+    }),
   })
   .openapi({
     description: 'DaemonSet represents the configuration of a daemon set.',
@@ -5044,38 +5083,81 @@ const IoK8sApiAppsV1DaemonSetSchema = z
   })
   .openapi('IoK8sApiAppsV1DaemonSet')
 
-const IoK8sApiAppsV1DaemonSetListSchema = z
+const IoK8sApimachineryPkgApisMetaV1ShardInfoSchema = z
   .object({
-    apiVersion: z
+    selector: z
       .string()
-      .exactOptional()
+      .default('')
       .openapi({
         description:
-          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
-      }),
-    items: z
-      .array(IoK8sApiAppsV1DaemonSetSchema)
-      .openapi({ description: 'A list of daemon sets.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          'Standard list metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata',
+          'selector is the shard selector string from the request, echoed back so clients can verify which shard they received and merge responses from multiple shards.',
       }),
   })
   .openapi({
-    description: 'DaemonSetList is a collection of daemon sets.',
-    required: ['items'],
-    'x-kubernetes-group-version-kind': [{ group: 'apps', kind: 'DaemonSetList', version: 'v1' }],
+    description:
+      'ShardInfo describes the shard selector that was applied to produce a list response. Its presence on a list response indicates the list is a filtered subset.',
+    required: ['selector'],
   })
-  .openapi('IoK8sApiAppsV1DaemonSetList')
+  .openapi('IoK8sApimachineryPkgApisMetaV1ShardInfo')
+
+const IoK8sApimachineryPkgApisMetaV1ListMetaSchema = z
+  .object({
+    continue: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'continue may be set if the user set a limit on the number of items returned, and indicates that the server has more data available. The value is opaque and may be used to issue another request to the endpoint that served this list to retrieve the next set of available objects. Continuing a consistent list may not be possible if the server configuration has changed or more than a few minutes have passed. The resourceVersion field returned when using this continue value will be identical to the value in the first response, unless you have received this token from an error message.',
+      }),
+    remainingItemCount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'remainingItemCount is the number of subsequent items in the list which are not included in this list response. If the list request contained label or field selectors, then the number of remaining items is unknown and the field will be left unset and omitted during serialization. If the list is complete (either because it is not chunking or because this is the last chunk), then there are no more remaining items and this field will be left unset and omitted during serialization. Servers older than v1.15 do not set this field. The intended use of the remainingItemCount is *estimating* the size of a collection. Clients should not rely on the remainingItemCount to be set or to be exact.',
+      }),
+    resourceVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "String that identifies the server's internal version of this object that can be used by clients to determine when objects have changed. Value must be treated as opaque by clients and passed unmodified back to the server. Populated by the system. Read-only. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency",
+      }),
+    selfLink: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Deprecated: selfLink is a legacy read-only field that is no longer populated by the system.',
+      }),
+    shardInfo: IoK8sApimachineryPkgApisMetaV1ShardInfoSchema.exactOptional().openapi({
+      description:
+        'shardInfo is set when the list is a filtered subset of the full collection, as selected by a shard selector on the request. It echoes back the selector so clients can verify which shard they received and merge sharded responses. Clients should not cache sharded list responses as a full representation of the collection.\n\nThis is a beta field and is enabled by default via the ShardedListAndWatch feature gate.',
+    }),
+  })
+  .openapi({
+    description:
+      'ListMeta describes metadata that synthetic resources must have, including lists and various status objects. A resource may have only one of {ObjectMeta, ListMeta}.',
+    required: [],
+  })
+  .openapi('IoK8sApimachineryPkgApisMetaV1ListMeta')
+
+type IoK8sApiAppsV1DaemonSetListType = {
+  apiVersion?: string
+  items: z.infer<typeof IoK8sApiAppsV1DaemonSetSchema>[]
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ListMetaSchema>
+}
 
 const IoK8sApiAppsV1RollingUpdateDeploymentSchema = z
   .object({
@@ -5110,7 +5192,18 @@ const IoK8sApiAppsV1DeploymentStrategySchema = z
   })
   .openapi('IoK8sApiAppsV1DeploymentStrategy')
 
-const IoK8sApiAppsV1DeploymentSpecSchema = z
+type IoK8sApiAppsV1DeploymentSpecType = {
+  minReadySeconds?: number
+  paused?: boolean
+  progressDeadlineSeconds?: number
+  replicas?: number
+  revisionHistoryLimit?: number
+  selector: z.infer<typeof IoK8sApimachineryPkgApisMetaV1LabelSelectorSchema>
+  strategy?: z.infer<typeof IoK8sApiAppsV1DeploymentStrategySchema>
+  template: z.infer<typeof IoK8sApiCoreV1PodTemplateSpecSchema>
+}
+
+const IoK8sApiAppsV1DeploymentSpecSchema: z.ZodType<IoK8sApiAppsV1DeploymentSpecType> = z
   .object({
     minReadySeconds: z
       .int32()
@@ -5286,7 +5379,15 @@ const IoK8sApiAppsV1DeploymentStatusSchema = z
   })
   .openapi('IoK8sApiAppsV1DeploymentStatus')
 
-const IoK8sApiAppsV1DeploymentSchema = z
+type IoK8sApiAppsV1DeploymentType = {
+  apiVersion?: string
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema>
+  spec: z.infer<typeof IoK8sApiAppsV1DeploymentSpecSchema>
+  status?: z.infer<typeof IoK8sApiAppsV1DeploymentStatusSchema>
+}
+
+const IoK8sApiAppsV1DeploymentSchema: z.ZodType<IoK8sApiAppsV1DeploymentType> = z
   .object({
     apiVersion: z
       .string()
@@ -5308,8 +5409,9 @@ const IoK8sApiAppsV1DeploymentSchema = z
         description:
           'metadata is the standard object metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata',
       }),
-    spec: IoK8sApiAppsV1DeploymentSpecSchema.default({}).openapi({
+    spec: IoK8sApiAppsV1DeploymentSpecSchema.openapi({
       description: 'spec defines the desired behavior of the Deployment.',
+      default: {},
     }),
     status: IoK8sApiAppsV1DeploymentStatusSchema.default({})
       .exactOptional()
@@ -5322,37 +5424,21 @@ const IoK8sApiAppsV1DeploymentSchema = z
   })
   .openapi('IoK8sApiAppsV1Deployment')
 
-const IoK8sApiAppsV1DeploymentListSchema = z
-  .object({
-    apiVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
-      }),
-    items: z
-      .array(IoK8sApiAppsV1DeploymentSchema)
-      .openapi({ description: 'items is the list of Deployments.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
-      .exactOptional()
-      .openapi({ description: 'metadata is the standard list metadata.' }),
-  })
-  .openapi({
-    description: 'DeploymentList is a list of Deployments.',
-    required: ['items'],
-    'x-kubernetes-group-version-kind': [{ group: 'apps', kind: 'DeploymentList', version: 'v1' }],
-  })
-  .openapi('IoK8sApiAppsV1DeploymentList')
+type IoK8sApiAppsV1DeploymentListType = {
+  apiVersion?: string
+  items: z.infer<typeof IoK8sApiAppsV1DeploymentSchema>[]
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ListMetaSchema>
+}
 
-const IoK8sApiAppsV1ReplicaSetSpecSchema = z
+type IoK8sApiAppsV1ReplicaSetSpecType = {
+  minReadySeconds?: number
+  replicas?: number
+  selector: z.infer<typeof IoK8sApimachineryPkgApisMetaV1LabelSelectorSchema>
+  template?: z.infer<typeof IoK8sApiCoreV1PodTemplateSpecSchema>
+}
+
+const IoK8sApiAppsV1ReplicaSetSpecSchema: z.ZodType<IoK8sApiAppsV1ReplicaSetSpecType> = z
   .object({
     minReadySeconds: z
       .int32()
@@ -5490,7 +5576,15 @@ const IoK8sApiAppsV1ReplicaSetStatusSchema = z
   })
   .openapi('IoK8sApiAppsV1ReplicaSetStatus')
 
-const IoK8sApiAppsV1ReplicaSetSchema = z
+type IoK8sApiAppsV1ReplicaSetType = {
+  apiVersion?: string
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema>
+  spec: z.infer<typeof IoK8sApiAppsV1ReplicaSetSpecSchema>
+  status?: z.infer<typeof IoK8sApiAppsV1ReplicaSetStatusSchema>
+}
+
+const IoK8sApiAppsV1ReplicaSetSchema: z.ZodType<IoK8sApiAppsV1ReplicaSetType> = z
   .object({
     apiVersion: z
       .string()
@@ -5512,16 +5606,16 @@ const IoK8sApiAppsV1ReplicaSetSchema = z
         description:
           'metadata is the standard object metadata. If the Labels of a ReplicaSet are empty, they are defaulted to be the same as the Pod(s) that the ReplicaSet manages. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata',
       }),
-    spec: IoK8sApiAppsV1ReplicaSetSpecSchema.default({}).openapi({
+    spec: IoK8sApiAppsV1ReplicaSetSpecSchema.openapi({
       description:
         'spec defines the specification of the desired behavior of the ReplicaSet. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status',
+      default: {},
     }),
-    status: IoK8sApiAppsV1ReplicaSetStatusSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          'status is the most recently observed status of the ReplicaSet. This data may be out of date by some window of time. Populated by the system. Read-only. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status',
-      }),
+    status: IoK8sApiAppsV1ReplicaSetStatusSchema.exactOptional().openapi({
+      description:
+        'status is the most recently observed status of the ReplicaSet. This data may be out of date by some window of time. Populated by the system. Read-only. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status',
+      default: {},
+    }),
   })
   .openapi({
     description:
@@ -5531,62 +5625,12 @@ const IoK8sApiAppsV1ReplicaSetSchema = z
   })
   .openapi('IoK8sApiAppsV1ReplicaSet')
 
-const IoK8sApiAppsV1ReplicaSetListSchema = z
-  .object({
-    apiVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
-      }),
-    items: z
-      .array(IoK8sApiAppsV1ReplicaSetSchema)
-      .openapi({
-        description:
-          'List of ReplicaSets. More info: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          'Standard list metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-  })
-  .openapi({
-    description: 'ReplicaSetList is a collection of ReplicaSets.',
-    required: ['items'],
-    'x-kubernetes-group-version-kind': [{ group: 'apps', kind: 'ReplicaSetList', version: 'v1' }],
-  })
-  .openapi('IoK8sApiAppsV1ReplicaSetList')
-
-const IoK8sApiAppsV1RollingUpdateStatefulSetStrategySchema = z
-  .object({
-    maxUnavailable: IoK8sApimachineryPkgUtilIntstrIntOrStringSchema.exactOptional().openapi({
-      description:
-        'maxUnavailable is the maximum number of pods that can be unavailable during the update. Value can be an absolute number (ex: 5) or a percentage of pods in the update range (ex: 10%). Absolute number is calculated from percentage by rounding down. This can not be 0. Defaults to 1. This field is beta-level and is enabled by default. The field applies only to pods in the update range (ordinals greater than or equal to Partition, up to Replicas-1). Unavailable pods below Partition are not counted towards MaxUnavailable. When MaxUnavailable is a percentage, it is calculated from the number of pods in that update range (Replicas - Partition), not from all replicas. This setting might not be effective for the OrderedReady podManagementPolicy. That policy ensures pods are created and become ready one at a time.',
-    }),
-    partition: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'partition indicates the ordinal at which the StatefulSet should be partitioned for updates. During a rolling update, all pods from ordinal Replicas-1 to Partition are updated. All pods from ordinal Partition-1 to 0 remain untouched. This is helpful in being able to do a canary based deployment. The default value is 0.',
-      }),
-  })
-  .openapi({
-    description:
-      'RollingUpdateStatefulSetStrategy is used to communicate parameter for RollingUpdateStatefulSetStrategyType.',
-    required: [],
-  })
-  .openapi('IoK8sApiAppsV1RollingUpdateStatefulSetStrategy')
+type IoK8sApiAppsV1ReplicaSetListType = {
+  apiVersion?: string
+  items: z.infer<typeof IoK8sApiAppsV1ReplicaSetSchema>[]
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ListMetaSchema>
+}
 
 const IoK8sApiAppsV1StatefulSetOrdinalsSchema = z
   .object({
@@ -5629,6 +5673,27 @@ const IoK8sApiAppsV1StatefulSetPersistentVolumeClaimRetentionPolicySchema = z
     required: [],
   })
   .openapi('IoK8sApiAppsV1StatefulSetPersistentVolumeClaimRetentionPolicy')
+
+const IoK8sApiAppsV1RollingUpdateStatefulSetStrategySchema = z
+  .object({
+    maxUnavailable: IoK8sApimachineryPkgUtilIntstrIntOrStringSchema.exactOptional().openapi({
+      description:
+        'maxUnavailable is the maximum number of pods that can be unavailable during the update. Value can be an absolute number (ex: 5) or a percentage of pods in the update range (ex: 10%). Absolute number is calculated from percentage by rounding down. This can not be 0. Defaults to 1. This field is beta-level and is enabled by default. The field applies only to pods in the update range (ordinals greater than or equal to Partition, up to Replicas-1). Unavailable pods below Partition are not counted towards MaxUnavailable. When MaxUnavailable is a percentage, it is calculated from the number of pods in that update range (Replicas - Partition), not from all replicas. This setting might not be effective for the OrderedReady podManagementPolicy. That policy ensures pods are created and become ready one at a time.',
+    }),
+    partition: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'partition indicates the ordinal at which the StatefulSet should be partitioned for updates. During a rolling update, all pods from ordinal Replicas-1 to Partition are updated. All pods from ordinal Partition-1 to 0 remain untouched. This is helpful in being able to do a canary based deployment. The default value is 0.',
+      }),
+  })
+  .openapi({
+    description:
+      'RollingUpdateStatefulSetStrategy is used to communicate parameter for RollingUpdateStatefulSetStrategyType.',
+    required: [],
+  })
+  .openapi('IoK8sApiAppsV1RollingUpdateStatefulSetStrategy')
 
 const IoK8sApiAppsV1StatefulSetUpdateStrategySchema = z
   .object({
@@ -5716,12 +5781,12 @@ const IoK8sApiCoreV1VolumeHealthConditionSchema = z
       .default('')
       .openapi({
         description:
-          'status is the machine-parseable health category. Possible values: - "Inaccessible": the volume cannot be accessed. - "DataLoss": data loss has been detected on the volume. - "Degraded": the volume is functioning with reduced capability.',
+          'status is the machine-parseable health category. Possible values are: - "Unknown": the driver reported an unknown health status, or a status Kubernetes does not recognize. The volume must not be considered healthy. - "Inaccessible": the volume cannot be accessed. - "DataLoss": data loss has been detected on the volume. - "Degraded": the volume is functioning with reduced capability. - "Healthy": the volume is healthy.\n\nThis field allows additional enum values to be added to VolumeHealthStatusType via CSI spec change. A future version of a CSI driver may emit health conditions that Kubernetes components are not aware of.\n\nA writer which does not know how to handle incoming new VolumeHealthStatusType may classify the status as unknown.\n\nA reader which does not know how to handle new VolumeHealthStatusType MUST only use it for health reporting purposes.',
       }),
   })
   .openapi({
     description:
-      'VolumeHealthCondition represents an adverse health condition reported for a volume.',
+      'VolumeHealthCondition represents a health condition reported for a volume. Both pod and PVC reuse this type to report volume health in their status fields.',
     required: ['status', 'reason'],
   })
   .openapi('IoK8sApiCoreV1VolumeHealthCondition')
@@ -5733,19 +5798,18 @@ const IoK8sApiCoreV1VolumeHealthStatusSchema = z
       .exactOptional()
       .openapi({
         description:
-          'healthConditions is the set of adverse conditions reported by the CSI controller plugin. An empty list means no adverse condition. At most 16 conditions may be reported.',
+          'healthConditions is the set of health conditions reported by a CSI plugin. At most 16 conditions may be reported. An empty list means the CSI driver either does not support volume health or has not reported it yet. If the driver supports volume health and the volume is healthy, a Healthy condition is reported.',
         'x-kubernetes-list-map-keys': ['status', 'reason'],
         'x-kubernetes-list-type': 'map',
-        'x-kubernetes-patch-merge-key': 'status',
-        'x-kubernetes-patch-strategy': 'merge',
       }),
     lastTransitionTime: IoK8sApimachineryPkgApisMetaV1TimeSchema.exactOptional().openapi({
-      description: 'lastTransitionTime is when the current set of conditions first appeared.',
+      description:
+        'lastTransitionTime is when the current set of (status, reason) pairs first appeared. lastTransitionTime remains unchanged when only message associated with healthConditions change.',
     }),
   })
   .openapi({
     description:
-      'VolumeHealthStatus contains health information for a volume reported by the CSI controller plugin.',
+      'VolumeHealthStatus contains health information for a volume reported by a CSI controller or node plugin.',
     required: [],
   })
   .openapi('IoK8sApiCoreV1VolumeHealthStatus')
@@ -5826,7 +5890,7 @@ const IoK8sApiCoreV1PersistentVolumeClaimStatusSchema = z
       }),
     healthStatus: IoK8sApiCoreV1VolumeHealthStatusSchema.exactOptional().openapi({
       description:
-        'healthStatus contains the latest controller-reported health information for the volume bound to this claim.',
+        'healthStatus contains the latest controller-reported health information for the volume bound to this claim. This is an alpha field and requires enabling the CSIVolumeHealth feature gate.',
     }),
     modifyVolumeStatus: IoK8sApiCoreV1ModifyVolumeStatusSchema.exactOptional().openapi({
       description:
@@ -5887,7 +5951,23 @@ const IoK8sApiCoreV1PersistentVolumeClaimSchema = z
   })
   .openapi('IoK8sApiCoreV1PersistentVolumeClaim')
 
-const IoK8sApiAppsV1StatefulSetSpecSchema = z
+type IoK8sApiAppsV1StatefulSetSpecType = {
+  minReadySeconds?: number
+  ordinals?: z.infer<typeof IoK8sApiAppsV1StatefulSetOrdinalsSchema>
+  persistentVolumeClaimRetentionPolicy?: z.infer<
+    typeof IoK8sApiAppsV1StatefulSetPersistentVolumeClaimRetentionPolicySchema
+  >
+  podManagementPolicy?: string
+  replicas?: number
+  revisionHistoryLimit?: number
+  selector: z.infer<typeof IoK8sApimachineryPkgApisMetaV1LabelSelectorSchema>
+  serviceName?: string
+  template: z.infer<typeof IoK8sApiCoreV1PodTemplateSpecSchema>
+  updateStrategy?: z.infer<typeof IoK8sApiAppsV1StatefulSetUpdateStrategySchema>
+  volumeClaimTemplates?: z.infer<typeof IoK8sApiCoreV1PersistentVolumeClaimSchema>[]
+}
+
+const IoK8sApiAppsV1StatefulSetSpecSchema: z.ZodType<IoK8sApiAppsV1StatefulSetSpecType> = z
   .object({
     minReadySeconds: z
       .int32()
@@ -6089,7 +6169,15 @@ const IoK8sApiAppsV1StatefulSetStatusSchema = z
   })
   .openapi('IoK8sApiAppsV1StatefulSetStatus')
 
-const IoK8sApiAppsV1StatefulSetSchema = z
+type IoK8sApiAppsV1StatefulSetType = {
+  apiVersion?: string
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema>
+  spec: z.infer<typeof IoK8sApiAppsV1StatefulSetSpecSchema>
+  status?: z.infer<typeof IoK8sApiAppsV1StatefulSetStatusSchema>
+}
+
+const IoK8sApiAppsV1StatefulSetSchema: z.ZodType<IoK8sApiAppsV1StatefulSetType> = z
   .object({
     apiVersion: z
       .string()
@@ -6111,15 +6199,15 @@ const IoK8sApiAppsV1StatefulSetSchema = z
         description:
           'metadata is the standard object metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata',
       }),
-    spec: IoK8sApiAppsV1StatefulSetSpecSchema.default({}).openapi({
+    spec: IoK8sApiAppsV1StatefulSetSpecSchema.openapi({
       description: 'spec defines the desired identities of pods in this set.',
+      default: {},
     }),
-    status: IoK8sApiAppsV1StatefulSetStatusSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          'status is the current status of Pods in this StatefulSet. This data may be out of date by some window of time.',
-      }),
+    status: IoK8sApiAppsV1StatefulSetStatusSchema.exactOptional().openapi({
+      description:
+        'status is the current status of Pods in this StatefulSet. This data may be out of date by some window of time.',
+      default: {},
+    }),
   })
   .openapi({
     description:
@@ -6129,7 +6217,211 @@ const IoK8sApiAppsV1StatefulSetSchema = z
   })
   .openapi('IoK8sApiAppsV1StatefulSet')
 
-const IoK8sApiAppsV1StatefulSetListSchema = z
+type IoK8sApiAppsV1StatefulSetListType = {
+  apiVersion?: string
+  items: z.infer<typeof IoK8sApiAppsV1StatefulSetSchema>[]
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ListMetaSchema>
+}
+
+const IoK8sApimachineryPkgRuntimeRawExtensionSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'RawExtension is used to hold extensions in external versions.\n\nTo use this, make a field which has RawExtension as its type in your external, versioned struct, and Object in your internal struct. You also need to register your various plugin types.\n\n// Internal package:\n\n\ttype MyAPIObject struct {\n\t\truntime.TypeMeta `json:""`\n\t\tMyPlugin runtime.Object `json:"myPlugin"`\n\t}\n\n\ttype PluginA struct {\n\t\tAOption string `json:"aOption"`\n\t}\n\n// External package:\n\n\ttype MyAPIObject struct {\n\t\truntime.TypeMeta `json:""`\n\t\tMyPlugin runtime.RawExtension `json:"myPlugin"`\n\t}\n\n\ttype PluginA struct {\n\t\tAOption string `json:"aOption"`\n\t}\n\n// On the wire, the JSON will look something like this:\n\n\t{\n\t\t"kind":"MyAPIObject",\n\t\t"apiVersion":"v1",\n\t\t"myPlugin": {\n\t\t\t"kind":"PluginA",\n\t\t\t"aOption":"foo",\n\t\t},\n\t}\n\nSo what happens? Decode first uses json or yaml to unmarshal the serialized data into your external MyAPIObject. That causes the raw JSON to be stored, but not unpacked. The next step is to copy (using pkg/conversion) into the internal struct. The runtime package\'s DefaultScheme has conversion functions installed which will unpack the JSON stored in RawExtension, turning it into the correct object type, and storing it in the Object. (TODO: In the case where the object is of an unknown type, a runtime.Unknown object will be created and stored.)',
+  })
+  .openapi('IoK8sApimachineryPkgRuntimeRawExtension')
+
+const IoK8sApiAppsV1ControllerRevisionSchema = z
+  .object({
+    apiVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+      }),
+    data: IoK8sApimachineryPkgRuntimeRawExtensionSchema.openapi({
+      description: 'data is the serialized representation of the state.',
+    }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+      }),
+    metadata: IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema.default({})
+      .exactOptional()
+      .openapi({
+        description:
+          'metadata is the standard object metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata',
+      }),
+    revision: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .default(0n)
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        default: 0,
+        description: 'revision indicates the revision of the state represented by Data.',
+      }),
+  })
+  .openapi({
+    description:
+      'ControllerRevision implements an immutable snapshot of state data. Clients are responsible for serializing and deserializing the objects that contain their internal state. Once a ControllerRevision has been successfully created, it can not be updated. The API Server will fail validation of all requests that attempt to mutate the Data field. ControllerRevisions may, however, be deleted. Note that, due to its use by both the DaemonSet and StatefulSet controllers for update and rollback, this object is beta. However, it may be subject to name and representation changes in future releases, and clients should not depend on its stability. It is primarily for internal use by controllers.',
+    required: ['data'],
+    'x-kubernetes-group-version-kind': [
+      { group: 'apps', kind: 'ControllerRevision', version: 'v1' },
+    ],
+  })
+  .openapi('IoK8sApiAppsV1ControllerRevision')
+
+const IoK8sApiAppsV1ControllerRevisionListSchema = z
+  .object({
+    apiVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+      }),
+    items: z
+      .array(IoK8sApiAppsV1ControllerRevisionSchema)
+      .openapi({ description: 'Items is the list of ControllerRevisions' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+      }),
+    metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
+      .exactOptional()
+      .openapi({
+        description:
+          'More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata',
+      }),
+  })
+  .openapi({
+    description:
+      'ControllerRevisionList is a resource containing a list of ControllerRevision objects.',
+    required: ['items'],
+    'x-kubernetes-group-version-kind': [
+      { group: 'apps', kind: 'ControllerRevisionList', version: 'v1' },
+    ],
+  })
+  .openapi('IoK8sApiAppsV1ControllerRevisionList')
+
+const IoK8sApiAppsV1DaemonSetListSchema: z.ZodType<IoK8sApiAppsV1DaemonSetListType> = z
+  .object({
+    apiVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+      }),
+    items: z
+      .array(IoK8sApiAppsV1DaemonSetSchema)
+      .openapi({ description: 'A list of daemon sets.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+      }),
+    metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
+      .exactOptional()
+      .openapi({
+        description:
+          'Standard list metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata',
+      }),
+  })
+  .openapi({
+    description: 'DaemonSetList is a collection of daemon sets.',
+    required: ['items'],
+    'x-kubernetes-group-version-kind': [{ group: 'apps', kind: 'DaemonSetList', version: 'v1' }],
+  })
+  .openapi('IoK8sApiAppsV1DaemonSetList')
+
+const IoK8sApiAppsV1DeploymentListSchema: z.ZodType<IoK8sApiAppsV1DeploymentListType> = z
+  .object({
+    apiVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+      }),
+    items: z
+      .array(IoK8sApiAppsV1DeploymentSchema)
+      .openapi({ description: 'items is the list of Deployments.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+      }),
+    metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
+      .exactOptional()
+      .openapi({ description: 'metadata is the standard list metadata.' }),
+  })
+  .openapi({
+    description: 'DeploymentList is a list of Deployments.',
+    required: ['items'],
+    'x-kubernetes-group-version-kind': [{ group: 'apps', kind: 'DeploymentList', version: 'v1' }],
+  })
+  .openapi('IoK8sApiAppsV1DeploymentList')
+
+const IoK8sApiAppsV1ReplicaSetListSchema: z.ZodType<IoK8sApiAppsV1ReplicaSetListType> = z
+  .object({
+    apiVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+      }),
+    items: z
+      .array(IoK8sApiAppsV1ReplicaSetSchema)
+      .openapi({
+        description:
+          'List of ReplicaSets. More info: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+      }),
+    metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
+      .exactOptional()
+      .openapi({
+        description:
+          'Standard list metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+      }),
+  })
+  .openapi({
+    description: 'ReplicaSetList is a collection of ReplicaSets.',
+    required: ['items'],
+    'x-kubernetes-group-version-kind': [{ group: 'apps', kind: 'ReplicaSetList', version: 'v1' }],
+  })
+  .openapi('IoK8sApiAppsV1ReplicaSetList')
+
+const IoK8sApiAppsV1StatefulSetListSchema: z.ZodType<IoK8sApiAppsV1StatefulSetListType> = z
   .object({
     apiVersion: z
       .string()
@@ -6228,12 +6520,11 @@ const IoK8sApiAutoscalingV1ScaleSchema = z
         description:
           'spec defines the behavior of the scale. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status.',
       }),
-    status: IoK8sApiAutoscalingV1ScaleStatusSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          'status is the current status of the scale. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status. Read-only.',
-      }),
+    status: IoK8sApiAutoscalingV1ScaleStatusSchema.exactOptional().openapi({
+      description:
+        'status is the current status of the scale. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status. Read-only.',
+      default: {},
+    }),
   })
   .openapi({
     description: 'Scale represents a scaling request for a resource.',
@@ -6445,7 +6736,7 @@ const IoK8sApimachineryPkgApisMetaV1DeleteOptionsSchema = z
   .openapi('IoK8sApimachineryPkgApisMetaV1DeleteOptions')
 
 const IoK8sApimachineryPkgApisMetaV1PatchSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Patch is provided to give a concrete name and type to the Kubernetes PATCH request body.',

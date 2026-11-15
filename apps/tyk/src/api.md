@@ -1034,12 +1034,47 @@ Status Code **200**
 |*anonymous*|[object]|false|none|none|
 |» openapi|string|true|none|none|
 |» info|object|true|none|none|
+|» » title|string|true|none|none|
+|» » description|string|false|none|none|
+|» » termsOfService|string(uri-reference)|false|none|none|
+|» » contact|object|false|none|none|
+|» » » name|string|false|none|none|
+|» » » url|string(uri-reference)|false|none|none|
+|» » » email|string(email)|false|none|none|
+|» » license|object|false|none|none|
+|» » » name|string|true|none|none|
+|» » » url|string(uri-reference)|false|none|none|
+|» » version|string|true|none|none|
 |» externalDocs|object|false|none|none|
+|» » description|string|false|none|none|
+|» » url|string(uri-reference)|true|none|none|
 |» servers|[object]|false|none|none|
+|» » url|string|true|none|none|
+|» » description|string|false|none|none|
+|» » variables|object|false|none|none|
+|» » » **additionalProperties**|object|false|none|none|
+|» » » » enum|[string]|false|none|none|
+|» » » » default|string|true|none|none|
+|» » » » description|string|false|none|none|
 |» security|[object]|false|none|none|
+|» » **additionalProperties**|[string]|false|none|none|
 |» tags|[object]|false|none|none|
+|» » name|string|true|none|none|
+|» » description|string|false|none|none|
+|» » externalDocs|object|false|none|none|
+|» » » description|string|false|none|none|
+|» » » url|string(uri-reference)|true|none|none|
 |» paths|object|true|none|none|
 |» components|object|false|none|none|
+|» » schemas|object|false|none|none|
+|» » responses|object|false|none|none|
+|» » parameters|object|false|none|none|
+|» » examples|object|false|none|none|
+|» » requestBodies|object|false|none|none|
+|» » headers|object|false|none|none|
+|» » securitySchemes|object|false|none|none|
+|» » links|object|false|none|none|
+|» » callbacks|object|false|none|none|
 |» x-tyk-api-gateway|[XTykAPIGateway](#schemaxtykapigateway)|false|none|none|
 
 <aside class="warning">
@@ -1231,12 +1266,47 @@ Create an API with Tyk OAS API format on the Tyk Gateway.
 |body|body|object|false|none|
 |» openapi|body|string|true|none|
 |» info|body|object|true|none|
+|» » title|body|string|true|none|
+|» » description|body|string|false|none|
+|» » termsOfService|body|string(uri-reference)|false|none|
+|» » contact|body|object|false|none|
+|» » » name|body|string|false|none|
+|» » » url|body|string(uri-reference)|false|none|
+|» » » email|body|string(email)|false|none|
+|» » license|body|object|false|none|
+|» » » name|body|string|true|none|
+|» » » url|body|string(uri-reference)|false|none|
+|» » version|body|string|true|none|
 |» externalDocs|body|object|false|none|
+|» » description|body|string|false|none|
+|» » url|body|string(uri-reference)|true|none|
 |» servers|body|[object]|false|none|
+|» » url|body|string|true|none|
+|» » description|body|string|false|none|
+|» » variables|body|object|false|none|
+|» » » **additionalProperties**|body|object|false|none|
+|» » » » enum|body|[string]|false|none|
+|» » » » default|body|string|true|none|
+|» » » » description|body|string|false|none|
 |» security|body|[object]|false|none|
+|» » **additionalProperties**|body|[string]|false|none|
 |» tags|body|[object]|false|none|
+|» » name|body|string|true|none|
+|» » description|body|string|false|none|
+|» » externalDocs|body|object|false|none|
+|» » » description|body|string|false|none|
+|» » » url|body|string(uri-reference)|true|none|
 |» paths|body|object|true|none|
 |» components|body|object|false|none|
+|» » schemas|body|object|false|none|
+|» » responses|body|object|false|none|
+|» » parameters|body|object|false|none|
+|» » examples|body|object|false|none|
+|» » requestBodies|body|object|false|none|
+|» » headers|body|object|false|none|
+|» » securitySchemes|body|object|false|none|
+|» » links|body|object|false|none|
+|» » callbacks|body|object|false|none|
 |» x-tyk-api-gateway|body|[XTykAPIGateway](#schemaxtykapigateway)|false|none|
 
 > Example responses
@@ -1447,12 +1517,47 @@ Status Code **200**
 |---|---|---|---|---|
 |openapi|string|true|none|none|
 |info|object|true|none|none|
+|» title|string|true|none|none|
+|» description|string|false|none|none|
+|» termsOfService|string(uri-reference)|false|none|none|
+|» contact|object|false|none|none|
+|» » name|string|false|none|none|
+|» » url|string(uri-reference)|false|none|none|
+|» » email|string(email)|false|none|none|
+|» license|object|false|none|none|
+|» » name|string|true|none|none|
+|» » url|string(uri-reference)|false|none|none|
+|» version|string|true|none|none|
 |externalDocs|object|false|none|none|
+|» description|string|false|none|none|
+|» url|string(uri-reference)|true|none|none|
 |servers|[object]|false|none|none|
+|» url|string|true|none|none|
+|» description|string|false|none|none|
+|» variables|object|false|none|none|
+|» » **additionalProperties**|object|false|none|none|
+|» » » enum|[string]|false|none|none|
+|» » » default|string|true|none|none|
+|» » » description|string|false|none|none|
 |security|[object]|false|none|none|
+|» **additionalProperties**|[string]|false|none|none|
 |tags|[object]|false|none|none|
+|» name|string|true|none|none|
+|» description|string|false|none|none|
+|» externalDocs|object|false|none|none|
+|» » description|string|false|none|none|
+|» » url|string(uri-reference)|true|none|none|
 |paths|object|true|none|none|
 |components|object|false|none|none|
+|» schemas|object|false|none|none|
+|» responses|object|false|none|none|
+|» parameters|object|false|none|none|
+|» examples|object|false|none|none|
+|» requestBodies|object|false|none|none|
+|» headers|object|false|none|none|
+|» securitySchemes|object|false|none|none|
+|» links|object|false|none|none|
+|» callbacks|object|false|none|none|
 |x-tyk-api-gateway|[XTykAPIGateway](#schemaxtykapigateway)|false|none|none|
 
 ### Response Headers
@@ -1650,12 +1755,47 @@ Updating an API definition uses the same signature an object as a `POST`, howeve
 |body|body|object|false|none|
 |» openapi|body|string|true|none|
 |» info|body|object|true|none|
+|» » title|body|string|true|none|
+|» » description|body|string|false|none|
+|» » termsOfService|body|string(uri-reference)|false|none|
+|» » contact|body|object|false|none|
+|» » » name|body|string|false|none|
+|» » » url|body|string(uri-reference)|false|none|
+|» » » email|body|string(email)|false|none|
+|» » license|body|object|false|none|
+|» » » name|body|string|true|none|
+|» » » url|body|string(uri-reference)|false|none|
+|» » version|body|string|true|none|
 |» externalDocs|body|object|false|none|
+|» » description|body|string|false|none|
+|» » url|body|string(uri-reference)|true|none|
 |» servers|body|[object]|false|none|
+|» » url|body|string|true|none|
+|» » description|body|string|false|none|
+|» » variables|body|object|false|none|
+|» » » **additionalProperties**|body|object|false|none|
+|» » » » enum|body|[string]|false|none|
+|» » » » default|body|string|true|none|
+|» » » » description|body|string|false|none|
 |» security|body|[object]|false|none|
+|» » **additionalProperties**|body|[string]|false|none|
 |» tags|body|[object]|false|none|
+|» » name|body|string|true|none|
+|» » description|body|string|false|none|
+|» » externalDocs|body|object|false|none|
+|» » » description|body|string|false|none|
+|» » » url|body|string(uri-reference)|true|none|
 |» paths|body|object|true|none|
 |» components|body|object|false|none|
+|» » schemas|body|object|false|none|
+|» » responses|body|object|false|none|
+|» » parameters|body|object|false|none|
+|» » examples|body|object|false|none|
+|» » requestBodies|body|object|false|none|
+|» » headers|body|object|false|none|
+|» » securitySchemes|body|object|false|none|
+|» » links|body|object|false|none|
+|» » callbacks|body|object|false|none|
 |» x-tyk-api-gateway|body|[XTykAPIGateway](#schemaxtykapigateway)|false|none|
 
 > Example responses
@@ -1996,12 +2136,47 @@ This endpoint allows you to configure Tyk OAS extension based on query params pr
 |body|body|object|false|none|
 |» openapi|body|string|true|none|
 |» info|body|object|true|none|
+|» » title|body|string|true|none|
+|» » description|body|string|false|none|
+|» » termsOfService|body|string(uri-reference)|false|none|
+|» » contact|body|object|false|none|
+|» » » name|body|string|false|none|
+|» » » url|body|string(uri-reference)|false|none|
+|» » » email|body|string(email)|false|none|
+|» » license|body|object|false|none|
+|» » » name|body|string|true|none|
+|» » » url|body|string(uri-reference)|false|none|
+|» » version|body|string|true|none|
 |» externalDocs|body|object|false|none|
+|» » description|body|string|false|none|
+|» » url|body|string(uri-reference)|true|none|
 |» servers|body|[object]|false|none|
+|» » url|body|string|true|none|
+|» » description|body|string|false|none|
+|» » variables|body|object|false|none|
+|» » » **additionalProperties**|body|object|false|none|
+|» » » » enum|body|[string]|false|none|
+|» » » » default|body|string|true|none|
+|» » » » description|body|string|false|none|
 |» security|body|[object]|false|none|
+|» » **additionalProperties**|body|[string]|false|none|
 |» tags|body|[object]|false|none|
+|» » name|body|string|true|none|
+|» » description|body|string|false|none|
+|» » externalDocs|body|object|false|none|
+|» » » description|body|string|false|none|
+|» » » url|body|string(uri-reference)|true|none|
 |» paths|body|object|true|none|
 |» components|body|object|false|none|
+|» » schemas|body|object|false|none|
+|» » responses|body|object|false|none|
+|» » parameters|body|object|false|none|
+|» » examples|body|object|false|none|
+|» » requestBodies|body|object|false|none|
+|» » headers|body|object|false|none|
+|» » securitySchemes|body|object|false|none|
+|» » links|body|object|false|none|
+|» » callbacks|body|object|false|none|
 
 > Example responses
 
@@ -2458,12 +2633,47 @@ Import an Tyk OAS format API without x-tyk-gateway.
 |body|body|object|false|none|
 |» openapi|body|string|true|none|
 |» info|body|object|true|none|
+|» » title|body|string|true|none|
+|» » description|body|string|false|none|
+|» » termsOfService|body|string(uri-reference)|false|none|
+|» » contact|body|object|false|none|
+|» » » name|body|string|false|none|
+|» » » url|body|string(uri-reference)|false|none|
+|» » » email|body|string(email)|false|none|
+|» » license|body|object|false|none|
+|» » » name|body|string|true|none|
+|» » » url|body|string(uri-reference)|false|none|
+|» » version|body|string|true|none|
 |» externalDocs|body|object|false|none|
+|» » description|body|string|false|none|
+|» » url|body|string(uri-reference)|true|none|
 |» servers|body|[object]|false|none|
+|» » url|body|string|true|none|
+|» » description|body|string|false|none|
+|» » variables|body|object|false|none|
+|» » » **additionalProperties**|body|object|false|none|
+|» » » » enum|body|[string]|false|none|
+|» » » » default|body|string|true|none|
+|» » » » description|body|string|false|none|
 |» security|body|[object]|false|none|
+|» » **additionalProperties**|body|[string]|false|none|
 |» tags|body|[object]|false|none|
+|» » name|body|string|true|none|
+|» » description|body|string|false|none|
+|» » externalDocs|body|object|false|none|
+|» » » description|body|string|false|none|
+|» » » url|body|string(uri-reference)|true|none|
 |» paths|body|object|true|none|
 |» components|body|object|false|none|
+|» » schemas|body|object|false|none|
+|» » responses|body|object|false|none|
+|» » parameters|body|object|false|none|
+|» » examples|body|object|false|none|
+|» » requestBodies|body|object|false|none|
+|» » headers|body|object|false|none|
+|» » securitySchemes|body|object|false|none|
+|» » links|body|object|false|none|
+|» » callbacks|body|object|false|none|
 
 > Example responses
 
@@ -2550,19 +2760,79 @@ List all MCP Proxy definitions on this Tyk Gateway. Each entry is a Tyk OAS docu
 [
   {
     "openapi": "string",
-    "info": {},
-    "externalDocs": {},
+    "info": {
+      "title": "string",
+      "description": "string",
+      "termsOfService": "string",
+      "contact": {
+        "name": "string",
+        "url": "string",
+        "email": "user@example.com"
+      },
+      "license": {
+        "name": "string",
+        "url": "string"
+      },
+      "version": "string"
+    },
+    "externalDocs": {
+      "description": "string",
+      "url": "string"
+    },
     "servers": [
-      {}
+      {
+        "url": "string",
+        "description": "string",
+        "variables": {
+          "property1": {
+            "enum": [
+              "string"
+            ],
+            "default": "string",
+            "description": "string"
+          },
+          "property2": {
+            "enum": [
+              "string"
+            ],
+            "default": "string",
+            "description": "string"
+          }
+        }
+      }
     ],
     "security": [
-      {}
+      {
+        "property1": [
+          "string"
+        ],
+        "property2": [
+          "string"
+        ]
+      }
     ],
     "tags": [
-      {}
+      {
+        "name": "string",
+        "description": "string",
+        "externalDocs": {
+          "description": "string",
+          "url": "string"
+        }
+      }
     ],
     "paths": {},
-    "components": {},
+    "components": {
+      "schemas": {},
+      "responses": {},
+      "parameters": {},
+      "examples": {},
+      "requestBodies": {},
+      "headers": {},
+      "securitySchemes": {},
+      "links": {},
+      "callbacks": {}
+    },
     "x-tyk-api-gateway": {
       "info": {
         "dbId": "string",
@@ -3284,12 +3554,47 @@ Status Code **200**
 |*anonymous*|[object]|false|none|none|
 |» openapi|string|true|none|none|
 |» info|object|true|none|none|
+|» » title|string|true|none|none|
+|» » description|string|false|none|none|
+|» » termsOfService|string(uri-reference)|false|none|none|
+|» » contact|object|false|none|none|
+|» » » name|string|false|none|none|
+|» » » url|string(uri-reference)|false|none|none|
+|» » » email|string(email)|false|none|none|
+|» » license|object|false|none|none|
+|» » » name|string|true|none|none|
+|» » » url|string(uri-reference)|false|none|none|
+|» » version|string|true|none|none|
 |» externalDocs|object|false|none|none|
+|» » description|string|false|none|none|
+|» » url|string(uri-reference)|true|none|none|
 |» servers|[object]|false|none|none|
+|» » url|string|true|none|none|
+|» » description|string|false|none|none|
+|» » variables|object|false|none|none|
+|» » » **additionalProperties**|object|false|none|none|
+|» » » » enum|[string]|false|none|none|
+|» » » » default|string|true|none|none|
+|» » » » description|string|false|none|none|
 |» security|[object]|false|none|none|
+|» » **additionalProperties**|[string]|false|none|none|
 |» tags|[object]|false|none|none|
+|» » name|string|true|none|none|
+|» » description|string|false|none|none|
+|» » externalDocs|object|false|none|none|
+|» » » description|string|false|none|none|
+|» » » url|string(uri-reference)|true|none|none|
 |» paths|object|true|none|none|
 |» components|object|false|none|none|
+|» » schemas|object|false|none|none|
+|» » responses|object|false|none|none|
+|» » parameters|object|false|none|none|
+|» » examples|object|false|none|none|
+|» » requestBodies|object|false|none|none|
+|» » headers|object|false|none|none|
+|» » securitySchemes|object|false|none|none|
+|» » links|object|false|none|none|
+|» » callbacks|object|false|none|none|
 |» x-tyk-api-gateway|[XTykAPIGateway](#schemaxtykapigateway)|false|none|none|
 
 <aside class="warning">
@@ -3444,12 +3749,47 @@ has no effect for remote MCP proxy upstreams.
 |body|body|object|false|none|
 |» openapi|body|string|true|none|
 |» info|body|object|true|none|
+|» » title|body|string|true|none|
+|» » description|body|string|false|none|
+|» » termsOfService|body|string(uri-reference)|false|none|
+|» » contact|body|object|false|none|
+|» » » name|body|string|false|none|
+|» » » url|body|string(uri-reference)|false|none|
+|» » » email|body|string(email)|false|none|
+|» » license|body|object|false|none|
+|» » » name|body|string|true|none|
+|» » » url|body|string(uri-reference)|false|none|
+|» » version|body|string|true|none|
 |» externalDocs|body|object|false|none|
+|» » description|body|string|false|none|
+|» » url|body|string(uri-reference)|true|none|
 |» servers|body|[object]|false|none|
+|» » url|body|string|true|none|
+|» » description|body|string|false|none|
+|» » variables|body|object|false|none|
+|» » » **additionalProperties**|body|object|false|none|
+|» » » » enum|body|[string]|false|none|
+|» » » » default|body|string|true|none|
+|» » » » description|body|string|false|none|
 |» security|body|[object]|false|none|
+|» » **additionalProperties**|body|[string]|false|none|
 |» tags|body|[object]|false|none|
+|» » name|body|string|true|none|
+|» » description|body|string|false|none|
+|» » externalDocs|body|object|false|none|
+|» » » description|body|string|false|none|
+|» » » url|body|string(uri-reference)|true|none|
 |» paths|body|object|true|none|
 |» components|body|object|false|none|
+|» » schemas|body|object|false|none|
+|» » responses|body|object|false|none|
+|» » parameters|body|object|false|none|
+|» » examples|body|object|false|none|
+|» » requestBodies|body|object|false|none|
+|» » headers|body|object|false|none|
+|» » securitySchemes|body|object|false|none|
+|» » links|body|object|false|none|
+|» » callbacks|body|object|false|none|
 |» x-tyk-api-gateway|body|[XTykAPIGateway](#schemaxtykapigateway)|false|none|
 
 > Example responses
@@ -3500,12 +3840,47 @@ Status Code **200**
 |*oneOf*|object|false|none|none|
 |openapi|string|true|none|none|
 |info|object|true|none|none|
+|» title|string|true|none|none|
+|» description|string|false|none|none|
+|» termsOfService|string(uri-reference)|false|none|none|
+|» contact|object|false|none|none|
+|» » name|string|false|none|none|
+|» » url|string(uri-reference)|false|none|none|
+|» » email|string(email)|false|none|none|
+|» license|object|false|none|none|
+|» » name|string|true|none|none|
+|» » url|string(uri-reference)|false|none|none|
+|» version|string|true|none|none|
 |externalDocs|object|false|none|none|
+|» description|string|false|none|none|
+|» url|string(uri-reference)|true|none|none|
 |servers|[object]|false|none|none|
+|» url|string|true|none|none|
+|» description|string|false|none|none|
+|» variables|object|false|none|none|
+|» » **additionalProperties**|object|false|none|none|
+|» » » enum|[string]|false|none|none|
+|» » » default|string|true|none|none|
+|» » » description|string|false|none|none|
 |security|[object]|false|none|none|
+|» **additionalProperties**|[string]|false|none|none|
 |tags|[object]|false|none|none|
+|» name|string|true|none|none|
+|» description|string|false|none|none|
+|» externalDocs|object|false|none|none|
+|» » description|string|false|none|none|
+|» » url|string(uri-reference)|true|none|none|
 |paths|object|true|none|none|
 |components|object|false|none|none|
+|» schemas|object|false|none|none|
+|» responses|object|false|none|none|
+|» parameters|object|false|none|none|
+|» examples|object|false|none|none|
+|» requestBodies|object|false|none|none|
+|» headers|object|false|none|none|
+|» securitySchemes|object|false|none|none|
+|» links|object|false|none|none|
+|» callbacks|object|false|none|none|
 |x-tyk-api-gateway|[XTykAPIGateway](#schemaxtykapigateway)|false|none|none|
 
 <aside class="warning">
@@ -3543,19 +3918,79 @@ Retrieve a single MCP Proxy definition by its ID. When `expand=true` is supplied
 ```json
 {
   "openapi": "string",
-  "info": {},
-  "externalDocs": {},
+  "info": {
+    "title": "string",
+    "description": "string",
+    "termsOfService": "string",
+    "contact": {
+      "name": "string",
+      "url": "string",
+      "email": "user@example.com"
+    },
+    "license": {
+      "name": "string",
+      "url": "string"
+    },
+    "version": "string"
+  },
+  "externalDocs": {
+    "description": "string",
+    "url": "string"
+  },
   "servers": [
-    {}
+    {
+      "url": "string",
+      "description": "string",
+      "variables": {
+        "property1": {
+          "enum": [
+            "string"
+          ],
+          "default": "string",
+          "description": "string"
+        },
+        "property2": {
+          "enum": [
+            "string"
+          ],
+          "default": "string",
+          "description": "string"
+        }
+      }
+    }
   ],
   "security": [
-    {}
+    {
+      "property1": [
+        "string"
+      ],
+      "property2": [
+        "string"
+      ]
+    }
   ],
   "tags": [
-    {}
+    {
+      "name": "string",
+      "description": "string",
+      "externalDocs": {
+        "description": "string",
+        "url": "string"
+      }
+    }
   ],
   "paths": {},
-  "components": {},
+  "components": {
+    "schemas": {},
+    "responses": {},
+    "parameters": {},
+    "examples": {},
+    "requestBodies": {},
+    "headers": {},
+    "securitySchemes": {},
+    "links": {},
+    "callbacks": {}
+  },
   "x-tyk-api-gateway": {
     "info": {
       "dbId": "string",
@@ -4275,12 +4710,47 @@ Status Code **200**
 |---|---|---|---|---|
 |openapi|string|true|none|none|
 |info|object|true|none|none|
+|» title|string|true|none|none|
+|» description|string|false|none|none|
+|» termsOfService|string(uri-reference)|false|none|none|
+|» contact|object|false|none|none|
+|» » name|string|false|none|none|
+|» » url|string(uri-reference)|false|none|none|
+|» » email|string(email)|false|none|none|
+|» license|object|false|none|none|
+|» » name|string|true|none|none|
+|» » url|string(uri-reference)|false|none|none|
+|» version|string|true|none|none|
 |externalDocs|object|false|none|none|
+|» description|string|false|none|none|
+|» url|string(uri-reference)|true|none|none|
 |servers|[object]|false|none|none|
+|» url|string|true|none|none|
+|» description|string|false|none|none|
+|» variables|object|false|none|none|
+|» » **additionalProperties**|object|false|none|none|
+|» » » enum|[string]|false|none|none|
+|» » » default|string|true|none|none|
+|» » » description|string|false|none|none|
 |security|[object]|false|none|none|
+|» **additionalProperties**|[string]|false|none|none|
 |tags|[object]|false|none|none|
+|» name|string|true|none|none|
+|» description|string|false|none|none|
+|» externalDocs|object|false|none|none|
+|» » description|string|false|none|none|
+|» » url|string(uri-reference)|true|none|none|
 |paths|object|true|none|none|
 |components|object|false|none|none|
+|» schemas|object|false|none|none|
+|» responses|object|false|none|none|
+|» parameters|object|false|none|none|
+|» examples|object|false|none|none|
+|» requestBodies|object|false|none|none|
+|» headers|object|false|none|none|
+|» securitySchemes|object|false|none|none|
+|» links|object|false|none|none|
+|» callbacks|object|false|none|none|
 |x-tyk-api-gateway|[XTykAPIGateway](#schemaxtykapigateway)|false|none|none|
 
 <aside class="warning">
@@ -4421,12 +4891,47 @@ Update an existing MCP Proxy definition. Body is validated against the MCP JSON 
 |body|body|object|false|none|
 |» openapi|body|string|true|none|
 |» info|body|object|true|none|
+|» » title|body|string|true|none|
+|» » description|body|string|false|none|
+|» » termsOfService|body|string(uri-reference)|false|none|
+|» » contact|body|object|false|none|
+|» » » name|body|string|false|none|
+|» » » url|body|string(uri-reference)|false|none|
+|» » » email|body|string(email)|false|none|
+|» » license|body|object|false|none|
+|» » » name|body|string|true|none|
+|» » » url|body|string(uri-reference)|false|none|
+|» » version|body|string|true|none|
 |» externalDocs|body|object|false|none|
+|» » description|body|string|false|none|
+|» » url|body|string(uri-reference)|true|none|
 |» servers|body|[object]|false|none|
+|» » url|body|string|true|none|
+|» » description|body|string|false|none|
+|» » variables|body|object|false|none|
+|» » » **additionalProperties**|body|object|false|none|
+|» » » » enum|body|[string]|false|none|
+|» » » » default|body|string|true|none|
+|» » » » description|body|string|false|none|
 |» security|body|[object]|false|none|
+|» » **additionalProperties**|body|[string]|false|none|
 |» tags|body|[object]|false|none|
+|» » name|body|string|true|none|
+|» » description|body|string|false|none|
+|» » externalDocs|body|object|false|none|
+|» » » description|body|string|false|none|
+|» » » url|body|string(uri-reference)|true|none|
 |» paths|body|object|true|none|
 |» components|body|object|false|none|
+|» » schemas|body|object|false|none|
+|» » responses|body|object|false|none|
+|» » parameters|body|object|false|none|
+|» » examples|body|object|false|none|
+|» » requestBodies|body|object|false|none|
+|» » headers|body|object|false|none|
+|» » securitySchemes|body|object|false|none|
+|» » links|body|object|false|none|
+|» » callbacks|body|object|false|none|
 |» x-tyk-api-gateway|body|[XTykAPIGateway](#schemaxtykapigateway)|false|none|
 
 > Example responses
@@ -10102,12 +10607,47 @@ Used to test API definition by sending sample request and analysing output of bo
 |» » *oneOf*|body|object|false|The description of OpenAPI v3.0.x documents, as defined by https://spec.openapis.org/oas/v3.0.3|
 |» » openapi|body|string|true|none|
 |» » info|body|object|true|none|
+|» » » title|body|string|true|none|
+|» » » description|body|string|false|none|
+|» » » termsOfService|body|string(uri-reference)|false|none|
+|» » » contact|body|object|false|none|
+|» » » » name|body|string|false|none|
+|» » » » url|body|string(uri-reference)|false|none|
+|» » » » email|body|string(email)|false|none|
+|» » » license|body|object|false|none|
+|» » » » name|body|string|true|none|
+|» » » » url|body|string(uri-reference)|false|none|
+|» » » version|body|string|true|none|
 |» » externalDocs|body|object|false|none|
+|» » » description|body|string|false|none|
+|» » » url|body|string(uri-reference)|true|none|
 |» » servers|body|[object]|false|none|
+|» » » url|body|string|true|none|
+|» » » description|body|string|false|none|
+|» » » variables|body|object|false|none|
+|» » » » **additionalProperties**|body|object|false|none|
+|» » » » » enum|body|[string]|false|none|
+|» » » » » default|body|string|true|none|
+|» » » » » description|body|string|false|none|
 |» » security|body|[object]|false|none|
+|» » » **additionalProperties**|body|[string]|false|none|
 |» » tags|body|[object]|false|none|
+|» » » name|body|string|true|none|
+|» » » description|body|string|false|none|
+|» » » externalDocs|body|object|false|none|
+|» » » » description|body|string|false|none|
+|» » » » url|body|string(uri-reference)|true|none|
 |» » paths|body|object|true|none|
 |» » components|body|object|false|none|
+|» » » schemas|body|object|false|none|
+|» » » responses|body|object|false|none|
+|» » » parameters|body|object|false|none|
+|» » » examples|body|object|false|none|
+|» » » requestBodies|body|object|false|none|
+|» » » headers|body|object|false|none|
+|» » » securitySchemes|body|object|false|none|
+|» » » links|body|object|false|none|
+|» » » callbacks|body|object|false|none|
 |» » *oneOf*|body|[TykVendorExtension](#schematykvendorextension)|false|none|
 |» *oneOf*|body|object|false|none|
 |» *oneOf*|body|object|false|none|
@@ -21288,19 +21828,79 @@ true
   },
   "oas": {
     "openapi": "string",
-    "info": {},
-    "externalDocs": {},
+    "info": {
+      "title": "string",
+      "description": "string",
+      "termsOfService": "string",
+      "contact": {
+        "name": "string",
+        "url": "string",
+        "email": "user@example.com"
+      },
+      "license": {
+        "name": "string",
+        "url": "string"
+      },
+      "version": "string"
+    },
+    "externalDocs": {
+      "description": "string",
+      "url": "string"
+    },
     "servers": [
-      {}
+      {
+        "url": "string",
+        "description": "string",
+        "variables": {
+          "property1": {
+            "enum": [
+              "string"
+            ],
+            "default": "string",
+            "description": "string"
+          },
+          "property2": {
+            "enum": [
+              "string"
+            ],
+            "default": "string",
+            "description": "string"
+          }
+        }
+      }
     ],
     "security": [
-      {}
+      {
+        "property1": [
+          "string"
+        ],
+        "property2": [
+          "string"
+        ]
+      }
     ],
     "tags": [
-      {}
+      {
+        "name": "string",
+        "description": "string",
+        "externalDocs": {
+          "description": "string",
+          "url": "string"
+        }
+      }
     ],
     "paths": {},
-    "components": {}
+    "components": {
+      "schemas": {},
+      "responses": {},
+      "parameters": {},
+      "examples": {},
+      "requestBodies": {},
+      "headers": {},
+      "securitySchemes": {},
+      "links": {},
+      "callbacks": {}
+    }
   }
 }
 ```
@@ -24885,3 +25485,1732 @@ true
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |x-tyk-api-gateway|[XTykAPIGateway](#schemaxtykapigateway)|false|none|none|
+
+<h2 id="tocS_Schema">Schema</h2>
+<!-- backwards compatibility -->
+<a id="schemaschema"></a>
+<a id="schema_Schema"></a>
+<a id="tocSschema"></a>
+<a id="tocsschema"></a>
+
+```json
+{
+  "title": "string",
+  "multipleOf": 0.1,
+  "maximum": 0,
+  "exclusiveMaximum": false,
+  "minimum": 0,
+  "exclusiveMinimum": false,
+  "maxLength": 0,
+  "minLength": 0,
+  "pattern": "string",
+  "maxItems": 0,
+  "minItems": 0,
+  "uniqueItems": false,
+  "maxProperties": 0,
+  "minProperties": 0,
+  "required": [
+    "string"
+  ],
+  "enum": [
+    null
+  ],
+  "type": "array",
+  "not": {
+    "title": "string",
+    "multipleOf": 0.1,
+    "maximum": 0,
+    "exclusiveMaximum": false,
+    "minimum": 0,
+    "exclusiveMinimum": false,
+    "maxLength": 0,
+    "minLength": 0,
+    "pattern": "string",
+    "maxItems": 0,
+    "minItems": 0,
+    "uniqueItems": false,
+    "maxProperties": 0,
+    "minProperties": 0,
+    "required": [
+      "string"
+    ],
+    "enum": [
+      null
+    ],
+    "type": "array",
+    "not": {},
+    "allOf": [
+      {}
+    ],
+    "oneOf": [
+      {}
+    ],
+    "anyOf": [
+      {}
+    ],
+    "items": {},
+    "properties": {
+      "property1": {},
+      "property2": {}
+    },
+    "additionalProperties": true,
+    "description": "string",
+    "format": "string",
+    "default": null,
+    "nullable": false,
+    "discriminator": {
+      "propertyName": "string",
+      "mapping": {
+        "property1": "string",
+        "property2": "string"
+      }
+    },
+    "readOnly": false,
+    "writeOnly": false,
+    "example": null,
+    "externalDocs": {
+      "description": "string",
+      "url": "string"
+    },
+    "deprecated": false,
+    "xml": {
+      "name": "string",
+      "namespace": "http://example.com",
+      "prefix": "string",
+      "attribute": false,
+      "wrapped": false
+    }
+  },
+  "allOf": [
+    {
+      "title": "string",
+      "multipleOf": 0.1,
+      "maximum": 0,
+      "exclusiveMaximum": false,
+      "minimum": 0,
+      "exclusiveMinimum": false,
+      "maxLength": 0,
+      "minLength": 0,
+      "pattern": "string",
+      "maxItems": 0,
+      "minItems": 0,
+      "uniqueItems": false,
+      "maxProperties": 0,
+      "minProperties": 0,
+      "required": [
+        "string"
+      ],
+      "enum": [
+        null
+      ],
+      "type": "array",
+      "not": {},
+      "allOf": [
+        {}
+      ],
+      "oneOf": [
+        {}
+      ],
+      "anyOf": [
+        {}
+      ],
+      "items": {},
+      "properties": {
+        "property1": {},
+        "property2": {}
+      },
+      "additionalProperties": true,
+      "description": "string",
+      "format": "string",
+      "default": null,
+      "nullable": false,
+      "discriminator": {
+        "propertyName": "string",
+        "mapping": {
+          "property1": "string",
+          "property2": "string"
+        }
+      },
+      "readOnly": false,
+      "writeOnly": false,
+      "example": null,
+      "externalDocs": {
+        "description": "string",
+        "url": "string"
+      },
+      "deprecated": false,
+      "xml": {
+        "name": "string",
+        "namespace": "http://example.com",
+        "prefix": "string",
+        "attribute": false,
+        "wrapped": false
+      }
+    }
+  ],
+  "oneOf": [
+    {
+      "title": "string",
+      "multipleOf": 0.1,
+      "maximum": 0,
+      "exclusiveMaximum": false,
+      "minimum": 0,
+      "exclusiveMinimum": false,
+      "maxLength": 0,
+      "minLength": 0,
+      "pattern": "string",
+      "maxItems": 0,
+      "minItems": 0,
+      "uniqueItems": false,
+      "maxProperties": 0,
+      "minProperties": 0,
+      "required": [
+        "string"
+      ],
+      "enum": [
+        null
+      ],
+      "type": "array",
+      "not": {},
+      "allOf": [
+        {}
+      ],
+      "oneOf": [
+        {}
+      ],
+      "anyOf": [
+        {}
+      ],
+      "items": {},
+      "properties": {
+        "property1": {},
+        "property2": {}
+      },
+      "additionalProperties": true,
+      "description": "string",
+      "format": "string",
+      "default": null,
+      "nullable": false,
+      "discriminator": {
+        "propertyName": "string",
+        "mapping": {
+          "property1": "string",
+          "property2": "string"
+        }
+      },
+      "readOnly": false,
+      "writeOnly": false,
+      "example": null,
+      "externalDocs": {
+        "description": "string",
+        "url": "string"
+      },
+      "deprecated": false,
+      "xml": {
+        "name": "string",
+        "namespace": "http://example.com",
+        "prefix": "string",
+        "attribute": false,
+        "wrapped": false
+      }
+    }
+  ],
+  "anyOf": [
+    {
+      "title": "string",
+      "multipleOf": 0.1,
+      "maximum": 0,
+      "exclusiveMaximum": false,
+      "minimum": 0,
+      "exclusiveMinimum": false,
+      "maxLength": 0,
+      "minLength": 0,
+      "pattern": "string",
+      "maxItems": 0,
+      "minItems": 0,
+      "uniqueItems": false,
+      "maxProperties": 0,
+      "minProperties": 0,
+      "required": [
+        "string"
+      ],
+      "enum": [
+        null
+      ],
+      "type": "array",
+      "not": {},
+      "allOf": [
+        {}
+      ],
+      "oneOf": [
+        {}
+      ],
+      "anyOf": [
+        {}
+      ],
+      "items": {},
+      "properties": {
+        "property1": {},
+        "property2": {}
+      },
+      "additionalProperties": true,
+      "description": "string",
+      "format": "string",
+      "default": null,
+      "nullable": false,
+      "discriminator": {
+        "propertyName": "string",
+        "mapping": {
+          "property1": "string",
+          "property2": "string"
+        }
+      },
+      "readOnly": false,
+      "writeOnly": false,
+      "example": null,
+      "externalDocs": {
+        "description": "string",
+        "url": "string"
+      },
+      "deprecated": false,
+      "xml": {
+        "name": "string",
+        "namespace": "http://example.com",
+        "prefix": "string",
+        "attribute": false,
+        "wrapped": false
+      }
+    }
+  ],
+  "items": {
+    "title": "string",
+    "multipleOf": 0.1,
+    "maximum": 0,
+    "exclusiveMaximum": false,
+    "minimum": 0,
+    "exclusiveMinimum": false,
+    "maxLength": 0,
+    "minLength": 0,
+    "pattern": "string",
+    "maxItems": 0,
+    "minItems": 0,
+    "uniqueItems": false,
+    "maxProperties": 0,
+    "minProperties": 0,
+    "required": [
+      "string"
+    ],
+    "enum": [
+      null
+    ],
+    "type": "array",
+    "not": {},
+    "allOf": [
+      {}
+    ],
+    "oneOf": [
+      {}
+    ],
+    "anyOf": [
+      {}
+    ],
+    "items": {},
+    "properties": {
+      "property1": {},
+      "property2": {}
+    },
+    "additionalProperties": true,
+    "description": "string",
+    "format": "string",
+    "default": null,
+    "nullable": false,
+    "discriminator": {
+      "propertyName": "string",
+      "mapping": {
+        "property1": "string",
+        "property2": "string"
+      }
+    },
+    "readOnly": false,
+    "writeOnly": false,
+    "example": null,
+    "externalDocs": {
+      "description": "string",
+      "url": "string"
+    },
+    "deprecated": false,
+    "xml": {
+      "name": "string",
+      "namespace": "http://example.com",
+      "prefix": "string",
+      "attribute": false,
+      "wrapped": false
+    }
+  },
+  "properties": {
+    "property1": {
+      "title": "string",
+      "multipleOf": 0.1,
+      "maximum": 0,
+      "exclusiveMaximum": false,
+      "minimum": 0,
+      "exclusiveMinimum": false,
+      "maxLength": 0,
+      "minLength": 0,
+      "pattern": "string",
+      "maxItems": 0,
+      "minItems": 0,
+      "uniqueItems": false,
+      "maxProperties": 0,
+      "minProperties": 0,
+      "required": [
+        "string"
+      ],
+      "enum": [
+        null
+      ],
+      "type": "array",
+      "not": {},
+      "allOf": [
+        {}
+      ],
+      "oneOf": [
+        {}
+      ],
+      "anyOf": [
+        {}
+      ],
+      "items": {},
+      "properties": {
+        "property1": {},
+        "property2": {}
+      },
+      "additionalProperties": true,
+      "description": "string",
+      "format": "string",
+      "default": null,
+      "nullable": false,
+      "discriminator": {
+        "propertyName": "string",
+        "mapping": {
+          "property1": "string",
+          "property2": "string"
+        }
+      },
+      "readOnly": false,
+      "writeOnly": false,
+      "example": null,
+      "externalDocs": {
+        "description": "string",
+        "url": "string"
+      },
+      "deprecated": false,
+      "xml": {
+        "name": "string",
+        "namespace": "http://example.com",
+        "prefix": "string",
+        "attribute": false,
+        "wrapped": false
+      }
+    },
+    "property2": {
+      "title": "string",
+      "multipleOf": 0.1,
+      "maximum": 0,
+      "exclusiveMaximum": false,
+      "minimum": 0,
+      "exclusiveMinimum": false,
+      "maxLength": 0,
+      "minLength": 0,
+      "pattern": "string",
+      "maxItems": 0,
+      "minItems": 0,
+      "uniqueItems": false,
+      "maxProperties": 0,
+      "minProperties": 0,
+      "required": [
+        "string"
+      ],
+      "enum": [
+        null
+      ],
+      "type": "array",
+      "not": {},
+      "allOf": [
+        {}
+      ],
+      "oneOf": [
+        {}
+      ],
+      "anyOf": [
+        {}
+      ],
+      "items": {},
+      "properties": {
+        "property1": {},
+        "property2": {}
+      },
+      "additionalProperties": true,
+      "description": "string",
+      "format": "string",
+      "default": null,
+      "nullable": false,
+      "discriminator": {
+        "propertyName": "string",
+        "mapping": {
+          "property1": "string",
+          "property2": "string"
+        }
+      },
+      "readOnly": false,
+      "writeOnly": false,
+      "example": null,
+      "externalDocs": {
+        "description": "string",
+        "url": "string"
+      },
+      "deprecated": false,
+      "xml": {
+        "name": "string",
+        "namespace": "http://example.com",
+        "prefix": "string",
+        "attribute": false,
+        "wrapped": false
+      }
+    }
+  },
+  "additionalProperties": true,
+  "description": "string",
+  "format": "string",
+  "default": null,
+  "nullable": false,
+  "discriminator": {
+    "propertyName": "string",
+    "mapping": {
+      "property1": "string",
+      "property2": "string"
+    }
+  },
+  "readOnly": false,
+  "writeOnly": false,
+  "example": null,
+  "externalDocs": {
+    "description": "string",
+    "url": "string"
+  },
+  "deprecated": false,
+  "xml": {
+    "name": "string",
+    "namespace": "http://example.com",
+    "prefix": "string",
+    "attribute": false,
+    "wrapped": false
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|title|string|false|none|none|
+|multipleOf|number|false|none|none|
+|maximum|number|false|none|none|
+|exclusiveMaximum|boolean|false|none|none|
+|minimum|number|false|none|none|
+|exclusiveMinimum|boolean|false|none|none|
+|maxLength|integer|false|none|none|
+|minLength|integer|false|none|none|
+|pattern|string(regex)|false|none|none|
+|maxItems|integer|false|none|none|
+|minItems|integer|false|none|none|
+|uniqueItems|boolean|false|none|none|
+|maxProperties|integer|false|none|none|
+|minProperties|integer|false|none|none|
+|required|[string]|false|none|none|
+|enum|[object]|false|none|none|
+|type|string|false|none|none|
+|not|[Schema](#schemaschema) \| object|false|none|none|
+|allOf|[[Schema](#schemaschema) \| object]|false|none|none|
+|oneOf|[[Schema](#schemaschema) \| object]|false|none|none|
+|anyOf|[[Schema](#schemaschema) \| object]|false|none|none|
+|items|[Schema](#schemaschema) \| object|false|none|none|
+|properties|object|false|none|none|
+|additionalProperties|[Schema](#schemaschema) \| object \| boolean|false|none|none|
+|description|string|false|none|none|
+|format|string|false|none|none|
+|default|object|false|none|none|
+|nullable|boolean|false|none|none|
+|discriminator|object|false|none|none|
+|readOnly|boolean|false|none|none|
+|writeOnly|boolean|false|none|none|
+|example|object|false|none|none|
+|externalDocs|object|false|none|none|
+|deprecated|boolean|false|none|none|
+|xml|object|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|array|
+|type|boolean|
+|type|integer|
+|type|number|
+|type|object|
+|type|string|
+
+<h2 id="tocS_Header2">Header2</h2>
+<!-- backwards compatibility -->
+<a id="schemaheader2"></a>
+<a id="schema_Header2"></a>
+<a id="tocSheader2"></a>
+<a id="tocsheader2"></a>
+
+```json
+{
+  "description": "string",
+  "required": false,
+  "deprecated": false,
+  "allowEmptyValue": false,
+  "style": "simple",
+  "explode": true,
+  "allowReserved": false,
+  "schema": {
+    "title": "string",
+    "multipleOf": 0.1,
+    "maximum": 0,
+    "exclusiveMaximum": false,
+    "minimum": 0,
+    "exclusiveMinimum": false,
+    "maxLength": 0,
+    "minLength": 0,
+    "pattern": "string",
+    "maxItems": 0,
+    "minItems": 0,
+    "uniqueItems": false,
+    "maxProperties": 0,
+    "minProperties": 0,
+    "required": [
+      "string"
+    ],
+    "enum": [
+      null
+    ],
+    "type": "array",
+    "not": {},
+    "allOf": [
+      {}
+    ],
+    "oneOf": [
+      {}
+    ],
+    "anyOf": [
+      {}
+    ],
+    "items": {},
+    "properties": {
+      "property1": {},
+      "property2": {}
+    },
+    "additionalProperties": true,
+    "description": "string",
+    "format": "string",
+    "default": null,
+    "nullable": false,
+    "discriminator": {
+      "propertyName": "string",
+      "mapping": {
+        "property1": "string",
+        "property2": "string"
+      }
+    },
+    "readOnly": false,
+    "writeOnly": false,
+    "example": null,
+    "externalDocs": {
+      "description": "string",
+      "url": "string"
+    },
+    "deprecated": false,
+    "xml": {
+      "name": "string",
+      "namespace": "http://example.com",
+      "prefix": "string",
+      "attribute": false,
+      "wrapped": false
+    }
+  },
+  "content": {
+    "property1": {
+      "schema": {},
+      "example": null,
+      "examples": {
+        "property1": {
+          "summary": "string",
+          "description": "string",
+          "value": null,
+          "externalValue": "string"
+        },
+        "property2": {
+          "summary": "string",
+          "description": "string",
+          "value": null,
+          "externalValue": "string"
+        }
+      },
+      "encoding": {
+        "property1": {},
+        "property2": {}
+      }
+    },
+    "property2": {
+      "schema": {},
+      "example": null,
+      "examples": {
+        "property1": {
+          "summary": "string",
+          "description": "string",
+          "value": null,
+          "externalValue": "string"
+        },
+        "property2": {
+          "summary": "string",
+          "description": "string",
+          "value": null,
+          "externalValue": "string"
+        }
+      },
+      "encoding": {
+        "property1": {},
+        "property2": {}
+      }
+    }
+  },
+  "example": null,
+  "examples": {
+    "property1": {
+      "summary": "string",
+      "description": "string",
+      "value": null,
+      "externalValue": "string"
+    },
+    "property2": {
+      "summary": "string",
+      "description": "string",
+      "value": null,
+      "externalValue": "string"
+    }
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|object|false|none|none|
+|*oneOf*|object|false|none|Some properties are not allowed if content is present|
+|description|string|false|none|none|
+|required|boolean|false|none|none|
+|deprecated|boolean|false|none|none|
+|allowEmptyValue|boolean|false|none|none|
+|style|string|false|none|none|
+|explode|boolean|false|none|none|
+|allowReserved|boolean|false|none|none|
+|schema|[Schema](#schemaschema) \| object|false|none|none|
+|content|object|false|none|none|
+|example|object|false|none|none|
+|examples|object|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|style|simple|
+
+<h2 id="tocS_Callback">Callback</h2>
+<!-- backwards compatibility -->
+<a id="schemacallback"></a>
+<a id="schema_Callback"></a>
+<a id="tocScallback"></a>
+<a id="tocscallback"></a>
+
+```json
+{
+  "property1": {
+    "$ref": "string",
+    "summary": "string",
+    "description": "string",
+    "servers": [
+      {
+        "url": "string",
+        "description": "string",
+        "variables": {
+          "property1": {
+            "enum": [
+              "string"
+            ],
+            "default": "string",
+            "description": "string"
+          },
+          "property2": {
+            "enum": [
+              "string"
+            ],
+            "default": "string",
+            "description": "string"
+          }
+        }
+      }
+    ],
+    "parameters": [
+      {
+        "in": "string",
+        "style": "string",
+        "required": false,
+        "name": "string",
+        "description": "string",
+        "deprecated": false,
+        "allowEmptyValue": false,
+        "explode": true,
+        "allowReserved": false,
+        "schema": {},
+        "content": {
+          "property1": {},
+          "property2": {}
+        },
+        "example": null,
+        "examples": {
+          "property1": {
+            "summary": "string",
+            "description": "string",
+            "value": null,
+            "externalValue": "string"
+          },
+          "property2": {
+            "summary": "string",
+            "description": "string",
+            "value": null,
+            "externalValue": "string"
+          }
+        }
+      }
+    ]
+  },
+  "property2": {
+    "$ref": "string",
+    "summary": "string",
+    "description": "string",
+    "servers": [
+      {
+        "url": "string",
+        "description": "string",
+        "variables": {
+          "property1": {
+            "enum": [
+              "string"
+            ],
+            "default": "string",
+            "description": "string"
+          },
+          "property2": {
+            "enum": [
+              "string"
+            ],
+            "default": "string",
+            "description": "string"
+          }
+        }
+      }
+    ],
+    "parameters": [
+      {
+        "in": "string",
+        "style": "string",
+        "required": false,
+        "name": "string",
+        "description": "string",
+        "deprecated": false,
+        "allowEmptyValue": false,
+        "explode": true,
+        "allowReserved": false,
+        "schema": {},
+        "content": {
+          "property1": {},
+          "property2": {}
+        },
+        "example": null,
+        "examples": {
+          "property1": {
+            "summary": "string",
+            "description": "string",
+            "value": null,
+            "externalValue": "string"
+          },
+          "property2": {
+            "summary": "string",
+            "description": "string",
+            "value": null,
+            "externalValue": "string"
+          }
+        }
+      }
+    ]
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|**additionalProperties**|[PathItem](#schemapathitem)|false|none|none|
+
+<h2 id="tocS_MediaType">MediaType</h2>
+<!-- backwards compatibility -->
+<a id="schemamediatype"></a>
+<a id="schema_MediaType"></a>
+<a id="tocSmediatype"></a>
+<a id="tocsmediatype"></a>
+
+```json
+{
+  "schema": {
+    "title": "string",
+    "multipleOf": 0.1,
+    "maximum": 0,
+    "exclusiveMaximum": false,
+    "minimum": 0,
+    "exclusiveMinimum": false,
+    "maxLength": 0,
+    "minLength": 0,
+    "pattern": "string",
+    "maxItems": 0,
+    "minItems": 0,
+    "uniqueItems": false,
+    "maxProperties": 0,
+    "minProperties": 0,
+    "required": [
+      "string"
+    ],
+    "enum": [
+      null
+    ],
+    "type": "array",
+    "not": {},
+    "allOf": [
+      {}
+    ],
+    "oneOf": [
+      {}
+    ],
+    "anyOf": [
+      {}
+    ],
+    "items": {},
+    "properties": {
+      "property1": {},
+      "property2": {}
+    },
+    "additionalProperties": true,
+    "description": "string",
+    "format": "string",
+    "default": null,
+    "nullable": false,
+    "discriminator": {
+      "propertyName": "string",
+      "mapping": {
+        "property1": "string",
+        "property2": "string"
+      }
+    },
+    "readOnly": false,
+    "writeOnly": false,
+    "example": null,
+    "externalDocs": {
+      "description": "string",
+      "url": "string"
+    },
+    "deprecated": false,
+    "xml": {
+      "name": "string",
+      "namespace": "http://example.com",
+      "prefix": "string",
+      "attribute": false,
+      "wrapped": false
+    }
+  },
+  "example": null,
+  "examples": {
+    "property1": {
+      "summary": "string",
+      "description": "string",
+      "value": null,
+      "externalValue": "string"
+    },
+    "property2": {
+      "summary": "string",
+      "description": "string",
+      "value": null,
+      "externalValue": "string"
+    }
+  },
+  "encoding": {
+    "property1": {
+      "contentType": "string",
+      "headers": {
+        "property1": {},
+        "property2": {}
+      },
+      "style": "form",
+      "explode": true,
+      "allowReserved": false
+    },
+    "property2": {
+      "contentType": "string",
+      "headers": {
+        "property1": {},
+        "property2": {}
+      },
+      "style": "form",
+      "explode": true,
+      "allowReserved": false
+    }
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|schema|[Schema](#schemaschema) \| object|false|none|none|
+|example|object|false|none|none|
+|examples|object|false|none|none|
+|encoding|object|false|none|none|
+
+<h2 id="tocS_Encoding">Encoding</h2>
+<!-- backwards compatibility -->
+<a id="schemaencoding"></a>
+<a id="schema_Encoding"></a>
+<a id="tocSencoding"></a>
+<a id="tocsencoding"></a>
+
+```json
+{
+  "contentType": "string",
+  "headers": {
+    "property1": {
+      "description": "string",
+      "required": false,
+      "deprecated": false,
+      "allowEmptyValue": false,
+      "style": "simple",
+      "explode": true,
+      "allowReserved": false,
+      "schema": {},
+      "content": {
+        "property1": {},
+        "property2": {}
+      },
+      "example": null,
+      "examples": {
+        "property1": {
+          "summary": "string",
+          "description": "string",
+          "value": null,
+          "externalValue": "string"
+        },
+        "property2": {
+          "summary": "string",
+          "description": "string",
+          "value": null,
+          "externalValue": "string"
+        }
+      }
+    },
+    "property2": {
+      "description": "string",
+      "required": false,
+      "deprecated": false,
+      "allowEmptyValue": false,
+      "style": "simple",
+      "explode": true,
+      "allowReserved": false,
+      "schema": {},
+      "content": {
+        "property1": {},
+        "property2": {}
+      },
+      "example": null,
+      "examples": {
+        "property1": {
+          "summary": "string",
+          "description": "string",
+          "value": null,
+          "externalValue": "string"
+        },
+        "property2": {
+          "summary": "string",
+          "description": "string",
+          "value": null,
+          "externalValue": "string"
+        }
+      }
+    }
+  },
+  "style": "form",
+  "explode": true,
+  "allowReserved": false
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|contentType|string|false|none|none|
+|headers|object|false|none|none|
+|style|string|false|none|none|
+|explode|boolean|false|none|none|
+|allowReserved|boolean|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|style|form|
+|style|spaceDelimited|
+|style|pipeDelimited|
+|style|deepObject|
+
+<h2 id="tocS_PathItem">PathItem</h2>
+<!-- backwards compatibility -->
+<a id="schemapathitem"></a>
+<a id="schema_PathItem"></a>
+<a id="tocSpathitem"></a>
+<a id="tocspathitem"></a>
+
+```json
+{
+  "$ref": "string",
+  "summary": "string",
+  "description": "string",
+  "servers": [
+    {
+      "url": "string",
+      "description": "string",
+      "variables": {
+        "property1": {
+          "enum": [
+            "string"
+          ],
+          "default": "string",
+          "description": "string"
+        },
+        "property2": {
+          "enum": [
+            "string"
+          ],
+          "default": "string",
+          "description": "string"
+        }
+      }
+    }
+  ],
+  "parameters": [
+    {
+      "in": "string",
+      "style": "string",
+      "required": false,
+      "name": "string",
+      "description": "string",
+      "deprecated": false,
+      "allowEmptyValue": false,
+      "explode": true,
+      "allowReserved": false,
+      "schema": {
+        "title": "string",
+        "multipleOf": 0.1,
+        "maximum": 0,
+        "exclusiveMaximum": false,
+        "minimum": 0,
+        "exclusiveMinimum": false,
+        "maxLength": 0,
+        "minLength": 0,
+        "pattern": "string",
+        "maxItems": 0,
+        "minItems": 0,
+        "uniqueItems": false,
+        "maxProperties": 0,
+        "minProperties": 0,
+        "required": [
+          "string"
+        ],
+        "enum": [
+          null
+        ],
+        "type": "array",
+        "not": {},
+        "allOf": [
+          {}
+        ],
+        "oneOf": [
+          {}
+        ],
+        "anyOf": [
+          {}
+        ],
+        "items": {},
+        "properties": {
+          "property1": {},
+          "property2": {}
+        },
+        "additionalProperties": true,
+        "description": "string",
+        "format": "string",
+        "default": null,
+        "nullable": false,
+        "discriminator": {
+          "propertyName": "string",
+          "mapping": {
+            "property1": "string",
+            "property2": "string"
+          }
+        },
+        "readOnly": false,
+        "writeOnly": false,
+        "example": null,
+        "externalDocs": {
+          "description": "string",
+          "url": "string"
+        },
+        "deprecated": false,
+        "xml": {
+          "name": "string",
+          "namespace": "http://example.com",
+          "prefix": "string",
+          "attribute": false,
+          "wrapped": false
+        }
+      },
+      "content": {
+        "property1": {
+          "schema": {},
+          "example": null,
+          "examples": {
+            "property1": {
+              "summary": "string",
+              "description": "string",
+              "value": null,
+              "externalValue": "string"
+            },
+            "property2": {
+              "summary": "string",
+              "description": "string",
+              "value": null,
+              "externalValue": "string"
+            }
+          },
+          "encoding": {
+            "property1": {},
+            "property2": {}
+          }
+        },
+        "property2": {
+          "schema": {},
+          "example": null,
+          "examples": {
+            "property1": {
+              "summary": "string",
+              "description": "string",
+              "value": null,
+              "externalValue": "string"
+            },
+            "property2": {
+              "summary": "string",
+              "description": "string",
+              "value": null,
+              "externalValue": "string"
+            }
+          },
+          "encoding": {
+            "property1": {},
+            "property2": {}
+          }
+        }
+      },
+      "example": null,
+      "examples": {
+        "property1": {
+          "summary": "string",
+          "description": "string",
+          "value": null,
+          "externalValue": "string"
+        },
+        "property2": {
+          "summary": "string",
+          "description": "string",
+          "value": null,
+          "externalValue": "string"
+        }
+      }
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|$ref|string|false|none|none|
+|summary|string|false|none|none|
+|description|string|false|none|none|
+|servers|[object]|false|none|none|
+|parameters|[object]|false|none|none|
+
+<h2 id="tocS_Operation2">Operation2</h2>
+<!-- backwards compatibility -->
+<a id="schemaoperation2"></a>
+<a id="schema_Operation2"></a>
+<a id="tocSoperation2"></a>
+<a id="tocsoperation2"></a>
+
+```json
+{
+  "tags": [
+    "string"
+  ],
+  "summary": "string",
+  "description": "string",
+  "externalDocs": {
+    "description": "string",
+    "url": "string"
+  },
+  "operationId": "string",
+  "parameters": [
+    {
+      "in": "string",
+      "style": "string",
+      "required": false,
+      "name": "string",
+      "description": "string",
+      "deprecated": false,
+      "allowEmptyValue": false,
+      "explode": true,
+      "allowReserved": false,
+      "schema": {
+        "title": "string",
+        "multipleOf": 0.1,
+        "maximum": 0,
+        "exclusiveMaximum": false,
+        "minimum": 0,
+        "exclusiveMinimum": false,
+        "maxLength": 0,
+        "minLength": 0,
+        "pattern": "string",
+        "maxItems": 0,
+        "minItems": 0,
+        "uniqueItems": false,
+        "maxProperties": 0,
+        "minProperties": 0,
+        "required": [
+          "string"
+        ],
+        "enum": [
+          null
+        ],
+        "type": "array",
+        "not": {},
+        "allOf": [
+          {}
+        ],
+        "oneOf": [
+          {}
+        ],
+        "anyOf": [
+          {}
+        ],
+        "items": {},
+        "properties": {
+          "property1": {},
+          "property2": {}
+        },
+        "additionalProperties": true,
+        "description": "string",
+        "format": "string",
+        "default": null,
+        "nullable": false,
+        "discriminator": {
+          "propertyName": "string",
+          "mapping": {
+            "property1": "string",
+            "property2": "string"
+          }
+        },
+        "readOnly": false,
+        "writeOnly": false,
+        "example": null,
+        "externalDocs": {
+          "description": "string",
+          "url": "string"
+        },
+        "deprecated": false,
+        "xml": {
+          "name": "string",
+          "namespace": "http://example.com",
+          "prefix": "string",
+          "attribute": false,
+          "wrapped": false
+        }
+      },
+      "content": {
+        "property1": {
+          "schema": {},
+          "example": null,
+          "examples": {
+            "property1": {
+              "summary": "string",
+              "description": "string",
+              "value": null,
+              "externalValue": "string"
+            },
+            "property2": {
+              "summary": "string",
+              "description": "string",
+              "value": null,
+              "externalValue": "string"
+            }
+          },
+          "encoding": {
+            "property1": {},
+            "property2": {}
+          }
+        },
+        "property2": {
+          "schema": {},
+          "example": null,
+          "examples": {
+            "property1": {
+              "summary": "string",
+              "description": "string",
+              "value": null,
+              "externalValue": "string"
+            },
+            "property2": {
+              "summary": "string",
+              "description": "string",
+              "value": null,
+              "externalValue": "string"
+            }
+          },
+          "encoding": {
+            "property1": {},
+            "property2": {}
+          }
+        }
+      },
+      "example": null,
+      "examples": {
+        "property1": {
+          "summary": "string",
+          "description": "string",
+          "value": null,
+          "externalValue": "string"
+        },
+        "property2": {
+          "summary": "string",
+          "description": "string",
+          "value": null,
+          "externalValue": "string"
+        }
+      }
+    }
+  ],
+  "requestBody": {
+    "description": "string",
+    "content": {
+      "property1": {
+        "schema": {},
+        "example": null,
+        "examples": {
+          "property1": {
+            "summary": "string",
+            "description": "string",
+            "value": null,
+            "externalValue": "string"
+          },
+          "property2": {
+            "summary": "string",
+            "description": "string",
+            "value": null,
+            "externalValue": "string"
+          }
+        },
+        "encoding": {
+          "property1": {},
+          "property2": {}
+        }
+      },
+      "property2": {
+        "schema": {},
+        "example": null,
+        "examples": {
+          "property1": {
+            "summary": "string",
+            "description": "string",
+            "value": null,
+            "externalValue": "string"
+          },
+          "property2": {
+            "summary": "string",
+            "description": "string",
+            "value": null,
+            "externalValue": "string"
+          }
+        },
+        "encoding": {
+          "property1": {},
+          "property2": {}
+        }
+      }
+    },
+    "required": false
+  },
+  "responses": {
+    "default": {
+      "description": "string",
+      "headers": {
+        "property1": {
+          "description": "string",
+          "required": false,
+          "deprecated": false,
+          "allowEmptyValue": false,
+          "style": "simple",
+          "explode": true,
+          "allowReserved": false,
+          "schema": {},
+          "content": {
+            "property1": {},
+            "property2": {}
+          },
+          "example": null,
+          "examples": {
+            "property1": {
+              "summary": "string",
+              "description": "string",
+              "value": null,
+              "externalValue": "string"
+            },
+            "property2": {
+              "summary": "string",
+              "description": "string",
+              "value": null,
+              "externalValue": "string"
+            }
+          }
+        },
+        "property2": {
+          "description": "string",
+          "required": false,
+          "deprecated": false,
+          "allowEmptyValue": false,
+          "style": "simple",
+          "explode": true,
+          "allowReserved": false,
+          "schema": {},
+          "content": {
+            "property1": {},
+            "property2": {}
+          },
+          "example": null,
+          "examples": {
+            "property1": {
+              "summary": "string",
+              "description": "string",
+              "value": null,
+              "externalValue": "string"
+            },
+            "property2": {
+              "summary": "string",
+              "description": "string",
+              "value": null,
+              "externalValue": "string"
+            }
+          }
+        }
+      },
+      "content": {
+        "property1": {
+          "schema": {},
+          "example": null,
+          "examples": {
+            "property1": {
+              "summary": "string",
+              "description": "string",
+              "value": null,
+              "externalValue": "string"
+            },
+            "property2": {
+              "summary": "string",
+              "description": "string",
+              "value": null,
+              "externalValue": "string"
+            }
+          },
+          "encoding": {
+            "property1": {},
+            "property2": {}
+          }
+        },
+        "property2": {
+          "schema": {},
+          "example": null,
+          "examples": {
+            "property1": {
+              "summary": "string",
+              "description": "string",
+              "value": null,
+              "externalValue": "string"
+            },
+            "property2": {
+              "summary": "string",
+              "description": "string",
+              "value": null,
+              "externalValue": "string"
+            }
+          },
+          "encoding": {
+            "property1": {},
+            "property2": {}
+          }
+        }
+      },
+      "links": {
+        "property1": {
+          "operationId": "string",
+          "operationRef": "string",
+          "parameters": {
+            "property1": null,
+            "property2": null
+          },
+          "requestBody": null,
+          "description": "string",
+          "server": {
+            "url": "string",
+            "description": "string",
+            "variables": {
+              "property1": {
+                "enum": [
+                  "string"
+                ],
+                "default": "string",
+                "description": "string"
+              },
+              "property2": {
+                "enum": [
+                  "string"
+                ],
+                "default": "string",
+                "description": "string"
+              }
+            }
+          }
+        },
+        "property2": {
+          "operationId": "string",
+          "operationRef": "string",
+          "parameters": {
+            "property1": null,
+            "property2": null
+          },
+          "requestBody": null,
+          "description": "string",
+          "server": {
+            "url": "string",
+            "description": "string",
+            "variables": {
+              "property1": {
+                "enum": [
+                  "string"
+                ],
+                "default": "string",
+                "description": "string"
+              },
+              "property2": {
+                "enum": [
+                  "string"
+                ],
+                "default": "string",
+                "description": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "callbacks": {
+    "property1": {
+      "property1": {},
+      "property2": {}
+    },
+    "property2": {
+      "property1": {},
+      "property2": {}
+    }
+  },
+  "deprecated": false,
+  "security": [
+    {
+      "property1": [
+        "string"
+      ],
+      "property2": [
+        "string"
+      ]
+    }
+  ],
+  "servers": [
+    {
+      "url": "string",
+      "description": "string",
+      "variables": {
+        "property1": {
+          "enum": [
+            "string"
+          ],
+          "default": "string",
+          "description": "string"
+        },
+        "property2": {
+          "enum": [
+            "string"
+          ],
+          "default": "string",
+          "description": "string"
+        }
+      }
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|tags|[string]|false|none|none|
+|summary|string|false|none|none|
+|description|string|false|none|none|
+|externalDocs|object|false|none|none|
+|operationId|string|false|none|none|
+|parameters|[object]|false|none|none|
+|requestBody|object|false|none|none|
+|responses|object|true|none|none|
+|callbacks|object|false|none|none|
+|deprecated|boolean|false|none|none|
+|security|[object]|false|none|none|
+|servers|[object]|false|none|none|

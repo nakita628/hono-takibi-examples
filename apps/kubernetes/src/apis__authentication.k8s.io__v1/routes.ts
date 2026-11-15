@@ -9,7 +9,7 @@ const IoK8sApimachineryPkgApisMetaV1TimeSchema = z.iso
   .openapi('IoK8sApimachineryPkgApisMetaV1Time')
 
 const IoK8sApimachineryPkgApisMetaV1FieldsV1Schema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       "FieldsV1 stores a set of fields in a data structure like a Trie, in JSON format.\n\nEach key is either a '.' representing the field itself, and will always map to an empty set, or a string representing a sub-field or item. The string will follow one of these four formats: 'f:<name>', where <name> is the name of a field in a struct, or key in a map 'v:<value>', where <value> is the exact json formatted value of a list item 'i:<index>', where <index> is position of a item in a list 'k:<keys>', where <keys> is a map of  a list item's key fields to their unique values If a key maps to an empty Fields value, the field that key represents is part of the set.\n\nThe exact format is defined in sigs.k8s.io/structured-merge-diff",
@@ -403,8 +403,9 @@ const IoK8sApiAuthenticationV1TokenReviewSchema = z
         description:
           "metadata is the standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata",
       }),
-    spec: IoK8sApiAuthenticationV1TokenReviewSpecSchema.default({}).openapi({
+    spec: IoK8sApiAuthenticationV1TokenReviewSpecSchema.openapi({
       description: 'spec holds information about the request being evaluated',
+      default: {},
     }),
     status: IoK8sApiAuthenticationV1TokenReviewStatusSchema.default({})
       .exactOptional()

@@ -1,5 +1,60 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const HeaderSchema = z
+  .object({
+    name: z.string().openapi({ description: 'Unique distinct name of this Header' }),
+    values: z.array(z.string()).openapi({ description: 'Values for this Header' }),
+  })
+  .openapi({
+    description: 'Transport headers for both Requests and Responses',
+    required: ['name', 'values'],
+  })
+  .openapi('Header')
+
+const RequestSchema = z
+  .object({
+    content: z.string().exactOptional().openapi({ description: 'Body content for this request' }),
+    headers: z
+      .array(HeaderSchema)
+      .exactOptional()
+      .openapi({ description: 'Headers for this Request' }),
+    id: z.string().exactOptional().openapi({ description: 'Unique identifier of Request' }),
+    name: z.string().openapi({ description: 'Unique distinct name of this Request' }),
+    operationId: z
+      .string()
+      .openapi({ description: 'Identifier of Operation this Request is associated to' }),
+    testCaseId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier of TestCase this Request is attached (in case of a test)',
+      }),
+  })
+  .openapi({ description: 'A mock invocation or test request', required: ['name', 'operationId'] })
+  .openapi('Request')
+
+const ResponseSchema = z
+  .object({
+    content: z.string().exactOptional().openapi({ description: 'Body content of this Response' }),
+    headers: z
+      .array(HeaderSchema)
+      .exactOptional()
+      .openapi({ description: 'Headers for this Response' }),
+    id: z.string().exactOptional().openapi({ description: 'Unique identifier of Response' }),
+    name: z.string().openapi({ description: 'Unique distinct name of this Response' }),
+    operationId: z
+      .string()
+      .openapi({ description: 'Identifier of Operation this Response is associated to' }),
+    testCaseId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier of TestCase this Response is attached (in case of a test)',
+      }),
+  })
+  .openapi({ description: 'A mock invocation or test response', required: ['operationId', 'name'] })
+  .openapi('Response')
+
 const AbstractExchangeSchema = z
   .object({
     type: z
@@ -12,18 +67,93 @@ const AbstractExchangeSchema = z
   })
   .openapi('AbstractExchange')
 
-const ArtifactUploadSchema = z
+const RequestResponsePairSchema = z
   .object({
-    file: z
-      .file()
-      .openapi({ type: 'string', format: 'binary', description: 'The artifact to upload' }),
+    request: RequestSchema.openapi({ description: 'The request part of the pair' }),
+    response: ResponseSchema.openapi({ description: 'The Response part of the pair' }),
+  })
+  .openapi({ required: ['request', 'response'] })
+  .and(AbstractExchangeSchema)
+  .openapi({ description: 'Request associated with corresponding Response' })
+  .openapi('RequestResponsePair')
+
+const EventMessageSchema = z
+  .object({
+    content: z.string().exactOptional().openapi({ description: 'Body content for this message' }),
+    headers: z
+      .array(HeaderSchema)
+      .exactOptional()
+      .openapi({ description: 'Headers for this message' }),
+    id: z.string().openapi({ description: 'Unique identifier of this message' }),
+    mediaType: z.string().openapi({ description: 'Content type of message' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Unique distinct name of this message' }),
+    operationId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Identifier of Operation this message is associated to' }),
+    testCaseId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier of TestCase this message is attached (in case of a test)',
+      }),
+  })
+  .openapi({ description: '', required: ['id', 'mediaType'] })
+  .openapi('EventMessage')
+
+const UnidirectionalEventSchema = z
+  .object({
+    eventMessage: EventMessageSchema.openapi({
+      description: 'Asynchronous message for this unidirectional event',
+    }),
+  })
+  .openapi({ required: ['eventMessage'] })
+  .and(AbstractExchangeSchema)
+  .openapi({ description: 'Representation of an unidirectional exchange as an event message' })
+  .openapi('UnidirectionalEvent')
+
+const ExchangeSchema = z
+  .xor([RequestResponsePairSchema, UnidirectionalEventSchema])
+  .openapi({
+    description:
+      'Abstract representation of a Service or API exchange type (request/response, event based, ...)',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        reqRespPair: '#/components/schemas/RequestResponsePair',
+        unidirEvent: '#/components/schemas/UnidirectionalEvent',
+      },
+    },
+  })
+  .openapi('Exchange')
+
+const MessageArraySchema = z
+  .array(ExchangeSchema)
+  .openapi({ description: 'Array of Message for Service operations' })
+  .openapi('MessageArray')
+
+const MetadataSchema = z
+  .object({
+    annotations: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Annotations of attached object' }),
+    createdOn: z.int().openapi({ description: 'Creation date of attached object' }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Labels put on attached object' }),
+    lastUpdate: z.int().openapi({ description: 'Last update of attached object' }),
   })
   .openapi({
     description:
-      'Artifact to be imported by Microcks.\nThis structure represents a mime-multipart file upload (as specified here: https://swagger.io/docs/specification/describing-request-body/file-upload/)',
-    required: ['file'],
+      'Commodity object for holding metadata on any entity. This object is inspired by Kubernetes metadata.',
+    required: ['createdOn', 'lastUpdate'],
   })
-  .openapi('ArtifactUpload')
+  .openapi('Metadata')
 
 const BindingSchema = z
   .object({
@@ -56,6 +186,122 @@ const BindingSchema = z
     required: ['type', 'destinationName'],
   })
   .openapi('Binding')
+
+const ParameterConstraintSchema = z
+  .object({
+    in: z
+      .enum(['path', 'query', 'header'])
+      .exactOptional()
+      .openapi({ description: 'Parameter location' }),
+    mustMatchRegexp: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Whether it's a regular expression matching constraint" }),
+    name: z.string().openapi({ description: 'Parameter name' }),
+    recopy: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: "Whether it's a recopy constraint" }),
+    required: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: "Whether it's a required constraint" }),
+  })
+  .openapi({
+    description:
+      'Companion object for Operation that may be used to express constraints on request parameters',
+    required: ['name'],
+  })
+  .openapi('ParameterConstraint')
+
+const OperationSchema = z
+  .object({
+    bindings: z
+      .record(z.string(), BindingSchema)
+      .exactOptional()
+      .openapi({ description: 'Map of protocol binding details for this operation' }),
+    defaultDelay: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Default response time delay for mocks' }),
+    dispatcher: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Dispatcher strategy used for mocks' }),
+    dispatcherRules: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'DispatcherRules used for mocks' }),
+    inputName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of input parameters in case of Xml based Service' }),
+    method: z.string().openapi({ description: 'Represents transport method' }),
+    name: z.string().openapi({ description: 'Unique name of this Operation within Service scope' }),
+    outputName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of output parameters in case of Xml based Service' }),
+    parameterContraints: z
+      .array(ParameterConstraintSchema)
+      .exactOptional()
+      .openapi({ description: 'Contraints that may apply to mock invocatino on this operation' }),
+    resourcePaths: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Paths the mocks endpoints are mapped on' }),
+  })
+  .openapi({ description: 'An Operation of a Service or API', required: ['name', 'method'] })
+  .openapi('Operation')
+
+const ServiceSchema = z
+  .object({
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Unique identifier for this Service or API' }),
+    metadata: MetadataSchema.exactOptional().openapi({ description: 'Metadata of Service' }),
+    name: z
+      .string()
+      .openapi({
+        description: 'Distinct name for this Service or API (maybe shared among many versions)',
+      }),
+    operations: z
+      .array(OperationSchema)
+      .exactOptional()
+      .openapi({ description: 'Set of Operations for Service or API' }),
+    type: z
+      .enum(['REST', 'SOAP_HTTP', 'GENERIC_REST', 'GENERIC_EVENT', 'EVENT', 'GRPC', 'GRAPHQL'])
+      .openapi({ description: 'Service or API Type' }),
+    version: z.string().openapi({ description: 'Distinct version for a named Service or API' }),
+    xmlNS: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Associated Xml Namespace in case of Xml based Service' }),
+  })
+  .openapi({
+    description: 'Represents a Service or API definition as registred into Microcks repository',
+    required: ['name', 'version', 'type'],
+  })
+  .openapi('Service')
+
+type ServiceViewType = {
+  messagesMap: { [key: string]: z.infer<typeof MessageArraySchema> }
+  service: z.infer<typeof ServiceSchema>
+}
+
+const ArtifactUploadSchema = z
+  .object({
+    file: z
+      .file()
+      .openapi({ type: 'string', format: 'binary', description: 'The artifact to upload' }),
+  })
+  .openapi({
+    description:
+      'Artifact to be imported by Microcks.\nThis structure represents a mime-multipart file upload (as specified here: https://swagger.io/docs/specification/describing-request-body/file-upload/)',
+    required: ['file'],
+  })
+  .openapi('ArtifactUpload')
 
 const CounterSchema = z
   .object({
@@ -113,124 +359,6 @@ const DailyInvocationStatisticSchema = z
     required: ['id', 'day', 'serviceName', 'serviceVersion', 'dailyCount'],
   })
   .openapi('DailyInvocationStatistic')
-
-const HeaderSchema = z
-  .object({
-    name: z.string().openapi({ description: 'Unique distinct name of this Header' }),
-    values: z.array(z.string()).openapi({ description: 'Values for this Header' }),
-  })
-  .openapi({
-    description: 'Transport headers for both Requests and Responses',
-    required: ['name', 'values'],
-  })
-  .openapi('Header')
-
-const EventMessageSchema = z
-  .object({
-    content: z.string().exactOptional().openapi({ description: 'Body content for this message' }),
-    headers: z
-      .array(HeaderSchema)
-      .exactOptional()
-      .openapi({ description: 'Headers for this message' }),
-    id: z.string().openapi({ description: 'Unique identifier of this message' }),
-    mediaType: z.string().openapi({ description: 'Content type of message' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Unique distinct name of this message' }),
-    operationId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Identifier of Operation this message is associated to' }),
-    testCaseId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Unique identifier of TestCase this message is attached (in case of a test)',
-      }),
-  })
-  .openapi({ description: '', required: ['id', 'mediaType'] })
-  .openapi('EventMessage')
-
-const RequestSchema = z
-  .object({
-    content: z.string().exactOptional().openapi({ description: 'Body content for this request' }),
-    headers: z
-      .array(HeaderSchema)
-      .exactOptional()
-      .openapi({ description: 'Headers for this Request' }),
-    id: z.string().exactOptional().openapi({ description: 'Unique identifier of Request' }),
-    name: z.string().openapi({ description: 'Unique distinct name of this Request' }),
-    operationId: z
-      .string()
-      .openapi({ description: 'Identifier of Operation this Request is associated to' }),
-    testCaseId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Unique identifier of TestCase this Request is attached (in case of a test)',
-      }),
-  })
-  .openapi({ description: 'A mock invocation or test request', required: ['name', 'operationId'] })
-  .openapi('Request')
-
-const ResponseSchema = z
-  .object({
-    content: z.string().exactOptional().openapi({ description: 'Body content of this Response' }),
-    headers: z
-      .array(HeaderSchema)
-      .exactOptional()
-      .openapi({ description: 'Headers for this Response' }),
-    id: z.string().exactOptional().openapi({ description: 'Unique identifier of Response' }),
-    name: z.string().openapi({ description: 'Unique distinct name of this Response' }),
-    operationId: z
-      .string()
-      .openapi({ description: 'Identifier of Operation this Response is associated to' }),
-    testCaseId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Unique identifier of TestCase this Response is attached (in case of a test)',
-      }),
-  })
-  .openapi({ description: 'A mock invocation or test response', required: ['operationId', 'name'] })
-  .openapi('Response')
-
-const RequestResponsePairSchema = z
-  .object({
-    request: RequestSchema.openapi({ description: 'The request part of the pair' }),
-    response: ResponseSchema.openapi({ description: 'The Response part of the pair' }),
-  })
-  .openapi({ required: ['request', 'response'] })
-  .and(AbstractExchangeSchema)
-  .openapi({ description: 'Request associated with corresponding Response' })
-  .openapi('RequestResponsePair')
-
-const UnidirectionalEventSchema = z
-  .object({
-    eventMessage: EventMessageSchema.openapi({
-      description: 'Asynchronous message for this unidirectional event',
-    }),
-  })
-  .openapi({ required: ['eventMessage'] })
-  .and(AbstractExchangeSchema)
-  .openapi({ description: 'Representation of an unidirectional exchange as an event message' })
-  .openapi('UnidirectionalEvent')
-
-const ExchangeSchema = z
-  .xor([RequestResponsePairSchema, UnidirectionalEventSchema])
-  .openapi({
-    description:
-      'Abstract representation of a Service or API exchange type (request/response, event based, ...)',
-    discriminator: {
-      mapping: {
-        reqRespPair: '#/components/schemas/RequestResponsePair',
-        unidirEvent: '#/components/schemas/UnidirectionalEvent',
-      },
-      propertyName: 'type',
-    },
-  })
-  .openapi('Exchange')
 
 const FeaturesConfigSchema = z
   .looseObject({
@@ -315,26 +443,6 @@ const HeaderDTOSchema = z
     required: ['name', 'values'],
   })
   .openapi('HeaderDTO')
-
-const MetadataSchema = z
-  .object({
-    annotations: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'Annotations of attached object' }),
-    createdOn: z.int().openapi({ description: 'Creation date of attached object' }),
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'Labels put on attached object' }),
-    lastUpdate: z.int().openapi({ description: 'Last update of attached object' }),
-  })
-  .openapi({
-    description:
-      'Commodity object for holding metadata on any entity. This object is inspired by Kubernetes metadata.',
-    required: ['createdOn', 'lastUpdate'],
-  })
-  .openapi('Metadata')
 
 const SecretRefSchema = z
   .object({
@@ -458,78 +566,6 @@ const LabelsMapSchema = z
   })
   .openapi('LabelsMap')
 
-const MessageArraySchema = z
-  .array(ExchangeSchema)
-  .openapi({ description: 'Array of Message for Service operations' })
-  .openapi('MessageArray')
-
-const ParameterConstraintSchema = z
-  .object({
-    in: z
-      .enum(['path', 'query', 'header'])
-      .exactOptional()
-      .openapi({ description: 'Parameter location' }),
-    mustMatchRegexp: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Whether it's a regular expression matching constraint" }),
-    name: z.string().openapi({ description: 'Parameter name' }),
-    recopy: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: "Whether it's a recopy constraint" }),
-    required: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: "Whether it's a required constraint" }),
-  })
-  .openapi({
-    description:
-      'Companion object for Operation that may be used to express constraints on request parameters',
-    required: ['name'],
-  })
-  .openapi('ParameterConstraint')
-
-const OperationSchema = z
-  .object({
-    bindings: z
-      .record(z.string(), BindingSchema)
-      .exactOptional()
-      .openapi({ description: 'Map of protocol binding details for this operation' }),
-    defaultDelay: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Default response time delay for mocks' }),
-    dispatcher: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Dispatcher strategy used for mocks' }),
-    dispatcherRules: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'DispatcherRules used for mocks' }),
-    inputName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name of input parameters in case of Xml based Service' }),
-    method: z.string().openapi({ description: 'Represents transport method' }),
-    name: z.string().openapi({ description: 'Unique name of this Operation within Service scope' }),
-    outputName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name of output parameters in case of Xml based Service' }),
-    parameterContraints: z
-      .array(ParameterConstraintSchema)
-      .exactOptional()
-      .openapi({ description: 'Contraints that may apply to mock invocatino on this operation' }),
-    resourcePaths: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Paths the mocks endpoints are mapped on' }),
-  })
-  .openapi({ description: 'An Operation of a Service or API', required: ['name', 'method'] })
-  .openapi('Operation')
-
 const OperationHeadersSchema = z
   .record(z.string(), z.array(HeaderDTOSchema))
   .openapi({
@@ -632,38 +668,7 @@ const SecretSchema = z
   })
   .openapi('Secret')
 
-const ServiceSchema = z
-  .object({
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Unique identifier for this Service or API' }),
-    metadata: MetadataSchema.exactOptional().openapi({ description: 'Metadata of Service' }),
-    name: z
-      .string()
-      .openapi({
-        description: 'Distinct name for this Service or API (maybe shared among many versions)',
-      }),
-    operations: z
-      .array(OperationSchema)
-      .exactOptional()
-      .openapi({ description: 'Set of Operations for Service or API' }),
-    type: z
-      .enum(['REST', 'SOAP_HTTP', 'GENERIC_REST', 'GENERIC_EVENT', 'EVENT', 'GRPC', 'GRAPHQL'])
-      .openapi({ description: 'Service or API Type' }),
-    version: z.string().openapi({ description: 'Distinct version for a named Service or API' }),
-    xmlNS: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Associated Xml Namespace in case of Xml based Service' }),
-  })
-  .openapi({
-    description: 'Represents a Service or API definition as registred into Microcks repository',
-    required: ['name', 'version', 'type'],
-  })
-  .openapi('Service')
-
-const ServiceViewSchema = z
+const ServiceViewSchema: z.ZodType<ServiceViewType> = z
   .object({
     messagesMap: z
       .record(z.string(), MessageArraySchema)
@@ -1073,16 +1078,13 @@ export const getExportRoute = createRoute({
         'application/json': { schema: z.file().openapi({ type: 'string', format: 'binary' }) },
       },
       headers: z.object({
-        'Content-Disposition': {
-          examples: { filename: { value: 'attachment; filename=microcks-repository.json' } },
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              examples: { filename: { value: 'attachment; filename=microcks-repository.json' } },
-              param: { required: false },
-            }),
-        },
+        'Content-Disposition': z
+          .string()
+          .exactOptional()
+          .openapi({
+            examples: ['attachment; filename=microcks-repository.json'],
+            param: { required: false },
+          }),
       }),
     },
   },

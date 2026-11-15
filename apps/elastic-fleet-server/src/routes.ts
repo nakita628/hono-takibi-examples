@@ -1,11 +1,7 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
 const ActionPolicyReassignSchema = z
-  .object({
-    policy_id: z
-      .string()
-      .openapi({ desription: 'The policy ID the agent has been reassigned to.' }),
-  })
+  .object({ policy_id: z.string() })
   .openapi({ description: 'The POLICY_REASSIGN action data.', required: ['policy_id'] })
   .openapi('ActionPolicyReassign')
 
@@ -93,7 +89,7 @@ const PolicyDataSchema = z
         'x-go-type-skip-optional-pointer': true,
       }),
     outputs: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -101,42 +97,42 @@ const PolicyDataSchema = z
         'x-go-type-skip-optional-pointer': true,
       }),
     inputs: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({
         description: 'A list of all inputs that the agent should run.',
         'x-go-type-skip-optional-pointer': true,
       }),
     extensions: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'OTel collector extensions.',
         'x-go-type-skip-optional-pointer': true,
       }),
     receivers: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'OTel collector receivers.',
         'x-go-type-skip-optional-pointer': true,
       }),
     processors: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'OTel collector processors.',
         'x-go-type-skip-optional-pointer': true,
       }),
     connectors: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'OTel collector connectors.',
         'x-go-type-skip-optional-pointer': true,
       }),
     exporters: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'OTel collector exporters.',
@@ -151,7 +147,7 @@ const PolicyDataSchema = z
         'x-go-type-skip-optional-pointer': true,
       }),
     agent: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -160,7 +156,7 @@ const PolicyDataSchema = z
       }),
     signed: ActionSignatureSchema.exactOptional(),
     output_permissions: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -168,7 +164,7 @@ const PolicyDataSchema = z
         'x-go-type-skip-optional-pointer': true,
       }),
     fleet: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Agent configuration to describe how to connect to fleet-server.',
@@ -226,7 +222,7 @@ const ActionSettingsSchema = z
   .openapi('ActionSettings')
 
 const ActionCancelSchema = z
-  .object({ target_id: z.string().openapi({ decription: 'The action to attempt to cancel.' }) })
+  .object({ target_id: z.string() })
   .openapi({ description: 'The CANCEL action data.', required: ['target_id'] })
   .openapi('ActionCancel')
 
@@ -251,7 +247,7 @@ const ActionRequestDiagnosticsSchema = z
   .openapi('ActionRequestDiagnostics')
 
 const ActionInputActionSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The INPUT_ACTION action data.' })
   .openapi('ActionInputAction')
 
@@ -318,42 +314,123 @@ const ActionRestartSchema = z
   .openapi({ description: 'The RESTART action data.' })
   .openapi('ActionRestart')
 
-type ActionType = {
-  agent_id: string
-  created_at: string
-  start_time?: string
-  expiration?: string
-  data:
-    | z.infer<typeof ActionPolicyReassignSchema>
-    | z.infer<typeof ActionPolicyChangeSchema>
-    | z.infer<typeof ActionUpgradeSchema>
-    | z.infer<typeof ActionUnenrollSchema>
-    | z.infer<typeof ActionSettingsSchema>
-    | z.infer<typeof ActionCancelSchema>
-    | z.infer<typeof ActionRequestDiagnosticsSchema>
-    | z.infer<typeof ActionInputActionSchema>
-    | z.infer<typeof ActionMigrateSchema>
-    | z.infer<typeof ActionPrivilegeLevelChangeSchema>
-    | z.infer<typeof ActionUninstallSchema>
-    | z.infer<typeof ActionRestartSchema>
-  id: string
-  traceparent?: string
-  type:
-    | 'UPGRADE'
-    | 'UNENROLL'
-    | 'POLICY_CHANGE'
-    | 'POLICY_REASSIGN'
-    | 'SETTINGS'
-    | 'INPUT_ACTION'
-    | 'CANCEL'
-    | 'REQUEST_DIAGNOSTICS'
-    | 'MIGRATE'
-    | 'PRIVILEGE_LEVEL_CHANGE'
-    | 'UNINSTALL'
-    | 'RESTART'
-  input_type: string
-  timeout?: bigint
-  signed?: z.infer<typeof ActionSignatureSchema>
+const ActionSchema = z
+  .object({
+    agent_id: z.string().openapi({ description: 'The agent ID.' }),
+    created_at: z.string().openapi({ description: 'Time when the action was created.' }),
+    start_time: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The earliest execution time for the action. Agent will not execute the action before this time. Used for scheduled actions.',
+        'x-go-custom-tag': 'yaml:"start_time"',
+        'x-oapi-codegen-extra-tags': { yaml: 'start_time' },
+      }),
+    expiration: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The latest start time for the action. Actions will be dropped by the agent if execution has not started by this time. Used for scheduled actions.',
+        'x-go-custom-tag': 'yaml:"expiration"',
+        'x-oapi-codegen-extra-tags': { yaml: 'expiration' },
+      }),
+    data: z
+      .xor([
+        ActionPolicyReassignSchema,
+        ActionPolicyChangeSchema,
+        ActionUpgradeSchema,
+        ActionUnenrollSchema,
+        ActionSettingsSchema,
+        ActionCancelSchema,
+        ActionRequestDiagnosticsSchema,
+        ActionInputActionSchema,
+        ActionMigrateSchema,
+        ActionPrivilegeLevelChangeSchema,
+        ActionUninstallSchema,
+        ActionRestartSchema,
+      ])
+      .openapi({
+        description: 'An embedded action-specific object.',
+        'x-go-custom-tag': 'yaml:"data"',
+        'x-go-type-skip-optional-pointer': true,
+        'x-oapi-codegen-extra-tags': { yaml: 'data' },
+      }),
+    id: z
+      .string()
+      .openapi({
+        description: 'The action ID.',
+        'x-go-custom-tag': 'yaml:"action_id"',
+        'x-oapi-codegen-extra-tags': { yaml: 'action_id' },
+      }),
+    traceparent: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'APM traceparent for the action.',
+        'x-go-custom-tag': 'yaml:"traceparent"',
+        'x-oapi-codegen-extra-tags': { yaml: 'traceparent' },
+      }),
+    type: z
+      .enum([
+        'UPGRADE',
+        'UNENROLL',
+        'POLICY_CHANGE',
+        'POLICY_REASSIGN',
+        'SETTINGS',
+        'INPUT_ACTION',
+        'CANCEL',
+        'REQUEST_DIAGNOSTICS',
+        'MIGRATE',
+        'PRIVILEGE_LEVEL_CHANGE',
+        'UNINSTALL',
+        'RESTART',
+      ])
+      .openapi({
+        description:
+          'The action type. If fleet-server encounters an action that does not have a type listed below it will be filtered out and an error will be logged.',
+        'x-go-custom-tag': 'yaml:"type"',
+        'x-oapi-codegen-extra-tags': { yaml: 'type' },
+      }),
+    input_type: z
+      .string()
+      .openapi({
+        description: 'The input type of the action for actions with type `INPUT_ACTION`.',
+        'x-go-custom-tag': 'yaml:"input_type"',
+        'x-oapi-codegen-extra-tags': { yaml: 'input_type' },
+      }),
+    timeout: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The timeout value (in seconds) for actions with type `INPUT_ACTION`.',
+        'x-go-custom-tag': 'yaml:"timeout"',
+        'x-oapi-codegen-extra-tags': { yaml: 'timeout' },
+      }),
+    signed: ActionSignatureSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      "An action for an elastic-agent.\nThe structure of the `data` attribute will vary between action types.\nmodel/schema.json has a looser definition of actions and it define's fleet-server's interactions with Elasticsearch when retrieving actions.\n",
+    required: ['agent_id', 'created_at', 'data', 'id', 'type', 'input_type'],
+  })
+  .openapi('Action')
+
+type CheckinResponseType = {
+  ack_token?: string
+  action: string
+  actions?: z.infer<typeof ActionSchema>[]
 }
 
 const ErrorSchema = z
@@ -538,7 +615,7 @@ const EnrollResponseItemSchema = z
         'x-go-type-skip-optional-pointer': true,
       }),
     actions: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({
         deprecated: true,
@@ -793,123 +870,7 @@ const CheckinRequestSchema = z
   .openapi({ required: ['status', 'message'] })
   .openapi('CheckinRequest')
 
-const ActionSchema: z.ZodType<ActionType> = z
-  .lazy(() =>
-    z
-      .object({
-        agent_id: z.string().openapi({ description: 'The agent ID.' }),
-        created_at: z.string().openapi({ description: 'Time when the action was created.' }),
-        start_time: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The earliest execution time for the action. Agent will not execute the action before this time. Used for scheduled actions.',
-            'x-go-custom-tag': 'yaml:"start_time"',
-            'x-oapi-codegen-extra-tags': { yaml: 'start_time' },
-          }),
-        expiration: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The latest start time for the action. Actions will be dropped by the agent if execution has not started by this time. Used for scheduled actions.',
-            'x-go-custom-tag': 'yaml:"expiration"',
-            'x-oapi-codegen-extra-tags': { yaml: 'expiration' },
-          }),
-        data: z
-          .xor([
-            ActionPolicyReassignSchema,
-            ActionPolicyChangeSchema,
-            ActionUpgradeSchema,
-            ActionUnenrollSchema,
-            ActionSettingsSchema,
-            ActionCancelSchema,
-            ActionRequestDiagnosticsSchema,
-            ActionInputActionSchema,
-            ActionMigrateSchema,
-            ActionPrivilegeLevelChangeSchema,
-            ActionUninstallSchema,
-            ActionRestartSchema,
-          ])
-          .openapi({
-            description: 'An embedded action-specific object.',
-            'x-go-custom-tag': 'yaml:"data"',
-            'x-go-type-skip-optional-pointer': true,
-            'x-oapi-codegen-extra-tags': { yaml: 'data' },
-          }),
-        id: z
-          .string()
-          .openapi({
-            description: 'The action ID.',
-            'x-go-custom-tag': 'yaml:"action_id"',
-            'x-oapi-codegen-extra-tags': { yaml: 'action_id' },
-          }),
-        traceparent: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'APM traceparent for the action.',
-            'x-go-custom-tag': 'yaml:"traceparent"',
-            'x-oapi-codegen-extra-tags': { yaml: 'traceparent' },
-          }),
-        type: z
-          .enum([
-            'UPGRADE',
-            'UNENROLL',
-            'POLICY_CHANGE',
-            'POLICY_REASSIGN',
-            'SETTINGS',
-            'INPUT_ACTION',
-            'CANCEL',
-            'REQUEST_DIAGNOSTICS',
-            'MIGRATE',
-            'PRIVILEGE_LEVEL_CHANGE',
-            'UNINSTALL',
-            'RESTART',
-          ])
-          .openapi({
-            description:
-              'The action type. If fleet-server encounters an action that does not have a type listed below it will be filtered out and an error will be logged.',
-            'x-go-custom-tag': 'yaml:"type"',
-            'x-oapi-codegen-extra-tags': { yaml: 'type' },
-          }),
-        input_type: z
-          .string()
-          .openapi({
-            description: 'The input type of the action for actions with type `INPUT_ACTION`.',
-            'x-go-custom-tag': 'yaml:"input_type"',
-            'x-oapi-codegen-extra-tags': { yaml: 'input_type' },
-          }),
-        timeout: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description: 'The timeout value (in seconds) for actions with type `INPUT_ACTION`.',
-            'x-go-custom-tag': 'yaml:"timeout"',
-            'x-oapi-codegen-extra-tags': { yaml: 'timeout' },
-          }),
-        signed: ActionSignatureSchema.exactOptional(),
-      })
-      .openapi({
-        description:
-          "An action for an elastic-agent.\nThe structure of the `data` attribute will vary between action types.\nmodel/schema.json has a looser definition of actions and it define's fleet-server's interactions with Elasticsearch when retrieving actions.\n",
-        required: ['agent_id', 'created_at', 'data', 'id', 'type', 'input_type'],
-      }),
-  )
-  .openapi('Action')
-
-const CheckinResponseSchema = z
+const CheckinResponseSchema: z.ZodType<CheckinResponseType> = z
   .object({
     ack_token: z
       .string()
@@ -1284,7 +1245,7 @@ const ApiVersionHeaderSchema = z
   .exactOptional()
   .openapi({
     description: 'The API version the server is using to respond.',
-    examples: { '2023-06-01': { value: '2023-06-01' } },
+    examples: ['2023-06-01'],
     param: { required: false },
   })
 
@@ -1847,22 +1808,15 @@ export const postApiFleetAgentsIdCheckinRoute = createRoute({
         },
       },
       headers: z.object({
-        'Content-Encoding': {
-          description:
-            "Present when fleet-server has gzip-compressed the response body.\nCompression is applied when all three conditions are met: the serialised\nresponse exceeds the configured compression threshold, the server compression\nlevel is not NoCompression, and the request's Accept-Encoding header\nadvertises gzip support.\n",
-          examples: { gzip: { description: 'Response body is gzip-compressed.', value: 'gzip' } },
-          schema: z
-            .literal('gzip')
-            .exactOptional()
-            .openapi({
-              description:
-                "Present when fleet-server has gzip-compressed the response body.\nCompression is applied when all three conditions are met: the serialised\nresponse exceeds the configured compression threshold, the server compression\nlevel is not NoCompression, and the request's Accept-Encoding header\nadvertises gzip support.\n",
-              examples: {
-                gzip: { description: 'Response body is gzip-compressed.', value: 'gzip' },
-              },
-              param: { required: false },
-            }),
-        },
+        'Content-Encoding': z
+          .literal('gzip')
+          .exactOptional()
+          .openapi({
+            description:
+              "Present when fleet-server has gzip-compressed the response body.\nCompression is applied when all three conditions are met: the serialised\nresponse exceeds the configured compression threshold, the server compression\nlevel is not NoCompression, and the request's Accept-Encoding header\nadvertises gzip support.\n",
+            examples: ['gzip'],
+            param: { required: false },
+          }),
         'Elastic-Api-Version': ApiVersionHeaderSchema,
         'X-Request-Id': RequestIDHeaderSchema,
       }),
@@ -2250,19 +2204,15 @@ export const getApiFleetFileIdRoute = createRoute({
       description: 'File Contents.',
       content: { '*/*': { schema: z.file().openapi({ type: 'string', format: 'binary' }) } },
       headers: z.object({
-        'X-File-Sha2': {
-          description:
-            'SHA256 digest of the file contents. Only sent when the uploaded file contains a file.hash.sha256 value.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'SHA256 digest of the file contents. Only sent when the uploaded file contains a file.hash.sha256 value.',
-              param: { required: false },
-              examples: ['0c4a81b85a6b7ff00bde6c32e1e8be33b4b793b3b7b5cb03db93f77f7c9374d1'],
-            }),
-        },
+        'X-File-Sha2': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'SHA256 digest of the file contents. Only sent when the uploaded file contains a file.hash.sha256 value.',
+            param: { required: false },
+            examples: ['0c4a81b85a6b7ff00bde6c32e1e8be33b4b793b3b7b5cb03db93f77f7c9374d1'],
+          }),
         'Elastic-Api-Version': ApiVersionHeaderSchema,
         'X-Request-Id': RequestIDHeaderSchema,
       }),
@@ -2270,17 +2220,14 @@ export const getApiFleetFileIdRoute = createRoute({
     206: {
       description: 'Partial File Contents',
       headers: z.object({
-        'Content-Range': {
-          description: 'Byte range of returned file section',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Byte range of returned file section',
-              param: { required: false },
-              examples: ['500-4096/250000'],
-            }),
-        },
+        'Content-Range': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Byte range of returned file section',
+            param: { required: false },
+            examples: ['500-4096/250000'],
+          }),
         'Elastic-Api-Version': ApiVersionHeaderSchema,
         'X-Request-Id': RequestIDHeaderSchema,
       }),

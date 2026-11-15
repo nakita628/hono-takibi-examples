@@ -1,5 +1,60 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const AppSchema: z.ZodType<AppType> = z
+  .lazy(() =>
+    z
+      .object({
+        admin: UserSchema.exactOptional(),
+        config: z.array(z.any()).exactOptional(),
+        hostname_alias: z
+          .hostname()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Specific hostname for this app. To use default URI, null this param',
+          }),
+        id: z.int().exactOptional().openapi({ readOnly: true }),
+        last_access_at: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({ readOnly: true }),
+        last_user: UserSchema.exactOptional(),
+        organization: SinaoOrganizationSchema.exactOptional(),
+        policies: z.array(UserPolicySchema).exactOptional(),
+        subscription: SubscriptionSchema.exactOptional(),
+        url: z
+          .url()
+          .exactOptional()
+          .openapi({
+            description: 'URI to this app. Can be overwrited by hostname_alias param',
+            readOnly: true,
+          }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi('App')
+
+type PolicyProfileType = {
+  description?: string
+  homepage?: string
+  name?: string
+  restricted?: boolean
+  rights?: string[]
+  visible?: number
+}
+
+const PolicyProfileSchema: z.ZodType<PolicyProfileType> = z
+  .object({
+    description: z.string().exactOptional(),
+    homepage: z.url().exactOptional(),
+    name: z.string().exactOptional(),
+    restricted: z.boolean().exactOptional(),
+    rights: z.array(z.string()).exactOptional().openapi({ description: 'Routes list' }),
+    visible: z.int().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('PolicyProfile')
+
 const EstablishmentIdentitySchema = z
   .object({
     emails: z.array(z.email()).exactOptional(),
@@ -94,6 +149,16 @@ const UserSchema: z.ZodType<UserType> = PersonIdentitySchema.and(
     })
     .openapi({ required: [] }),
 ).openapi('User')
+
+type AccessInvitationType = {
+  app?: z.infer<typeof AppSchema>
+  id?: number
+  profile?: z.infer<typeof PolicyProfileSchema>
+  recipient_user?: z.infer<typeof UserSchema>
+  sender_user?: z.infer<typeof UserSchema>
+  used_at?: string
+  validity?: string
+}
 
 const SinaoOrganizationSchema: z.ZodType<SinaoOrganizationType> = z
   .lazy(() =>
@@ -401,8 +466,8 @@ const SalesDocumentContractSchema: z.ZodType<SalesDocumentContractType> = z
             due: z.int().exactOptional(),
             subtotal: z
               .object({
-                by_account: z.array(z.object({})).exactOptional(),
-                by_vat: z.array(z.object({})).exactOptional(),
+                by_account: z.array(z.looseObject({})).exactOptional(),
+                by_vat: z.array(z.looseObject({})).exactOptional(),
                 total: z.int().exactOptional(),
               })
               .exactOptional()
@@ -412,8 +477,8 @@ const SalesDocumentContractSchema: z.ZodType<SalesDocumentContractType> = z
                 total: z.int().exactOptional(),
                 vat: z
                   .object({
-                    by_account: z.array(z.object({})).exactOptional(),
-                    by_vat: z.array(z.object({})).exactOptional(),
+                    by_account: z.array(z.looseObject({})).exactOptional(),
+                    by_vat: z.array(z.looseObject({})).exactOptional(),
                     total: z.int().exactOptional(),
                   })
                   .exactOptional()
@@ -499,120 +564,37 @@ type InvoiceType = z.infer<typeof SalesDocumentContractSchema> & {
   status?: 'draft' | 'final' | 'paid'
 }
 
-type PolicyProfileType = {
-  description?: string
-  homepage?: string
-  name?: string
-  restricted?: boolean
-  rights?: string[]
-  visible?: number
-}
-
-const ProductCategorySchema: z.ZodType<ProductCategoryType> = z
+const InvoiceSchema: z.ZodType<InvoiceType> = z
   .lazy(() =>
-    z
-      .object({
-        id: z.int().exactOptional().openapi({ readOnly: true }),
-        image: z
-          .xor([z.file().openapi({ type: 'string', format: 'binary' }), z.url()])
-          .exactOptional(),
-        name: z.string().exactOptional(),
-        parent: ProductCategorySchema.exactOptional(),
-        products: ProductSchema.exactOptional(),
-      })
-      .openapi({ required: [] }),
+    SalesDocumentContractSchema.and(
+      z
+        .object({
+          avoid_of: InvoiceSchema.exactOptional(),
+          delivered_at: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+          downpayments: z.array(InvoiceSchema).exactOptional(),
+          invoice_of: QuoteSchema.exactOptional(),
+          paid_at: z.iso.datetime({ offset: true }).exactOptional(),
+          payment_methods: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Accepted methods of payment for this invoice. Methods comma separated',
+            }),
+          payment_period: z
+            .int()
+            .exactOptional()
+            .openapi({ description: 'Days count before considere this invoice as late' }),
+          related_recurring_invoice: RecurringInvoiceSchema.exactOptional(),
+          sepa_direct_debit_exported_at: z.iso
+            .datetime({ offset: true })
+            .nullable()
+            .exactOptional(),
+          status: z.enum(['draft', 'final', 'paid']).exactOptional(),
+        })
+        .openapi({ required: [] }),
+    ),
   )
-  .openapi('ProductCategory')
-
-type ProductType = {
-  accounting_number?: string
-  amount_accurately?: number
-  category?: z.infer<typeof ProductCategorySchema>
-  currency?: string
-  description?: string
-  id?: number
-  image?: string | string
-  intangible?: boolean
-  lifetime?: number
-  metadata?: unknown[] | null
-  name?: string
-  quantity_name?: string
-  reference?: string
-  tags?: string[]
-  unity?: string
-  vat_percent?: number
-}
-
-const ProductSchema: z.ZodType<ProductType> = z
-  .lazy(() =>
-    z
-      .object({
-        accounting_number: z.string().exactOptional(),
-        amount_accurately: z
-          .int()
-          .exactOptional()
-          .openapi({ description: 'Price without taxes in milli-cents' }),
-        category: ProductCategorySchema.exactOptional(),
-        currency: z.string().exactOptional(),
-        description: z.string().exactOptional(),
-        id: z.int().exactOptional().openapi({ readOnly: true }),
-        image: z
-          .xor([z.file().openapi({ type: 'string', format: 'binary' }), z.url()])
-          .exactOptional(),
-        intangible: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'Is a service or a product ?' }),
-        lifetime: z.int().exactOptional().openapi({ description: 'Product life time in seconds' }),
-        metadata: z.array(z.any()).nullable().exactOptional(),
-        name: z.string().exactOptional(),
-        quantity_name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Name of the quantity: days, liters, m2, m3...' }),
-        reference: z.string().exactOptional(),
-        tags: z.array(z.string()).exactOptional(),
-        unity: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Unity, hours, days, meters, liters..' }),
-        vat_percent: z.int().exactOptional().openapi({ description: 'VAT rate in cents' }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('Product')
-
-type ProductCategoryType = {
-  id?: number
-  image?: string | string
-  name?: string
-  parent?: ProductCategoryType
-  products?: z.infer<typeof ProductSchema>
-}
-
-const ProductStocksMovementSchema: z.ZodType<ProductStocksMovementType> = z
-  .lazy(() =>
-    z
-      .object({
-        description: z.string().exactOptional(),
-        future_return_date: z.iso.datetime({ offset: true }).exactOptional(),
-        id: z.int().exactOptional().openapi({ readOnly: true }),
-        invoice: InvoiceSchema.exactOptional(),
-        moved_at: z.iso.datetime({ offset: true }).exactOptional(),
-        product_stock: ProductStockSchema.exactOptional(),
-        quantity: z.int().exactOptional().openapi({ readOnly: true }),
-        type: z
-          .enum(['buy', 'sell', 'back', 'temporaryexit', 'destruct'])
-          .exactOptional()
-          .openapi({ readOnly: true }),
-        use_duration: z
-          .int()
-          .exactOptional()
-          .openapi({ description: 'Usage duration in seconds', readOnly: true }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('ProductStocksMovement')
+  .openapi('Invoice')
 
 const AccountSchema = z
   .object({
@@ -746,7 +728,7 @@ const PurchaseSchema: z.ZodType<PurchaseType> = z
       .string()
       .exactOptional()
       .openapi({ description: 'Name visible on the accounting entries of the purchase' }),
-    vat_detail: z.object({}).exactOptional().openapi({ description: 'VAT breakdown' }),
+    vat_detail: z.looseObject({}).exactOptional().openapi({ description: 'VAT breakdown' }),
     vat_repayment: z
       .enum(['payment', 'billing'])
       .exactOptional()
@@ -764,11 +746,170 @@ const PurchaseSchema: z.ZodType<PurchaseType> = z
   .openapi({ required: [] })
   .openapi('Purchase')
 
+const CashflowSourceSchema: z.ZodType<CashflowSourceType> = z
+  .lazy(() =>
+    z
+      .object({
+        account_type: z.string().exactOptional(),
+        balance_amount: z.int().exactOptional(),
+        created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+        disabled: z.int().exactOptional(),
+        id: z.int().exactOptional(),
+        identifiant: z.string().exactOptional(),
+        name: z.string().exactOptional(),
+        parent_cashflow_source: CashflowSourceSchema.exactOptional(),
+        status: z.string().exactOptional(),
+        type: z.string().exactOptional(),
+        updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi('CashflowSource')
+
+const ContactPersonSchema: z.ZodType<ContactPersonType> =
+  PersonIdentitySchema.openapi('ContactPerson')
+
+const TransactionSchema = z
+  .object({
+    amount: z.int().exactOptional(),
+    author: UserSchema.exactOptional(),
+    cashflow_source: CashflowSourceSchema.exactOptional(),
+    contact: z.xor([ContactPersonSchema, ContactOrganizationSchema]).exactOptional(),
+    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    deleted_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    details: z.int().exactOptional(),
+    id: z.int().exactOptional(),
+    label: z.int().exactOptional(),
+    lettered_at: z.iso.datetime({ offset: true }).exactOptional(),
+    metadata: z.array(z.any()).nullable().exactOptional(),
+    method: z.int().exactOptional(),
+    received_at: z.iso.datetime({ offset: true }).exactOptional(),
+    updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({ required: [] })
+  .openapi('Transaction')
+
+type PaymentType = {
+  amount?: number
+  date?: string
+  document?: z.infer<typeof InvoiceSchema> | z.infer<typeof PurchaseSchema>
+  document_type?: 'sales' | 'purchase'
+  id?: number
+  source?: 'bank' | 'cashdesk' | 'creditnote'
+  transaction?: z.infer<typeof TransactionSchema>
+}
+
+const ProductCategorySchema: z.ZodType<ProductCategoryType> = z
+  .lazy(() =>
+    z
+      .object({
+        id: z.int().exactOptional().openapi({ readOnly: true }),
+        image: z
+          .xor([z.file().openapi({ type: 'string', format: 'binary' }), z.url()])
+          .exactOptional(),
+        name: z.string().exactOptional(),
+        parent: ProductCategorySchema.exactOptional(),
+        products: ProductSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi('ProductCategory')
+
+type ProductType = {
+  accounting_number?: string
+  amount_accurately?: number
+  category?: z.infer<typeof ProductCategorySchema>
+  currency?: string
+  description?: string
+  id?: number
+  image?: File | string
+  intangible?: boolean
+  lifetime?: number
+  metadata?: unknown[] | null
+  name?: string
+  quantity_name?: string
+  reference?: string
+  tags?: string[]
+  unity?: string
+  vat_percent?: number
+}
+
+const ProductSchema: z.ZodType<ProductType> = z
+  .lazy(() =>
+    z
+      .object({
+        accounting_number: z.string().exactOptional(),
+        amount_accurately: z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Price without taxes in milli-cents' }),
+        category: ProductCategorySchema.exactOptional(),
+        currency: z.string().exactOptional(),
+        description: z.string().exactOptional(),
+        id: z.int().exactOptional().openapi({ readOnly: true }),
+        image: z
+          .xor([z.file().openapi({ type: 'string', format: 'binary' }), z.url()])
+          .exactOptional(),
+        intangible: z
+          .boolean()
+          .exactOptional()
+          .openapi({ description: 'Is a service or a product ?' }),
+        lifetime: z.int().exactOptional().openapi({ description: 'Product life time in seconds' }),
+        metadata: z.array(z.any()).nullable().exactOptional(),
+        name: z.string().exactOptional(),
+        quantity_name: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Name of the quantity: days, liters, m2, m3...' }),
+        reference: z.string().exactOptional(),
+        tags: z.array(z.string()).exactOptional(),
+        unity: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Unity, hours, days, meters, liters..' }),
+        vat_percent: z.int().exactOptional().openapi({ description: 'VAT rate in cents' }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi('Product')
+
+type ProductCategoryType = {
+  id?: number
+  image?: File | string
+  name?: string
+  parent?: ProductCategoryType
+  products?: z.infer<typeof ProductSchema>
+}
+
+const ProductStocksMovementSchema: z.ZodType<ProductStocksMovementType> = z
+  .lazy(() =>
+    z
+      .object({
+        description: z.string().exactOptional(),
+        future_return_date: z.iso.datetime({ offset: true }).exactOptional(),
+        id: z.int().exactOptional().openapi({ readOnly: true }),
+        invoice: InvoiceSchema.exactOptional(),
+        moved_at: z.iso.datetime({ offset: true }).exactOptional(),
+        product_stock: ProductStockSchema.exactOptional(),
+        quantity: z.int().exactOptional().openapi({ readOnly: true }),
+        type: z
+          .enum(['buy', 'sell', 'back', 'temporaryexit', 'destruct'])
+          .exactOptional()
+          .openapi({ readOnly: true }),
+        use_duration: z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Usage duration in seconds', readOnly: true }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi('ProductStocksMovement')
+
 const SalesLineSchema: z.ZodType<SalesLineType> = z
   .lazy(() =>
     z
       .object({
-        account: z.object({}).exactOptional(),
+        account: z.looseObject({}).exactOptional(),
         action: z.enum(['sell', 'rent']).exactOptional(),
         amount: z.int().exactOptional().openapi({ description: 'Price without taxes in cents' }),
         amount_accurately: z
@@ -861,38 +1002,6 @@ type ProductStockType = {
   use_duration?: number
 }
 
-const InvoiceSchema: z.ZodType<InvoiceType> = z
-  .lazy(() =>
-    SalesDocumentContractSchema.and(
-      z
-        .object({
-          avoid_of: InvoiceSchema.exactOptional(),
-          delivered_at: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-          downpayments: z.array(InvoiceSchema).exactOptional(),
-          invoice_of: QuoteSchema.exactOptional(),
-          paid_at: z.iso.datetime({ offset: true }).exactOptional(),
-          payment_methods: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Accepted methods of payment for this invoice. Methods comma separated',
-            }),
-          payment_period: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Days count before considere this invoice as late' }),
-          related_recurring_invoice: RecurringInvoiceSchema.exactOptional(),
-          sepa_direct_debit_exported_at: z.iso
-            .datetime({ offset: true })
-            .nullable()
-            .exactOptional(),
-          status: z.enum(['draft', 'final', 'paid']).exactOptional(),
-        })
-        .openapi({ required: [] }),
-    ),
-  )
-  .openapi('Invoice')
-
 const ProductStockSchema: z.ZodType<ProductStockType> = z
   .lazy(() =>
     z
@@ -958,9 +1067,6 @@ const BankDetailsSchema: z.ZodType<BankDetailsType> = z
   .openapi({ required: [] })
   .openapi('BankDetails')
 
-const ContactPersonSchema: z.ZodType<ContactPersonType> =
-  PersonIdentitySchema.openapi('ContactPerson')
-
 type SalesDocumentContractType = {
   attachments?: string[]
   author?: z.infer<typeof UserSchema>
@@ -999,7 +1105,7 @@ type SalesDocumentContractType = {
   note?: string | null
   number?: string
   reference?: string
-  tags?: { [key: string]: unknown }[]
+  tags?: unknown[]
   third_account?: {
     address?: string
     id?: number
@@ -1029,6 +1135,13 @@ type SalesDocumentContractType = {
   written_at?: string
 }
 
+type SalesDocumentModelType = {
+  id?: number
+  json?: z.infer<typeof SalesLineSchema>[]
+  name?: string
+  title?: string
+}
+
 type SalesLineType = {
   account?: { [key: string]: unknown }
   action?: 'sell' | 'rent'
@@ -1050,55 +1163,9 @@ type SalesLineType = {
   vat_percent?: number
 }
 
-const AppSchema: z.ZodType<AppType> = z
-  .lazy(() =>
-    z
-      .object({
-        admin: UserSchema.exactOptional(),
-        config: z.array(z.any()).exactOptional(),
-        hostname_alias: z
-          .hostname()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Specific hostname for this app. To use default URI, null this param',
-          }),
-        id: z.int().exactOptional().openapi({ readOnly: true }),
-        last_access_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({ readOnly: true }),
-        last_user: UserSchema.exactOptional(),
-        organization: SinaoOrganizationSchema.exactOptional(),
-        policies: z.array(UserPolicySchema).exactOptional(),
-        subscription: SubscriptionSchema.exactOptional(),
-        url: z
-          .url()
-          .exactOptional()
-          .openapi({
-            description: 'URI to this app. Can be overwrited by hostname_alias param',
-            readOnly: true,
-          }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('App')
-
 type SinaoOrganizationType = z.infer<typeof OrganizationIdentitySchema> & {
   app?: z.infer<typeof AppSchema>
 }
-
-const PolicyProfileSchema: z.ZodType<PolicyProfileType> = z
-  .object({
-    description: z.string().exactOptional(),
-    homepage: z.url().exactOptional(),
-    name: z.string().exactOptional(),
-    restricted: z.boolean().exactOptional(),
-    rights: z.array(z.string()).exactOptional().openapi({ description: 'Routes list' }),
-    visible: z.int().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('PolicyProfile')
 
 type UserPolicyType = {
   app?: z.infer<typeof AppSchema>
@@ -1106,7 +1173,7 @@ type UserPolicyType = {
   user?: z.infer<typeof UserSchema>
 }
 
-const AccessInvitationSchema = z
+const AccessInvitationSchema: z.ZodType<AccessInvitationType> = z
   .object({
     app: AppSchema.exactOptional(),
     id: z.int().exactOptional(),
@@ -1149,26 +1216,6 @@ const AttachmentSchema = z
   .openapi({ required: [] })
   .openapi('Attachment')
 
-const CashflowSourceSchema: z.ZodType<CashflowSourceType> = z
-  .lazy(() =>
-    z
-      .object({
-        account_type: z.string().exactOptional(),
-        balance_amount: z.int().exactOptional(),
-        created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-        disabled: z.int().exactOptional(),
-        id: z.int().exactOptional(),
-        identifiant: z.string().exactOptional(),
-        name: z.string().exactOptional(),
-        parent_cashflow_source: CashflowSourceSchema.exactOptional(),
-        status: z.string().exactOptional(),
-        type: z.string().exactOptional(),
-        updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('CashflowSource')
-
 const ExportEntitySchema = z
   .object({
     created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
@@ -1210,27 +1257,7 @@ const JsonWebTokenSchema = z
   .openapi({ required: [] })
   .openapi('JsonWebToken')
 
-const TransactionSchema = z
-  .object({
-    amount: z.int().exactOptional(),
-    author: UserSchema.exactOptional(),
-    cashflow_source: CashflowSourceSchema.exactOptional(),
-    contact: z.xor([ContactPersonSchema, ContactOrganizationSchema]).exactOptional(),
-    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    deleted_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    details: z.int().exactOptional(),
-    id: z.int().exactOptional(),
-    label: z.int().exactOptional(),
-    lettered_at: z.iso.datetime({ offset: true }).exactOptional(),
-    metadata: z.array(z.any()).nullable().exactOptional(),
-    method: z.int().exactOptional(),
-    received_at: z.iso.datetime({ offset: true }).exactOptional(),
-    updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-  })
-  .openapi({ required: [] })
-  .openapi('Transaction')
-
-const PaymentSchema = z
+const PaymentSchema: z.ZodType<PaymentType> = z
   .object({
     amount: z.int().exactOptional(),
     date: z.iso.datetime({ offset: true }).exactOptional(),
@@ -1338,7 +1365,7 @@ const SEPAMandateSchema = z
   .openapi({ required: [] })
   .openapi('SEPAMandate')
 
-const SalesDocumentModelSchema = z
+const SalesDocumentModelSchema: z.ZodType<SalesDocumentModelType> = z
   .object({
     id: z.int().exactOptional(),
     json: z.array(SalesLineSchema).exactOptional(),
@@ -1731,7 +1758,7 @@ const OrderParamsSchema = z
   })
 
 const RelationshipParamsSchema = z
-  .object({})
+  .looseObject({})
   .nullable()
   .exactOptional()
   .openapi({
@@ -2895,7 +2922,7 @@ export const getAppsAppIdApikeysRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Success', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'Success', content: { 'application/json': { schema: z.looseObject({}) } } },
     404: { description: 'App not found' },
   },
   security: [{}, { is_admin: [] }],
@@ -2997,7 +3024,7 @@ export const getAppsAppIdApipartnersRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Success', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'Success', content: { 'application/json': { schema: z.looseObject({}) } } },
     404: { description: 'App not found' },
   },
   security: [{}],
@@ -3549,7 +3576,7 @@ export const getAppsAppIdBanksIndexRoute = createRoute({
   operationId: 'app.cashflow.banks.list',
   request: { params: z.object({ appId: AppIdParamsSchema }) },
   responses: {
-    200: { description: 'Success', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'Success', content: { 'application/json': { schema: z.looseObject({}) } } },
     404: { description: 'Not found' },
   },
   security: [{}],
@@ -3582,7 +3609,7 @@ export const deleteAppsAppIdBanksIndexRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Success', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'Success', content: { 'application/json': { schema: z.looseObject({}) } } },
     404: { description: 'Not found' },
   },
   security: [{}, {}],
@@ -5424,7 +5451,7 @@ export const postAppsAppIdInvoicesRoute = createRoute({
               z.array(
                 z
                   .object({
-                    account: z.object({}).exactOptional(),
+                    account: z.looseObject({}).exactOptional(),
                     action: z.enum(['sell', 'rent']).exactOptional(),
                     amount: z
                       .preprocess(
@@ -6370,8 +6397,8 @@ export const postAppsAppIdInvoicesRoute = createRoute({
                                   .exactOptional(),
                                 subtotal: z
                                   .object({
-                                    by_account: z.array(z.object({})).exactOptional(),
-                                    by_vat: z.array(z.object({})).exactOptional(),
+                                    by_account: z.array(z.looseObject({})).exactOptional(),
+                                    by_vat: z.array(z.looseObject({})).exactOptional(),
                                     total: z
                                       .preprocess(
                                         (val) =>
@@ -6403,8 +6430,8 @@ export const postAppsAppIdInvoicesRoute = createRoute({
                                       .exactOptional(),
                                     vat: z
                                       .object({
-                                        by_account: z.array(z.object({})).exactOptional(),
-                                        by_vat: z.array(z.object({})).exactOptional(),
+                                        by_account: z.array(z.looseObject({})).exactOptional(),
+                                        by_vat: z.array(z.looseObject({})).exactOptional(),
                                         total: z
                                           .preprocess(
                                             (val) =>
@@ -7386,8 +7413,8 @@ export const postAppsAppIdInvoicesRoute = createRoute({
                                           .exactOptional(),
                                         subtotal: z
                                           .object({
-                                            by_account: z.array(z.object({})).exactOptional(),
-                                            by_vat: z.array(z.object({})).exactOptional(),
+                                            by_account: z.array(z.looseObject({})).exactOptional(),
+                                            by_vat: z.array(z.looseObject({})).exactOptional(),
                                             total: z
                                               .preprocess(
                                                 (val) =>
@@ -7423,8 +7450,10 @@ export const postAppsAppIdInvoicesRoute = createRoute({
                                               .exactOptional(),
                                             vat: z
                                               .object({
-                                                by_account: z.array(z.object({})).exactOptional(),
-                                                by_vat: z.array(z.object({})).exactOptional(),
+                                                by_account: z
+                                                  .array(z.looseObject({}))
+                                                  .exactOptional(),
+                                                by_vat: z.array(z.looseObject({})).exactOptional(),
                                                 total: z
                                                   .preprocess(
                                                     (val) =>
@@ -8452,8 +8481,8 @@ export const postAppsAppIdInvoicesRoute = createRoute({
                                           .exactOptional(),
                                         subtotal: z
                                           .object({
-                                            by_account: z.array(z.object({})).exactOptional(),
-                                            by_vat: z.array(z.object({})).exactOptional(),
+                                            by_account: z.array(z.looseObject({})).exactOptional(),
+                                            by_vat: z.array(z.looseObject({})).exactOptional(),
                                             total: z
                                               .preprocess(
                                                 (val) =>
@@ -8489,8 +8518,10 @@ export const postAppsAppIdInvoicesRoute = createRoute({
                                               .exactOptional(),
                                             vat: z
                                               .object({
-                                                by_account: z.array(z.object({})).exactOptional(),
-                                                by_vat: z.array(z.object({})).exactOptional(),
+                                                by_account: z
+                                                  .array(z.looseObject({}))
+                                                  .exactOptional(),
+                                                by_vat: z.array(z.looseObject({})).exactOptional(),
                                                 total: z
                                                   .preprocess(
                                                     (val) =>
@@ -9538,8 +9569,8 @@ export const postAppsAppIdInvoicesRoute = createRoute({
                                   .exactOptional(),
                                 subtotal: z
                                   .object({
-                                    by_account: z.array(z.object({})).exactOptional(),
-                                    by_vat: z.array(z.object({})).exactOptional(),
+                                    by_account: z.array(z.looseObject({})).exactOptional(),
+                                    by_vat: z.array(z.looseObject({})).exactOptional(),
                                     total: z
                                       .preprocess(
                                         (val) =>
@@ -9571,8 +9602,8 @@ export const postAppsAppIdInvoicesRoute = createRoute({
                                       .exactOptional(),
                                     vat: z
                                       .object({
-                                        by_account: z.array(z.object({})).exactOptional(),
-                                        by_vat: z.array(z.object({})).exactOptional(),
+                                        by_account: z.array(z.looseObject({})).exactOptional(),
+                                        by_vat: z.array(z.looseObject({})).exactOptional(),
                                         total: z
                                           .preprocess(
                                             (val) =>
@@ -10901,8 +10932,8 @@ export const postAppsAppIdInvoicesRoute = createRoute({
                                           .exactOptional(),
                                         subtotal: z
                                           .object({
-                                            by_account: z.array(z.object({})).exactOptional(),
-                                            by_vat: z.array(z.object({})).exactOptional(),
+                                            by_account: z.array(z.looseObject({})).exactOptional(),
+                                            by_vat: z.array(z.looseObject({})).exactOptional(),
                                             total: z
                                               .preprocess(
                                                 (val) =>
@@ -10938,8 +10969,10 @@ export const postAppsAppIdInvoicesRoute = createRoute({
                                               .exactOptional(),
                                             vat: z
                                               .object({
-                                                by_account: z.array(z.object({})).exactOptional(),
-                                                by_vat: z.array(z.object({})).exactOptional(),
+                                                by_account: z
+                                                  .array(z.looseObject({}))
+                                                  .exactOptional(),
+                                                by_vat: z.array(z.looseObject({})).exactOptional(),
                                                 total: z
                                                   .preprocess(
                                                     (val) =>
@@ -12051,9 +12084,11 @@ export const postAppsAppIdInvoicesRoute = createRoute({
                                                 subtotal: z
                                                   .object({
                                                     by_account: z
-                                                      .array(z.object({}))
+                                                      .array(z.looseObject({}))
                                                       .exactOptional(),
-                                                    by_vat: z.array(z.object({})).exactOptional(),
+                                                    by_vat: z
+                                                      .array(z.looseObject({}))
+                                                      .exactOptional(),
                                                     total: z
                                                       .preprocess(
                                                         (val) =>
@@ -12090,10 +12125,10 @@ export const postAppsAppIdInvoicesRoute = createRoute({
                                                     vat: z
                                                       .object({
                                                         by_account: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         by_vat: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         total: z
                                                           .preprocess(
@@ -13244,9 +13279,11 @@ export const postAppsAppIdInvoicesRoute = createRoute({
                                                 subtotal: z
                                                   .object({
                                                     by_account: z
-                                                      .array(z.object({}))
+                                                      .array(z.looseObject({}))
                                                       .exactOptional(),
-                                                    by_vat: z.array(z.object({})).exactOptional(),
+                                                    by_vat: z
+                                                      .array(z.looseObject({}))
+                                                      .exactOptional(),
                                                     total: z
                                                       .preprocess(
                                                         (val) =>
@@ -13283,10 +13320,10 @@ export const postAppsAppIdInvoicesRoute = createRoute({
                                                     vat: z
                                                       .object({
                                                         by_account: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         by_vat: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         total: z
                                                           .preprocess(
@@ -13927,7 +13964,7 @@ export const postAppsAppIdInvoicesRoute = createRoute({
                                   'Name visible on the accounting entries of the purchase',
                               }),
                             vat_detail: z
-                              .object({})
+                              .looseObject({})
                               .exactOptional()
                               .openapi({ description: 'VAT breakdown' }),
                             vat_repayment: z
@@ -19612,7 +19649,7 @@ export const postAppsAppIdInvoicesBatchRoute = createRoute({
                   .array(
                     z
                       .object({
-                        account: z.object({}).exactOptional(),
+                        account: z.looseObject({}).exactOptional(),
                         action: z.enum(['sell', 'rent']).exactOptional(),
                         amount: z
                           .preprocess(
@@ -20521,7 +20558,7 @@ export const postAppsAppIdInvoicesBatchRoute = createRoute({
                                       'Name visible on the accounting entries of the purchase',
                                   }),
                                 vat_detail: z
-                                  .object({})
+                                  .looseObject({})
                                   .exactOptional()
                                   .openapi({ description: 'VAT breakdown' }),
                                 vat_repayment: z
@@ -21171,8 +21208,8 @@ export const postAppsAppIdInvoicesBatchRoute = createRoute({
                       .exactOptional(),
                     subtotal: z
                       .object({
-                        by_account: z.array(z.object({})).exactOptional(),
-                        by_vat: z.array(z.object({})).exactOptional(),
+                        by_account: z.array(z.looseObject({})).exactOptional(),
+                        by_vat: z.array(z.looseObject({})).exactOptional(),
                         total: z
                           .preprocess(
                             (val) =>
@@ -21202,8 +21239,8 @@ export const postAppsAppIdInvoicesBatchRoute = createRoute({
                           .exactOptional(),
                         vat: z
                           .object({
-                            by_account: z.array(z.object({})).exactOptional(),
-                            by_vat: z.array(z.object({})).exactOptional(),
+                            by_account: z.array(z.looseObject({})).exactOptional(),
+                            by_vat: z.array(z.looseObject({})).exactOptional(),
                             total: z
                               .preprocess(
                                 (val) =>
@@ -21564,7 +21601,7 @@ export const postAppsAppIdInvoicesBatchRoute = createRoute({
                           .array(
                             z
                               .object({
-                                account: z.object({}).exactOptional(),
+                                account: z.looseObject({}).exactOptional(),
                                 action: z.enum(['sell', 'rent']).exactOptional(),
                                 amount: z
                                   .preprocess(
@@ -22528,7 +22565,7 @@ export const postAppsAppIdInvoicesBatchRoute = createRoute({
                                               'Name visible on the accounting entries of the purchase',
                                           }),
                                         vat_detail: z
-                                          .object({})
+                                          .looseObject({})
                                           .exactOptional()
                                           .openapi({ description: 'VAT breakdown' }),
                                         vat_repayment: z
@@ -23225,8 +23262,8 @@ export const postAppsAppIdInvoicesBatchRoute = createRoute({
                               .exactOptional(),
                             subtotal: z
                               .object({
-                                by_account: z.array(z.object({})).exactOptional(),
-                                by_vat: z.array(z.object({})).exactOptional(),
+                                by_account: z.array(z.looseObject({})).exactOptional(),
+                                by_vat: z.array(z.looseObject({})).exactOptional(),
                                 total: z
                                   .preprocess(
                                     (val) =>
@@ -23256,8 +23293,8 @@ export const postAppsAppIdInvoicesBatchRoute = createRoute({
                                   .exactOptional(),
                                 vat: z
                                   .object({
-                                    by_account: z.array(z.object({})).exactOptional(),
-                                    by_vat: z.array(z.object({})).exactOptional(),
+                                    by_account: z.array(z.looseObject({})).exactOptional(),
+                                    by_vat: z.array(z.looseObject({})).exactOptional(),
                                     total: z
                                       .preprocess(
                                         (val) =>
@@ -23652,7 +23689,7 @@ export const postAppsAppIdInvoicesBatchRoute = createRoute({
                           .array(
                             z
                               .object({
-                                account: z.object({}).exactOptional(),
+                                account: z.looseObject({}).exactOptional(),
                                 action: z.enum(['sell', 'rent']).exactOptional(),
                                 amount: z
                                   .preprocess(
@@ -24646,7 +24683,7 @@ export const postAppsAppIdInvoicesBatchRoute = createRoute({
                                               'Name visible on the accounting entries of the purchase',
                                           }),
                                         vat_detail: z
-                                          .object({})
+                                          .looseObject({})
                                           .exactOptional()
                                           .openapi({ description: 'VAT breakdown' }),
                                         vat_repayment: z
@@ -25343,8 +25380,8 @@ export const postAppsAppIdInvoicesBatchRoute = createRoute({
                               .exactOptional(),
                             subtotal: z
                               .object({
-                                by_account: z.array(z.object({})).exactOptional(),
-                                by_vat: z.array(z.object({})).exactOptional(),
+                                by_account: z.array(z.looseObject({})).exactOptional(),
+                                by_vat: z.array(z.looseObject({})).exactOptional(),
                                 total: z
                                   .preprocess(
                                     (val) =>
@@ -25374,8 +25411,8 @@ export const postAppsAppIdInvoicesBatchRoute = createRoute({
                                   .exactOptional(),
                                 vat: z
                                   .object({
-                                    by_account: z.array(z.object({})).exactOptional(),
-                                    by_vat: z.array(z.object({})).exactOptional(),
+                                    by_account: z.array(z.looseObject({})).exactOptional(),
+                                    by_vat: z.array(z.looseObject({})).exactOptional(),
                                     total: z
                                       .preprocess(
                                         (val) =>
@@ -25420,7 +25457,7 @@ export const postAppsAppIdInvoicesBatchRoute = createRoute({
                               .array(
                                 z
                                   .object({
-                                    account: z.object({}).exactOptional(),
+                                    account: z.looseObject({}).exactOptional(),
                                     action: z.enum(['sell', 'rent']).exactOptional(),
                                     amount: z
                                       .preprocess(
@@ -26555,9 +26592,11 @@ export const postAppsAppIdInvoicesBatchRoute = createRoute({
                                                 subtotal: z
                                                   .object({
                                                     by_account: z
-                                                      .array(z.object({}))
+                                                      .array(z.looseObject({}))
                                                       .exactOptional(),
-                                                    by_vat: z.array(z.object({})).exactOptional(),
+                                                    by_vat: z
+                                                      .array(z.looseObject({}))
+                                                      .exactOptional(),
                                                     total: z
                                                       .preprocess(
                                                         (val) =>
@@ -26594,10 +26633,10 @@ export const postAppsAppIdInvoicesBatchRoute = createRoute({
                                                     vat: z
                                                       .object({
                                                         by_account: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         by_vat: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         total: z
                                                           .preprocess(
@@ -27606,7 +27645,7 @@ export const postAppsAppIdInvoicesBatchRoute = createRoute({
                                                   'Name visible on the accounting entries of the purchase',
                                               }),
                                             vat_detail: z
-                                              .object({})
+                                              .looseObject({})
                                               .exactOptional()
                                               .openapi({ description: 'VAT breakdown' }),
                                             vat_repayment: z
@@ -32453,7 +32492,7 @@ export const postAppsAppIdInvoicesFreshRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Success', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'Success', content: { 'application/json': { schema: z.looseObject({}) } } },
     400: { description: 'Bad request' },
     404: { description: 'Not found' },
   },
@@ -32498,7 +32537,7 @@ export const getAppsAppIdInvoicesStatisticsRoute = createRoute({
     query: z.object({ search: SearchParamsSchema, filters: FiltersParamsSchema }),
   },
   responses: {
-    200: { description: 'Success', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'Success', content: { 'application/json': { schema: z.looseObject({}) } } },
     400: { description: 'Bad request' },
     404: { description: 'Not found' },
   },
@@ -32803,7 +32842,7 @@ export const postAppsAppIdInvoicesIdRoute = createRoute({
               z.array(
                 z
                   .object({
-                    account: z.object({}).exactOptional(),
+                    account: z.looseObject({}).exactOptional(),
                     action: z.enum(['sell', 'rent']).exactOptional(),
                     amount: z
                       .preprocess(
@@ -33749,8 +33788,8 @@ export const postAppsAppIdInvoicesIdRoute = createRoute({
                                   .exactOptional(),
                                 subtotal: z
                                   .object({
-                                    by_account: z.array(z.object({})).exactOptional(),
-                                    by_vat: z.array(z.object({})).exactOptional(),
+                                    by_account: z.array(z.looseObject({})).exactOptional(),
+                                    by_vat: z.array(z.looseObject({})).exactOptional(),
                                     total: z
                                       .preprocess(
                                         (val) =>
@@ -33782,8 +33821,8 @@ export const postAppsAppIdInvoicesIdRoute = createRoute({
                                       .exactOptional(),
                                     vat: z
                                       .object({
-                                        by_account: z.array(z.object({})).exactOptional(),
-                                        by_vat: z.array(z.object({})).exactOptional(),
+                                        by_account: z.array(z.looseObject({})).exactOptional(),
+                                        by_vat: z.array(z.looseObject({})).exactOptional(),
                                         total: z
                                           .preprocess(
                                             (val) =>
@@ -34765,8 +34804,8 @@ export const postAppsAppIdInvoicesIdRoute = createRoute({
                                           .exactOptional(),
                                         subtotal: z
                                           .object({
-                                            by_account: z.array(z.object({})).exactOptional(),
-                                            by_vat: z.array(z.object({})).exactOptional(),
+                                            by_account: z.array(z.looseObject({})).exactOptional(),
+                                            by_vat: z.array(z.looseObject({})).exactOptional(),
                                             total: z
                                               .preprocess(
                                                 (val) =>
@@ -34802,8 +34841,10 @@ export const postAppsAppIdInvoicesIdRoute = createRoute({
                                               .exactOptional(),
                                             vat: z
                                               .object({
-                                                by_account: z.array(z.object({})).exactOptional(),
-                                                by_vat: z.array(z.object({})).exactOptional(),
+                                                by_account: z
+                                                  .array(z.looseObject({}))
+                                                  .exactOptional(),
+                                                by_vat: z.array(z.looseObject({})).exactOptional(),
                                                 total: z
                                                   .preprocess(
                                                     (val) =>
@@ -35831,8 +35872,8 @@ export const postAppsAppIdInvoicesIdRoute = createRoute({
                                           .exactOptional(),
                                         subtotal: z
                                           .object({
-                                            by_account: z.array(z.object({})).exactOptional(),
-                                            by_vat: z.array(z.object({})).exactOptional(),
+                                            by_account: z.array(z.looseObject({})).exactOptional(),
+                                            by_vat: z.array(z.looseObject({})).exactOptional(),
                                             total: z
                                               .preprocess(
                                                 (val) =>
@@ -35868,8 +35909,10 @@ export const postAppsAppIdInvoicesIdRoute = createRoute({
                                               .exactOptional(),
                                             vat: z
                                               .object({
-                                                by_account: z.array(z.object({})).exactOptional(),
-                                                by_vat: z.array(z.object({})).exactOptional(),
+                                                by_account: z
+                                                  .array(z.looseObject({}))
+                                                  .exactOptional(),
+                                                by_vat: z.array(z.looseObject({})).exactOptional(),
                                                 total: z
                                                   .preprocess(
                                                     (val) =>
@@ -36917,8 +36960,8 @@ export const postAppsAppIdInvoicesIdRoute = createRoute({
                                   .exactOptional(),
                                 subtotal: z
                                   .object({
-                                    by_account: z.array(z.object({})).exactOptional(),
-                                    by_vat: z.array(z.object({})).exactOptional(),
+                                    by_account: z.array(z.looseObject({})).exactOptional(),
+                                    by_vat: z.array(z.looseObject({})).exactOptional(),
                                     total: z
                                       .preprocess(
                                         (val) =>
@@ -36950,8 +36993,8 @@ export const postAppsAppIdInvoicesIdRoute = createRoute({
                                       .exactOptional(),
                                     vat: z
                                       .object({
-                                        by_account: z.array(z.object({})).exactOptional(),
-                                        by_vat: z.array(z.object({})).exactOptional(),
+                                        by_account: z.array(z.looseObject({})).exactOptional(),
+                                        by_vat: z.array(z.looseObject({})).exactOptional(),
                                         total: z
                                           .preprocess(
                                             (val) =>
@@ -38280,8 +38323,8 @@ export const postAppsAppIdInvoicesIdRoute = createRoute({
                                           .exactOptional(),
                                         subtotal: z
                                           .object({
-                                            by_account: z.array(z.object({})).exactOptional(),
-                                            by_vat: z.array(z.object({})).exactOptional(),
+                                            by_account: z.array(z.looseObject({})).exactOptional(),
+                                            by_vat: z.array(z.looseObject({})).exactOptional(),
                                             total: z
                                               .preprocess(
                                                 (val) =>
@@ -38317,8 +38360,10 @@ export const postAppsAppIdInvoicesIdRoute = createRoute({
                                               .exactOptional(),
                                             vat: z
                                               .object({
-                                                by_account: z.array(z.object({})).exactOptional(),
-                                                by_vat: z.array(z.object({})).exactOptional(),
+                                                by_account: z
+                                                  .array(z.looseObject({}))
+                                                  .exactOptional(),
+                                                by_vat: z.array(z.looseObject({})).exactOptional(),
                                                 total: z
                                                   .preprocess(
                                                     (val) =>
@@ -39430,9 +39475,11 @@ export const postAppsAppIdInvoicesIdRoute = createRoute({
                                                 subtotal: z
                                                   .object({
                                                     by_account: z
-                                                      .array(z.object({}))
+                                                      .array(z.looseObject({}))
                                                       .exactOptional(),
-                                                    by_vat: z.array(z.object({})).exactOptional(),
+                                                    by_vat: z
+                                                      .array(z.looseObject({}))
+                                                      .exactOptional(),
                                                     total: z
                                                       .preprocess(
                                                         (val) =>
@@ -39469,10 +39516,10 @@ export const postAppsAppIdInvoicesIdRoute = createRoute({
                                                     vat: z
                                                       .object({
                                                         by_account: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         by_vat: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         total: z
                                                           .preprocess(
@@ -40623,9 +40670,11 @@ export const postAppsAppIdInvoicesIdRoute = createRoute({
                                                 subtotal: z
                                                   .object({
                                                     by_account: z
-                                                      .array(z.object({}))
+                                                      .array(z.looseObject({}))
                                                       .exactOptional(),
-                                                    by_vat: z.array(z.object({})).exactOptional(),
+                                                    by_vat: z
+                                                      .array(z.looseObject({}))
+                                                      .exactOptional(),
                                                     total: z
                                                       .preprocess(
                                                         (val) =>
@@ -40662,10 +40711,10 @@ export const postAppsAppIdInvoicesIdRoute = createRoute({
                                                     vat: z
                                                       .object({
                                                         by_account: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         by_vat: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         total: z
                                                           .preprocess(
@@ -41306,7 +41355,7 @@ export const postAppsAppIdInvoicesIdRoute = createRoute({
                                   'Name visible on the accounting entries of the purchase',
                               }),
                             vat_detail: z
-                              .object({})
+                              .looseObject({})
                               .exactOptional()
                               .openapi({ description: 'VAT breakdown' }),
                             vat_repayment: z
@@ -51156,7 +51205,7 @@ export const postAppsAppIdPurchasesRoute = createRoute({
           param: { in: 'query', name: 'currency', schema: { type: 'string' }, required: false },
         }),
       vat_detail: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: { in: 'query', name: 'vat_detail', schema: { type: 'object' }, required: false },
@@ -51668,7 +51717,10 @@ export const postAppsAppIdPurchasesBatchRoute = createRoute({
                   .openapi({
                     description: 'Name visible on the accounting entries of the purchase',
                   }),
-                vat_detail: z.object({}).exactOptional().openapi({ description: 'VAT breakdown' }),
+                vat_detail: z
+                  .looseObject({})
+                  .exactOptional()
+                  .openapi({ description: 'VAT breakdown' }),
                 vat_repayment: z
                   .enum(['payment', 'billing'])
                   .exactOptional()
@@ -52014,7 +52066,7 @@ export const getAppsAppIdPurchasesStatisticsRoute = createRoute({
     query: z.object({ search: SearchParamsSchema, filters: FiltersParamsSchema }),
   },
   responses: {
-    200: { description: 'Success', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'Success', content: { 'application/json': { schema: z.looseObject({}) } } },
     400: { description: 'Bad request' },
     404: { description: 'Not found' },
   },
@@ -52188,7 +52240,7 @@ export const postAppsAppIdPurchasesIdRoute = createRoute({
           param: { in: 'query', name: 'currency', schema: { type: 'string' }, required: false },
         }),
       vat_detail: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: { in: 'query', name: 'vat_detail', schema: { type: 'object' }, required: false },
@@ -53064,7 +53116,7 @@ export const postAppsAppIdQuotesRoute = createRoute({
               z.array(
                 z
                   .object({
-                    account: z.object({}).exactOptional(),
+                    account: z.looseObject({}).exactOptional(),
                     action: z.enum(['sell', 'rent']).exactOptional(),
                     amount: z
                       .preprocess(
@@ -54010,8 +54062,8 @@ export const postAppsAppIdQuotesRoute = createRoute({
                                   .exactOptional(),
                                 subtotal: z
                                   .object({
-                                    by_account: z.array(z.object({})).exactOptional(),
-                                    by_vat: z.array(z.object({})).exactOptional(),
+                                    by_account: z.array(z.looseObject({})).exactOptional(),
+                                    by_vat: z.array(z.looseObject({})).exactOptional(),
                                     total: z
                                       .preprocess(
                                         (val) =>
@@ -54043,8 +54095,8 @@ export const postAppsAppIdQuotesRoute = createRoute({
                                       .exactOptional(),
                                     vat: z
                                       .object({
-                                        by_account: z.array(z.object({})).exactOptional(),
-                                        by_vat: z.array(z.object({})).exactOptional(),
+                                        by_account: z.array(z.looseObject({})).exactOptional(),
+                                        by_vat: z.array(z.looseObject({})).exactOptional(),
                                         total: z
                                           .preprocess(
                                             (val) =>
@@ -55026,8 +55078,8 @@ export const postAppsAppIdQuotesRoute = createRoute({
                                           .exactOptional(),
                                         subtotal: z
                                           .object({
-                                            by_account: z.array(z.object({})).exactOptional(),
-                                            by_vat: z.array(z.object({})).exactOptional(),
+                                            by_account: z.array(z.looseObject({})).exactOptional(),
+                                            by_vat: z.array(z.looseObject({})).exactOptional(),
                                             total: z
                                               .preprocess(
                                                 (val) =>
@@ -55063,8 +55115,10 @@ export const postAppsAppIdQuotesRoute = createRoute({
                                               .exactOptional(),
                                             vat: z
                                               .object({
-                                                by_account: z.array(z.object({})).exactOptional(),
-                                                by_vat: z.array(z.object({})).exactOptional(),
+                                                by_account: z
+                                                  .array(z.looseObject({}))
+                                                  .exactOptional(),
+                                                by_vat: z.array(z.looseObject({})).exactOptional(),
                                                 total: z
                                                   .preprocess(
                                                     (val) =>
@@ -56092,8 +56146,8 @@ export const postAppsAppIdQuotesRoute = createRoute({
                                           .exactOptional(),
                                         subtotal: z
                                           .object({
-                                            by_account: z.array(z.object({})).exactOptional(),
-                                            by_vat: z.array(z.object({})).exactOptional(),
+                                            by_account: z.array(z.looseObject({})).exactOptional(),
+                                            by_vat: z.array(z.looseObject({})).exactOptional(),
                                             total: z
                                               .preprocess(
                                                 (val) =>
@@ -56129,8 +56183,10 @@ export const postAppsAppIdQuotesRoute = createRoute({
                                               .exactOptional(),
                                             vat: z
                                               .object({
-                                                by_account: z.array(z.object({})).exactOptional(),
-                                                by_vat: z.array(z.object({})).exactOptional(),
+                                                by_account: z
+                                                  .array(z.looseObject({}))
+                                                  .exactOptional(),
+                                                by_vat: z.array(z.looseObject({})).exactOptional(),
                                                 total: z
                                                   .preprocess(
                                                     (val) =>
@@ -57178,8 +57234,8 @@ export const postAppsAppIdQuotesRoute = createRoute({
                                   .exactOptional(),
                                 subtotal: z
                                   .object({
-                                    by_account: z.array(z.object({})).exactOptional(),
-                                    by_vat: z.array(z.object({})).exactOptional(),
+                                    by_account: z.array(z.looseObject({})).exactOptional(),
+                                    by_vat: z.array(z.looseObject({})).exactOptional(),
                                     total: z
                                       .preprocess(
                                         (val) =>
@@ -57211,8 +57267,8 @@ export const postAppsAppIdQuotesRoute = createRoute({
                                       .exactOptional(),
                                     vat: z
                                       .object({
-                                        by_account: z.array(z.object({})).exactOptional(),
-                                        by_vat: z.array(z.object({})).exactOptional(),
+                                        by_account: z.array(z.looseObject({})).exactOptional(),
+                                        by_vat: z.array(z.looseObject({})).exactOptional(),
                                         total: z
                                           .preprocess(
                                             (val) =>
@@ -58541,8 +58597,8 @@ export const postAppsAppIdQuotesRoute = createRoute({
                                           .exactOptional(),
                                         subtotal: z
                                           .object({
-                                            by_account: z.array(z.object({})).exactOptional(),
-                                            by_vat: z.array(z.object({})).exactOptional(),
+                                            by_account: z.array(z.looseObject({})).exactOptional(),
+                                            by_vat: z.array(z.looseObject({})).exactOptional(),
                                             total: z
                                               .preprocess(
                                                 (val) =>
@@ -58578,8 +58634,10 @@ export const postAppsAppIdQuotesRoute = createRoute({
                                               .exactOptional(),
                                             vat: z
                                               .object({
-                                                by_account: z.array(z.object({})).exactOptional(),
-                                                by_vat: z.array(z.object({})).exactOptional(),
+                                                by_account: z
+                                                  .array(z.looseObject({}))
+                                                  .exactOptional(),
+                                                by_vat: z.array(z.looseObject({})).exactOptional(),
                                                 total: z
                                                   .preprocess(
                                                     (val) =>
@@ -59691,9 +59749,11 @@ export const postAppsAppIdQuotesRoute = createRoute({
                                                 subtotal: z
                                                   .object({
                                                     by_account: z
-                                                      .array(z.object({}))
+                                                      .array(z.looseObject({}))
                                                       .exactOptional(),
-                                                    by_vat: z.array(z.object({})).exactOptional(),
+                                                    by_vat: z
+                                                      .array(z.looseObject({}))
+                                                      .exactOptional(),
                                                     total: z
                                                       .preprocess(
                                                         (val) =>
@@ -59730,10 +59790,10 @@ export const postAppsAppIdQuotesRoute = createRoute({
                                                     vat: z
                                                       .object({
                                                         by_account: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         by_vat: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         total: z
                                                           .preprocess(
@@ -60884,9 +60944,11 @@ export const postAppsAppIdQuotesRoute = createRoute({
                                                 subtotal: z
                                                   .object({
                                                     by_account: z
-                                                      .array(z.object({}))
+                                                      .array(z.looseObject({}))
                                                       .exactOptional(),
-                                                    by_vat: z.array(z.object({})).exactOptional(),
+                                                    by_vat: z
+                                                      .array(z.looseObject({}))
+                                                      .exactOptional(),
                                                     total: z
                                                       .preprocess(
                                                         (val) =>
@@ -60923,10 +60985,10 @@ export const postAppsAppIdQuotesRoute = createRoute({
                                                     vat: z
                                                       .object({
                                                         by_account: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         by_vat: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         total: z
                                                           .preprocess(
@@ -61567,7 +61629,7 @@ export const postAppsAppIdQuotesRoute = createRoute({
                                   'Name visible on the accounting entries of the purchase',
                               }),
                             vat_detail: z
-                              .object({})
+                              .looseObject({})
                               .exactOptional()
                               .openapi({ description: 'VAT breakdown' }),
                             vat_repayment: z
@@ -67174,7 +67236,7 @@ export const postAppsAppIdQuotesBatchRoute = createRoute({
                   .array(
                     z
                       .object({
-                        account: z.object({}).exactOptional(),
+                        account: z.looseObject({}).exactOptional(),
                         action: z.enum(['sell', 'rent']).exactOptional(),
                         amount: z
                           .preprocess(
@@ -68410,7 +68472,7 @@ export const postAppsAppIdQuotesBatchRoute = createRoute({
                                       'Name visible on the accounting entries of the purchase',
                                   }),
                                 vat_detail: z
-                                  .object({})
+                                  .looseObject({})
                                   .exactOptional()
                                   .openapi({ description: 'VAT breakdown' }),
                                 vat_repayment: z
@@ -69060,8 +69122,8 @@ export const postAppsAppIdQuotesBatchRoute = createRoute({
                       .exactOptional(),
                     subtotal: z
                       .object({
-                        by_account: z.array(z.object({})).exactOptional(),
-                        by_vat: z.array(z.object({})).exactOptional(),
+                        by_account: z.array(z.looseObject({})).exactOptional(),
+                        by_vat: z.array(z.looseObject({})).exactOptional(),
                         total: z
                           .preprocess(
                             (val) =>
@@ -69091,8 +69153,8 @@ export const postAppsAppIdQuotesBatchRoute = createRoute({
                           .exactOptional(),
                         vat: z
                           .object({
-                            by_account: z.array(z.object({})).exactOptional(),
-                            by_vat: z.array(z.object({})).exactOptional(),
+                            by_account: z.array(z.looseObject({})).exactOptional(),
+                            by_vat: z.array(z.looseObject({})).exactOptional(),
                             total: z
                               .preprocess(
                                 (val) =>
@@ -70483,7 +70545,7 @@ export const postAppsAppIdQuotesFreshRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Success', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'Success', content: { 'application/json': { schema: z.looseObject({}) } } },
     400: { description: 'Bad request' },
     404: { description: 'Not found' },
   },
@@ -70572,7 +70634,7 @@ export const getAppsAppIdQuotesStatisticsRoute = createRoute({
     query: z.object({ search: SearchParamsSchema, filters: FiltersParamsSchema }),
   },
   responses: {
-    200: { description: 'Success', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'Success', content: { 'application/json': { schema: z.looseObject({}) } } },
     400: { description: 'Bad request' },
     404: { description: 'Not found' },
   },
@@ -70871,7 +70933,7 @@ export const postAppsAppIdQuotesIdRoute = createRoute({
               z.array(
                 z
                   .object({
-                    account: z.object({}).exactOptional(),
+                    account: z.looseObject({}).exactOptional(),
                     action: z.enum(['sell', 'rent']).exactOptional(),
                     amount: z
                       .preprocess(
@@ -71817,8 +71879,8 @@ export const postAppsAppIdQuotesIdRoute = createRoute({
                                   .exactOptional(),
                                 subtotal: z
                                   .object({
-                                    by_account: z.array(z.object({})).exactOptional(),
-                                    by_vat: z.array(z.object({})).exactOptional(),
+                                    by_account: z.array(z.looseObject({})).exactOptional(),
+                                    by_vat: z.array(z.looseObject({})).exactOptional(),
                                     total: z
                                       .preprocess(
                                         (val) =>
@@ -71850,8 +71912,8 @@ export const postAppsAppIdQuotesIdRoute = createRoute({
                                       .exactOptional(),
                                     vat: z
                                       .object({
-                                        by_account: z.array(z.object({})).exactOptional(),
-                                        by_vat: z.array(z.object({})).exactOptional(),
+                                        by_account: z.array(z.looseObject({})).exactOptional(),
+                                        by_vat: z.array(z.looseObject({})).exactOptional(),
                                         total: z
                                           .preprocess(
                                             (val) =>
@@ -72833,8 +72895,8 @@ export const postAppsAppIdQuotesIdRoute = createRoute({
                                           .exactOptional(),
                                         subtotal: z
                                           .object({
-                                            by_account: z.array(z.object({})).exactOptional(),
-                                            by_vat: z.array(z.object({})).exactOptional(),
+                                            by_account: z.array(z.looseObject({})).exactOptional(),
+                                            by_vat: z.array(z.looseObject({})).exactOptional(),
                                             total: z
                                               .preprocess(
                                                 (val) =>
@@ -72870,8 +72932,10 @@ export const postAppsAppIdQuotesIdRoute = createRoute({
                                               .exactOptional(),
                                             vat: z
                                               .object({
-                                                by_account: z.array(z.object({})).exactOptional(),
-                                                by_vat: z.array(z.object({})).exactOptional(),
+                                                by_account: z
+                                                  .array(z.looseObject({}))
+                                                  .exactOptional(),
+                                                by_vat: z.array(z.looseObject({})).exactOptional(),
                                                 total: z
                                                   .preprocess(
                                                     (val) =>
@@ -73899,8 +73963,8 @@ export const postAppsAppIdQuotesIdRoute = createRoute({
                                           .exactOptional(),
                                         subtotal: z
                                           .object({
-                                            by_account: z.array(z.object({})).exactOptional(),
-                                            by_vat: z.array(z.object({})).exactOptional(),
+                                            by_account: z.array(z.looseObject({})).exactOptional(),
+                                            by_vat: z.array(z.looseObject({})).exactOptional(),
                                             total: z
                                               .preprocess(
                                                 (val) =>
@@ -73936,8 +74000,10 @@ export const postAppsAppIdQuotesIdRoute = createRoute({
                                               .exactOptional(),
                                             vat: z
                                               .object({
-                                                by_account: z.array(z.object({})).exactOptional(),
-                                                by_vat: z.array(z.object({})).exactOptional(),
+                                                by_account: z
+                                                  .array(z.looseObject({}))
+                                                  .exactOptional(),
+                                                by_vat: z.array(z.looseObject({})).exactOptional(),
                                                 total: z
                                                   .preprocess(
                                                     (val) =>
@@ -74985,8 +75051,8 @@ export const postAppsAppIdQuotesIdRoute = createRoute({
                                   .exactOptional(),
                                 subtotal: z
                                   .object({
-                                    by_account: z.array(z.object({})).exactOptional(),
-                                    by_vat: z.array(z.object({})).exactOptional(),
+                                    by_account: z.array(z.looseObject({})).exactOptional(),
+                                    by_vat: z.array(z.looseObject({})).exactOptional(),
                                     total: z
                                       .preprocess(
                                         (val) =>
@@ -75018,8 +75084,8 @@ export const postAppsAppIdQuotesIdRoute = createRoute({
                                       .exactOptional(),
                                     vat: z
                                       .object({
-                                        by_account: z.array(z.object({})).exactOptional(),
-                                        by_vat: z.array(z.object({})).exactOptional(),
+                                        by_account: z.array(z.looseObject({})).exactOptional(),
+                                        by_vat: z.array(z.looseObject({})).exactOptional(),
                                         total: z
                                           .preprocess(
                                             (val) =>
@@ -76348,8 +76414,8 @@ export const postAppsAppIdQuotesIdRoute = createRoute({
                                           .exactOptional(),
                                         subtotal: z
                                           .object({
-                                            by_account: z.array(z.object({})).exactOptional(),
-                                            by_vat: z.array(z.object({})).exactOptional(),
+                                            by_account: z.array(z.looseObject({})).exactOptional(),
+                                            by_vat: z.array(z.looseObject({})).exactOptional(),
                                             total: z
                                               .preprocess(
                                                 (val) =>
@@ -76385,8 +76451,10 @@ export const postAppsAppIdQuotesIdRoute = createRoute({
                                               .exactOptional(),
                                             vat: z
                                               .object({
-                                                by_account: z.array(z.object({})).exactOptional(),
-                                                by_vat: z.array(z.object({})).exactOptional(),
+                                                by_account: z
+                                                  .array(z.looseObject({}))
+                                                  .exactOptional(),
+                                                by_vat: z.array(z.looseObject({})).exactOptional(),
                                                 total: z
                                                   .preprocess(
                                                     (val) =>
@@ -77498,9 +77566,11 @@ export const postAppsAppIdQuotesIdRoute = createRoute({
                                                 subtotal: z
                                                   .object({
                                                     by_account: z
-                                                      .array(z.object({}))
+                                                      .array(z.looseObject({}))
                                                       .exactOptional(),
-                                                    by_vat: z.array(z.object({})).exactOptional(),
+                                                    by_vat: z
+                                                      .array(z.looseObject({}))
+                                                      .exactOptional(),
                                                     total: z
                                                       .preprocess(
                                                         (val) =>
@@ -77537,10 +77607,10 @@ export const postAppsAppIdQuotesIdRoute = createRoute({
                                                     vat: z
                                                       .object({
                                                         by_account: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         by_vat: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         total: z
                                                           .preprocess(
@@ -78691,9 +78761,11 @@ export const postAppsAppIdQuotesIdRoute = createRoute({
                                                 subtotal: z
                                                   .object({
                                                     by_account: z
-                                                      .array(z.object({}))
+                                                      .array(z.looseObject({}))
                                                       .exactOptional(),
-                                                    by_vat: z.array(z.object({})).exactOptional(),
+                                                    by_vat: z
+                                                      .array(z.looseObject({}))
+                                                      .exactOptional(),
                                                     total: z
                                                       .preprocess(
                                                         (val) =>
@@ -78730,10 +78802,10 @@ export const postAppsAppIdQuotesIdRoute = createRoute({
                                                     vat: z
                                                       .object({
                                                         by_account: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         by_vat: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         total: z
                                                           .preprocess(
@@ -79374,7 +79446,7 @@ export const postAppsAppIdQuotesIdRoute = createRoute({
                                   'Name visible on the accounting entries of the purchase',
                               }),
                             vat_detail: z
-                              .object({})
+                              .looseObject({})
                               .exactOptional()
                               .openapi({ description: 'VAT breakdown' }),
                             vat_repayment: z
@@ -85956,7 +86028,7 @@ export const postAppsAppIdRecurringinvoicesRoute = createRoute({
               z.array(
                 z
                   .object({
-                    account: z.object({}).exactOptional(),
+                    account: z.looseObject({}).exactOptional(),
                     action: z.enum(['sell', 'rent']).exactOptional(),
                     amount: z
                       .preprocess(
@@ -86902,8 +86974,8 @@ export const postAppsAppIdRecurringinvoicesRoute = createRoute({
                                   .exactOptional(),
                                 subtotal: z
                                   .object({
-                                    by_account: z.array(z.object({})).exactOptional(),
-                                    by_vat: z.array(z.object({})).exactOptional(),
+                                    by_account: z.array(z.looseObject({})).exactOptional(),
+                                    by_vat: z.array(z.looseObject({})).exactOptional(),
                                     total: z
                                       .preprocess(
                                         (val) =>
@@ -86935,8 +87007,8 @@ export const postAppsAppIdRecurringinvoicesRoute = createRoute({
                                       .exactOptional(),
                                     vat: z
                                       .object({
-                                        by_account: z.array(z.object({})).exactOptional(),
-                                        by_vat: z.array(z.object({})).exactOptional(),
+                                        by_account: z.array(z.looseObject({})).exactOptional(),
+                                        by_vat: z.array(z.looseObject({})).exactOptional(),
                                         total: z
                                           .preprocess(
                                             (val) =>
@@ -87918,8 +87990,8 @@ export const postAppsAppIdRecurringinvoicesRoute = createRoute({
                                           .exactOptional(),
                                         subtotal: z
                                           .object({
-                                            by_account: z.array(z.object({})).exactOptional(),
-                                            by_vat: z.array(z.object({})).exactOptional(),
+                                            by_account: z.array(z.looseObject({})).exactOptional(),
+                                            by_vat: z.array(z.looseObject({})).exactOptional(),
                                             total: z
                                               .preprocess(
                                                 (val) =>
@@ -87955,8 +88027,10 @@ export const postAppsAppIdRecurringinvoicesRoute = createRoute({
                                               .exactOptional(),
                                             vat: z
                                               .object({
-                                                by_account: z.array(z.object({})).exactOptional(),
-                                                by_vat: z.array(z.object({})).exactOptional(),
+                                                by_account: z
+                                                  .array(z.looseObject({}))
+                                                  .exactOptional(),
+                                                by_vat: z.array(z.looseObject({})).exactOptional(),
                                                 total: z
                                                   .preprocess(
                                                     (val) =>
@@ -88984,8 +89058,8 @@ export const postAppsAppIdRecurringinvoicesRoute = createRoute({
                                           .exactOptional(),
                                         subtotal: z
                                           .object({
-                                            by_account: z.array(z.object({})).exactOptional(),
-                                            by_vat: z.array(z.object({})).exactOptional(),
+                                            by_account: z.array(z.looseObject({})).exactOptional(),
+                                            by_vat: z.array(z.looseObject({})).exactOptional(),
                                             total: z
                                               .preprocess(
                                                 (val) =>
@@ -89021,8 +89095,10 @@ export const postAppsAppIdRecurringinvoicesRoute = createRoute({
                                               .exactOptional(),
                                             vat: z
                                               .object({
-                                                by_account: z.array(z.object({})).exactOptional(),
-                                                by_vat: z.array(z.object({})).exactOptional(),
+                                                by_account: z
+                                                  .array(z.looseObject({}))
+                                                  .exactOptional(),
+                                                by_vat: z.array(z.looseObject({})).exactOptional(),
                                                 total: z
                                                   .preprocess(
                                                     (val) =>
@@ -90070,8 +90146,8 @@ export const postAppsAppIdRecurringinvoicesRoute = createRoute({
                                   .exactOptional(),
                                 subtotal: z
                                   .object({
-                                    by_account: z.array(z.object({})).exactOptional(),
-                                    by_vat: z.array(z.object({})).exactOptional(),
+                                    by_account: z.array(z.looseObject({})).exactOptional(),
+                                    by_vat: z.array(z.looseObject({})).exactOptional(),
                                     total: z
                                       .preprocess(
                                         (val) =>
@@ -90103,8 +90179,8 @@ export const postAppsAppIdRecurringinvoicesRoute = createRoute({
                                       .exactOptional(),
                                     vat: z
                                       .object({
-                                        by_account: z.array(z.object({})).exactOptional(),
-                                        by_vat: z.array(z.object({})).exactOptional(),
+                                        by_account: z.array(z.looseObject({})).exactOptional(),
+                                        by_vat: z.array(z.looseObject({})).exactOptional(),
                                         total: z
                                           .preprocess(
                                             (val) =>
@@ -91433,8 +91509,8 @@ export const postAppsAppIdRecurringinvoicesRoute = createRoute({
                                           .exactOptional(),
                                         subtotal: z
                                           .object({
-                                            by_account: z.array(z.object({})).exactOptional(),
-                                            by_vat: z.array(z.object({})).exactOptional(),
+                                            by_account: z.array(z.looseObject({})).exactOptional(),
+                                            by_vat: z.array(z.looseObject({})).exactOptional(),
                                             total: z
                                               .preprocess(
                                                 (val) =>
@@ -91470,8 +91546,10 @@ export const postAppsAppIdRecurringinvoicesRoute = createRoute({
                                               .exactOptional(),
                                             vat: z
                                               .object({
-                                                by_account: z.array(z.object({})).exactOptional(),
-                                                by_vat: z.array(z.object({})).exactOptional(),
+                                                by_account: z
+                                                  .array(z.looseObject({}))
+                                                  .exactOptional(),
+                                                by_vat: z.array(z.looseObject({})).exactOptional(),
                                                 total: z
                                                   .preprocess(
                                                     (val) =>
@@ -92583,9 +92661,11 @@ export const postAppsAppIdRecurringinvoicesRoute = createRoute({
                                                 subtotal: z
                                                   .object({
                                                     by_account: z
-                                                      .array(z.object({}))
+                                                      .array(z.looseObject({}))
                                                       .exactOptional(),
-                                                    by_vat: z.array(z.object({})).exactOptional(),
+                                                    by_vat: z
+                                                      .array(z.looseObject({}))
+                                                      .exactOptional(),
                                                     total: z
                                                       .preprocess(
                                                         (val) =>
@@ -92622,10 +92702,10 @@ export const postAppsAppIdRecurringinvoicesRoute = createRoute({
                                                     vat: z
                                                       .object({
                                                         by_account: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         by_vat: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         total: z
                                                           .preprocess(
@@ -93776,9 +93856,11 @@ export const postAppsAppIdRecurringinvoicesRoute = createRoute({
                                                 subtotal: z
                                                   .object({
                                                     by_account: z
-                                                      .array(z.object({}))
+                                                      .array(z.looseObject({}))
                                                       .exactOptional(),
-                                                    by_vat: z.array(z.object({})).exactOptional(),
+                                                    by_vat: z
+                                                      .array(z.looseObject({}))
+                                                      .exactOptional(),
                                                     total: z
                                                       .preprocess(
                                                         (val) =>
@@ -93815,10 +93897,10 @@ export const postAppsAppIdRecurringinvoicesRoute = createRoute({
                                                     vat: z
                                                       .object({
                                                         by_account: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         by_vat: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         total: z
                                                           .preprocess(
@@ -94459,7 +94541,7 @@ export const postAppsAppIdRecurringinvoicesRoute = createRoute({
                                   'Name visible on the accounting entries of the purchase',
                               }),
                             vat_detail: z
-                              .object({})
+                              .looseObject({})
                               .exactOptional()
                               .openapi({ description: 'VAT breakdown' }),
                             vat_repayment: z
@@ -100131,7 +100213,7 @@ export const postAppsAppIdRecurringinvoicesBatchRoute = createRoute({
                   .array(
                     z
                       .object({
-                        account: z.object({}).exactOptional(),
+                        account: z.looseObject({}).exactOptional(),
                         action: z.enum(['sell', 'rent']).exactOptional(),
                         amount: z
                           .preprocess(
@@ -101196,7 +101278,7 @@ export const postAppsAppIdRecurringinvoicesBatchRoute = createRoute({
                                       'Name visible on the accounting entries of the purchase',
                                   }),
                                 vat_detail: z
-                                  .object({})
+                                  .looseObject({})
                                   .exactOptional()
                                   .openapi({ description: 'VAT breakdown' }),
                                 vat_repayment: z
@@ -101846,8 +101928,8 @@ export const postAppsAppIdRecurringinvoicesBatchRoute = createRoute({
                       .exactOptional(),
                     subtotal: z
                       .object({
-                        by_account: z.array(z.object({})).exactOptional(),
-                        by_vat: z.array(z.object({})).exactOptional(),
+                        by_account: z.array(z.looseObject({})).exactOptional(),
+                        by_vat: z.array(z.looseObject({})).exactOptional(),
                         total: z
                           .preprocess(
                             (val) =>
@@ -101877,8 +101959,8 @@ export const postAppsAppIdRecurringinvoicesBatchRoute = createRoute({
                           .exactOptional(),
                         vat: z
                           .object({
-                            by_account: z.array(z.object({})).exactOptional(),
-                            by_vat: z.array(z.object({})).exactOptional(),
+                            by_account: z.array(z.looseObject({})).exactOptional(),
+                            by_vat: z.array(z.looseObject({})).exactOptional(),
                             total: z
                               .preprocess(
                                 (val) =>
@@ -101921,7 +102003,7 @@ export const postAppsAppIdRecurringinvoicesBatchRoute = createRoute({
                       .array(
                         z
                           .object({
-                            account: z.object({}).exactOptional(),
+                            account: z.looseObject({}).exactOptional(),
                             action: z.enum(['sell', 'rent']).exactOptional(),
                             amount: z
                               .preprocess(
@@ -102928,8 +103010,8 @@ export const postAppsAppIdRecurringinvoicesBatchRoute = createRoute({
                                           .exactOptional(),
                                         subtotal: z
                                           .object({
-                                            by_account: z.array(z.object({})).exactOptional(),
-                                            by_vat: z.array(z.object({})).exactOptional(),
+                                            by_account: z.array(z.looseObject({})).exactOptional(),
+                                            by_vat: z.array(z.looseObject({})).exactOptional(),
                                             total: z
                                               .preprocess(
                                                 (val) =>
@@ -102965,8 +103047,10 @@ export const postAppsAppIdRecurringinvoicesBatchRoute = createRoute({
                                               .exactOptional(),
                                             vat: z
                                               .object({
-                                                by_account: z.array(z.object({})).exactOptional(),
-                                                by_vat: z.array(z.object({})).exactOptional(),
+                                                by_account: z
+                                                  .array(z.looseObject({}))
+                                                  .exactOptional(),
+                                                by_vat: z.array(z.looseObject({})).exactOptional(),
                                                 total: z
                                                   .preprocess(
                                                     (val) =>
@@ -104078,9 +104162,11 @@ export const postAppsAppIdRecurringinvoicesBatchRoute = createRoute({
                                                 subtotal: z
                                                   .object({
                                                     by_account: z
-                                                      .array(z.object({}))
+                                                      .array(z.looseObject({}))
                                                       .exactOptional(),
-                                                    by_vat: z.array(z.object({})).exactOptional(),
+                                                    by_vat: z
+                                                      .array(z.looseObject({}))
+                                                      .exactOptional(),
                                                     total: z
                                                       .preprocess(
                                                         (val) =>
@@ -104117,10 +104203,10 @@ export const postAppsAppIdRecurringinvoicesBatchRoute = createRoute({
                                                     vat: z
                                                       .object({
                                                         by_account: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         by_vat: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         total: z
                                                           .preprocess(
@@ -105169,8 +105255,8 @@ export const postAppsAppIdRecurringinvoicesBatchRoute = createRoute({
                                           .exactOptional(),
                                         subtotal: z
                                           .object({
-                                            by_account: z.array(z.object({})).exactOptional(),
-                                            by_vat: z.array(z.object({})).exactOptional(),
+                                            by_account: z.array(z.looseObject({})).exactOptional(),
+                                            by_vat: z.array(z.looseObject({})).exactOptional(),
                                             total: z
                                               .preprocess(
                                                 (val) =>
@@ -105206,8 +105292,10 @@ export const postAppsAppIdRecurringinvoicesBatchRoute = createRoute({
                                               .exactOptional(),
                                             vat: z
                                               .object({
-                                                by_account: z.array(z.object({})).exactOptional(),
-                                                by_vat: z.array(z.object({})).exactOptional(),
+                                                by_account: z
+                                                  .array(z.looseObject({}))
+                                                  .exactOptional(),
+                                                by_vat: z.array(z.looseObject({})).exactOptional(),
                                                 total: z
                                                   .preprocess(
                                                     (val) =>
@@ -106681,9 +106769,11 @@ export const postAppsAppIdRecurringinvoicesBatchRoute = createRoute({
                                                 subtotal: z
                                                   .object({
                                                     by_account: z
-                                                      .array(z.object({}))
+                                                      .array(z.looseObject({}))
                                                       .exactOptional(),
-                                                    by_vat: z.array(z.object({})).exactOptional(),
+                                                    by_vat: z
+                                                      .array(z.looseObject({}))
+                                                      .exactOptional(),
                                                     total: z
                                                       .preprocess(
                                                         (val) =>
@@ -106720,10 +106810,10 @@ export const postAppsAppIdRecurringinvoicesBatchRoute = createRoute({
                                                     vat: z
                                                       .object({
                                                         by_account: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         by_vat: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         total: z
                                                           .preprocess(
@@ -107952,10 +108042,10 @@ export const postAppsAppIdRecurringinvoicesBatchRoute = createRoute({
                                                         subtotal: z
                                                           .object({
                                                             by_account: z
-                                                              .array(z.object({}))
+                                                              .array(z.looseObject({}))
                                                               .exactOptional(),
                                                             by_vat: z
-                                                              .array(z.object({}))
+                                                              .array(z.looseObject({}))
                                                               .exactOptional(),
                                                             total: z
                                                               .preprocess(
@@ -107997,10 +108087,10 @@ export const postAppsAppIdRecurringinvoicesBatchRoute = createRoute({
                                                             vat: z
                                                               .object({
                                                                 by_account: z
-                                                                  .array(z.object({}))
+                                                                  .array(z.looseObject({}))
                                                                   .exactOptional(),
                                                                 by_vat: z
-                                                                  .array(z.object({}))
+                                                                  .array(z.looseObject({}))
                                                                   .exactOptional(),
                                                                 total: z
                                                                   .preprocess(
@@ -108613,7 +108703,7 @@ export const postAppsAppIdRecurringinvoicesBatchRoute = createRoute({
                                           'Name visible on the accounting entries of the purchase',
                                       }),
                                     vat_detail: z
-                                      .object({})
+                                      .looseObject({})
                                       .exactOptional()
                                       .openapi({ description: 'VAT breakdown' }),
                                     vat_repayment: z
@@ -114089,7 +114179,7 @@ export const postAppsAppIdRecurringinvoicesIdRoute = createRoute({
               z.array(
                 z
                   .object({
-                    account: z.object({}).exactOptional(),
+                    account: z.looseObject({}).exactOptional(),
                     action: z.enum(['sell', 'rent']).exactOptional(),
                     amount: z
                       .preprocess(
@@ -115035,8 +115125,8 @@ export const postAppsAppIdRecurringinvoicesIdRoute = createRoute({
                                   .exactOptional(),
                                 subtotal: z
                                   .object({
-                                    by_account: z.array(z.object({})).exactOptional(),
-                                    by_vat: z.array(z.object({})).exactOptional(),
+                                    by_account: z.array(z.looseObject({})).exactOptional(),
+                                    by_vat: z.array(z.looseObject({})).exactOptional(),
                                     total: z
                                       .preprocess(
                                         (val) =>
@@ -115068,8 +115158,8 @@ export const postAppsAppIdRecurringinvoicesIdRoute = createRoute({
                                       .exactOptional(),
                                     vat: z
                                       .object({
-                                        by_account: z.array(z.object({})).exactOptional(),
-                                        by_vat: z.array(z.object({})).exactOptional(),
+                                        by_account: z.array(z.looseObject({})).exactOptional(),
+                                        by_vat: z.array(z.looseObject({})).exactOptional(),
                                         total: z
                                           .preprocess(
                                             (val) =>
@@ -116051,8 +116141,8 @@ export const postAppsAppIdRecurringinvoicesIdRoute = createRoute({
                                           .exactOptional(),
                                         subtotal: z
                                           .object({
-                                            by_account: z.array(z.object({})).exactOptional(),
-                                            by_vat: z.array(z.object({})).exactOptional(),
+                                            by_account: z.array(z.looseObject({})).exactOptional(),
+                                            by_vat: z.array(z.looseObject({})).exactOptional(),
                                             total: z
                                               .preprocess(
                                                 (val) =>
@@ -116088,8 +116178,10 @@ export const postAppsAppIdRecurringinvoicesIdRoute = createRoute({
                                               .exactOptional(),
                                             vat: z
                                               .object({
-                                                by_account: z.array(z.object({})).exactOptional(),
-                                                by_vat: z.array(z.object({})).exactOptional(),
+                                                by_account: z
+                                                  .array(z.looseObject({}))
+                                                  .exactOptional(),
+                                                by_vat: z.array(z.looseObject({})).exactOptional(),
                                                 total: z
                                                   .preprocess(
                                                     (val) =>
@@ -117117,8 +117209,8 @@ export const postAppsAppIdRecurringinvoicesIdRoute = createRoute({
                                           .exactOptional(),
                                         subtotal: z
                                           .object({
-                                            by_account: z.array(z.object({})).exactOptional(),
-                                            by_vat: z.array(z.object({})).exactOptional(),
+                                            by_account: z.array(z.looseObject({})).exactOptional(),
+                                            by_vat: z.array(z.looseObject({})).exactOptional(),
                                             total: z
                                               .preprocess(
                                                 (val) =>
@@ -117154,8 +117246,10 @@ export const postAppsAppIdRecurringinvoicesIdRoute = createRoute({
                                               .exactOptional(),
                                             vat: z
                                               .object({
-                                                by_account: z.array(z.object({})).exactOptional(),
-                                                by_vat: z.array(z.object({})).exactOptional(),
+                                                by_account: z
+                                                  .array(z.looseObject({}))
+                                                  .exactOptional(),
+                                                by_vat: z.array(z.looseObject({})).exactOptional(),
                                                 total: z
                                                   .preprocess(
                                                     (val) =>
@@ -118203,8 +118297,8 @@ export const postAppsAppIdRecurringinvoicesIdRoute = createRoute({
                                   .exactOptional(),
                                 subtotal: z
                                   .object({
-                                    by_account: z.array(z.object({})).exactOptional(),
-                                    by_vat: z.array(z.object({})).exactOptional(),
+                                    by_account: z.array(z.looseObject({})).exactOptional(),
+                                    by_vat: z.array(z.looseObject({})).exactOptional(),
                                     total: z
                                       .preprocess(
                                         (val) =>
@@ -118236,8 +118330,8 @@ export const postAppsAppIdRecurringinvoicesIdRoute = createRoute({
                                       .exactOptional(),
                                     vat: z
                                       .object({
-                                        by_account: z.array(z.object({})).exactOptional(),
-                                        by_vat: z.array(z.object({})).exactOptional(),
+                                        by_account: z.array(z.looseObject({})).exactOptional(),
+                                        by_vat: z.array(z.looseObject({})).exactOptional(),
                                         total: z
                                           .preprocess(
                                             (val) =>
@@ -119566,8 +119660,8 @@ export const postAppsAppIdRecurringinvoicesIdRoute = createRoute({
                                           .exactOptional(),
                                         subtotal: z
                                           .object({
-                                            by_account: z.array(z.object({})).exactOptional(),
-                                            by_vat: z.array(z.object({})).exactOptional(),
+                                            by_account: z.array(z.looseObject({})).exactOptional(),
+                                            by_vat: z.array(z.looseObject({})).exactOptional(),
                                             total: z
                                               .preprocess(
                                                 (val) =>
@@ -119603,8 +119697,10 @@ export const postAppsAppIdRecurringinvoicesIdRoute = createRoute({
                                               .exactOptional(),
                                             vat: z
                                               .object({
-                                                by_account: z.array(z.object({})).exactOptional(),
-                                                by_vat: z.array(z.object({})).exactOptional(),
+                                                by_account: z
+                                                  .array(z.looseObject({}))
+                                                  .exactOptional(),
+                                                by_vat: z.array(z.looseObject({})).exactOptional(),
                                                 total: z
                                                   .preprocess(
                                                     (val) =>
@@ -120716,9 +120812,11 @@ export const postAppsAppIdRecurringinvoicesIdRoute = createRoute({
                                                 subtotal: z
                                                   .object({
                                                     by_account: z
-                                                      .array(z.object({}))
+                                                      .array(z.looseObject({}))
                                                       .exactOptional(),
-                                                    by_vat: z.array(z.object({})).exactOptional(),
+                                                    by_vat: z
+                                                      .array(z.looseObject({}))
+                                                      .exactOptional(),
                                                     total: z
                                                       .preprocess(
                                                         (val) =>
@@ -120755,10 +120853,10 @@ export const postAppsAppIdRecurringinvoicesIdRoute = createRoute({
                                                     vat: z
                                                       .object({
                                                         by_account: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         by_vat: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         total: z
                                                           .preprocess(
@@ -121909,9 +122007,11 @@ export const postAppsAppIdRecurringinvoicesIdRoute = createRoute({
                                                 subtotal: z
                                                   .object({
                                                     by_account: z
-                                                      .array(z.object({}))
+                                                      .array(z.looseObject({}))
                                                       .exactOptional(),
-                                                    by_vat: z.array(z.object({})).exactOptional(),
+                                                    by_vat: z
+                                                      .array(z.looseObject({}))
+                                                      .exactOptional(),
                                                     total: z
                                                       .preprocess(
                                                         (val) =>
@@ -121948,10 +122048,10 @@ export const postAppsAppIdRecurringinvoicesIdRoute = createRoute({
                                                     vat: z
                                                       .object({
                                                         by_account: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         by_vat: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         total: z
                                                           .preprocess(
@@ -122592,7 +122692,7 @@ export const postAppsAppIdRecurringinvoicesIdRoute = createRoute({
                                   'Name visible on the accounting entries of the purchase',
                               }),
                             vat_detail: z
-                              .object({})
+                              .looseObject({})
                               .exactOptional()
                               .openapi({ description: 'VAT breakdown' }),
                             vat_repayment: z
@@ -128834,7 +128934,7 @@ export const postAppsAppIdSalesdocumentmodelsRoute = createRoute({
               z.array(
                 z
                   .object({
-                    account: z.object({}).exactOptional(),
+                    account: z.looseObject({}).exactOptional(),
                     action: z.enum(['sell', 'rent']).exactOptional(),
                     amount: z
                       .preprocess(
@@ -129780,8 +129880,8 @@ export const postAppsAppIdSalesdocumentmodelsRoute = createRoute({
                                   .exactOptional(),
                                 subtotal: z
                                   .object({
-                                    by_account: z.array(z.object({})).exactOptional(),
-                                    by_vat: z.array(z.object({})).exactOptional(),
+                                    by_account: z.array(z.looseObject({})).exactOptional(),
+                                    by_vat: z.array(z.looseObject({})).exactOptional(),
                                     total: z
                                       .preprocess(
                                         (val) =>
@@ -129813,8 +129913,8 @@ export const postAppsAppIdSalesdocumentmodelsRoute = createRoute({
                                       .exactOptional(),
                                     vat: z
                                       .object({
-                                        by_account: z.array(z.object({})).exactOptional(),
-                                        by_vat: z.array(z.object({})).exactOptional(),
+                                        by_account: z.array(z.looseObject({})).exactOptional(),
+                                        by_vat: z.array(z.looseObject({})).exactOptional(),
                                         total: z
                                           .preprocess(
                                             (val) =>
@@ -130796,8 +130896,8 @@ export const postAppsAppIdSalesdocumentmodelsRoute = createRoute({
                                           .exactOptional(),
                                         subtotal: z
                                           .object({
-                                            by_account: z.array(z.object({})).exactOptional(),
-                                            by_vat: z.array(z.object({})).exactOptional(),
+                                            by_account: z.array(z.looseObject({})).exactOptional(),
+                                            by_vat: z.array(z.looseObject({})).exactOptional(),
                                             total: z
                                               .preprocess(
                                                 (val) =>
@@ -130833,8 +130933,10 @@ export const postAppsAppIdSalesdocumentmodelsRoute = createRoute({
                                               .exactOptional(),
                                             vat: z
                                               .object({
-                                                by_account: z.array(z.object({})).exactOptional(),
-                                                by_vat: z.array(z.object({})).exactOptional(),
+                                                by_account: z
+                                                  .array(z.looseObject({}))
+                                                  .exactOptional(),
+                                                by_vat: z.array(z.looseObject({})).exactOptional(),
                                                 total: z
                                                   .preprocess(
                                                     (val) =>
@@ -131862,8 +131964,8 @@ export const postAppsAppIdSalesdocumentmodelsRoute = createRoute({
                                           .exactOptional(),
                                         subtotal: z
                                           .object({
-                                            by_account: z.array(z.object({})).exactOptional(),
-                                            by_vat: z.array(z.object({})).exactOptional(),
+                                            by_account: z.array(z.looseObject({})).exactOptional(),
+                                            by_vat: z.array(z.looseObject({})).exactOptional(),
                                             total: z
                                               .preprocess(
                                                 (val) =>
@@ -131899,8 +132001,10 @@ export const postAppsAppIdSalesdocumentmodelsRoute = createRoute({
                                               .exactOptional(),
                                             vat: z
                                               .object({
-                                                by_account: z.array(z.object({})).exactOptional(),
-                                                by_vat: z.array(z.object({})).exactOptional(),
+                                                by_account: z
+                                                  .array(z.looseObject({}))
+                                                  .exactOptional(),
+                                                by_vat: z.array(z.looseObject({})).exactOptional(),
                                                 total: z
                                                   .preprocess(
                                                     (val) =>
@@ -132948,8 +133052,8 @@ export const postAppsAppIdSalesdocumentmodelsRoute = createRoute({
                                   .exactOptional(),
                                 subtotal: z
                                   .object({
-                                    by_account: z.array(z.object({})).exactOptional(),
-                                    by_vat: z.array(z.object({})).exactOptional(),
+                                    by_account: z.array(z.looseObject({})).exactOptional(),
+                                    by_vat: z.array(z.looseObject({})).exactOptional(),
                                     total: z
                                       .preprocess(
                                         (val) =>
@@ -132981,8 +133085,8 @@ export const postAppsAppIdSalesdocumentmodelsRoute = createRoute({
                                       .exactOptional(),
                                     vat: z
                                       .object({
-                                        by_account: z.array(z.object({})).exactOptional(),
-                                        by_vat: z.array(z.object({})).exactOptional(),
+                                        by_account: z.array(z.looseObject({})).exactOptional(),
+                                        by_vat: z.array(z.looseObject({})).exactOptional(),
                                         total: z
                                           .preprocess(
                                             (val) =>
@@ -134311,8 +134415,8 @@ export const postAppsAppIdSalesdocumentmodelsRoute = createRoute({
                                           .exactOptional(),
                                         subtotal: z
                                           .object({
-                                            by_account: z.array(z.object({})).exactOptional(),
-                                            by_vat: z.array(z.object({})).exactOptional(),
+                                            by_account: z.array(z.looseObject({})).exactOptional(),
+                                            by_vat: z.array(z.looseObject({})).exactOptional(),
                                             total: z
                                               .preprocess(
                                                 (val) =>
@@ -134348,8 +134452,10 @@ export const postAppsAppIdSalesdocumentmodelsRoute = createRoute({
                                               .exactOptional(),
                                             vat: z
                                               .object({
-                                                by_account: z.array(z.object({})).exactOptional(),
-                                                by_vat: z.array(z.object({})).exactOptional(),
+                                                by_account: z
+                                                  .array(z.looseObject({}))
+                                                  .exactOptional(),
+                                                by_vat: z.array(z.looseObject({})).exactOptional(),
                                                 total: z
                                                   .preprocess(
                                                     (val) =>
@@ -135461,9 +135567,11 @@ export const postAppsAppIdSalesdocumentmodelsRoute = createRoute({
                                                 subtotal: z
                                                   .object({
                                                     by_account: z
-                                                      .array(z.object({}))
+                                                      .array(z.looseObject({}))
                                                       .exactOptional(),
-                                                    by_vat: z.array(z.object({})).exactOptional(),
+                                                    by_vat: z
+                                                      .array(z.looseObject({}))
+                                                      .exactOptional(),
                                                     total: z
                                                       .preprocess(
                                                         (val) =>
@@ -135500,10 +135608,10 @@ export const postAppsAppIdSalesdocumentmodelsRoute = createRoute({
                                                     vat: z
                                                       .object({
                                                         by_account: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         by_vat: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         total: z
                                                           .preprocess(
@@ -136654,9 +136762,11 @@ export const postAppsAppIdSalesdocumentmodelsRoute = createRoute({
                                                 subtotal: z
                                                   .object({
                                                     by_account: z
-                                                      .array(z.object({}))
+                                                      .array(z.looseObject({}))
                                                       .exactOptional(),
-                                                    by_vat: z.array(z.object({})).exactOptional(),
+                                                    by_vat: z
+                                                      .array(z.looseObject({}))
+                                                      .exactOptional(),
                                                     total: z
                                                       .preprocess(
                                                         (val) =>
@@ -136693,10 +136803,10 @@ export const postAppsAppIdSalesdocumentmodelsRoute = createRoute({
                                                     vat: z
                                                       .object({
                                                         by_account: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         by_vat: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         total: z
                                                           .preprocess(
@@ -137337,7 +137447,7 @@ export const postAppsAppIdSalesdocumentmodelsRoute = createRoute({
                                   'Name visible on the accounting entries of the purchase',
                               }),
                             vat_detail: z
-                              .object({})
+                              .looseObject({})
                               .exactOptional()
                               .openapi({ description: 'VAT breakdown' }),
                             vat_repayment: z
@@ -142519,7 +142629,7 @@ export const postAppsAppIdSalesdocumentmodelsIdRoute = createRoute({
               z.array(
                 z
                   .object({
-                    account: z.object({}).exactOptional(),
+                    account: z.looseObject({}).exactOptional(),
                     action: z.enum(['sell', 'rent']).exactOptional(),
                     amount: z
                       .preprocess(
@@ -143465,8 +143575,8 @@ export const postAppsAppIdSalesdocumentmodelsIdRoute = createRoute({
                                   .exactOptional(),
                                 subtotal: z
                                   .object({
-                                    by_account: z.array(z.object({})).exactOptional(),
-                                    by_vat: z.array(z.object({})).exactOptional(),
+                                    by_account: z.array(z.looseObject({})).exactOptional(),
+                                    by_vat: z.array(z.looseObject({})).exactOptional(),
                                     total: z
                                       .preprocess(
                                         (val) =>
@@ -143498,8 +143608,8 @@ export const postAppsAppIdSalesdocumentmodelsIdRoute = createRoute({
                                       .exactOptional(),
                                     vat: z
                                       .object({
-                                        by_account: z.array(z.object({})).exactOptional(),
-                                        by_vat: z.array(z.object({})).exactOptional(),
+                                        by_account: z.array(z.looseObject({})).exactOptional(),
+                                        by_vat: z.array(z.looseObject({})).exactOptional(),
                                         total: z
                                           .preprocess(
                                             (val) =>
@@ -144481,8 +144591,8 @@ export const postAppsAppIdSalesdocumentmodelsIdRoute = createRoute({
                                           .exactOptional(),
                                         subtotal: z
                                           .object({
-                                            by_account: z.array(z.object({})).exactOptional(),
-                                            by_vat: z.array(z.object({})).exactOptional(),
+                                            by_account: z.array(z.looseObject({})).exactOptional(),
+                                            by_vat: z.array(z.looseObject({})).exactOptional(),
                                             total: z
                                               .preprocess(
                                                 (val) =>
@@ -144518,8 +144628,10 @@ export const postAppsAppIdSalesdocumentmodelsIdRoute = createRoute({
                                               .exactOptional(),
                                             vat: z
                                               .object({
-                                                by_account: z.array(z.object({})).exactOptional(),
-                                                by_vat: z.array(z.object({})).exactOptional(),
+                                                by_account: z
+                                                  .array(z.looseObject({}))
+                                                  .exactOptional(),
+                                                by_vat: z.array(z.looseObject({})).exactOptional(),
                                                 total: z
                                                   .preprocess(
                                                     (val) =>
@@ -145547,8 +145659,8 @@ export const postAppsAppIdSalesdocumentmodelsIdRoute = createRoute({
                                           .exactOptional(),
                                         subtotal: z
                                           .object({
-                                            by_account: z.array(z.object({})).exactOptional(),
-                                            by_vat: z.array(z.object({})).exactOptional(),
+                                            by_account: z.array(z.looseObject({})).exactOptional(),
+                                            by_vat: z.array(z.looseObject({})).exactOptional(),
                                             total: z
                                               .preprocess(
                                                 (val) =>
@@ -145584,8 +145696,10 @@ export const postAppsAppIdSalesdocumentmodelsIdRoute = createRoute({
                                               .exactOptional(),
                                             vat: z
                                               .object({
-                                                by_account: z.array(z.object({})).exactOptional(),
-                                                by_vat: z.array(z.object({})).exactOptional(),
+                                                by_account: z
+                                                  .array(z.looseObject({}))
+                                                  .exactOptional(),
+                                                by_vat: z.array(z.looseObject({})).exactOptional(),
                                                 total: z
                                                   .preprocess(
                                                     (val) =>
@@ -146633,8 +146747,8 @@ export const postAppsAppIdSalesdocumentmodelsIdRoute = createRoute({
                                   .exactOptional(),
                                 subtotal: z
                                   .object({
-                                    by_account: z.array(z.object({})).exactOptional(),
-                                    by_vat: z.array(z.object({})).exactOptional(),
+                                    by_account: z.array(z.looseObject({})).exactOptional(),
+                                    by_vat: z.array(z.looseObject({})).exactOptional(),
                                     total: z
                                       .preprocess(
                                         (val) =>
@@ -146666,8 +146780,8 @@ export const postAppsAppIdSalesdocumentmodelsIdRoute = createRoute({
                                       .exactOptional(),
                                     vat: z
                                       .object({
-                                        by_account: z.array(z.object({})).exactOptional(),
-                                        by_vat: z.array(z.object({})).exactOptional(),
+                                        by_account: z.array(z.looseObject({})).exactOptional(),
+                                        by_vat: z.array(z.looseObject({})).exactOptional(),
                                         total: z
                                           .preprocess(
                                             (val) =>
@@ -147996,8 +148110,8 @@ export const postAppsAppIdSalesdocumentmodelsIdRoute = createRoute({
                                           .exactOptional(),
                                         subtotal: z
                                           .object({
-                                            by_account: z.array(z.object({})).exactOptional(),
-                                            by_vat: z.array(z.object({})).exactOptional(),
+                                            by_account: z.array(z.looseObject({})).exactOptional(),
+                                            by_vat: z.array(z.looseObject({})).exactOptional(),
                                             total: z
                                               .preprocess(
                                                 (val) =>
@@ -148033,8 +148147,10 @@ export const postAppsAppIdSalesdocumentmodelsIdRoute = createRoute({
                                               .exactOptional(),
                                             vat: z
                                               .object({
-                                                by_account: z.array(z.object({})).exactOptional(),
-                                                by_vat: z.array(z.object({})).exactOptional(),
+                                                by_account: z
+                                                  .array(z.looseObject({}))
+                                                  .exactOptional(),
+                                                by_vat: z.array(z.looseObject({})).exactOptional(),
                                                 total: z
                                                   .preprocess(
                                                     (val) =>
@@ -149146,9 +149262,11 @@ export const postAppsAppIdSalesdocumentmodelsIdRoute = createRoute({
                                                 subtotal: z
                                                   .object({
                                                     by_account: z
-                                                      .array(z.object({}))
+                                                      .array(z.looseObject({}))
                                                       .exactOptional(),
-                                                    by_vat: z.array(z.object({})).exactOptional(),
+                                                    by_vat: z
+                                                      .array(z.looseObject({}))
+                                                      .exactOptional(),
                                                     total: z
                                                       .preprocess(
                                                         (val) =>
@@ -149185,10 +149303,10 @@ export const postAppsAppIdSalesdocumentmodelsIdRoute = createRoute({
                                                     vat: z
                                                       .object({
                                                         by_account: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         by_vat: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         total: z
                                                           .preprocess(
@@ -150339,9 +150457,11 @@ export const postAppsAppIdSalesdocumentmodelsIdRoute = createRoute({
                                                 subtotal: z
                                                   .object({
                                                     by_account: z
-                                                      .array(z.object({}))
+                                                      .array(z.looseObject({}))
                                                       .exactOptional(),
-                                                    by_vat: z.array(z.object({})).exactOptional(),
+                                                    by_vat: z
+                                                      .array(z.looseObject({}))
+                                                      .exactOptional(),
                                                     total: z
                                                       .preprocess(
                                                         (val) =>
@@ -150378,10 +150498,10 @@ export const postAppsAppIdSalesdocumentmodelsIdRoute = createRoute({
                                                     vat: z
                                                       .object({
                                                         by_account: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         by_vat: z
-                                                          .array(z.object({}))
+                                                          .array(z.looseObject({}))
                                                           .exactOptional(),
                                                         total: z
                                                           .preprocess(
@@ -151022,7 +151142,7 @@ export const postAppsAppIdSalesdocumentmodelsIdRoute = createRoute({
                                   'Name visible on the accounting entries of the purchase',
                               }),
                             vat_detail: z
-                              .object({})
+                              .looseObject({})
                               .exactOptional()
                               .openapi({ description: 'VAT breakdown' }),
                             vat_repayment: z
@@ -156307,7 +156427,7 @@ export const getAppsAppIdSepamandatesCredittransferRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Success', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'Success', content: { 'application/json': { schema: z.looseObject({}) } } },
     400: { description: 'Bad request' },
     404: { description: 'Not found' },
   },
@@ -156453,7 +156573,7 @@ export const getAppsAppIdSepamandatesDirectdebitRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Success', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'Success', content: { 'application/json': { schema: z.looseObject({}) } } },
     400: { description: 'Bad request' },
     404: { description: 'Not found' },
   },
@@ -156868,7 +156988,7 @@ export const getAppsAppIdSettingsRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Success', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'Success', content: { 'application/json': { schema: z.looseObject({}) } } },
     404: { description: 'App or key not found' },
   },
   security: [{}],
@@ -157188,7 +157308,7 @@ export const getAppsAppIdStatisticsChartsTypeRoute = createRoute({
           param: { in: 'query', name: 'search', schema: { type: 'string' }, required: false },
         }),
       filters: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: { in: 'query', name: 'filters', schema: { type: 'object' }, required: false },
@@ -157210,7 +157330,7 @@ export const getAppsAppIdStatisticsChartsTypeRoute = createRoute({
   responses: {
     200: {
       description: 'Success',
-      content: { 'application/json': { schema: z.array(z.object({})) } },
+      content: { 'application/json': { schema: z.array(z.looseObject({})) } },
     },
     400: { description: 'Bad request' },
     404: { description: 'Not found' },
@@ -157456,7 +157576,7 @@ export const getAppsAppIdStatisticsVatRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Success', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'Success', content: { 'application/json': { schema: z.looseObject({}) } } },
     400: { description: 'Bad request' },
     404: { description: 'Not found' },
   },
@@ -157855,7 +157975,7 @@ export const getAppsAppIdTagsRoute = createRoute({
   responses: {
     200: {
       description: 'Success',
-      content: { 'application/json': { schema: z.array(z.object({})) } },
+      content: { 'application/json': { schema: z.array(z.looseObject({})) } },
     },
     400: { description: 'Bad request' },
     404: { description: 'Not found' },
@@ -159538,7 +159658,7 @@ export const getAppsAppIdUrssafPaymentRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Success', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'Success', content: { 'application/json': { schema: z.looseObject({}) } } },
     400: { description: 'Bad request' },
     404: { description: 'Not found' },
   },
@@ -159610,7 +159730,7 @@ export const getAppsAppIdUrssafPreviewRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Success', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'Success', content: { 'application/json': { schema: z.looseObject({}) } } },
     400: { description: 'Bad request' },
     404: { description: 'Not found' },
   },

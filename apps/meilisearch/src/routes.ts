@@ -1,105 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const IndexStatsSchema = z
-  .object({
-    numberOfDocuments: z.int().min(0).openapi({ description: 'Number of documents in the index' }),
-    rawDocumentDbSize: z
-      .int()
-      .min(0)
-      .openapi({ description: 'Size of the documents database, in bytes.' }),
-    avgDocumentSize: z
-      .int()
-      .min(0)
-      .openapi({ description: 'Average size of a document in the documents database.' }),
-    isIndexing: z
-      .boolean()
-      .openapi({ description: 'Whether or not the index is currently ingesting document' }),
-    numberOfEmbeddings: z
-      .int()
-      .min(0)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Number of embeddings in the index' }),
-    numberOfEmbeddedDocuments: z
-      .int()
-      .min(0)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Number of embedded documents in the index' }),
-    fieldDistribution: z
-      .record(z.string(), z.int().min(0))
-      .openapi({
-        description:
-          'Association of every field name with the number of times it occurs in the documents.',
-      }),
-  })
-  .openapi({
-    description: 'Stats of an `Index`, as known to the `stats` route.',
-    required: [
-      'numberOfDocuments',
-      'rawDocumentDbSize',
-      'avgDocumentSize',
-      'isIndexing',
-      'fieldDistribution',
-    ],
-  })
-  .openapi('IndexStats')
-
-type StatsType = {
-  databaseSize: number
-  usedDatabaseSize: number
-  lastUpdate?: string | null
-  indexes: { [key: string]: z.infer<typeof IndexStatsSchema> }
-}
-
-const ActionSchema = z
-  .enum([
-    '*',
-    'search',
-    'documents.*',
-    'documents.add',
-    'documents.get',
-    'documents.delete',
-    'indexes.*',
-    'indexes.create',
-    'indexes.get',
-    'indexes.update',
-    'indexes.delete',
-    'indexes.swap',
-    'tasks.*',
-    'tasks.cancel',
-    'tasks.delete',
-    'tasks.get',
-    'settings.*',
-    'settings.get',
-    'settings.update',
-    'stats.*',
-    'stats.get',
-    'metrics.*',
-    'metrics.get',
-    'dumps.*',
-    'dumps.create',
-    'snapshots.*',
-    'snapshots.create',
-    'version',
-    'keys.create',
-    'keys.get',
-    'keys.update',
-    'keys.delete',
-    'experimental.get',
-    'experimental.update',
-    'network.get',
-    'network.update',
-    'chatCompletions',
-    'chats.*',
-    'chats.get',
-    'chats.delete',
-    'chatsSettings.*',
-    'chatsSettings.get',
-    'chatsSettings.update',
-  ])
-  .openapi('Action')
-
 const U32Schema = z.int().min(0).openapi('U32')
 
 const ProgressStepViewSchema = z
@@ -959,7 +859,7 @@ const DetailsViewSchema = z
           .nullable()
           .exactOptional()
           .openapi({ description: 'Identifier generated for the dump for dumpCreation task.' }),
-        context: z.object({}).nullable().exactOptional(),
+        context: z.looseObject({}).nullable().exactOptional(),
         function: z.string().nullable().exactOptional(),
         swaps: z.array(IndexSwapSchema).nullable().exactOptional(),
         upgradeFrom: z.string().nullable().exactOptional(),
@@ -1024,16 +924,13 @@ const BatchViewSchema = z
   .openapi({ required: ['uid', 'details', 'stats'] })
   .openapi('BatchView')
 
-const AllBatchesSchema = z
-  .object({
-    results: z.array(BatchViewSchema),
-    total: z.int().min(0),
-    limit: z.int().min(0),
-    from: z.int().min(0).nullable().exactOptional(),
-    next: z.int().min(0).nullable().exactOptional(),
-  })
-  .openapi({ required: ['results', 'total', 'limit'] })
-  .openapi('AllBatches')
+type AllBatchesType = {
+  results: z.infer<typeof BatchViewSchema>[]
+  total: number
+  limit: number
+  from?: number | null
+  next?: number | null
+}
 
 const StatusSchema = z
   .enum(['enqueued', 'processing', 'succeeded', 'failed', 'canceled'])
@@ -1371,7 +1268,139 @@ const TaskViewSchema = z
   .openapi({ required: ['uid', 'status', 'type', 'enqueuedAt'] })
   .openapi('TaskView')
 
-const AllTasksSchema = z
+type AllTasksType = {
+  results: z.infer<typeof TaskViewSchema>[]
+  total: number
+  limit: number
+  from?: number | null
+  next?: number | null
+}
+
+const HitsInfoSchema = z
+  .xor([
+    z
+      .object({
+        hitsPerPage: z.int().min(0),
+        page: z.int().min(0),
+        totalPages: z.int().min(0),
+        totalHits: z.int().min(0),
+      })
+      .openapi({ required: ['hitsPerPage', 'page', 'totalPages', 'totalHits'] }),
+    z
+      .object({ limit: z.int().min(0), offset: z.int().min(0), estimatedTotalHits: z.int().min(0) })
+      .openapi({ required: ['limit', 'offset', 'estimatedTotalHits'] }),
+  ])
+  .openapi('HitsInfo')
+
+const BTreeMapSchema = z
+  .record(
+    z.string(),
+    z.array(
+      z
+        .object({
+          start: z.int().min(0),
+          length: z.int().min(0),
+          indices: z.array(z.int().min(0)).nullable().exactOptional(),
+        })
+        .openapi({ required: ['start', 'length'] }),
+    ),
+  )
+  .openapi('BTreeMap')
+
+const SearchHitSchema = z
+  .object({
+    _formatted: z.looseObject({}).exactOptional(),
+    _matchesPosition: z.xor([z.null().nullable(), BTreeMapSchema]).exactOptional(),
+    _rankingScore: z.float64().nullable().exactOptional(),
+    _rankingScoreDetails: z.record(z.string(), z.any()).nullable().exactOptional(),
+  })
+  .catchall(z.any())
+  .openapi('SearchHit')
+
+const FacetStatsSchema = z
+  .object({ min: z.float64(), max: z.float64() })
+  .openapi({ required: ['min', 'max'] })
+  .openapi('FacetStats')
+
+const SearchResultSchema = HitsInfoSchema.and(
+  z
+    .object({
+      hits: z.array(SearchHitSchema),
+      query: z.string(),
+      processingTimeMs: z.int().min(0),
+      facetDistribution: z.record(z.string(), z.any()).nullable().exactOptional(),
+      facetStats: z.record(z.string(), FacetStatsSchema).nullable().exactOptional(),
+      semanticHitCount: z.int().min(0).nullable().exactOptional(),
+    })
+    .openapi({ required: ['hits', 'query', 'processingTimeMs'] }),
+).openapi('SearchResult')
+
+const SearchResultWithIndexSchema = SearchResultSchema.and(
+  z.object({ indexUid: z.string() }).openapi({ required: ['indexUid'] }),
+).openapi('SearchResultWithIndex')
+
+type SearchResultsType = { results: z.infer<typeof SearchResultWithIndexSchema>[] }
+
+const ActionSchema = z
+  .enum([
+    '*',
+    'search',
+    'documents.*',
+    'documents.add',
+    'documents.get',
+    'documents.delete',
+    'indexes.*',
+    'indexes.create',
+    'indexes.get',
+    'indexes.update',
+    'indexes.delete',
+    'indexes.swap',
+    'tasks.*',
+    'tasks.cancel',
+    'tasks.delete',
+    'tasks.get',
+    'settings.*',
+    'settings.get',
+    'settings.update',
+    'stats.*',
+    'stats.get',
+    'metrics.*',
+    'metrics.get',
+    'dumps.*',
+    'dumps.create',
+    'snapshots.*',
+    'snapshots.create',
+    'version',
+    'keys.create',
+    'keys.get',
+    'keys.update',
+    'keys.delete',
+    'experimental.get',
+    'experimental.update',
+    'network.get',
+    'network.update',
+    'chatCompletions',
+    'chats.*',
+    'chats.get',
+    'chats.delete',
+    'chatsSettings.*',
+    'chatsSettings.get',
+    'chatsSettings.update',
+  ])
+  .openapi('Action')
+
+const AllBatchesSchema: z.ZodType<AllBatchesType> = z
+  .object({
+    results: z.array(BatchViewSchema),
+    total: z.int().min(0),
+    limit: z.int().min(0),
+    from: z.int().min(0).nullable().exactOptional(),
+    next: z.int().min(0).nullable().exactOptional(),
+  })
+  .openapi({ required: ['results', 'total', 'limit'] })
+  .openapi('AllBatches')
+
+const AllTasksSchema: z.ZodType<AllTasksType> = z
   .object({
     results: z
       .array(TaskViewSchema)
@@ -1409,21 +1438,6 @@ const AllTasksSchema = z
   .openapi({ required: ['results', 'total', 'limit'] })
   .openapi('AllTasks')
 
-const BTreeMapSchema = z
-  .record(
-    z.string(),
-    z.array(
-      z
-        .object({
-          start: z.int().min(0),
-          length: z.int().min(0),
-          indices: z.array(z.int().min(0)).nullable().exactOptional(),
-        })
-        .openapi({ required: ['start', 'length'] }),
-    ),
-  )
-  .openapi('BTreeMap')
-
 const BrowseQuerySchema = z
   .object({
     offset: z.int().min(0).openapi({ example: 150 }),
@@ -1443,11 +1457,6 @@ const BrowseQuerySchema = z
   })
   .openapi({ required: ['offset', 'limit', 'retrieveVectors'] })
   .openapi('BrowseQuery')
-
-const FacetStatsSchema = z
-  .object({ min: z.float64(), max: z.float64() })
-  .openapi({ required: ['min', 'max'] })
-  .openapi('FacetStats')
 
 const ComputedFacetsSchema = z
   .object({
@@ -1664,32 +1673,6 @@ const FederatedSearchSchema = z
   .openapi({ required: ['queries'] })
   .openapi('FederatedSearch')
 
-const HitsInfoSchema = z
-  .xor([
-    z
-      .object({
-        hitsPerPage: z.int().min(0),
-        page: z.int().min(0),
-        totalPages: z.int().min(0),
-        totalHits: z.int().min(0),
-      })
-      .openapi({ required: ['hitsPerPage', 'page', 'totalPages', 'totalHits'] }),
-    z
-      .object({ limit: z.int().min(0), offset: z.int().min(0), estimatedTotalHits: z.int().min(0) })
-      .openapi({ required: ['limit', 'offset', 'estimatedTotalHits'] }),
-  ])
-  .openapi('HitsInfo')
-
-const SearchHitSchema = z
-  .object({
-    _formatted: z.looseObject({}).exactOptional(),
-    _matchesPosition: z.xor([z.null().nullable(), BTreeMapSchema]).exactOptional(),
-    _rankingScore: z.float64().nullable().exactOptional(),
-    _rankingScoreDetails: z.record(z.string(), z.any()).nullable().exactOptional(),
-  })
-  .catchall(z.any())
-  .openapi('SearchHit')
-
 const FederatedSearchResultSchema = HitsInfoSchema.and(
   z
     .object({
@@ -1721,7 +1704,7 @@ const GetLogsSchema = z
       }),
     mode: z
       .xor([LogModeSchema.openapi({ description: 'Lets you customize the format of the logs.' })])
-      .default('Human'),
+      .openapi({ default: 'Human' }),
     profileMemory: z
       .boolean()
       .default(false)
@@ -1751,6 +1734,51 @@ const IndexCreateRequestSchema = z
   })
   .openapi({ required: ['uid'] })
   .openapi('IndexCreateRequest')
+
+const IndexStatsSchema = z
+  .object({
+    numberOfDocuments: z.int().min(0).openapi({ description: 'Number of documents in the index' }),
+    rawDocumentDbSize: z
+      .int()
+      .min(0)
+      .openapi({ description: 'Size of the documents database, in bytes.' }),
+    avgDocumentSize: z
+      .int()
+      .min(0)
+      .openapi({ description: 'Average size of a document in the documents database.' }),
+    isIndexing: z
+      .boolean()
+      .openapi({ description: 'Whether or not the index is currently ingesting document' }),
+    numberOfEmbeddings: z
+      .int()
+      .min(0)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Number of embeddings in the index' }),
+    numberOfEmbeddedDocuments: z
+      .int()
+      .min(0)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Number of embedded documents in the index' }),
+    fieldDistribution: z
+      .record(z.string(), z.int().min(0))
+      .openapi({
+        description:
+          'Association of every field name with the number of times it occurs in the documents.',
+      }),
+  })
+  .openapi({
+    description: 'Stats of an `Index`, as known to the `stats` route.',
+    required: [
+      'numberOfDocuments',
+      'rawDocumentDbSize',
+      'avgDocumentSize',
+      'isIndexing',
+      'fieldDistribution',
+    ],
+  })
+  .openapi('IndexStats')
 
 const IndexViewSchema = z
   .object({
@@ -2090,24 +2118,7 @@ const SearchQuerySchema = z
   })
   .openapi('SearchQuery')
 
-const SearchResultSchema = HitsInfoSchema.and(
-  z
-    .object({
-      hits: z.array(SearchHitSchema),
-      query: z.string(),
-      processingTimeMs: z.int().min(0),
-      facetDistribution: z.record(z.string(), z.any()).nullable().exactOptional(),
-      facetStats: z.record(z.string(), FacetStatsSchema).nullable().exactOptional(),
-      semanticHitCount: z.int().min(0).nullable().exactOptional(),
-    })
-    .openapi({ required: ['hits', 'query', 'processingTimeMs'] }),
-).openapi('SearchResult')
-
-const SearchResultWithIndexSchema = SearchResultSchema.and(
-  z.object({ indexUid: z.string() }).openapi({ required: ['indexUid'] }),
-).openapi('SearchResultWithIndex')
-
-const SearchResultsSchema = z
+const SearchResultsSchema: z.ZodType<SearchResultsType> = z
   .object({ results: z.array(SearchResultWithIndexSchema) })
   .openapi({ required: ['results'] })
   .openapi('SearchResults')
@@ -2309,34 +2320,31 @@ const SimilarResultSchema = HitsInfoSchema.and(
     .openapi({ required: ['hits', 'id', 'processingTimeMs'] }),
 ).openapi('SimilarResult')
 
-const StatsSchema: z.ZodType<StatsType> = z
-  .lazy(() =>
-    z
-      .object({
-        databaseSize: z
-          .int()
-          .min(0)
-          .openapi({ description: 'The disk space used by the database, in bytes.' }),
-        usedDatabaseSize: z
-          .int()
-          .min(0)
-          .openapi({ description: 'The size of the database, in bytes.' }),
-        lastUpdate: z.iso
-          .datetime({ offset: true })
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The date of the last update in the RFC 3339 formats. Can be `null` if no update has ever been processed.',
-          }),
-        indexes: z
-          .record(z.string(), IndexStatsSchema)
-          .openapi({
-            description: 'The stats of every individual index your API key lets you access.',
-          }),
-      })
-      .openapi({ required: ['databaseSize', 'usedDatabaseSize', 'indexes'] }),
-  )
+const StatsSchema = z
+  .object({
+    databaseSize: z
+      .int()
+      .min(0)
+      .openapi({ description: 'The disk space used by the database, in bytes.' }),
+    usedDatabaseSize: z
+      .int()
+      .min(0)
+      .openapi({ description: 'The size of the database, in bytes.' }),
+    lastUpdate: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date of the last update in the RFC 3339 formats. Can be `null` if no update has ever been processed.',
+      }),
+    indexes: z
+      .record(z.string(), IndexStatsSchema)
+      .openapi({
+        description: 'The stats of every individual index your API key lets you access.',
+      }),
+  })
+  .openapi({ required: ['databaseSize', 'usedDatabaseSize', 'indexes'] })
   .openapi('Stats')
 
 const SummarizedTaskViewSchema = z

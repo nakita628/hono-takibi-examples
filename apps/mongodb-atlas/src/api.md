@@ -894,7 +894,7 @@ Create a new AI model API key for the given group.
 |201|Created|Created|[AiModelApiKeyResponse](#schemaaimodelapikeyresponse)|
 |400|Bad Request|Bad Request.|[ApiError](#schemaapierror)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
-|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden. Atlas Resource Policy details are returned only when an Atlas Resource Policy denies the request.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
 |500|Internal Server Error|Internal Server Error.|[ApiError](#schemaapierror)|
@@ -1142,7 +1142,7 @@ Delete an existing AI model API key in the given group.
 |204|No Content|No Content|None|
 |400|Bad Request|Bad Request.|[ApiError](#schemaapierror)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
-|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden. Atlas Resource Policy details are returned only when an Atlas Resource Policy denies the request.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
 |500|Internal Server Error|Internal Server Error.|[ApiError](#schemaapierror)|
@@ -1296,7 +1296,7 @@ Update an existing AI model API key in the given group. Only the name can be upd
 |200|OK|OK|[AiModelApiKeyResponse](#schemaaimodelapikeyresponse)|
 |400|Bad Request|Bad Request.|[ApiError](#schemaapierror)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
-|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden. Atlas Resource Policy details are returned only when an Atlas Resource Policy denies the request.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
 |500|Internal Server Error|Internal Server Error.|[ApiError](#schemaapierror)|
@@ -4756,7 +4756,7 @@ Creates one Atlas Search index on the specified collection. Atlas Search indexes
 |200|OK|OK|[ClusterSearchIndex](#schemaclustersearchindex)|
 |400|Bad Request|Bad Request.|[ApiError](#schemaapierror)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
-|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden. Atlas Resource Policy details are returned only when an Atlas Resource Policy denies the request.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
 |409|Conflict|Conflict.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
@@ -5371,7 +5371,7 @@ Updates one Atlas Search index that you identified with its unique ID. Atlas Sea
 |200|OK|OK|[ClusterSearchIndex](#schemaclustersearchindex)|
 |400|Bad Request|Bad Request.|[ApiError](#schemaapierror)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
-|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden. Atlas Resource Policy details are returned only when an Atlas Resource Policy denies the request.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
 |409|Conflict|Conflict.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
@@ -5803,7 +5803,7 @@ Creates Search Nodes for the specified cluster.
 |201|Created|Created|[ApiSearchDeploymentResponseView](#schemaapisearchdeploymentresponseview)|
 |400|Bad Request|Bad Request.|[ApiError](#schemaapierror)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
-|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden. Atlas Resource Policy details are returned only when an Atlas Resource Policy denies the request.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
 |409|Conflict|Conflict.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
@@ -5939,7 +5939,7 @@ Deletes the Search Nodes for the specified cluster.
 |204|No Content|No Content|None|
 |400|Bad Request|Bad Request.|[ApiError](#schemaapierror)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
-|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden. Atlas Resource Policy details are returned only when an Atlas Resource Policy denies the request.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
 |409|Conflict|Conflict.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
@@ -6166,7 +6166,7 @@ Updates the Search Nodes for the specified cluster.
 |200|OK|OK|[ApiSearchDeploymentResponseView](#schemaapisearchdeploymentresponseview)|
 |400|Bad Request|Bad Request.|[ApiError](#schemaapierror)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
-|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden. Atlas Resource Policy details are returned only when an Atlas Resource Policy denies the request.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
 |409|Conflict|Conflict.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
@@ -6615,7 +6615,7 @@ Creates one Atlas Search index on the specified collection. Atlas Search indexes
 |201|Created|Created|[SearchIndexResponse](#schemasearchindexresponse)|
 |400|Bad Request|Bad Request.|[ApiError](#schemaapierror)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
-|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden. Atlas Resource Policy details are returned only when an Atlas Resource Policy denies the request.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
 |409|Conflict|Conflict.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
@@ -7510,7 +7510,7 @@ Updates one Atlas Search index that you identified with its database, collection
 |200|OK|OK|[SearchIndexResponse](#schemasearchindexresponse)|
 |400|Bad Request|Bad Request.|[ApiError](#schemaapierror)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
-|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden. Atlas Resource Policy details are returned only when an Atlas Resource Policy denies the request.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
 |409|Conflict|Conflict.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
@@ -8195,7 +8195,7 @@ Updates one Atlas Search index that you identified with its unique ID. Atlas Sea
 |200|OK|OK|[SearchIndexResponse](#schemasearchindexresponse)|
 |400|Bad Request|Bad Request.|[ApiError](#schemaapierror)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
-|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden. Atlas Resource Policy details are returned only when an Atlas Resource Policy denies the request.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
 |409|Conflict|Conflict.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
@@ -8469,7 +8469,7 @@ Updates the auditing configuration for the specified project. The auditing confi
 |200|OK|OK|[AuditLog](#schemaauditlog)|
 |400|Bad Request|Bad Request.|[ApiError](#schemaapierror)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
-|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden. Atlas Resource Policy details are returned only when an Atlas Resource Policy denies the request.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
 |500|Internal Server Error|Internal Server Error.|[ApiError](#schemaapierror)|
@@ -17758,7 +17758,7 @@ This endpoint can also be used on Flex clusters that were created using the [Cre
         "customOpensslCipherConfigTls13": [
           "TLS_AES_256_GCM_SHA384"
         ],
-        "minimumEnabledTlsProtocol": "TLS1_0",
+        "minimumEnabledTlsProtocol": "TLS1_2",
         "tlsCipherConfigMode": "CUSTOM"
       },
       "autoScaling": {
@@ -18009,7 +18009,7 @@ curl https://cloud.mongodb.com/api/atlas/v2/groups/32b6e34b3d91647abb20e7b8/clus
       "customOpensslCipherConfigTls13": [
         "TLS_AES_256_GCM_SHA384"
       ],
-      "minimumEnabledTlsProtocol": "TLS1_0",
+      "minimumEnabledTlsProtocol": "TLS1_2",
       "tlsCipherConfigMode": "CUSTOM"
     },
     "autoScaling": {
@@ -18117,7 +18117,7 @@ Please note that using an `instanceSize` of M2 or M5 will create a Flex cluster 
     "customOpensslCipherConfigTls13": [
       "TLS_AES_256_GCM_SHA384"
     ],
-    "minimumEnabledTlsProtocol": "TLS1_0",
+    "minimumEnabledTlsProtocol": "TLS1_2",
     "tlsCipherConfigMode": "CUSTOM"
   },
   "autoScaling": {
@@ -18288,7 +18288,7 @@ Please note that using an `instanceSize` of M2 or M5 will create a Flex cluster 
     "customOpensslCipherConfigTls13": [
       "TLS_AES_256_GCM_SHA384"
     ],
-    "minimumEnabledTlsProtocol": "TLS1_0",
+    "minimumEnabledTlsProtocol": "TLS1_2",
     "tlsCipherConfigMode": "CUSTOM"
   },
   "autoScaling": {
@@ -18596,7 +18596,7 @@ This endpoint can also be used on Flex clusters that were created using the [Cre
     "customOpensslCipherConfigTls13": [
       "TLS_AES_256_GCM_SHA384"
     ],
-    "minimumEnabledTlsProtocol": "TLS1_0",
+    "minimumEnabledTlsProtocol": "TLS1_2",
     "tlsCipherConfigMode": "CUSTOM"
   },
   "autoScaling": {
@@ -18994,7 +18994,7 @@ curl https://cloud.mongodb.com/api/atlas/v2/groups/32b6e34b3d91647abb20e7b8/clus
       "customOpensslCipherConfigTls13": [
         "TLS_AES_256_GCM_SHA384"
       ],
-      "minimumEnabledTlsProtocol": "TLS1_0",
+      "minimumEnabledTlsProtocol": "TLS1_2",
       "tlsCipherConfigMode": "CUSTOM"
     },
     "autoScaling": {
@@ -19098,7 +19098,7 @@ Updates the details for one cluster in the specified project. Clusters contain a
     "customOpensslCipherConfigTls13": [
       "TLS_AES_256_GCM_SHA384"
     ],
-    "minimumEnabledTlsProtocol": "TLS1_0",
+    "minimumEnabledTlsProtocol": "TLS1_2",
     "tlsCipherConfigMode": "CUSTOM"
   },
   "autoScaling": {
@@ -19270,7 +19270,7 @@ Updates the details for one cluster in the specified project. Clusters contain a
     "customOpensslCipherConfigTls13": [
       "TLS_AES_256_GCM_SHA384"
     ],
-    "minimumEnabledTlsProtocol": "TLS1_0",
+    "minimumEnabledTlsProtocol": "TLS1_2",
     "tlsCipherConfigMode": "CUSTOM"
   },
   "autoScaling": {
@@ -19500,7 +19500,7 @@ Updates the details for one cluster in the specified project. Clusters contain a
 |200|OK|OK|[LegacyAtlasCluster](#schemalegacyatlascluster)|
 |400|Bad Request|Bad Request.|[ApiError](#schemaapierror)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
-|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden. Atlas Resource Policy details are returned only when an Atlas Resource Policy denies the request.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
 |409|Conflict|Conflict.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
@@ -21468,7 +21468,7 @@ Returns the advanced configuration details for one cluster in the specified proj
   "defaultWriteConcern": "string",
   "failIndexKeyTooLong": true,
   "javascriptEnabled": true,
-  "minimumEnabledTlsProtocol": "TLS1_0",
+  "minimumEnabledTlsProtocol": "TLS1_2",
   "noTableScan": true,
   "oplogMinRetentionHours": 0,
   "oplogSizeMB": 0,
@@ -21599,7 +21599,7 @@ curl https://cloud.mongodb.com/api/atlas/v2/groups/32b6e34b3d91647abb20e7b8/clus
     "defaultWriteConcern": "string",
     "failIndexKeyTooLong": true,
     "javascriptEnabled": true,
-    "minimumEnabledTlsProtocol": "TLS1_0",
+    "minimumEnabledTlsProtocol": "TLS1_2",
     "noTableScan": true,
     "oplogMinRetentionHours": 0,
     "oplogSizeMB": 0,
@@ -21634,7 +21634,7 @@ Updates the advanced configuration details for one cluster in the specified proj
   "defaultWriteConcern": "string",
   "failIndexKeyTooLong": true,
   "javascriptEnabled": true,
-  "minimumEnabledTlsProtocol": "TLS1_0",
+  "minimumEnabledTlsProtocol": "TLS1_2",
   "noTableScan": true,
   "oplogMinRetentionHours": 0,
   "oplogSizeMB": 0,
@@ -21664,7 +21664,7 @@ Updates the advanced configuration details for one cluster in the specified proj
 |» defaultWriteConcern|body|string|false|Default level of acknowledgment requested from MongoDB for write operations when none is specified by the driver.|
 |» failIndexKeyTooLong|body|boolean|false|**Deprecated.** Flag that indicates whether you can insert or update documents where all indexed entries don't exceed 1024 bytes. If you set this to false, [mongod](https://docs.mongodb.com/upcoming/reference/program/mongod/#mongodb-binary-bin.mongod) writes documents that exceed this limit but doesn't index them. This parameter has been removed as of [MongoDB 4.4](https://www.mongodb.com/docs/manual/reference/parameters/#mongodb-parameter-param.failIndexKeyTooLong).|
 |» javascriptEnabled|body|boolean|false|Flag that indicates whether the cluster allows execution of operations that perform server-side executions of JavaScript. When using 8.0+, we recommend disabling server-side JavaScript and using operators of aggregation pipeline as more performant alternative.|
-|» minimumEnabledTlsProtocol|body|string|false|Minimum Transport Layer Security (TLS) version that the cluster accepts for incoming connections. Clusters using TLS 1.0 or 1.1 should consider setting TLS 1.2 as the minimum TLS protocol version.|
+|» minimumEnabledTlsProtocol|body|string|false|Minimum Transport Layer Security (TLS) version that the cluster accepts for incoming connections.|
 |» noTableScan|body|boolean|false|Flag that indicates whether the cluster disables executing any query that requires a collection scan to return results.|
 |» oplogMinRetentionHours|body|number(double) \| null|false|Minimum retention window for cluster's oplog expressed in hours. A value of null indicates that the cluster uses the default minimum oplog window that MongoDB Cloud calculates.|
 |» oplogSizeMB|body|integer(int32) \| null|false|Storage limit of cluster's oplog expressed in megabytes. A value of null indicates that the cluster uses the default oplog size that MongoDB Cloud calculates.|
@@ -21686,8 +21686,6 @@ Updates the advanced configuration details for one cluster in the specified proj
 |» customOpensslCipherConfigTls13|TLS_AES_128_CCM_SHA256|
 |» defaultReadConcern|local|
 |» defaultReadConcern|available|
-|» minimumEnabledTlsProtocol|TLS1_0|
-|» minimumEnabledTlsProtocol|TLS1_1|
 |» minimumEnabledTlsProtocol|TLS1_2|
 |» minimumEnabledTlsProtocol|TLS1_3|
 |» tlsCipherConfigMode|CUSTOM|
@@ -21712,7 +21710,7 @@ Updates the advanced configuration details for one cluster in the specified proj
   "defaultWriteConcern": "string",
   "failIndexKeyTooLong": true,
   "javascriptEnabled": true,
-  "minimumEnabledTlsProtocol": "TLS1_0",
+  "minimumEnabledTlsProtocol": "TLS1_2",
   "noTableScan": true,
   "oplogMinRetentionHours": 0,
   "oplogSizeMB": 0,
@@ -21797,7 +21795,7 @@ Updates the advanced configuration details for one cluster in the specified proj
 |200|OK|OK|[ClusterDescriptionProcessArgs](#schemaclusterdescriptionprocessargs)|
 |400|Bad Request|Bad Request.|[ApiError](#schemaapierror)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
-|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden. Atlas Resource Policy details are returned only when an Atlas Resource Policy denies the request.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
 |500|Internal Server Error|Internal Server Error.|[ApiError](#schemaapierror)|
@@ -23088,7 +23086,7 @@ curl https://cloud.mongodb.com/api/atlas/v2/groups/32b6e34b3d91647abb20e7b8/clus
       "customOpensslCipherConfigTls13": [
         "TLS_AES_256_GCM_SHA384"
       ],
-      "minimumEnabledTlsProtocol": "TLS1_0",
+      "minimumEnabledTlsProtocol": "TLS1_2",
       "tlsCipherConfigMode": "CUSTOM"
     },
     "autoScaling": {
@@ -23196,7 +23194,7 @@ This endpoint can also be used to upgrade Flex clusters that were created using 
     "customOpensslCipherConfigTls13": [
       "TLS_AES_256_GCM_SHA384"
     ],
-    "minimumEnabledTlsProtocol": "TLS1_0",
+    "minimumEnabledTlsProtocol": "TLS1_2",
     "tlsCipherConfigMode": "CUSTOM"
   },
   "autoScaling": {
@@ -23365,7 +23363,7 @@ This endpoint can also be used to upgrade Flex clusters that were created using 
     "customOpensslCipherConfigTls13": [
       "TLS_AES_256_GCM_SHA384"
     ],
-    "minimumEnabledTlsProtocol": "TLS1_0",
+    "minimumEnabledTlsProtocol": "TLS1_2",
     "tlsCipherConfigMode": "CUSTOM"
   },
   "autoScaling": {
@@ -23872,6 +23870,755 @@ This endpoint has been deprecated as of February 2025 as we no longer support th
 |---|---|---|---|---|
 |200|RateLimit-Limit|integer||The maximum number of requests that a user can make within a specific time window.|
 |200|RateLimit-Remaining|integer||The number of requests remaining in the current rate limit window before the limit is reached.|
+|429|RateLimit-Limit|integer||The maximum number of requests that a user can make within a specific time window.|
+|429|RateLimit-Remaining|integer||The number of requests remaining in the current rate limit window before the limit is reached.|
+|429|Retry-After|integer||The minimum time you should wait, in seconds, before retrying the API request. This header might be returned for 429 or 503 error responses.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+ServiceAccounts, DigestAuth
+</aside>
+
+## Return All Dedicated Mongos Topologies for One Project
+
+<a id="opIdlistGroupMongosTopologies"></a>
+
+> Code samples
+
+```bash
+curl https://cloud.mongodb.com/api/atlas/v2/groups/32b6e34b3d91647abb20e7b8/mongosTopologies \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /api/atlas/v2/groups/{groupId}/mongosTopologies`
+
+Returns the dedicated mongos topologies in the specified project, including topologies staged before their cluster exists.
+
+<h3 id="return-all-dedicated-mongos-topologies-for-one-project-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|envelope|query|boolean|false|Flag that indicates whether Application wraps the response in an `envelope` JSON object. Some API clients cannot access the HTTP response headers or status code. To remediate this, set envelope=true in the query. Endpoints that return a list of results use the results object as an envelope. Application adds the status parameter to the response body.|
+|groupId|path|string|true|Unique 24-hexadecimal digit string that identifies your project. Use the [/groups](#tag/Projects/operation/listProjects) endpoint to retrieve all projects to which the authenticated user has access.<br><br>**NOTE**: Groups and projects are synonymous terms. Your group id is the same as your project id. For existing groups, your group/project id remains the same. The resource and corresponding endpoints use the term groups.|
+|includeCount|query|boolean|false|Flag that indicates whether MongoDB Cloud calculates the total number of items for the response. When set to `false`, MongoDB Cloud may skip an additional count operation. The response may still include `totalCount` when the count is available without additional calculation.|
+|itemsPerPage|query|integer|false|Number of items that the response returns per page.|
+|pageNum|query|integer|false|Number of the page that displays the current set of the total objects that the response returns.|
+|pretty|query|boolean|false|Flag that indicates whether the response body should be in the prettyprint format.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "links": [
+    {
+      "href": "https://cloud.mongodb.com/api/atlas",
+      "rel": "self"
+    }
+  ],
+  "results": [
+    {
+      "clusterName": "string",
+      "instanceSize": "string",
+      "regionPlacements": [
+        {
+          "nodeCount": 0,
+          "providerName": "AWS",
+          "regionName": "string"
+        }
+      ],
+      "status": "PENDING_CLUSTER_CREATION"
+    }
+  ],
+  "totalCount": 0
+}
+```
+
+> 401 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint)",
+  "error": 401,
+  "errorCode": "NOT_ORG_GROUP_CREATOR",
+  "reason": "Unauthorized"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint)",
+  "error": 403,
+  "errorCode": "CANNOT_CHANGE_GROUP_NAME",
+  "reason": "Forbidden"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint) Cannot find resource AWS",
+  "error": 404,
+  "errorCode": "RESOURCE_NOT_FOUND",
+  "reason": "Not Found"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint)",
+  "error": 429,
+  "errorCode": "RATE_LIMITED",
+  "reason": "Too Many Requests"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint)",
+  "error": 500,
+  "errorCode": "UNEXPECTED_ERROR",
+  "reason": "Internal Server Error"
+}
+```
+
+<h3 id="return-all-dedicated-mongos-topologies-for-one-project-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[PaginatedMongosTopologyResourceResponse](#schemapaginatedmongostopologyresourceresponse)|
+|401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|404|Not Found|Not Found.|[ApiError](#schemaapierror)|
+|429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
+|500|Internal Server Error|Internal Server Error.|[ApiError](#schemaapierror)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|200|RateLimit-Limit|integer||The maximum number of requests that a user can make within a specific time window.|
+|200|RateLimit-Remaining|integer||The number of requests remaining in the current rate limit window before the limit is reached.|
+|429|RateLimit-Limit|integer||The maximum number of requests that a user can make within a specific time window.|
+|429|RateLimit-Remaining|integer||The number of requests remaining in the current rate limit window before the limit is reached.|
+|429|Retry-After|integer||The minimum time you should wait, in seconds, before retrying the API request. This header might be returned for 429 or 503 error responses.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+ServiceAccounts, DigestAuth
+</aside>
+
+## Add One Dedicated Mongos Topology to One Cluster
+
+<a id="opIdcreateGroupMongosTopology"></a>
+
+> Code samples
+
+```bash
+curl https://cloud.mongodb.com/api/atlas/v2/groups/32b6e34b3d91647abb20e7b8/mongosTopologies \
+  -X POST \
+  -H 'Content-Type: application/vnd.atlas.preview+json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "clusterName": "string",
+    "instanceSize": "string",
+    "regionPlacements": [
+      {
+        "nodeCount": 0,
+        "providerName": "AWS",
+        "regionName": "string"
+      }
+    ]
+  }'
+```
+
+`POST /api/atlas/v2/groups/{groupId}/mongosTopologies`
+
+Attaches a dedicated mongos topology to an existing sharded cluster, triggering the transition from colocated to dedicated mongos. When no cluster with the given name exists yet, the topology is staged and adopted when the cluster is created.
+
+> Body parameter
+
+```json
+{
+  "clusterName": "string",
+  "instanceSize": "string",
+  "regionPlacements": [
+    {
+      "nodeCount": 0,
+      "providerName": "AWS",
+      "regionName": "string"
+    }
+  ]
+}
+```
+
+<h3 id="add-one-dedicated-mongos-topology-to-one-cluster-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|envelope|query|boolean|false|Flag that indicates whether Application wraps the response in an `envelope` JSON object. Some API clients cannot access the HTTP response headers or status code. To remediate this, set envelope=true in the query. Endpoints that return a list of results use the results object as an envelope. Application adds the status parameter to the response body.|
+|groupId|path|string|true|Unique 24-hexadecimal digit string that identifies your project. Use the [/groups](#tag/Projects/operation/listProjects) endpoint to retrieve all projects to which the authenticated user has access.<br><br>**NOTE**: Groups and projects are synonymous terms. Your group id is the same as your project id. For existing groups, your group/project id remains the same. The resource and corresponding endpoints use the term groups.|
+|pretty|query|boolean|false|Flag that indicates whether the response body should be in the prettyprint format.|
+|body|body|[MongosTopologyCreateRequest](#schemamongostopologycreaterequest)|true|Dedicated mongos topology to attach.|
+|» clusterName|body|string|false|Human-readable label that identifies the sharded cluster this topology belongs to.|
+|» instanceSize|body|string|false|Instance size of the dedicated mongos hosts (for example, `M30`).|
+|» regionPlacements|body|[[MongosTopologyResourceRegionConfig](#schemamongostopologyresourceregionconfig)]|false|Per-region placement of the dedicated mongos hosts.|
+
+> Example responses
+
+> 202 Response
+
+```json
+{
+  "clusterName": "string",
+  "instanceSize": "string",
+  "regionPlacements": [
+    {
+      "nodeCount": 0,
+      "providerName": "AWS",
+      "regionName": "string"
+    }
+  ],
+  "status": "PENDING_CLUSTER_CREATION"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint) No provider AWS exists.",
+  "error": 400,
+  "errorCode": "VALIDATION_ERROR",
+  "reason": "Bad Request"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint)",
+  "error": 401,
+  "errorCode": "NOT_ORG_GROUP_CREATOR",
+  "reason": "Unauthorized"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint)",
+  "error": 403,
+  "errorCode": "CANNOT_CHANGE_GROUP_NAME",
+  "reason": "Forbidden"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint) Cannot find resource AWS",
+  "error": 404,
+  "errorCode": "RESOURCE_NOT_FOUND",
+  "reason": "Not Found"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint) Cannot delete organization link while there is active migration in following project ids: 60c4fd418ebe251047c50554",
+  "error": 409,
+  "errorCode": "CANNOT_DELETE_ORG_ACTIVE_LIVE_MIGRATION_ATLAS_ORG_LINK",
+  "reason": "Conflict"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint)",
+  "error": 429,
+  "errorCode": "RATE_LIMITED",
+  "reason": "Too Many Requests"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint)",
+  "error": 500,
+  "errorCode": "UNEXPECTED_ERROR",
+  "reason": "Internal Server Error"
+}
+```
+
+<h3 id="add-one-dedicated-mongos-topology-to-one-cluster-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|202|Accepted|Accepted|[MongosTopologyResourceResponse](#schemamongostopologyresourceresponse)|
+|400|Bad Request|Bad Request.|[ApiError](#schemaapierror)|
+|401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|404|Not Found|Not Found.|[ApiError](#schemaapierror)|
+|409|Conflict|Conflict.|[ApiError](#schemaapierror)|
+|429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
+|500|Internal Server Error|Internal Server Error.|[ApiError](#schemaapierror)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string|uri|URI of the dedicated mongos topology, which reports its latest status. Absent when the request sets `envelope=true`, which returns the URI in the envelope's `locations` parameter instead.|
+|202|RateLimit-Limit|integer||The maximum number of requests that a user can make within a specific time window.|
+|202|RateLimit-Remaining|integer||The number of requests remaining in the current rate limit window before the limit is reached.|
+|429|RateLimit-Limit|integer||The maximum number of requests that a user can make within a specific time window.|
+|429|RateLimit-Remaining|integer||The number of requests remaining in the current rate limit window before the limit is reached.|
+|429|Retry-After|integer||The minimum time you should wait, in seconds, before retrying the API request. This header might be returned for 429 or 503 error responses.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+ServiceAccounts, DigestAuth
+</aside>
+
+## Return One Dedicated Mongos Topology for One Cluster
+
+<a id="opIdgetGroupMongosTopology"></a>
+
+> Code samples
+
+```bash
+curl https://cloud.mongodb.com/api/atlas/v2/groups/32b6e34b3d91647abb20e7b8/mongosTopologies/string \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /api/atlas/v2/groups/{groupId}/mongosTopologies/{clusterName}`
+
+Returns the dedicated mongos topology for the specified cluster, or a topology staged before its cluster exists. Only a topology that is dedicated or transitioning to dedicated is returned; a cluster whose mongos are colocated or transitioning back to colocated has no topology resource.
+
+<h3 id="return-one-dedicated-mongos-topology-for-one-cluster-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|envelope|query|boolean|false|Flag that indicates whether Application wraps the response in an `envelope` JSON object. Some API clients cannot access the HTTP response headers or status code. To remediate this, set envelope=true in the query. Endpoints that return a list of results use the results object as an envelope. Application adds the status parameter to the response body.|
+|groupId|path|string|true|Unique 24-hexadecimal digit string that identifies your project. Use the [/groups](#tag/Projects/operation/listProjects) endpoint to retrieve all projects to which the authenticated user has access.<br><br>**NOTE**: Groups and projects are synonymous terms. Your group id is the same as your project id. For existing groups, your group/project id remains the same. The resource and corresponding endpoints use the term groups.|
+|pretty|query|boolean|false|Flag that indicates whether the response body should be in the prettyprint format.|
+|clusterName|path|string|true|Human-readable label that identifies the sharded cluster this topology belongs to.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "clusterName": "string",
+  "instanceSize": "string",
+  "regionPlacements": [
+    {
+      "nodeCount": 0,
+      "providerName": "AWS",
+      "regionName": "string"
+    }
+  ],
+  "status": "PENDING_CLUSTER_CREATION"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint)",
+  "error": 401,
+  "errorCode": "NOT_ORG_GROUP_CREATOR",
+  "reason": "Unauthorized"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint)",
+  "error": 403,
+  "errorCode": "CANNOT_CHANGE_GROUP_NAME",
+  "reason": "Forbidden"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint) Cannot find resource AWS",
+  "error": 404,
+  "errorCode": "RESOURCE_NOT_FOUND",
+  "reason": "Not Found"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint)",
+  "error": 429,
+  "errorCode": "RATE_LIMITED",
+  "reason": "Too Many Requests"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint)",
+  "error": 500,
+  "errorCode": "UNEXPECTED_ERROR",
+  "reason": "Internal Server Error"
+}
+```
+
+<h3 id="return-one-dedicated-mongos-topology-for-one-cluster-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[MongosTopologyResourceResponse](#schemamongostopologyresourceresponse)|
+|401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|404|Not Found|Not Found.|[ApiError](#schemaapierror)|
+|429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
+|500|Internal Server Error|Internal Server Error.|[ApiError](#schemaapierror)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|200|RateLimit-Limit|integer||The maximum number of requests that a user can make within a specific time window.|
+|200|RateLimit-Remaining|integer||The number of requests remaining in the current rate limit window before the limit is reached.|
+|429|RateLimit-Limit|integer||The maximum number of requests that a user can make within a specific time window.|
+|429|RateLimit-Remaining|integer||The number of requests remaining in the current rate limit window before the limit is reached.|
+|429|Retry-After|integer||The minimum time you should wait, in seconds, before retrying the API request. This header might be returned for 429 or 503 error responses.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+ServiceAccounts, DigestAuth
+</aside>
+
+## Remove the Dedicated Mongos Topology from One Cluster
+
+<a id="opIddeleteGroupMongosTopology"></a>
+
+> Code samples
+
+```bash
+curl https://cloud.mongodb.com/api/atlas/v2/groups/32b6e34b3d91647abb20e7b8/mongosTopologies/string \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /api/atlas/v2/groups/{groupId}/mongosTopologies/{clusterName}`
+
+Removes the dedicated mongos topology from the specified cluster, transitioning it back to colocated mongos. This does not delete the cluster.
+
+<h3 id="remove-the-dedicated-mongos-topology-from-one-cluster-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|envelope|query|boolean|false|Flag that indicates whether Application wraps the response in an `envelope` JSON object. Some API clients cannot access the HTTP response headers or status code. To remediate this, set envelope=true in the query. Endpoints that return a list of results use the results object as an envelope. Application adds the status parameter to the response body.|
+|groupId|path|string|true|Unique 24-hexadecimal digit string that identifies your project. Use the [/groups](#tag/Projects/operation/listProjects) endpoint to retrieve all projects to which the authenticated user has access.<br><br>**NOTE**: Groups and projects are synonymous terms. Your group id is the same as your project id. For existing groups, your group/project id remains the same. The resource and corresponding endpoints use the term groups.|
+|pretty|query|boolean|false|Flag that indicates whether the response body should be in the prettyprint format.|
+|clusterName|path|string|true|Human-readable label that identifies the sharded cluster this topology belongs to.|
+
+> Example responses
+
+> 401 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint)",
+  "error": 401,
+  "errorCode": "NOT_ORG_GROUP_CREATOR",
+  "reason": "Unauthorized"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint)",
+  "error": 403,
+  "errorCode": "CANNOT_CHANGE_GROUP_NAME",
+  "reason": "Forbidden"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint) Cannot find resource AWS",
+  "error": 404,
+  "errorCode": "RESOURCE_NOT_FOUND",
+  "reason": "Not Found"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint) Cannot delete organization link while there is active migration in following project ids: 60c4fd418ebe251047c50554",
+  "error": 409,
+  "errorCode": "CANNOT_DELETE_ORG_ACTIVE_LIVE_MIGRATION_ATLAS_ORG_LINK",
+  "reason": "Conflict"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint)",
+  "error": 429,
+  "errorCode": "RATE_LIMITED",
+  "reason": "Too Many Requests"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint)",
+  "error": 500,
+  "errorCode": "UNEXPECTED_ERROR",
+  "reason": "Internal Server Error"
+}
+```
+
+<h3 id="remove-the-dedicated-mongos-topology-from-one-cluster-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|No Content|None|
+|401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|404|Not Found|Not Found.|[ApiError](#schemaapierror)|
+|409|Conflict|Conflict.|[ApiError](#schemaapierror)|
+|429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
+|500|Internal Server Error|Internal Server Error.|[ApiError](#schemaapierror)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|204|RateLimit-Limit|integer||The maximum number of requests that a user can make within a specific time window.|
+|204|RateLimit-Remaining|integer||The number of requests remaining in the current rate limit window before the limit is reached.|
+|429|RateLimit-Limit|integer||The maximum number of requests that a user can make within a specific time window.|
+|429|RateLimit-Remaining|integer||The number of requests remaining in the current rate limit window before the limit is reached.|
+|429|Retry-After|integer||The minimum time you should wait, in seconds, before retrying the API request. This header might be returned for 429 or 503 error responses.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+ServiceAccounts, DigestAuth
+</aside>
+
+## Update the Dedicated Mongos Topology for One Cluster
+
+<a id="opIdupdateGroupMongosTopology"></a>
+
+> Code samples
+
+```bash
+curl https://cloud.mongodb.com/api/atlas/v2/groups/32b6e34b3d91647abb20e7b8/mongosTopologies/string \
+  -X PATCH \
+  -H 'Content-Type: application/vnd.atlas.preview+json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "clusterName": "string",
+    "instanceSize": "string",
+    "regionPlacements": [
+      {
+        "nodeCount": 0,
+        "providerName": "AWS",
+        "regionName": "string"
+      }
+    ]
+  }'
+```
+
+`PATCH /api/atlas/v2/groups/{groupId}/mongosTopologies/{clusterName}`
+
+Updates the dedicated mongos tier (instance size or region placements) for the specified cluster. Either field may be omitted and keeps its current value.
+
+> Body parameter
+
+```json
+{
+  "clusterName": "string",
+  "instanceSize": "string",
+  "regionPlacements": [
+    {
+      "nodeCount": 0,
+      "providerName": "AWS",
+      "regionName": "string"
+    }
+  ]
+}
+```
+
+<h3 id="update-the-dedicated-mongos-topology-for-one-cluster-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|envelope|query|boolean|false|Flag that indicates whether Application wraps the response in an `envelope` JSON object. Some API clients cannot access the HTTP response headers or status code. To remediate this, set envelope=true in the query. Endpoints that return a list of results use the results object as an envelope. Application adds the status parameter to the response body.|
+|groupId|path|string|true|Unique 24-hexadecimal digit string that identifies your project. Use the [/groups](#tag/Projects/operation/listProjects) endpoint to retrieve all projects to which the authenticated user has access.<br><br>**NOTE**: Groups and projects are synonymous terms. Your group id is the same as your project id. For existing groups, your group/project id remains the same. The resource and corresponding endpoints use the term groups.|
+|pretty|query|boolean|false|Flag that indicates whether the response body should be in the prettyprint format.|
+|clusterName|path|string|true|Human-readable label that identifies the sharded cluster this topology belongs to.|
+|body|body|[MongosTopologyUpdateRequest](#schemamongostopologyupdaterequest)|true|Dedicated mongos tier fields to update.|
+|» clusterName|body|string|false|Human-readable label that identifies the sharded cluster this topology belongs to.|
+|» instanceSize|body|string|false|Instance size of the dedicated mongos hosts (for example, `M30`).|
+|» regionPlacements|body|[[MongosTopologyResourceRegionConfig](#schemamongostopologyresourceregionconfig)]|false|Per-region placement of the dedicated mongos hosts.|
+
+> Example responses
+
+> 202 Response
+
+```json
+{
+  "clusterName": "string",
+  "instanceSize": "string",
+  "regionPlacements": [
+    {
+      "nodeCount": 0,
+      "providerName": "AWS",
+      "regionName": "string"
+    }
+  ],
+  "status": "PENDING_CLUSTER_CREATION"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint) No provider AWS exists.",
+  "error": 400,
+  "errorCode": "VALIDATION_ERROR",
+  "reason": "Bad Request"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint)",
+  "error": 401,
+  "errorCode": "NOT_ORG_GROUP_CREATOR",
+  "reason": "Unauthorized"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint)",
+  "error": 403,
+  "errorCode": "CANNOT_CHANGE_GROUP_NAME",
+  "reason": "Forbidden"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint) Cannot find resource AWS",
+  "error": 404,
+  "errorCode": "RESOURCE_NOT_FOUND",
+  "reason": "Not Found"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint) Cannot delete organization link while there is active migration in following project ids: 60c4fd418ebe251047c50554",
+  "error": 409,
+  "errorCode": "CANNOT_DELETE_ORG_ACTIVE_LIVE_MIGRATION_ATLAS_ORG_LINK",
+  "reason": "Conflict"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint)",
+  "error": 429,
+  "errorCode": "RATE_LIMITED",
+  "reason": "Too Many Requests"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint)",
+  "error": 500,
+  "errorCode": "UNEXPECTED_ERROR",
+  "reason": "Internal Server Error"
+}
+```
+
+<h3 id="update-the-dedicated-mongos-topology-for-one-cluster-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|202|Accepted|Accepted|[MongosTopologyResourceResponse](#schemamongostopologyresourceresponse)|
+|400|Bad Request|Bad Request.|[ApiError](#schemaapierror)|
+|401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|404|Not Found|Not Found.|[ApiError](#schemaapierror)|
+|409|Conflict|Conflict.|[ApiError](#schemaapierror)|
+|429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
+|500|Internal Server Error|Internal Server Error.|[ApiError](#schemaapierror)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string|uri|URI of the dedicated mongos topology, which reports its latest status. Absent when the request sets `envelope=true`, which returns the URI in the envelope's `locations` parameter instead.|
+|202|RateLimit-Limit|integer||The maximum number of requests that a user can make within a specific time window.|
+|202|RateLimit-Remaining|integer||The number of requests remaining in the current rate limit window before the limit is reached.|
 |429|RateLimit-Limit|integer||The maximum number of requests that a user can make within a specific time window.|
 |429|RateLimit-Remaining|integer||The number of requests remaining in the current rate limit window before the limit is reached.|
 |429|Retry-After|integer||The minimum time you should wait, in seconds, before retrying the API request. This header might be returned for 429 or 503 error responses.|
@@ -30200,7 +30947,7 @@ Updates the configuration for encryption at rest using the keys you manage throu
 |200|OK|OK|[EncryptionAtRest](#schemaencryptionatrest)|
 |400|Bad Request|Bad Request.|[ApiError](#schemaapierror)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
-|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden. Atlas Resource Policy details are returned only when an Atlas Resource Policy denies the request.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
 |409|Conflict|Conflict.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
@@ -32038,7 +32785,6 @@ Returns all connected organization configurations in the specified federation. T
       ],
       "domainRestrictionEnabled": true,
       "identityProviderId": "string",
-      "instantUserProvisioningDisabled": true,
       "orgId": "32b6e34b3d91647abb20e7b8",
       "postAuthRoleGrants": [
         "ORG_OWNER"
@@ -32202,7 +32948,6 @@ Returns the specified connected organization configuration from the specified fe
   ],
   "domainRestrictionEnabled": true,
   "identityProviderId": "string",
-  "instantUserProvisioningDisabled": true,
   "orgId": "32b6e34b3d91647abb20e7b8",
   "postAuthRoleGrants": [
     "ORG_OWNER"
@@ -32466,7 +33211,6 @@ curl https://cloud.mongodb.com/api/atlas/v2/federationSettings/55fa922fb34328275
     ],
     "domainRestrictionEnabled": true,
     "identityProviderId": "string",
-    "instantUserProvisioningDisabled": true,
     "postAuthRoleGrants": [
       "ORG_OWNER"
     ],
@@ -32517,7 +33261,6 @@ Updates one connected organization configuration from the specified federation.
   ],
   "domainRestrictionEnabled": true,
   "identityProviderId": "string",
-  "instantUserProvisioningDisabled": true,
   "postAuthRoleGrants": [
     "ORG_OWNER"
   ],
@@ -32556,7 +33299,6 @@ Updates one connected organization configuration from the specified federation.
 |» domainAllowList|body|[string]|false|Approved domains that restrict users who can join the organization based on their email address.|
 |» domainRestrictionEnabled|body|boolean|true|Value that indicates whether domain restriction is enabled for this connected organization.|
 |» identityProviderId|body|string \| null|false|Legacy 20-hexadecimal digit string that identifies the UI access identity provider that this connected organization configuration is associated with. This id can be found within the Federation Management Console > Identity Providers tab by clicking the info icon in the IdP ID row of a configured identity provider.|
-|» instantUserProvisioningDisabled|body|boolean \| null|false|Flag that indicates whether instant user provisioning is disabled for this connected organization.|
 |» postAuthRoleGrants|body|[string \| null]|false|Atlas roles that are granted to a user in this organization after authenticating. Roles are a human-readable label that identifies the collection of privileges that MongoDB Cloud grants a specific MongoDB Cloud user. These roles can only be organization specific roles.|
 |» roleMappings|body|[[AuthFederationRoleMapping](#schemaauthfederationrolemapping)]|false|Role mappings that are configured in this organization.|
 |» userConflicts|body|[[FederatedUser](#schemafederateduser)]|false|List that contains the users who have an email address that doesn't match any domain on the allowed list.|
@@ -32587,7 +33329,6 @@ Updates one connected organization configuration from the specified federation.
   ],
   "domainRestrictionEnabled": true,
   "identityProviderId": "string",
-  "instantUserProvisioningDisabled": true,
   "orgId": "32b6e34b3d91647abb20e7b8",
   "postAuthRoleGrants": [
     "ORG_OWNER"
@@ -33508,7 +34249,6 @@ Returns all identity providers with the provided protocol and type in the specif
           ],
           "domainRestrictionEnabled": true,
           "identityProviderId": "string",
-          "instantUserProvisioningDisabled": true,
           "orgId": "32b6e34b3d91647abb20e7b8",
           "postAuthRoleGrants": [
             "ORG_OWNER"
@@ -33771,7 +34511,6 @@ Creates one identity provider within the specified federation. To use this resou
       ],
       "domainRestrictionEnabled": true,
       "identityProviderId": "string",
-      "instantUserProvisioningDisabled": true,
       "orgId": "32b6e34b3d91647abb20e7b8",
       "postAuthRoleGrants": [
         "ORG_OWNER"
@@ -33957,7 +34696,6 @@ Returns one identity provider in the specified federation by the identity provid
       ],
       "domainRestrictionEnabled": true,
       "identityProviderId": "string",
-      "instantUserProvisioningDisabled": true,
       "orgId": "32b6e34b3d91647abb20e7b8",
       "postAuthRoleGrants": [
         "ORG_OWNER"
@@ -34367,7 +35105,6 @@ Updates one identity provider in the specified federation. To use this resource,
       ],
       "domainRestrictionEnabled": true,
       "identityProviderId": "string",
-      "instantUserProvisioningDisabled": true,
       "orgId": "32b6e34b3d91647abb20e7b8",
       "postAuthRoleGrants": [
         "ORG_OWNER"
@@ -35315,7 +36052,7 @@ Creates one flex cluster in the specified project.
 |400|Bad Request|Bad Request.|[ApiError](#schemaapierror)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
 |402|Payment Required|Payment Required.|[ApiError](#schemaapierror)|
-|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden. Atlas Resource Policy details are returned only when an Atlas Resource Policy denies the request.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
 |409|Conflict|Conflict.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
@@ -35835,7 +36572,7 @@ Updates one flex cluster in the specified project.
 |400|Bad Request|Bad Request.|[ApiError](#schemaapierror)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
 |402|Payment Required|Payment Required.|[ApiError](#schemaapierror)|
-|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden. Atlas Resource Policy details are returned only when an Atlas Resource Policy denies the request.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
 |409|Conflict|Conflict.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
@@ -35877,7 +36614,7 @@ curl https://cloud.mongodb.com/api/atlas/v2/groups/32b6e34b3d91647abb20e7b8/flex
       "customOpensslCipherConfigTls13": [
         "TLS_AES_256_GCM_SHA384"
       ],
-      "minimumEnabledTlsProtocol": "TLS1_0",
+      "minimumEnabledTlsProtocol": "TLS1_2",
       "tlsCipherConfigMode": "CUSTOM"
     },
     "backupEnabled": true,
@@ -35924,6 +36661,9 @@ curl https://cloud.mongodb.com/api/atlas/v2/groups/32b6e34b3d91647abb20e7b8/flex
     ],
     "retainBackups": false,
     "rootCertType": "ISRGROOTX1",
+    "searchAutoMigration": {
+      "disabled": false
+    },
     "tags": [
       {
         "key": "string",
@@ -35953,7 +36693,7 @@ Upgrades a flex cluster to a dedicated cluster (M10+) in the specified project.
     "customOpensslCipherConfigTls13": [
       "TLS_AES_256_GCM_SHA384"
     ],
-    "minimumEnabledTlsProtocol": "TLS1_0",
+    "minimumEnabledTlsProtocol": "TLS1_2",
     "tlsCipherConfigMode": "CUSTOM"
   },
   "backupEnabled": true,
@@ -36000,6 +36740,9 @@ Upgrades a flex cluster to a dedicated cluster (M10+) in the specified project.
   ],
   "retainBackups": false,
   "rootCertType": "ISRGROOTX1",
+  "searchAutoMigration": {
+    "disabled": false
+  },
   "tags": [
     {
       "key": "string",
@@ -36041,6 +36784,7 @@ Upgrades a flex cluster to a dedicated cluster (M10+) in the specified project.
 |» replicationSpecs|body|[[ReplicationSpec20240805](#schemareplicationspec20240805)]|false|List of settings that configure your cluster regions. This array has one object per shard representing node configurations in each shard. For replica sets there is only one object representing node configurations.|
 |» retainBackups|body|boolean|false|Flag that indicates whether the cluster retains backups.|
 |» rootCertType|body|string|false|Root Certificate Authority that MongoDB Atlas cluster uses. MongoDB Cloud supports Internet Security Research Group.|
+|» searchAutoMigration|body|[SearchAutoMigration](#schemasearchautomigration)|false|Configuration for automatically adding Dedicated Search Nodes on eligible Atlas Infinite clusters. This setting has no effect on Atlas Core clusters.|
 |» tags|body|[[ResourceTag](#schemaresourcetag)]|false|List that contains key-value pairs between 1 to 255 characters in length for tagging and categorizing the cluster.|
 |» terminationProtectionEnabled|body|boolean|false|Flag that indicates whether termination protection is enabled on the cluster. If set to `true`, MongoDB Cloud won't delete the cluster. If set to `false`, MongoDB Cloud will delete the cluster.|
 |» useAwsTimeBasedSnapshotCopyForFastInitialSync|body|boolean|false|Flag that indicates whether AWS time-based snapshot copies will be used instead of slower standard snapshot copies during fast Atlas cross-region initial syncs. This flag is only relevant for clusters containing AWS nodes.|
@@ -36212,7 +36956,7 @@ Upgrades a flex cluster to a dedicated cluster (M10+) in the specified project.
 |400|Bad Request|Bad Request.|[ApiError](#schemaapierror)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
 |402|Payment Required|Payment Required.|[ApiError](#schemaapierror)|
-|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden. Atlas Resource Policy details are returned only when an Atlas Resource Policy denies the request.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
 |409|Conflict|Conflict.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
@@ -38139,7 +38883,7 @@ curl https://cloud.mongodb.com/api/atlas/v2/orgs/4888442a3354817a7320eb61/billin
       "32b6e34b3d91647abb20e7b8"
     ],
     "services": [
-      "Atlas"
+      "string"
     ],
     "startDate": "1970-01-01"
   }'
@@ -38166,7 +38910,7 @@ Creates a query process within the Cost Explorer for the given parameters. A tok
     "32b6e34b3d91647abb20e7b8"
   ],
   "services": [
-    "Atlas"
+    "string"
   ],
   "startDate": "1970-01-01"
 }
@@ -38196,28 +38940,6 @@ Creates a query process within the Cost Explorer for the given parameters. A tok
 |» groupBy|projects|
 |» groupBy|clusters|
 |» groupBy|services|
-|» services|Atlas|
-|» services|Clusters|
-|» services|Storage|
-|» services|Serverless Instances|
-|» services|Backup|
-|» services|Data Transfer|
-|» services|BI Connector|
-|» services|Premium Features|
-|» services|Atlas Data Federation|
-|» services|Atlas Stream Processing|
-|» services|App Services|
-|» services|Charts|
-|» services|Cloud Manager|
-|» services|Cloud Manager Standard/Premium|
-|» services|Legacy Backup|
-|» services|AI Model APIs|
-|» services|Automated Embedding|
-|» services|Native Reranking|
-|» services|Agent Engine|
-|» services|Flex Consulting|
-|» services|Support|
-|» services|Credits|
 
 > Example responses
 
@@ -38956,7 +39678,7 @@ curl https://cloud.mongodb.com/api/atlas/v2/orgs/4888442a3354817a7320eb61/invoic
       ],
       "includeZeroCentLineItems": true,
       "skuServices": [
-        "Atlas"
+        "string"
       ],
       "usageEndDate": "1970-01-01",
       "usageStartDate": "1970-01-01"
@@ -38985,7 +39707,7 @@ Query the `lineItems` of the specified invoice and return the result JSON. A uni
     ],
     "includeZeroCentLineItems": true,
     "skuServices": [
-      "Atlas"
+      "string"
     ],
     "usageEndDate": "1970-01-01",
     "usageStartDate": "1970-01-01"
@@ -39927,6 +40649,122 @@ Returns all invoices accruing charges for the current billing cycle for the spec
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
 |403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
+|429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
+|500|Internal Server Error|Internal Server Error.|[ApiError](#schemaapierror)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|200|RateLimit-Limit|integer||The maximum number of requests that a user can make within a specific time window.|
+|200|RateLimit-Remaining|integer||The number of requests remaining in the current rate limit window before the limit is reached.|
+|429|RateLimit-Limit|integer||The maximum number of requests that a user can make within a specific time window.|
+|429|RateLimit-Remaining|integer||The number of requests remaining in the current rate limit window before the limit is reached.|
+|429|Retry-After|integer||The minimum time you should wait, in seconds, before retrying the API request. This header might be returned for 429 or 503 error responses.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+ServiceAccounts, DigestAuth
+</aside>
+
+## Return All Stock Keeping Unit Services
+
+<a id="opIdlistSkuServices"></a>
+
+> Code samples
+
+```bash
+curl https://cloud.mongodb.com/api/atlas/v2/skuServices \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /api/atlas/v2/skuServices`
+
+Returns all launched SKU services. SKU services are the customer-facing categories that SKUs are grouped under on MongoDB invoices.
+
+<h3 id="return-all-stock-keeping-unit-services-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|envelope|query|boolean|false|Flag that indicates whether Application wraps the response in an `envelope` JSON object. Some API clients cannot access the HTTP response headers or status code. To remediate this, set envelope=true in the query. Endpoints that return a list of results use the results object as an envelope. Application adds the status parameter to the response body.|
+|includeCount|query|boolean|false|Flag that indicates whether MongoDB Cloud calculates the total number of items for the response. When set to `false`, MongoDB Cloud may skip an additional count operation. The response may still include `totalCount` when the count is available without additional calculation.|
+|itemsPerPage|query|integer|false|Number of items that the response returns per page.|
+|pageNum|query|integer|false|Number of the page that displays the current set of the total objects that the response returns.|
+|pretty|query|boolean|false|Flag that indicates whether the response body should be in the prettyprint format.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "links": [
+    {
+      "href": "https://cloud.mongodb.com/api/atlas",
+      "rel": "self"
+    }
+  ],
+  "results": [
+    {
+      "name": "string"
+    }
+  ],
+  "totalCount": 0
+}
+```
+
+> 401 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint)",
+  "error": 401,
+  "errorCode": "NOT_ORG_GROUP_CREATOR",
+  "reason": "Unauthorized"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint)",
+  "error": 403,
+  "errorCode": "CANNOT_CHANGE_GROUP_NAME",
+  "reason": "Forbidden"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint)",
+  "error": 429,
+  "errorCode": "RATE_LIMITED",
+  "reason": "Too Many Requests"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint)",
+  "error": 500,
+  "errorCode": "UNEXPECTED_ERROR",
+  "reason": "Internal Server Error"
+}
+```
+
+<h3 id="return-all-stock-keeping-unit-services-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[PaginatedApiSkuServiceView](#schemapaginatedapiskuserviceview)|
+|401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
 |500|Internal Server Error|Internal Server Error.|[ApiError](#schemaapierror)|
 
@@ -43503,7 +44341,7 @@ Resets the maintenance window for the specified project. Urgent maintenance acti
 |204|No Content|No Content|None|
 |400|Bad Request|Bad Request.|[ApiError](#schemaapierror)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
-|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden. Atlas Resource Policy details are returned only when an Atlas Resource Policy denies the request.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
 |500|Internal Server Error|Internal Server Error.|[ApiError](#schemaapierror)|
@@ -43657,7 +44495,7 @@ Updates the maintenance window for the specified project. Urgent maintenance act
 |200|OK|OK|None|
 |400|Bad Request|Bad Request.|[ApiError](#schemaapierror)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
-|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden. Atlas Resource Policy details are returned only when an Atlas Resource Policy denies the request.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
 |500|Internal Server Error|Internal Server Error.|[ApiError](#schemaapierror)|
@@ -44204,6 +45042,10 @@ Creates a new metric integration configuration identified by a unique ID.
 |» metricSelection|ATLAS_STREAM_PROCESSING|
 |» metricSelection|MONGODB_METRICS|
 |» metricSelection|HARDWARE_METRICS|
+|» metricSelection|DB_STATS|
+|» metricSelection|QUERY_SHAPE_INSIGHTS|
+|» metricSelection|SEARCH_METRICS|
+|» metricSelection|SHARDING_METRICS|
 |» providerType|CUSTOM|
 |» providerType|DATADOG|
 |» providerType|DYNATRACE|
@@ -44613,6 +45455,10 @@ Updates the configuration for one metric integration identified by its unique ID
 |» metricSelection|ATLAS_STREAM_PROCESSING|
 |» metricSelection|MONGODB_METRICS|
 |» metricSelection|HARDWARE_METRICS|
+|» metricSelection|DB_STATS|
+|» metricSelection|QUERY_SHAPE_INSIGHTS|
+|» metricSelection|SEARCH_METRICS|
+|» metricSelection|SHARDING_METRICS|
 |» providerType|CUSTOM|
 |» providerType|DATADOG|
 |» providerType|DYNATRACE|
@@ -49531,8 +50377,14 @@ Returns the measurements of one database for the specified host for the specifie
       "units": "BYTES"
     }
   ],
+  "message": "string",
   "partitionName": "string",
   "processId": "mongodb.example.com:27017",
+  "scale": {
+    "docsUrl": "string",
+    "minimumTier": "M10",
+    "scaleUrl": "string"
+  },
   "start": "1970-01-01T00:00:00Z"
 }
 ```
@@ -49966,8 +50818,14 @@ Returns the measurements of one disk or partition for the specified host for the
       "units": "BYTES"
     }
   ],
+  "message": "string",
   "partitionName": "string",
   "processId": "mongodb.example.com:27017",
+  "scale": {
+    "docsUrl": "string",
+    "minimumTier": "M10",
+    "scaleUrl": "string"
+  },
   "start": "1970-01-01T00:00:00Z"
 }
 ```
@@ -50294,8 +51152,14 @@ Returns disk, partition, or host measurements per process for the specified host
       "units": "BYTES"
     }
   ],
+  "message": "string",
   "partitionName": "string",
   "processId": "mongodb.example.com:27017",
+  "scale": {
+    "docsUrl": "string",
+    "minimumTier": "M10",
+    "scaleUrl": "string"
+  },
   "start": "1970-01-01T00:00:00Z"
 }
 ```
@@ -51572,7 +52436,7 @@ Creates one new network peering connection in the specified project. Network pee
 |200|OK|OK|[BaseNetworkPeeringConnectionSettings](#schemabasenetworkpeeringconnectionsettings)|
 |400|Bad Request|Bad Request.|[ApiError](#schemaapierror)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
-|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden. Atlas Resource Policy details are returned only when an Atlas Resource Policy denies the request.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
 |409|Conflict|Conflict.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
@@ -51836,7 +52700,7 @@ Removes one network peering connection in the specified project. If you remove t
 |---|---|---|---|
 |202|Accepted|Accepted|[RequestAccepted](#schemarequestaccepted)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
-|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden. Atlas Resource Policy details are returned only when an Atlas Resource Policy denies the request.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
 |409|Conflict|Conflict.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
@@ -52022,7 +52886,7 @@ Updates one specified network peering connection in the specified project.
 |200|OK|OK|[BaseNetworkPeeringConnectionSettings](#schemabasenetworkpeeringconnectionsettings)|
 |400|Bad Request|Bad Request.|[ApiError](#schemaapierror)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
-|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden. Atlas Resource Policy details are returned only when an Atlas Resource Policy denies the request.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
 |409|Conflict|Conflict.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
@@ -56342,9 +57206,9 @@ Updates the organization's settings.
 |» genAIFeaturesEnabled|body|boolean|false|Flag that indicates whether this organization has access to generative AI features. This setting only applies to Atlas Commercial and is enabled by default. Once this setting is turned on, Project Owners may be able to enable or disable individual AI features at the project level.|
 |» maxServiceAccountSecretValidityInHours|body|integer(int32)|false|Number that represents the maximum period before expiry in hours for new Atlas Admin API Service Account secrets within the specified organization.|
 |» multiFactorAuthRequired|body|boolean|false|Flag that indicates whether to require users to set up Multi-Factor Authentication (MFA) before accessing the specified organization. To learn more, see: https://www.mongodb.com/docs/atlas/security-multi-factor-authentication/.|
-|» operationsContact|body|string \| null|false|String that specifies a distribution list email address for the specified organization to receive proactive notifications about its infrastructure. The operations contact is used for notifications only and is not authorized to make decisions or approvals. Passing an explicit null clears the existing operations contact (if any). An empty string is invalid and is rejected with a validation error.|
+|» operationsContact|body|string \| null|false|String that specifies a distribution list email address for the specified organization to receive proactive notifications about its infrastructure. The operations contact is used for notifications only and is not authorized to make decisions or approvals. Passing an explicit null clears the existing operations contact (if any). An empty string is invalid and is rejected with a validation error. Addresses are trimmed and converted to lowercase before validation; each normalized address must contain at most 254 characters.|
 |» restrictEmployeeAccess|body|boolean|false|Flag that indicates whether to block MongoDB Support from accessing Atlas infrastructure and cluster logs for any deployment in the specified organization without explicit permission. Once this setting is turned on, you can grant MongoDB Support a 24-hour bypass access to the Atlas deployment to resolve support issues. To learn more, see: https://www.mongodb.com/docs/atlas/security-restrict-support-access/.|
-|» securityContact|body|string|false|String that specifies a single email address for the specified organization to receive security-related notifications. Specifying a security contact does not grant them authorization or access to Atlas for security decisions or approvals. An empty string is valid and clears the existing security contact (if any).|
+|» securityContact|body|string|false|String that specifies a single email address for the specified organization to receive security-related notifications. Specifying a security contact does not grant them authorization or access to Atlas for security decisions or approvals. An empty string is valid and clears the existing security contact (if any). Addresses are trimmed and converted to lowercase before validation; each normalized address must contain at most 254 characters.|
 |» streamsCrossGroupEnabled|body|boolean|false|Flag that indicates whether a group's Atlas Stream Processing workspaces in this organization can create connections to other group's clusters in the same organization.|
 
 > Example responses
@@ -57255,6 +58119,7 @@ Returns the indexes that the Performance Advisor suggests to drop. The Performan
         "sizeBytes": 0
       }
     ],
+    "message": "string",
     "redundantIndexes": [
       {
         "accessCount": 0,
@@ -57271,6 +58136,11 @@ Returns the indexes that the Performance Advisor suggests to drop. The Performan
         "sizeBytes": 0
       }
     ],
+    "scale": {
+      "docsUrl": "string",
+      "minimumTier": "M10",
+      "scaleUrl": "string"
+    },
     "unusedIndexes": [
       {
         "accessCount": 0,
@@ -57425,6 +58295,7 @@ Returns the schema suggestions that the Performance Advisor detects. The Perform
 ```json
 {
   "content": {
+    "message": "string",
     "recommendations": [
       {
         "affectedNamespaces": [
@@ -57441,7 +58312,12 @@ Returns the schema suggestions that the Performance Advisor detects. The Perform
         "description": "string",
         "recommendation": "REDUCE_LOOKUP_OPS"
       }
-    ]
+    ],
+    "scale": {
+      "docsUrl": "string",
+      "minimumTier": "M10",
+      "scaleUrl": "string"
+    }
   },
   "links": [
     {
@@ -57584,6 +58460,12 @@ Returns the indexes that the Performance Advisor suggests. The Performance Advis
 ```json
 {
   "content": {
+    "message": "string",
+    "scale": {
+      "docsUrl": "string",
+      "minimumTier": "M10",
+      "scaleUrl": "string"
+    },
     "shapes": [
       {
         "avgMs": 0,
@@ -58369,6 +59251,12 @@ Returns the indexes that the Performance Advisor suggests. The Performance Advis
 
 ```json
 {
+  "message": "string",
+  "scale": {
+    "docsUrl": "string",
+    "minimumTier": "M10",
+    "scaleUrl": "string"
+  },
   "shapes": [
     {
       "avgMs": 0,
@@ -62550,7 +63438,7 @@ Adds one or more access list entries to the specified project. MongoDB Cloud onl
 |200|OK|OK|[PaginatedNetworkAccessView](#schemapaginatednetworkaccessview)|
 |400|Bad Request|Bad Request.|[ApiError](#schemaapierror)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
-|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden. Atlas Resource Policy details are returned only when an Atlas Resource Policy denies the request.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
 |500|Internal Server Error|Internal Server Error.|[ApiError](#schemaapierror)|
@@ -62802,7 +63690,7 @@ Removes one access list entry from the specified project's IP access list. Each 
 |204|No Content|No Content|None|
 |400|Bad Request|Bad Request.|[ApiError](#schemaapierror)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
-|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden. Atlas Resource Policy details are returned only when an Atlas Resource Policy denies the request.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
 |500|Internal Server Error|Internal Server Error.|[ApiError](#schemaapierror)|
@@ -66020,6 +66908,17 @@ Updates the settings of the specified project. You can update any of the options
 }
 ```
 
+> 409 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint) Cannot delete organization link while there is active migration in following project ids: 60c4fd418ebe251047c50554",
+  "error": 409,
+  "errorCode": "CANNOT_DELETE_ORG_ACTIVE_LIVE_MIGRATION_ATLAS_ORG_LINK",
+  "reason": "Conflict"
+}
+```
+
 > 429 Response
 
 ```json
@@ -66048,8 +66947,9 @@ Updates the settings of the specified project. You can update any of the options
 |---|---|---|---|
 |200|OK|OK|[GroupSettings](#schemagroupsettings)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
-|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden. Atlas Resource Policy details are returned only when an Atlas Resource Policy denies the request.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
+|409|Conflict|Conflict.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
 |500|Internal Server Error|Internal Server Error.|[ApiError](#schemaapierror)|
 
@@ -69823,6 +70723,17 @@ Deletes the MCP configuration with the specified ID for the specified project.
 }
 ```
 
+> 409 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint) Cannot delete organization link while there is active migration in following project ids: 60c4fd418ebe251047c50554",
+  "error": 409,
+  "errorCode": "CANNOT_DELETE_ORG_ACTIVE_LIVE_MIGRATION_ATLAS_ORG_LINK",
+  "reason": "Conflict"
+}
+```
+
 > 429 Response
 
 ```json
@@ -69854,6 +70765,7 @@ Deletes the MCP configuration with the specified ID for the specified project.
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
 |403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
+|409|Conflict|Conflict.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
 |500|Internal Server Error|Internal Server Error.|[ApiError](#schemaapierror)|
 
@@ -70001,6 +70913,17 @@ Updates the specified MCP configuration for the project. Supports partial update
 }
 ```
 
+> 409 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint) Cannot delete organization link while there is active migration in following project ids: 60c4fd418ebe251047c50554",
+  "error": 409,
+  "errorCode": "CANNOT_DELETE_ORG_ACTIVE_LIVE_MIGRATION_ATLAS_ORG_LINK",
+  "reason": "Conflict"
+}
+```
+
 > 429 Response
 
 ```json
@@ -70032,6 +70955,7 @@ Updates the specified MCP configuration for the project. Supports partial update
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
 |403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
+|409|Conflict|Conflict.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
 |500|Internal Server Error|Internal Server Error.|[ApiError](#schemaapierror)|
 
@@ -70137,6 +71061,17 @@ Returns metadata for all secrets on the ingress service account of the specified
 }
 ```
 
+> 409 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint) Cannot delete organization link while there is active migration in following project ids: 60c4fd418ebe251047c50554",
+  "error": 409,
+  "errorCode": "CANNOT_DELETE_ORG_ACTIVE_LIVE_MIGRATION_ATLAS_ORG_LINK",
+  "reason": "Conflict"
+}
+```
+
 > 429 Response
 
 ```json
@@ -70167,6 +71102,7 @@ Returns metadata for all secrets on the ingress service account of the specified
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
 |403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
+|409|Conflict|Conflict.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
 |500|Internal Server Error|Internal Server Error.|[ApiError](#schemaapierror)|
 
@@ -70417,6 +71353,17 @@ Returns metadata for the specified secret on the ingress service account of a pr
 }
 ```
 
+> 409 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint) Cannot delete organization link while there is active migration in following project ids: 60c4fd418ebe251047c50554",
+  "error": 409,
+  "errorCode": "CANNOT_DELETE_ORG_ACTIVE_LIVE_MIGRATION_ATLAS_ORG_LINK",
+  "reason": "Conflict"
+}
+```
+
 > 429 Response
 
 ```json
@@ -70447,6 +71394,7 @@ Returns metadata for the specified secret on the ingress service account of a pr
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
 |403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
+|409|Conflict|Conflict.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
 |500|Internal Server Error|Internal Server Error.|[ApiError](#schemaapierror)|
 
@@ -71121,6 +72069,17 @@ Deletes the MCP configuration with the specified ID for the specified organizati
 }
 ```
 
+> 409 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint) Cannot delete organization link while there is active migration in following project ids: 60c4fd418ebe251047c50554",
+  "error": 409,
+  "errorCode": "CANNOT_DELETE_ORG_ACTIVE_LIVE_MIGRATION_ATLAS_ORG_LINK",
+  "reason": "Conflict"
+}
+```
+
 > 429 Response
 
 ```json
@@ -71152,6 +72111,7 @@ Deletes the MCP configuration with the specified ID for the specified organizati
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
 |403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
+|409|Conflict|Conflict.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
 |500|Internal Server Error|Internal Server Error.|[ApiError](#schemaapierror)|
 
@@ -71311,6 +72271,17 @@ Updates the specified MCP configuration for the organization. Supports partial u
 }
 ```
 
+> 409 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint) Cannot delete organization link while there is active migration in following project ids: 60c4fd418ebe251047c50554",
+  "error": 409,
+  "errorCode": "CANNOT_DELETE_ORG_ACTIVE_LIVE_MIGRATION_ATLAS_ORG_LINK",
+  "reason": "Conflict"
+}
+```
+
 > 429 Response
 
 ```json
@@ -71342,6 +72313,7 @@ Updates the specified MCP configuration for the organization. Supports partial u
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
 |403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
+|409|Conflict|Conflict.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
 |500|Internal Server Error|Internal Server Error.|[ApiError](#schemaapierror)|
 
@@ -71447,6 +72419,17 @@ Returns metadata for all secrets on the ingress service account of the specified
 }
 ```
 
+> 409 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint) Cannot delete organization link while there is active migration in following project ids: 60c4fd418ebe251047c50554",
+  "error": 409,
+  "errorCode": "CANNOT_DELETE_ORG_ACTIVE_LIVE_MIGRATION_ATLAS_ORG_LINK",
+  "reason": "Conflict"
+}
+```
+
 > 429 Response
 
 ```json
@@ -71477,6 +72460,7 @@ Returns metadata for all secrets on the ingress service account of the specified
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
 |403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
+|409|Conflict|Conflict.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
 |500|Internal Server Error|Internal Server Error.|[ApiError](#schemaapierror)|
 
@@ -71727,6 +72711,17 @@ Returns metadata for the specified secret on the ingress service account of an o
 }
 ```
 
+> 409 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint) Cannot delete organization link while there is active migration in following project ids: 60c4fd418ebe251047c50554",
+  "error": 409,
+  "errorCode": "CANNOT_DELETE_ORG_ACTIVE_LIVE_MIGRATION_ATLAS_ORG_LINK",
+  "reason": "Conflict"
+}
+```
+
 > 429 Response
 
 ```json
@@ -71757,6 +72752,7 @@ Returns metadata for the specified secret on the ingress service account of an o
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
 |403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
+|409|Conflict|Conflict.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
 |500|Internal Server Error|Internal Server Error.|[ApiError](#schemaapierror)|
 
@@ -73612,7 +74608,7 @@ Return cluster description from sandbox template configuration for M0 and M10 cl
     "customOpensslCipherConfigTls13": [
       "TLS_AES_256_GCM_SHA384"
     ],
-    "minimumEnabledTlsProtocol": "TLS1_0",
+    "minimumEnabledTlsProtocol": "TLS1_2",
     "tlsCipherConfigMode": "CUSTOM"
   },
   "backupEnabled": true,
@@ -73738,6 +74734,9 @@ Return cluster description from sandbox template configuration for M0 and M10 cl
   ],
   "retainBackups": false,
   "rootCertType": "ISRGROOTX1",
+  "searchAutoMigration": {
+    "disabled": false
+  },
   "stateName": "IDLE",
   "tags": [
     {
@@ -81535,6 +82534,7 @@ Returns all stream workspaces for the specified project.
       "_id": "32b6e34b3d91647abb20e7b8",
       "connections": [
         {
+          "errorMessage": "string",
           "id": "string",
           "links": [
             {
@@ -81773,6 +82773,7 @@ Creates one stream workspace in the specified project.
   "_id": "32b6e34b3d91647abb20e7b8",
   "connections": [
     {
+      "errorMessage": "string",
       "id": "string",
       "links": [
         {
@@ -81968,6 +82969,7 @@ Returns the details of one stream workspace within the specified project.
   "_id": "32b6e34b3d91647abb20e7b8",
   "connections": [
     {
+      "errorMessage": "string",
       "id": "string",
       "links": [
         {
@@ -82333,6 +83335,7 @@ Update one stream workspace in the specified project.
   "_id": "32b6e34b3d91647abb20e7b8",
   "connections": [
     {
+      "errorMessage": "string",
       "id": "string",
       "links": [
         {
@@ -82669,6 +83672,7 @@ Returns all connections of the stream workspace for the specified project.
   ],
   "results": [
     {
+      "errorMessage": "string",
       "id": "string",
       "links": [
         {
@@ -82822,6 +83826,7 @@ Creates one connection for a stream workspace in the specified project.
 |» *oneOf*|body|[StreamsSchemaRegistryConnection](#schemastreamsschemaregistryconnection)|false|The configuration for Schema Registry connections.|
 |» *oneOf*|body|[StreamsAzureBlobStorageConnection](#schemastreamsazureblobstorageconnection)|false|The configuration for Azure Blob Storage connections.|
 |» *oneOf*|body|[StreamsGCPPubSubConnection](#schemastreamsgcppubsubconnection)|false|The configuration for GCP Pub/Sub connections.|
+|» *oneOf*|body|[StreamsDataCatalogConnection](#schemastreamsdatacatalogconnection)|false|The configuration for Iceberg Data Catalog connections.|
 
 #### Enumerated Values
 
@@ -82836,6 +83841,7 @@ Creates one connection for a stream workspace in the specified project.
 |» type|AWSKinesisDataStreams|
 |» type|SchemaRegistry|
 |» type|GCPPubSub|
+|» type|DataCatalog|
 
 > Example responses
 
@@ -82843,6 +83849,7 @@ Creates one connection for a stream workspace in the specified project.
 
 ```json
 {
+  "errorMessage": "string",
   "id": "string",
   "links": [
     {
@@ -82993,6 +84000,7 @@ Returns the details of one stream connection within the specified stream workspa
 
 ```json
 {
+  "errorMessage": "string",
   "id": "string",
   "links": [
     {
@@ -83266,6 +84274,7 @@ Update one connection for the specified stream workspace in the specified projec
 |» *oneOf*|body|[StreamsSchemaRegistryConnection](#schemastreamsschemaregistryconnection)|false|The configuration for Schema Registry connections.|
 |» *oneOf*|body|[StreamsAzureBlobStorageConnection](#schemastreamsazureblobstorageconnection)|false|The configuration for Azure Blob Storage connections.|
 |» *oneOf*|body|[StreamsGCPPubSubConnection](#schemastreamsgcppubsubconnection)|false|The configuration for GCP Pub/Sub connections.|
+|» *oneOf*|body|[StreamsDataCatalogConnection](#schemastreamsdatacatalogconnection)|false|The configuration for Iceberg Data Catalog connections.|
 
 #### Enumerated Values
 
@@ -83280,6 +84289,7 @@ Update one connection for the specified stream workspace in the specified projec
 |» type|AWSKinesisDataStreams|
 |» type|SchemaRegistry|
 |» type|GCPPubSub|
+|» type|DataCatalog|
 
 > Example responses
 
@@ -83287,6 +84297,7 @@ Update one connection for the specified stream workspace in the specified projec
 
 ```json
 {
+  "errorMessage": "string",
   "id": "string",
   "links": [
     {
@@ -87295,6 +88306,7 @@ Creates one stream workspace in the specified project with sample connections.
   "_id": "32b6e34b3d91647abb20e7b8",
   "connections": [
     {
+      "errorMessage": "string",
       "id": "string",
       "links": [
         {
@@ -87623,7 +88635,7 @@ curl https://cloud.mongodb.com/api/atlas/v2/groups/32b6e34b3d91647abb20e7b8/stre
 
 `POST /api/atlas/v2/groups/{groupId}/streamsWorkspacePrivateEndpoints`
 
-Registers one customer VPC endpoint for Atlas Stream Processing in the specified project.
+Registers one VPC endpoint for Atlas Stream Processing in the specified project.
 
 > Body parameter
 
@@ -87642,10 +88654,10 @@ Registers one customer VPC endpoint for Atlas Stream Processing in the specified
 |groupId|path|string|true|Unique 24-hexadecimal digit string that identifies your project. Use the [/groups](#tag/Projects/operation/listProjects) endpoint to retrieve all projects to which the authenticated user has access.<br><br>**NOTE**: Groups and projects are synonymous terms. Your group id is the same as your project id. For existing groups, your group/project id remains the same. The resource and corresponding endpoints use the term groups.|
 |envelope|query|boolean|false|Flag that indicates whether Application wraps the response in an `envelope` JSON object. Some API clients cannot access the HTTP response headers or status code. To remediate this, set envelope=true in the query. Endpoints that return a list of results use the results object as an envelope. Application adds the status parameter to the response body.|
 |pretty|query|boolean|false|Flag that indicates whether the response body should be in the prettyprint format.|
-|body|body|[StreamsWorkspacePrivateEndpointRequest](#schemastreamsworkspaceprivateendpointrequest)|true|Customer VPC endpoint to register for Atlas Stream Processing.|
-|» customerDnsName|body|string|true|DNS name of the customer's VPC endpoint.|
-|» id|body|string|true|Unique identifier of the customer's VPC endpoint.|
-|» region|body|string|true|Human-readable label identifying the region of the customer's VPC endpoint.|
+|body|body|[StreamsWorkspacePrivateEndpointRequest](#schemastreamsworkspaceprivateendpointrequest)|true|VPC endpoint to register for Atlas Stream Processing.|
+|» customerDnsName|body|string|true|DNS name of your VPC endpoint.|
+|» id|body|string|true|Unique identifier of your VPC endpoint.|
+|» region|body|string|true|Human-readable label identifying the region of your VPC endpoint.|
 
 > Example responses
 
@@ -87777,7 +88789,7 @@ Returns one private endpoint registered for Atlas Stream Processing in the speci
 |---|---|---|---|---|
 |groupId|path|string|true|Unique 24-hexadecimal digit string that identifies your project. Use the [/groups](#tag/Projects/operation/listProjects) endpoint to retrieve all projects to which the authenticated user has access.<br><br>**NOTE**: Groups and projects are synonymous terms. Your group id is the same as your project id. For existing groups, your group/project id remains the same. The resource and corresponding endpoints use the term groups.|
 |envelope|query|boolean|false|Flag that indicates whether Application wraps the response in an `envelope` JSON object. Some API clients cannot access the HTTP response headers or status code. To remediate this, set envelope=true in the query. Endpoints that return a list of results use the results object as an envelope. Application adds the status parameter to the response body.|
-|endpointId|path|string|true|Unique identifier of the customer's VPC endpoint.|
+|endpointId|path|string|true|Unique identifier of your VPC endpoint.|
 
 > Example responses
 
@@ -87910,7 +88922,7 @@ Removes one private endpoint registered for Atlas Stream Processing in the speci
 |---|---|---|---|---|
 |groupId|path|string|true|Unique 24-hexadecimal digit string that identifies your project. Use the [/groups](#tag/Projects/operation/listProjects) endpoint to retrieve all projects to which the authenticated user has access.<br><br>**NOTE**: Groups and projects are synonymous terms. Your group id is the same as your project id. For existing groups, your group/project id remains the same. The resource and corresponding endpoints use the term groups.|
 |envelope|query|boolean|false|Flag that indicates whether Application wraps the response in an `envelope` JSON object. Some API clients cannot access the HTTP response headers or status code. To remediate this, set envelope=true in the query. Endpoints that return a list of results use the results object as an envelope. Application adds the status parameter to the response body.|
-|endpointId|path|string|true|Unique identifier of the customer's VPC endpoint.|
+|endpointId|path|string|true|Unique identifier of your VPC endpoint.|
 
 > Example responses
 
@@ -91550,8 +92562,14 @@ Returns a list of query shape statistics summaries for a given cluster. Query sh
 
 ```json
 {
+  "message": "string",
   "queryStatsCollection": {
     "mode": "RATE_LIMITED"
+  },
+  "scale": {
+    "docsUrl": "string",
+    "minimumTier": "M10",
+    "scaleUrl": "string"
   },
   "summaries": [
     {
@@ -93529,7 +94547,7 @@ Options that determine how this cluster handles resource scaling.
     "customOpensslCipherConfigTls13": [
       "TLS_AES_256_GCM_SHA384"
     ],
-    "minimumEnabledTlsProtocol": "TLS1_0",
+    "minimumEnabledTlsProtocol": "TLS1_2",
     "tlsCipherConfigMode": "CUSTOM"
   },
   "backupEnabled": false,
@@ -94267,6 +95285,7 @@ One target that MongoDB Cloud sends notifications when an alert triggers.
 |*oneOf*|[GroupNotification](#schemagroupnotification)|false|none|Group notification configuration for MongoDB Cloud to send information when an event triggers an alert condition.|
 |*oneOf*|[HipChatNotification](#schemahipchatnotification)|false|none|HipChat notification configuration for MongoDB Cloud to send information when an event triggers an alert condition.|
 |*oneOf*|[MicrosoftTeamsNotification](#schemamicrosoftteamsnotification)|false|none|Microsoft Teams notification configuration for MongoDB Cloud to send information when an event triggers an alert condition.|
+|*oneOf*|[OperationsContactNotification](#schemaoperationscontactnotification)|false|none|Explicit recurrence override for project operations contact alerts. This setting does not enable notification delivery. Delivery requires opting in through project settings. Contact addresses are resolved when a notification is sent and are not returned here.|
 |*oneOf*|[OpsGenieNotification](#schemaopsgenienotification)|false|none|OpsGenie notification configuration for MongoDB Cloud to send information when an event triggers an alert condition.|
 |*oneOf*|[OrgNotification](#schemaorgnotification)|false|none|Organization notification configuration for MongoDB Cloud to send information when an event triggers an alert condition.|
 |*oneOf*|[PagerDutyNotification](#schemapagerdutynotification)|false|none|PagerDuty notification configuration for MongoDB Cloud to send information when an event triggers an alert condition.|
@@ -94445,7 +95464,7 @@ Object that contains the identifying characteristics of the Amazon Web Services 
   "customOpensslCipherConfigTls13": [
     "TLS_AES_256_GCM_SHA384"
   ],
-  "minimumEnabledTlsProtocol": "TLS1_0",
+  "minimumEnabledTlsProtocol": "TLS1_2",
   "tlsCipherConfigMode": "CUSTOM"
 }
 ```
@@ -94458,7 +95477,7 @@ Group of settings that configures a subset of the advanced configuration details
 |---|---|---|---|---|
 |customOpensslCipherConfigTls12|[string]|false|none|The custom OpenSSL cipher suite list for TLS 1.2. Requires `tlsCipherConfigMode` = `CUSTOM`; when `tlsCipherConfigMode` is omitted, supplying a non-empty list infers `CUSTOM`.|
 |customOpensslCipherConfigTls13|[string]|false|none|The custom OpenSSL cipher suite list for TLS 1.3. Requires `tlsCipherConfigMode` = `CUSTOM`; when `tlsCipherConfigMode` is omitted, supplying a non-empty list infers `CUSTOM`.|
-|minimumEnabledTlsProtocol|string|false|none|Minimum Transport Layer Security (TLS) version that the cluster accepts for incoming connections. Clusters using TLS 1.0 or 1.1 should consider setting TLS 1.2 as the minimum TLS protocol version.|
+|minimumEnabledTlsProtocol|string|false|none|Minimum Transport Layer Security (TLS) version that the cluster accepts for incoming connections.|
 |tlsCipherConfigMode|string|false|none|The TLS cipher suite configuration mode. The default mode uses the default cipher suites. The custom mode allows you to specify custom cipher suites for both TLS 1.2 and TLS 1.3.|
 
 #### Enumerated Values
@@ -94471,8 +95490,6 @@ Group of settings that configures a subset of the advanced configuration details
 |customOpensslCipherConfigTls13|TLS_CHACHA20_POLY1305_SHA256|
 |customOpensslCipherConfigTls13|TLS_AES_128_GCM_SHA256|
 |customOpensslCipherConfigTls13|TLS_AES_128_CCM_SHA256|
-|minimumEnabledTlsProtocol|TLS1_0|
-|minimumEnabledTlsProtocol|TLS1_1|
 |minimumEnabledTlsProtocol|TLS1_2|
 |minimumEnabledTlsProtocol|TLS1_3|
 |tlsCipherConfigMode|CUSTOM|
@@ -95415,6 +96432,56 @@ Metadata contained in one document that describes the complete snapshot taken fo
 |typeName|CONFIG_SERVER|
 |typeName|CONFIG_SERVER_REPLICA_SET|
 
+<h2 id="tocS_ApiClusterScaleView">ApiClusterScaleView</h2>
+<!-- backwards compatibility -->
+<a id="schemaapiclusterscaleview"></a>
+<a id="schema_ApiClusterScaleView"></a>
+<a id="tocSapiclusterscaleview"></a>
+<a id="tocsapiclusterscaleview"></a>
+
+```json
+{
+  "docsUrl": "string",
+  "minimumTier": "M10",
+  "scaleUrl": "string"
+}
+```
+
+Information on scaling the cluster to a tier that supports the requested feature. Present only when the feature is unavailable on the cluster's current tier.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|docsUrl|string \| null|false|read-only|Documentation page describing feature availability by cluster tier.|
+|minimumTier|string|false|read-only|Lowest cluster tier that supports the requested feature.|
+|scaleUrl|string|false|read-only|Link to the Atlas UI page that scales the cluster, with the minimum supported tier pre-selected.|
+
+<h2 id="tocS_ApiClusterScaleView_Atlas">ApiClusterScaleView_Atlas</h2>
+<!-- backwards compatibility -->
+<a id="schemaapiclusterscaleview_atlas"></a>
+<a id="schema_ApiClusterScaleView_Atlas"></a>
+<a id="tocSapiclusterscaleview_atlas"></a>
+<a id="tocsapiclusterscaleview_atlas"></a>
+
+```json
+{
+  "docsUrl": "string",
+  "minimumTier": "M10",
+  "scaleUrl": "string"
+}
+```
+
+Information on scaling the cluster to a tier that supports the requested feature. Present only when the feature is unavailable on the cluster's current tier.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|docsUrl|string \| null|false|read-only|Documentation page describing feature availability by cluster tier.|
+|minimumTier|string|false|read-only|Lowest cluster tier that supports the requested feature.|
+|scaleUrl|string|false|read-only|Link to the Atlas UI page that scales the cluster, with the minimum supported tier pre-selected.|
+
 <h2 id="tocS_ApiError">ApiError</h2>
 <!-- backwards compatibility -->
 <a id="schemaapierror"></a>
@@ -95438,6 +96505,12 @@ Metadata contained in one document that describes the complete snapshot taken fo
   "parameters": [
     {}
   ],
+  "policiesCausingDecision": [
+    {
+      "id": "32b6e34b3d91647abb20e7b8",
+      "name": "string"
+    }
+  ],
   "reason": "string"
 }
 ```
@@ -95451,6 +96524,7 @@ Metadata contained in one document that describes the complete snapshot taken fo
 |error|integer(int32)|true|read-only|HTTP status code returned with this error.|
 |errorCode|string|true|read-only|Application error code returned with this error.|
 |parameters|[object]|false|read-only|Parameters used to give more information about the error.|
+|policiesCausingDecision|[[ResourcePolicyReference](#schemaresourcepolicyreference)]|false|read-only|Atlas Resource Policies that caused the request to be denied. Returned only when `errorCode` is `ATLAS_RESOURCE_POLICIES_VIOLATION_NOT_AUTHORIZED`.|
 |reason|string \| null|false|read-only|Application error message returned with this error.|
 
 <h2 id="tocS_ApiHostView_Atlas">ApiHostView_Atlas</h2>
@@ -95625,8 +96699,14 @@ Details of the Programmatic API Keys.
       "units": "BYTES"
     }
   ],
+  "message": "string",
   "partitionName": "string",
   "processId": "mongodb.example.com:27017",
+  "scale": {
+    "docsUrl": "string",
+    "minimumTier": "M10",
+    "scaleUrl": "string"
+  },
   "start": "1970-01-01T00:00:00Z"
 }
 ```
@@ -95642,8 +96722,10 @@ Details of the Programmatic API Keys.
 |hostId|string|false|read-only|Combination of hostname and Internet Assigned Numbers Authority (IANA) port that serves the MongoDB process. The host must be the hostname, fully qualified domain name (FQDN), or Internet Protocol address (IPv4 or IPv6) of the host that runs the MongoDB process (`mongod` or `mongos`). The port must be the IANA port on which the MongoDB process listens for requests.|
 |links|[[Link_Atlas](#schemalink_atlas)]|false|read-only|List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.|
 |measurements|[[MetricsMeasurement_Atlas](#schemametricsmeasurement_atlas)]|false|read-only|List that contains measurements and their data points.|
+|message|string|false|read-only|Explanation of measurement availability limitations on the current tier.|
 |partitionName|string|false|read-only|Human-readable label of the disk or partition to which the measurements apply.|
 |processId|string|false|read-only|Combination of hostname and Internet Assigned Numbers Authority (IANA) port that serves the MongoDB process. The host must be the hostname, fully qualified domain name (FQDN), or Internet Protocol address (IPv4 or IPv6) of the host that runs the MongoDB process (`mongod` or `mongos`). The port must be the IANA port on which the MongoDB process listens for requests.|
+|scale|[ApiClusterScaleView_Atlas](#schemaapiclusterscaleview_atlas)|false|read-only|Information on scaling the cluster to a tier that supports the requested feature. Present only when the feature is unavailable on the cluster's current tier.|
 |start|string(date-time)|false|read-only|Date and time that specifies when to start retrieving measurements. If you set **start**, you must set **end**. You can't set this parameter and **period** in the same request. This parameter expresses its value in the ISO 8601 timestamp format in UTC.|
 
 #### Enumerated Values
@@ -95698,7 +96780,7 @@ One Uniform Resource Locator (URL) that points to the compressed snapshot files 
     ],
     "includeZeroCentLineItems": true,
     "skuServices": [
-      "Atlas"
+      "string"
     ],
     "usageEndDate": "1970-01-01",
     "usageStartDate": "1970-01-01"
@@ -95876,6 +96958,79 @@ Settings that control Search Node tier scaling based on load.
 |instanceSize|S60_STORAGE_NVME|
 |instanceSize|S80_STORAGE_NVME|
 |instanceSize|S90_STORAGE_NVME|
+
+<h2 id="tocS_ApiSearchDeploymentPreviewResponseView">ApiSearchDeploymentPreviewResponseView</h2>
+<!-- backwards compatibility -->
+<a id="schemaapisearchdeploymentpreviewresponseview"></a>
+<a id="schema_ApiSearchDeploymentPreviewResponseView"></a>
+<a id="tocSapisearchdeploymentpreviewresponseview"></a>
+<a id="tocsapisearchdeploymentpreviewresponseview"></a>
+
+```json
+{
+  "autoScaling": {
+    "compute": {
+      "enabled": false,
+      "maxInstanceTier": "S10",
+      "minInstanceTier": "S10",
+      "scaleDownEnabled": false
+    }
+  },
+  "baselineSpecs": [
+    {
+      "cloudProvider": "AWS",
+      "instanceSize": "S10_HIGHCPU",
+      "nodeCount": 2,
+      "regionName": "US_EAST_1",
+      "shardId": "string"
+    }
+  ],
+  "effectiveSpecs": [
+    {
+      "cloudProvider": "AWS",
+      "instanceSize": "S10_HIGHCPU",
+      "nodeCount": 2,
+      "regionName": "US_EAST_1",
+      "shardId": "string"
+    }
+  ],
+  "encryptionAtRestProvider": "NONE",
+  "groupId": "32b6e34b3d91647abb20e7b8",
+  "id": "32b6e34b3d91647abb20e7b8",
+  "specs": [
+    {
+      "instanceSize": "S10_HIGHCPU",
+      "nodeCount": 2
+    }
+  ],
+  "stateName": "IDLE"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|autoScaling|object|false|read-only|Autoscaling settings configured for this Search deployment.|
+|baselineSpecs|[[ApiSearchDeploymentEffectiveSpecView](#schemaapisearchdeploymenteffectivespecview)]|false|read-only|List of starting settings for the Search Nodes in each cluster region.|
+|effectiveSpecs|[[ApiSearchDeploymentEffectiveSpecView](#schemaapisearchdeploymenteffectivespecview)]|false|read-only|List of settings that configure the Search Nodes for your cluster. Each entry describes one region or, when `shardId` is present, one shard in one region.|
+|encryptionAtRestProvider|string \| null|false|read-only|Cloud service provider that manages your customer keys to provide an additional layer of Encryption At Rest for the cluster.|
+|groupId|string|false|read-only|Unique 24-hexadecimal character string that identifies the project.|
+|id|string|false|read-only|Unique 24-hexadecimal digit string that identifies the search deployment.|
+|specs|[[ApiSearchDeploymentSpecView](#schemaapisearchdeploymentspecview)]|false|read-only|**Deprecated.** Deprecated. `specs` will be removed in a future release. We strongly recommend that you use `effectiveSpecs` instead.|
+|stateName|string|false|read-only|Human-readable label that indicates the current operating condition of this search deployment.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|encryptionAtRestProvider|NONE|
+|encryptionAtRestProvider|AWS|
+|encryptionAtRestProvider|AZURE|
+|encryptionAtRestProvider|GCP|
+|stateName|IDLE|
+|stateName|PAUSED|
+|stateName|UPDATING|
 
 <h2 id="tocS_ApiSearchDeploymentRequestSpecView">ApiSearchDeploymentRequestSpecView</h2>
 <!-- backwards compatibility -->
@@ -97449,7 +98604,7 @@ Atlas resource policy audits indicate organization level changes to resource pol
     "customOpensslCipherConfigTls13": [
       "TLS_AES_256_GCM_SHA384"
     ],
-    "minimumEnabledTlsProtocol": "TLS1_0",
+    "minimumEnabledTlsProtocol": "TLS1_2",
     "tlsCipherConfigMode": "CUSTOM"
   },
   "backupEnabled": true,
@@ -97575,6 +98730,9 @@ Atlas resource policy audits indicate organization level changes to resource pol
   ],
   "retainBackups": false,
   "rootCertType": "ISRGROOTX1",
+  "searchAutoMigration": {
+    "disabled": false
+  },
   "stateName": "IDLE",
   "tags": [
     {
@@ -97628,6 +98786,7 @@ Request containing target state of tenant cluster to be upgraded.
 |replicationSpecs|[[ReplicationSpec20240805](#schemareplicationspec20240805)]|false|none|List of settings that configure your cluster regions. This array has one object per shard representing node configurations in each shard. For replica sets there is only one object representing node configurations.|
 |retainBackups|boolean|false|none|Flag that indicates whether the cluster retains backups.|
 |rootCertType|string|false|none|Root Certificate Authority that MongoDB Atlas cluster uses. MongoDB Cloud supports Internet Security Research Group.|
+|searchAutoMigration|[SearchAutoMigration](#schemasearchautomigration)|false|none|Configuration for automatically adding Dedicated Search Nodes on eligible Atlas Infinite clusters. This setting has no effect on Atlas Core clusters.|
 |stateName|string|false|read-only|Human-readable label that indicates any current activity being taken on this cluster by the Atlas control plane. With the exception of CREATING and DELETING states, clusters should always be available and have a Primary node even when in states indicating ongoing activity.<br><br> - `IDLE`: Atlas is making no changes to this cluster and all changes requested via the UI or API can be assumed to have been applied.<br> - `CREATING`: A cluster being provisioned for the very first time returns state CREATING until it is ready for connections. Ensure IP Access List and DB Users are configured before attempting to connect.<br> - `UPDATING`: A change requested via the UI, API, AutoScaling, or other scheduled activity is taking place.<br> - `DELETING`: The cluster is in the process of deletion and will soon be deleted.<br> - `REPAIRING`: One or more nodes in the cluster are being returned to service by the Atlas control plane. Other nodes should continue to provide service as normal.|
 |tags|[[ResourceTag](#schemaresourcetag)]|false|none|List that contains key-value pairs between 1 to 255 characters in length for tagging and categorizing the cluster.|
 |terminationProtectionEnabled|boolean|false|none|Flag that indicates whether termination protection is enabled on the cluster. If set to `true`, MongoDB Cloud won't delete the cluster. If set to `false`, MongoDB Cloud will delete the cluster.|
@@ -103331,10 +104490,10 @@ Collection of Uniform Resource Locators that point to the MongoDB database.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|awsPrivateLink|object|false|read-only|Private endpoint-aware connection strings that use AWS-hosted clusters with Amazon Web Services (AWS) PrivateLink. Each key identifies an Amazon Web Services (AWS) interface endpoint. Each value identifies the related `mongodb://` connection string that you use to connect to MongoDB Cloud through the interface endpoint that the key names.|
-|awsPrivateLinkSrv|object|false|read-only|Private endpoint-aware connection strings that use AWS-hosted clusters with Amazon Web Services (AWS) PrivateLink. Each key identifies an Amazon Web Services (AWS) interface endpoint. Each value identifies the related `mongodb://` connection string that you use to connect to Atlas through the interface endpoint that the key names. If the cluster uses an optimized connection string, `awsPrivateLinkSrv` contains the optimized connection string. If the cluster has the non-optimized (legacy) connection string, `awsPrivateLinkSrv` contains the non-optimized connection string even if an optimized connection string is also present.|
+|awsPrivateLink|object|false|read-only|**Deprecated.** Private endpoint-aware connection strings that use AWS-hosted clusters with Amazon Web Services (AWS) PrivateLink. Each key identifies an Amazon Web Services (AWS) interface endpoint. Each value identifies the related `mongodb://` connection string that you use to connect to MongoDB Cloud through the interface endpoint that the key names. This field is deprecated. Use the Private Endpoint Connection Strings resource instead.|
+|awsPrivateLinkSrv|object|false|read-only|**Deprecated.** Private endpoint-aware connection strings that use AWS-hosted clusters with Amazon Web Services (AWS) PrivateLink. Each key identifies an Amazon Web Services (AWS) interface endpoint. Each value identifies the related `mongodb://` connection string that you use to connect to Atlas through the interface endpoint that the key names. If the cluster uses an optimized connection string, `awsPrivateLinkSrv` contains the optimized connection string. If the cluster has the non-optimized (legacy) connection string, `awsPrivateLinkSrv` contains the non-optimized connection string even if an optimized connection string is also present. This field is deprecated. Use the Private Endpoint Connection Strings resource instead.|
 |private|string|false|read-only|Network peering connection strings for each interface Virtual Private Cloud (VPC) endpoint that you configured to connect to this cluster. This connection string uses the `mongodb+srv://` protocol. The resource returns this parameter once someone creates a network peering connection to this cluster. This protocol tells the application to look up the host seed list in the Domain Name System (DNS). This list synchronizes with the nodes in a cluster. If the connection string uses this Uniform Resource Identifier (URI) format, you don't need to append the seed list or change the URI if the nodes change. Use this URI format if your driver supports it. If it doesn't, use `connectionStrings.private`. For Amazon Web Services (AWS) clusters, this resource returns this parameter only if you enable custom DNS.|
-|privateEndpoint|[[ClusterDescriptionConnectionStringsPrivateEndpoint](#schemaclusterdescriptionconnectionstringsprivateendpoint)]|false|read-only|List of private endpoint-aware connection strings that you can use to connect to this cluster through a private endpoint. This parameter returns only if you deployed a private endpoint to all regions to which you deployed this clusters' nodes.|
+|privateEndpoint|[[ClusterDescriptionConnectionStringsPrivateEndpoint](#schemaclusterdescriptionconnectionstringsprivateendpoint)]|false|read-only|**Deprecated.** List of private endpoint-aware connection strings that you can use to connect to this cluster through a private endpoint. This parameter returns only if you deployed a private endpoint to all regions to which you deployed this clusters' nodes. This field is deprecated. Use the Private Endpoint Connection Strings resource instead.|
 |privateSrv|string|false|read-only|Network peering connection strings for each interface Virtual Private Cloud (VPC) endpoint that you configured to connect to this cluster. This connection string uses the `mongodb+srv://` protocol. The resource returns this parameter when someone creates a network peering connection to this cluster. This protocol tells the application to look up the host seed list in the Domain Name System (DNS). This list synchronizes with the nodes in a cluster. If the connection string uses this Uniform Resource Identifier (URI) format, you don't need to append the seed list or change the Uniform Resource Identifier (URI) if the nodes change. Use this Uniform Resource Identifier (URI) format if your driver supports it. If it doesn't, use `connectionStrings.private`. For Amazon Web Services (AWS) clusters, this parameter returns only if you [enable custom DNS](https://docs.atlas.mongodb.com/reference/api/aws-custom-dns-update/).|
 |standard|string|false|read-only|Public connection string that you can use to connect to this cluster. This connection string uses the `mongodb://` protocol.|
 |standardSrv|string|false|read-only|Public connection string that you can use to connect to this cluster. This connection string uses the `mongodb+srv://` protocol.|
@@ -103357,7 +104516,7 @@ Collection of Uniform Resource Locators that point to the MongoDB database.
     "customOpensslCipherConfigTls13": [
       "TLS_AES_256_GCM_SHA384"
     ],
-    "minimumEnabledTlsProtocol": "TLS1_0",
+    "minimumEnabledTlsProtocol": "TLS1_2",
     "tlsCipherConfigMode": "CUSTOM"
   },
   "backupEnabled": true,
@@ -103483,6 +104642,9 @@ Collection of Uniform Resource Locators that point to the MongoDB database.
   ],
   "retainBackups": false,
   "rootCertType": "ISRGROOTX1",
+  "searchAutoMigration": {
+    "disabled": false
+  },
   "stateName": "IDLE",
   "tags": [
     {
@@ -103536,6 +104698,7 @@ Configuration of a MongoDB Atlas cluster, including its replication topology, in
 |replicationSpecs|[[ReplicationSpec20240805](#schemareplicationspec20240805)]|false|none|List of settings that configure your cluster regions. This array has one object per shard representing node configurations in each shard. For replica sets there is only one object representing node configurations.|
 |retainBackups|boolean|false|none|Flag that indicates whether the cluster retains backups.|
 |rootCertType|string|false|none|Root Certificate Authority that MongoDB Atlas cluster uses. MongoDB Cloud supports Internet Security Research Group.|
+|searchAutoMigration|[SearchAutoMigration](#schemasearchautomigration)|false|none|Configuration for automatically adding Dedicated Search Nodes on eligible Atlas Infinite clusters. This setting has no effect on Atlas Core clusters.|
 |stateName|string|false|read-only|Human-readable label that indicates any current activity being taken on this cluster by the Atlas control plane. With the exception of CREATING and DELETING states, clusters should always be available and have a Primary node even when in states indicating ongoing activity.<br><br> - `IDLE`: Atlas is making no changes to this cluster and all changes requested via the UI or API can be assumed to have been applied.<br> - `CREATING`: A cluster being provisioned for the very first time returns state CREATING until it is ready for connections. Ensure IP Access List and DB Users are configured before attempting to connect.<br> - `UPDATING`: A change requested via the UI, API, AutoScaling, or other scheduled activity is taking place.<br> - `DELETING`: The cluster is in the process of deletion and will soon be deleted.<br> - `REPAIRING`: One or more nodes in the cluster are being returned to service by the Atlas control plane. Other nodes should continue to provide service as normal.|
 |tags|[[ResourceTag](#schemaresourcetag)]|false|none|List that contains key-value pairs between 1 to 255 characters in length for tagging and categorizing the cluster.|
 |terminationProtectionEnabled|boolean|false|none|Flag that indicates whether termination protection is enabled on the cluster. If set to `true`, MongoDB Cloud won't delete the cluster. If set to `false`, MongoDB Cloud will delete the cluster.|
@@ -103705,7 +104868,7 @@ Details of a private endpoint deployed for this cluster.
   "defaultWriteConcern": "string",
   "failIndexKeyTooLong": true,
   "javascriptEnabled": true,
-  "minimumEnabledTlsProtocol": "TLS1_0",
+  "minimumEnabledTlsProtocol": "TLS1_2",
   "noTableScan": true,
   "oplogMinRetentionHours": 0,
   "oplogSizeMB": 0,
@@ -103730,7 +104893,7 @@ Details of a private endpoint deployed for this cluster.
 |defaultWriteConcern|string|false|none|Default level of acknowledgment requested from MongoDB for write operations when none is specified by the driver.|
 |failIndexKeyTooLong|boolean|false|none|**Deprecated.** Flag that indicates whether you can insert or update documents where all indexed entries don't exceed 1024 bytes. If you set this to false, [mongod](https://docs.mongodb.com/upcoming/reference/program/mongod/#mongodb-binary-bin.mongod) writes documents that exceed this limit but doesn't index them. This parameter has been removed as of [MongoDB 4.4](https://www.mongodb.com/docs/manual/reference/parameters/#mongodb-parameter-param.failIndexKeyTooLong).|
 |javascriptEnabled|boolean|false|none|Flag that indicates whether the cluster allows execution of operations that perform server-side executions of JavaScript. When using 8.0+, we recommend disabling server-side JavaScript and using operators of aggregation pipeline as more performant alternative.|
-|minimumEnabledTlsProtocol|string|false|none|Minimum Transport Layer Security (TLS) version that the cluster accepts for incoming connections. Clusters using TLS 1.0 or 1.1 should consider setting TLS 1.2 as the minimum TLS protocol version.|
+|minimumEnabledTlsProtocol|string|false|none|Minimum Transport Layer Security (TLS) version that the cluster accepts for incoming connections.|
 |noTableScan|boolean|false|none|Flag that indicates whether the cluster disables executing any query that requires a collection scan to return results.|
 |oplogMinRetentionHours|number(double) \| null|false|none|Minimum retention window for cluster's oplog expressed in hours. A value of null indicates that the cluster uses the default minimum oplog window that MongoDB Cloud calculates.|
 |oplogSizeMB|integer(int32) \| null|false|none|Storage limit of cluster's oplog expressed in megabytes. A value of null indicates that the cluster uses the default oplog size that MongoDB Cloud calculates.|
@@ -103752,8 +104915,6 @@ Details of a private endpoint deployed for this cluster.
 |customOpensslCipherConfigTls13|TLS_AES_128_CCM_SHA256|
 |defaultReadConcern|local|
 |defaultReadConcern|available|
-|minimumEnabledTlsProtocol|TLS1_0|
-|minimumEnabledTlsProtocol|TLS1_1|
 |minimumEnabledTlsProtocol|TLS1_2|
 |minimumEnabledTlsProtocol|TLS1_3|
 |tlsCipherConfigMode|CUSTOM|
@@ -103779,7 +104940,7 @@ Details of a private endpoint deployed for this cluster.
   "defaultMaxTimeMS": 0,
   "defaultWriteConcern": "string",
   "javascriptEnabled": true,
-  "minimumEnabledTlsProtocol": "TLS1_0",
+  "minimumEnabledTlsProtocol": "TLS1_2",
   "noTableScan": true,
   "oplogMinRetentionHours": 0,
   "oplogSizeMB": 0,
@@ -103804,7 +104965,7 @@ Advanced MongoDB process configuration options applied to the cluster.
 |defaultMaxTimeMS|integer(int32)|false|none|Default time limit in milliseconds for individual read operations to complete.|
 |defaultWriteConcern|string|false|none|Default level of acknowledgment requested from MongoDB for write operations when none is specified by the driver.|
 |javascriptEnabled|boolean|false|none|Flag that indicates whether the cluster allows execution of operations that perform server-side executions of JavaScript. When using 8.0+, we recommend disabling server-side JavaScript and using operators of aggregation pipeline as more performant alternative.|
-|minimumEnabledTlsProtocol|string|false|none|Minimum Transport Layer Security (TLS) version that the cluster accepts for incoming connections. Clusters using TLS 1.0 or 1.1 should consider setting TLS 1.2 as the minimum TLS protocol version.|
+|minimumEnabledTlsProtocol|string|false|none|Minimum Transport Layer Security (TLS) version that the cluster accepts for incoming connections.|
 |noTableScan|boolean|false|none|Flag that indicates whether the cluster disables executing any query that requires a collection scan to return results.|
 |oplogMinRetentionHours|number(double) \| null|false|none|Minimum retention window for cluster's oplog expressed in hours. A value of null indicates that the cluster uses the default minimum oplog window that MongoDB Cloud calculates.|
 |oplogSizeMB|integer(int32) \| null|false|none|Storage limit of cluster's oplog expressed in megabytes. A value of null indicates that the cluster uses the default oplog size that MongoDB Cloud calculates.|
@@ -103824,8 +104985,6 @@ Advanced MongoDB process configuration options applied to the cluster.
 |customOpensslCipherConfigTls13|TLS_CHACHA20_POLY1305_SHA256|
 |customOpensslCipherConfigTls13|TLS_AES_128_GCM_SHA256|
 |customOpensslCipherConfigTls13|TLS_AES_128_CCM_SHA256|
-|minimumEnabledTlsProtocol|TLS1_0|
-|minimumEnabledTlsProtocol|TLS1_1|
 |minimumEnabledTlsProtocol|TLS1_2|
 |minimumEnabledTlsProtocol|TLS1_3|
 |tlsCipherConfigMode|CUSTOM|
@@ -104783,7 +105942,6 @@ Authentication details for type `USER_INFO` with username and password for Confl
   ],
   "domainRestrictionEnabled": true,
   "identityProviderId": "string",
-  "instantUserProvisioningDisabled": true,
   "orgId": "32b6e34b3d91647abb20e7b8",
   "postAuthRoleGrants": [
     "ORG_OWNER"
@@ -104821,7 +105979,6 @@ Authentication details for type `USER_INFO` with username and password for Confl
 |domainAllowList|[string]|false|none|Approved domains that restrict users who can join the organization based on their email address.|
 |domainRestrictionEnabled|boolean|true|none|Value that indicates whether domain restriction is enabled for this connected organization.|
 |identityProviderId|string \| null|false|none|Legacy 20-hexadecimal digit string that identifies the UI access identity provider that this connected organization configuration is associated with. This id can be found within the Federation Management Console > Identity Providers tab by clicking the info icon in the IdP ID row of a configured identity provider.|
-|instantUserProvisioningDisabled|boolean \| null|false|none|Flag that indicates whether instant user provisioning is disabled for this connected organization.|
 |orgId|string|true|read-only|Unique 24-hexadecimal digit string that identifies the connected organization configuration.|
 |postAuthRoleGrants|[string \| null]|false|none|Atlas roles that are granted to a user in this organization after authenticating. Roles are a human-readable label that identifies the collection of privileges that MongoDB Cloud grants a specific MongoDB Cloud user. These roles can only be organization specific roles.|
 |roleMappings|[[AuthFederationRoleMapping](#schemaauthfederationrolemapping)]|false|none|Role mappings that are configured in this organization.|
@@ -105160,7 +106317,7 @@ List of IP addresses in the Atlas control plane.
     "32b6e34b3d91647abb20e7b8"
   ],
   "services": [
-    "Atlas"
+    "string"
   ],
   "startDate": "1970-01-01"
 }
@@ -105189,28 +106346,6 @@ Request body for a cost explorer query.
 |groupBy|projects|
 |groupBy|clusters|
 |groupBy|services|
-|services|Atlas|
-|services|Clusters|
-|services|Storage|
-|services|Serverless Instances|
-|services|Backup|
-|services|Data Transfer|
-|services|BI Connector|
-|services|Premium Features|
-|services|Atlas Data Federation|
-|services|Atlas Stream Processing|
-|services|App Services|
-|services|Charts|
-|services|Cloud Manager|
-|services|Cloud Manager Standard/Premium|
-|services|Legacy Backup|
-|services|AI Model APIs|
-|services|Automated Embedding|
-|services|Native Reranking|
-|services|Agent Engine|
-|services|Flex Consulting|
-|services|Support|
-|services|Credits|
 
 <h2 id="tocS_CostExplorerFilterResponseView">CostExplorerFilterResponseView</h2>
 <!-- backwards compatibility -->
@@ -111716,6 +112851,7 @@ Setting that enables disk auto-scaling.
       "sizeBytes": 0
     }
   ],
+  "message": "string",
   "redundantIndexes": [
     {
       "accessCount": 0,
@@ -111732,6 +112868,11 @@ Setting that enables disk auto-scaling.
       "sizeBytes": 0
     }
   ],
+  "scale": {
+    "docsUrl": "string",
+    "minimumTier": "M10",
+    "scaleUrl": "string"
+  },
   "unusedIndexes": [
     {
       "accessCount": 0,
@@ -111758,7 +112899,9 @@ Response that contains Performance Advisor drop index suggestions.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |hiddenIndexes|[[DropIndexSuggestionsIndex](#schemadropindexsuggestionsindex)]|false|read-only|List that contains the documents with information about the hidden indexes that the Performance Advisor suggests to remove.|
+|message|string|false|read-only|Explanation of Performance Advisor availability limitations on the current tier.|
 |redundantIndexes|[[DropIndexSuggestionsIndex](#schemadropindexsuggestionsindex)]|false|read-only|List that contains the documents with information about the redundant indexes that the Performance Advisor suggests to remove.|
+|scale|[ApiClusterScaleView](#schemaapiclusterscaleview)|false|read-only|Information on scaling the cluster to a tier that supports the requested feature. Present only when the feature is unavailable on the cluster's current tier.|
 |unusedIndexes|[[DropIndexSuggestionsIndex](#schemadropindexsuggestionsindex)]|false|read-only|List that contains the documents with information about the unused indexes that the Performance Advisor suggests to remove.|
 
 <h2 id="tocS_EARPrivateEndpoint">EARPrivateEndpoint</h2>
@@ -112168,6 +113311,7 @@ Event type that triggers an alert.
         "sizeBytes": 0
       }
     ],
+    "message": "string",
     "redundantIndexes": [
       {
         "accessCount": 0,
@@ -112184,6 +113328,11 @@ Event type that triggers an alert.
         "sizeBytes": 0
       }
     ],
+    "scale": {
+      "docsUrl": "string",
+      "minimumTier": "M10",
+      "scaleUrl": "string"
+    },
     "unusedIndexes": [
       {
         "accessCount": 0,
@@ -112235,6 +113384,12 @@ Response envelope that wraps the response payload in `content` and includes resp
 ```json
 {
   "content": {
+    "message": "string",
+    "scale": {
+      "docsUrl": "string",
+      "minimumTier": "M10",
+      "scaleUrl": "string"
+    },
     "shapes": [
       {
         "avgMs": 0,
@@ -112311,6 +113466,7 @@ Response envelope that wraps the response payload in `content` and includes resp
 ```json
 {
   "content": {
+    "message": "string",
     "recommendations": [
       {
         "affectedNamespaces": [
@@ -112327,7 +113483,12 @@ Response envelope that wraps the response payload in `content` and includes resp
         "description": "string",
         "recommendation": "REDUCE_LOOKUP_OPS"
       }
-    ]
+    ],
+    "scale": {
+      "docsUrl": "string",
+      "minimumTier": "M10",
+      "scaleUrl": "string"
+    }
   },
   "links": [
     {
@@ -112547,6 +113708,9 @@ A singular type of event.
 |*oneOf*|string|false|none|none|
 |*oneOf*|string|false|none|none|
 |*oneOf*|string|false|none|none|
+|*oneOf*|string|false|none|none|
+|*oneOf*|string|false|none|none|
+|*oneOf*|string|false|none|none|
 
 #### Enumerated Values
 
@@ -112695,6 +113859,8 @@ A singular type of event.
 |*oneOf*|AZURE_ENCRYPTION_KEY_INVALID|
 |*oneOf*|GCP_ENCRYPTION_KEY_VALID|
 |*oneOf*|GCP_ENCRYPTION_KEY_INVALID|
+|*oneOf*|ENCRYPTION_KEY_TRANSITION_STARTED|
+|*oneOf*|ENCRYPTION_KEY_TRANSITION_COMPLETED|
 |*oneOf*|BUCKET_CREATED_AUDIT|
 |*oneOf*|BUCKET_DELETED_AUDIT|
 |*oneOf*|FTS_INDEX_DELETION_FAILED|
@@ -113067,6 +114233,7 @@ A singular type of event.
 |*oneOf*|SEARCH_HOST_PAUSE_ALL_INITIAL_SYNCS|
 |*oneOf*|SEARCH_HOST_DISABLE_FTS|
 |*oneOf*|SEARCH_HOST_PAUSE_INITIAL_SYNC_ON_INDEX_IDS|
+|*oneOf*|SEARCH_AUTOSCALING_ADMIN_OVERRIDES_UPDATED|
 |*oneOf*|CLUSTER_BLOCK_WRITE|
 |*oneOf*|CLUSTER_UNBLOCK_WRITE|
 |*oneOf*|KMIP_KEY_ROTATION_SCHEDULED|
@@ -113097,6 +114264,8 @@ A singular type of event.
 |*oneOf*|DISK_WARMING_PROCESS_NODE_UNHIDDEN_BY_ADMIN|
 |*oneOf*|DISK_WARMING_PROCESS_INSTANCE_CANCELLED_BY_ADMIN|
 |*oneOf*|DISK_WARMING_PROCESS_DISK_TAG_READY_BY_ADMIN|
+|*oneOf*|NODE_FROZEN_BY_ADMIN|
+|*oneOf*|NODE_UNFROZEN_BY_ADMIN|
 |*oneOf*|CLUSTER_CREATED_VIA_ANIS|
 |*oneOf*|MAINTENANCE_WAVE_ASSIGNMENT_ADDED|
 |*oneOf*|MAINTENANCE_WAVE_ASSIGNMENT_MODIFIED|
@@ -113195,6 +114364,13 @@ A singular type of event.
 |*oneOf*|ONLINE_ARCHIVE_UP_TO_DATE|
 |*oneOf*|ONLINE_ARCHIVE_DATA_EXPIRATION_RESOLVED|
 |*oneOf*|ONLINE_ARCHIVE_MAX_CONSECUTIVE_OFFLOAD_WINDOWS_CHECK|
+|*oneOf*|PRIVATE_ENDPOINT_CONNECTION_STRING_AVAILABLE|
+|*oneOf*|PRIVATE_ENDPOINT_CONNECTION_STRING_CREATED|
+|*oneOf*|PRIVATE_ENDPOINT_CONNECTION_STRING_DELETED|
+|*oneOf*|PRIVATE_ENDPOINT_CONNECTION_STRING_MISCONFIGURED|
+|*oneOf*|PRIVATE_ENDPOINT_CONNECTION_STRING_OPT_IN|
+|*oneOf*|PRIVATE_ENDPOINT_CONNECTION_STRING_OPT_OUT|
+|*oneOf*|PRIVATE_ENDPOINT_CONNECTION_STRING_UPDATED|
 |*oneOf*|CROSS_REGION_SUPPORTED_REGION_MODIFIED|
 |*oneOf*|ENDPOINT_SERVICE_CREATED|
 |*oneOf*|ENDPOINT_SERVICE_CREATION_RETRIED|
@@ -113297,6 +114473,9 @@ A singular type of event.
 |*oneOf*|STREAMS_PRIVATE_LINK_ENDPOINT_UNUSED_FIRST_WARNING|
 |*oneOf*|STREAMS_PRIVATE_LINK_ENDPOINT_UNUSED_SECOND_WARNING|
 |*oneOf*|STREAMS_PRIVATE_LINK_ENDPOINT_UNUSED_DELETED|
+|*oneOf*|SEARCH_AUTO_MIGRATION_ADVISORY|
+|*oneOf*|SEARCH_AUTO_MIGRATION_STARTED|
+|*oneOf*|SEARCH_AUTO_MIGRATION_FAILED|
 
 <h2 id="tocS_EventTypeForOrg">EventTypeForOrg</h2>
 <!-- backwards compatibility -->
@@ -113465,6 +114644,7 @@ A singular type of event.
 |*oneOf*|ORG_SETTINGS_CONFIGURED|
 |*oneOf*|ORG_SETTINGS_UPDATED|
 |*oneOf*|ORG_SETTINGS_DELETED|
+|*oneOf*|ORG_ACCESS_PROVISIONING_METHOD_UPDATED|
 |*oneOf*|RESTRICT_ORG_MEMBERSHIP_ENABLED|
 |*oneOf*|RESTRICT_ORG_MEMBERSHIP_DISABLED|
 |*oneOf*|ROLE_MAPPING_CREATED|
@@ -114093,7 +115273,6 @@ MongoDB Cloud user linked to this federated authentication.
       ],
       "domainRestrictionEnabled": true,
       "identityProviderId": "string",
-      "instantUserProvisioningDisabled": true,
       "orgId": "32b6e34b3d91647abb20e7b8",
       "postAuthRoleGrants": [
         "ORG_OWNER"
@@ -114257,7 +115436,6 @@ MongoDB Cloud user linked to this federated authentication.
       ],
       "domainRestrictionEnabled": true,
       "identityProviderId": "string",
-      "instantUserProvisioningDisabled": true,
       "orgId": "32b6e34b3d91647abb20e7b8",
       "postAuthRoleGrants": [
         "ORG_OWNER"
@@ -114415,7 +115593,6 @@ MongoDB Cloud user linked to this federated authentication.
       ],
       "domainRestrictionEnabled": true,
       "identityProviderId": "string",
-      "instantUserProvisioningDisabled": true,
       "orgId": "32b6e34b3d91647abb20e7b8",
       "postAuthRoleGrants": [
         "ORG_OWNER"
@@ -114572,7 +115749,6 @@ MongoDB Cloud user linked to this federated authentication.
       ],
       "domainRestrictionEnabled": true,
       "identityProviderId": "string",
-      "instantUserProvisioningDisabled": true,
       "orgId": "32b6e34b3d91647abb20e7b8",
       "postAuthRoleGrants": [
         "ORG_OWNER"
@@ -114716,7 +115892,6 @@ MongoDB Cloud user linked to this federated authentication.
       ],
       "domainRestrictionEnabled": true,
       "identityProviderId": "string",
-      "instantUserProvisioningDisabled": true,
       "orgId": "32b6e34b3d91647abb20e7b8",
       "postAuthRoleGrants": [
         "ORG_OWNER"
@@ -120022,6 +121197,7 @@ Threshold for the metric that, when exceeded, triggers an alert. The metric thre
 |*oneOf*|[CacheBytesReadIntoDataMetricThresholdView](#schemacachebytesreadintodatametricthresholdview)|false|none|none|
 |*oneOf*|[CacheBytesWrittenFromDataMetricThresholdView](#schemacachebyteswrittenfromdatametricthresholdview)|false|none|none|
 |*oneOf*|[NormalizedSystemCpuUserRawMetricThresholdView](#schemanormalizedsystemcpuuserrawmetricthresholdview)|false|none|none|
+|*oneOf*|[NormalizedSystemCpuUserSearchPrimaryContributorRawMetricThresholdView](#schemanormalizedsystemcpuusersearchprimarycontributorrawmetricthresholdview)|false|none|none|
 |*oneOf*|[NormalizedSystemCpuStealRawMetricThresholdView](#schemanormalizedsystemcpustealrawmetricthresholdview)|false|none|none|
 |*oneOf*|[DiskPartitionSpaceUsedDataRawMetricThresholdView](#schemadiskpartitionspaceuseddatarawmetricthresholdview)|false|none|none|
 |*oneOf*|[DiskPartitionSpaceUsedIndexRawMetricThresholdView](#schemadiskpartitionspaceusedindexrawmetricthresholdview)|false|none|none|
@@ -120994,7 +122170,7 @@ One test that MongoDB Cloud runs to test verification of the provided Lightweigh
     "customOpensslCipherConfigTls13": [
       "TLS_AES_256_GCM_SHA384"
     ],
-    "minimumEnabledTlsProtocol": "TLS1_0",
+    "minimumEnabledTlsProtocol": "TLS1_2",
     "tlsCipherConfigMode": "CUSTOM"
   },
   "autoScaling": {
@@ -121246,7 +122422,7 @@ Group of settings that configure a MongoDB cluster.
     "customOpensslCipherConfigTls13": [
       "TLS_AES_256_GCM_SHA384"
     ],
-    "minimumEnabledTlsProtocol": "TLS1_0",
+    "minimumEnabledTlsProtocol": "TLS1_2",
     "tlsCipherConfigMode": "CUSTOM"
   },
   "autoScaling": {
@@ -123886,6 +125062,10 @@ Request schema for creating a metric integration.
 |metricSelection|ATLAS_STREAM_PROCESSING|
 |metricSelection|MONGODB_METRICS|
 |metricSelection|HARDWARE_METRICS|
+|metricSelection|DB_STATS|
+|metricSelection|QUERY_SHAPE_INSIGHTS|
+|metricSelection|SEARCH_METRICS|
+|metricSelection|SHARDING_METRICS|
 |providerType|CUSTOM|
 |providerType|DATADOG|
 |providerType|DYNATRACE|
@@ -123964,6 +125144,10 @@ Response schema for metric integration operations.
 |metricSelection|ATLAS_STREAM_PROCESSING|
 |metricSelection|MONGODB_METRICS|
 |metricSelection|HARDWARE_METRICS|
+|metricSelection|DB_STATS|
+|metricSelection|QUERY_SHAPE_INSIGHTS|
+|metricSelection|SEARCH_METRICS|
+|metricSelection|SHARDING_METRICS|
 |providerType|CUSTOM|
 |providerType|DATADOG|
 |providerType|DYNATRACE|
@@ -124034,6 +125218,10 @@ Request schema for updating a metric integration. Omitted OAuth fields keep thei
 |metricSelection|ATLAS_STREAM_PROCESSING|
 |metricSelection|MONGODB_METRICS|
 |metricSelection|HARDWARE_METRICS|
+|metricSelection|DB_STATS|
+|metricSelection|QUERY_SHAPE_INSIGHTS|
+|metricSelection|SEARCH_METRICS|
+|metricSelection|SHARDING_METRICS|
 |providerType|CUSTOM|
 |providerType|DATADOG|
 |providerType|DYNATRACE|
@@ -124260,6 +125448,143 @@ Authentication attempt, one per object, made against the cluster.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |accessLogs|[[MongoDBAccessLogs](#schemamongodbaccesslogs)]|false|read-only|Authentication attempt, one per object, made against the cluster.|
+
+<h2 id="tocS_MongosTopologyCreateRequest">MongosTopologyCreateRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemamongostopologycreaterequest"></a>
+<a id="schema_MongosTopologyCreateRequest"></a>
+<a id="tocSmongostopologycreaterequest"></a>
+<a id="tocsmongostopologycreaterequest"></a>
+
+```json
+{
+  "clusterName": "string",
+  "instanceSize": "string",
+  "regionPlacements": [
+    {
+      "nodeCount": 0,
+      "providerName": "AWS",
+      "regionName": "string"
+    }
+  ]
+}
+```
+
+Dedicated mongos topology to attach to a sharded cluster.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|clusterName|string|false|none|Human-readable label that identifies the sharded cluster this topology belongs to.|
+|instanceSize|string|false|none|Instance size of the dedicated mongos hosts (for example, `M30`).|
+|regionPlacements|[[MongosTopologyResourceRegionConfig](#schemamongostopologyresourceregionconfig)]|false|none|Per-region placement of the dedicated mongos hosts.|
+
+<h2 id="tocS_MongosTopologyResourceRegionConfig">MongosTopologyResourceRegionConfig</h2>
+<!-- backwards compatibility -->
+<a id="schemamongostopologyresourceregionconfig"></a>
+<a id="schema_MongosTopologyResourceRegionConfig"></a>
+<a id="tocSmongostopologyresourceregionconfig"></a>
+<a id="tocsmongostopologyresourceregionconfig"></a>
+
+```json
+{
+  "nodeCount": 0,
+  "providerName": "AWS",
+  "regionName": "string"
+}
+```
+
+Dedicated mongos placement in one region.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|nodeCount|integer(int32)|false|none|Number of dedicated mongos to run in this region.|
+|providerName|string|false|none|Cloud provider on which the dedicated mongos run.|
+|regionName|string|false|none|Region in which the dedicated mongos run.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|providerName|AWS|
+|providerName|AZURE|
+|providerName|GCP|
+
+<h2 id="tocS_MongosTopologyResourceResponse">MongosTopologyResourceResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemamongostopologyresourceresponse"></a>
+<a id="schema_MongosTopologyResourceResponse"></a>
+<a id="tocSmongostopologyresourceresponse"></a>
+<a id="tocsmongostopologyresourceresponse"></a>
+
+```json
+{
+  "clusterName": "string",
+  "instanceSize": "string",
+  "regionPlacements": [
+    {
+      "nodeCount": 0,
+      "providerName": "AWS",
+      "regionName": "string"
+    }
+  ],
+  "status": "PENDING_CLUSTER_CREATION"
+}
+```
+
+Configuration of the dedicated mongos routers for a sharded cluster, identified by the name of its associated cluster.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|clusterName|string|false|none|Human-readable label that identifies the sharded cluster this topology belongs to.|
+|instanceSize|string|false|none|Instance size of the dedicated mongos hosts (for example, `M30`).|
+|regionPlacements|[[MongosTopologyResourceRegionConfig](#schemamongostopologyresourceregionconfig)]|false|none|Per-region placement of the dedicated mongos hosts.|
+|status|string|false|read-only|Lifecycle status of the dedicated mongos topology resource.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|PENDING_CLUSTER_CREATION|
+|status|CREATING|
+|status|UPDATING|
+|status|ACTIVE|
+
+<h2 id="tocS_MongosTopologyUpdateRequest">MongosTopologyUpdateRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemamongostopologyupdaterequest"></a>
+<a id="schema_MongosTopologyUpdateRequest"></a>
+<a id="tocSmongostopologyupdaterequest"></a>
+<a id="tocsmongostopologyupdaterequest"></a>
+
+```json
+{
+  "clusterName": "string",
+  "instanceSize": "string",
+  "regionPlacements": [
+    {
+      "nodeCount": 0,
+      "providerName": "AWS",
+      "regionName": "string"
+    }
+  ]
+}
+```
+
+Dedicated mongos tier to apply to a sharded cluster.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|clusterName|string|false|none|Human-readable label that identifies the sharded cluster this topology belongs to.|
+|instanceSize|string|false|none|Instance size of the dedicated mongos hosts (for example, `M30`).|
+|regionPlacements|[[MongosTopologyResourceRegionConfig](#schemamongostopologyresourceregionconfig)]|false|none|Per-region placement of the dedicated mongos hosts.|
 
 <h2 id="tocS_MongotuneAlertConfigViewForNdsGroup">MongotuneAlertConfigViewForNdsGroup</h2>
 <!-- backwards compatibility -->
@@ -125006,6 +126331,7 @@ Audit saving information about Atlas cloud provider and other Atlas related deta
 |eventTypeName|SEARCH_HOST_PAUSE_ALL_INITIAL_SYNCS|
 |eventTypeName|SEARCH_HOST_DISABLE_FTS|
 |eventTypeName|SEARCH_HOST_PAUSE_INITIAL_SYNC_ON_INDEX_IDS|
+|eventTypeName|SEARCH_AUTOSCALING_ADMIN_OVERRIDES_UPDATED|
 |eventTypeName|CLUSTER_BLOCK_WRITE|
 |eventTypeName|CLUSTER_UNBLOCK_WRITE|
 |eventTypeName|KMIP_KEY_ROTATION_SCHEDULED|
@@ -125036,6 +126362,8 @@ Audit saving information about Atlas cloud provider and other Atlas related deta
 |eventTypeName|DISK_WARMING_PROCESS_NODE_UNHIDDEN_BY_ADMIN|
 |eventTypeName|DISK_WARMING_PROCESS_INSTANCE_CANCELLED_BY_ADMIN|
 |eventTypeName|DISK_WARMING_PROCESS_DISK_TAG_READY_BY_ADMIN|
+|eventTypeName|NODE_FROZEN_BY_ADMIN|
+|eventTypeName|NODE_UNFROZEN_BY_ADMIN|
 |eventTypeName|CLUSTER_CREATED_VIA_ANIS|
 |eventTypeName|MAINTENANCE_WAVE_ASSIGNMENT_ADDED|
 |eventTypeName|MAINTENANCE_WAVE_ASSIGNMENT_MODIFIED|
@@ -126130,6 +127458,42 @@ Consider configuring an alternative monitoring integration before June 16th to m
 |operator|GREATER_THAN|
 |units|RAW|
 
+<h2 id="tocS_NormalizedSystemCpuUserSearchPrimaryContributorRawMetricThresholdView">NormalizedSystemCpuUserSearchPrimaryContributorRawMetricThresholdView</h2>
+<!-- backwards compatibility -->
+<a id="schemanormalizedsystemcpuusersearchprimarycontributorrawmetricthresholdview"></a>
+<a id="schema_NormalizedSystemCpuUserSearchPrimaryContributorRawMetricThresholdView"></a>
+<a id="tocSnormalizedsystemcpuusersearchprimarycontributorrawmetricthresholdview"></a>
+<a id="tocsnormalizedsystemcpuusersearchprimarycontributorrawmetricthresholdview"></a>
+
+```json
+{
+  "metricName": "string",
+  "mode": "AVERAGE",
+  "operator": "LESS_THAN",
+  "threshold": 0,
+  "units": "RAW"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|metricName|string|true|none|Human-readable label that identifies the metric against which MongoDB Cloud checks the configured `metricThreshold.threshold`.|
+|mode|string|false|none|MongoDB Cloud computes the current metric value as an average.|
+|operator|string|false|none|Comparison operator to apply when checking the current metric value.|
+|threshold|number(double)|false|none|Value of metric that, when exceeded, triggers an alert.|
+|units|[RawMetricUnits](#schemarawmetricunits)|false|none|Element used to express the quantity. This can be an element of time, storage capacity, and the like.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|mode|AVERAGE|
+|operator|LESS_THAN|
+|operator|GREATER_THAN|
+|units|RAW|
+
 <h2 id="tocS_NumberMetricAlertView">NumberMetricAlertView</h2>
 <!-- backwards compatibility -->
 <a id="schemanumbermetricalertview"></a>
@@ -127174,6 +128538,39 @@ Status of a long-running operation.
 |operator|LESS_THAN|
 |operator|GREATER_THAN|
 |units|RAW|
+
+<h2 id="tocS_OperationsContactNotification">OperationsContactNotification</h2>
+<!-- backwards compatibility -->
+<a id="schemaoperationscontactnotification"></a>
+<a id="schema_OperationsContactNotification"></a>
+<a id="tocSoperationscontactnotification"></a>
+<a id="tocsoperationscontactnotification"></a>
+
+```json
+{
+  "delayMin": 0,
+  "intervalMin": 5,
+  "notifierId": "32b6e34b3d91647abb20e7b8",
+  "typeName": "OPERATIONS_CONTACT"
+}
+```
+
+Explicit recurrence override for project operations contact alerts. This setting does not enable notification delivery. Delivery requires opting in through project settings. Contact addresses are resolved when a notification is sent and are not returned here.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|delayMin|integer(int32)|false|none|Number of minutes that MongoDB Cloud waits after detecting an alert condition before it sends out the first notification.|
+|intervalMin|integer(int32)|false|none|Number of minutes to wait between successive notifications. MongoDB Cloud sends notifications until someone acknowledges the unacknowledged alert.<br><br>PagerDuty, VictorOps, and OpsGenie notifications don't return this element. Configure and manage the notification interval within each of those services.|
+|notifierId|string|false|none|The `notifierId` is a system-generated unique identifier assigned to each notification method. This is needed when updating third-party notifications without requiring explicit authentication credentials.|
+|typeName|string|true|none|Human-readable label that displays the alert notification type.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|typeName|OPERATIONS_CONTACT|
 
 <h2 id="tocS_OperationsQueriesKilledRawMetricThresholdView">OperationsQueriesKilledRawMetricThresholdView</h2>
 <!-- backwards compatibility -->
@@ -129143,9 +130540,9 @@ Collection of settings that configures the organization.
 |genAIFeaturesEnabled|boolean|false|none|Flag that indicates whether this organization has access to generative AI features. This setting only applies to Atlas Commercial and is enabled by default. Once this setting is turned on, Project Owners may be able to enable or disable individual AI features at the project level.|
 |maxServiceAccountSecretValidityInHours|integer(int32)|false|none|Number that represents the maximum period before expiry in hours for new Atlas Admin API Service Account secrets within the specified organization.|
 |multiFactorAuthRequired|boolean|false|none|Flag that indicates whether to require users to set up Multi-Factor Authentication (MFA) before accessing the specified organization. To learn more, see: https://www.mongodb.com/docs/atlas/security-multi-factor-authentication/.|
-|operationsContact|string \| null|false|none|String that specifies a distribution list email address for the specified organization to receive proactive notifications about its infrastructure. The operations contact is used for notifications only and is not authorized to make decisions or approvals. Passing an explicit null clears the existing operations contact (if any). An empty string is invalid and is rejected with a validation error.|
+|operationsContact|string \| null|false|none|String that specifies a distribution list email address for the specified organization to receive proactive notifications about its infrastructure. The operations contact is used for notifications only and is not authorized to make decisions or approvals. Passing an explicit null clears the existing operations contact (if any). An empty string is invalid and is rejected with a validation error. Addresses are trimmed and converted to lowercase before validation; each normalized address must contain at most 254 characters.|
 |restrictEmployeeAccess|boolean|false|none|Flag that indicates whether to block MongoDB Support from accessing Atlas infrastructure and cluster logs for any deployment in the specified organization without explicit permission. Once this setting is turned on, you can grant MongoDB Support a 24-hour bypass access to the Atlas deployment to resolve support issues. To learn more, see: https://www.mongodb.com/docs/atlas/security-restrict-support-access/.|
-|securityContact|string|false|none|String that specifies a single email address for the specified organization to receive security-related notifications. Specifying a security contact does not grant them authorization or access to Atlas for security decisions or approvals. An empty string is valid and clears the existing security contact (if any).|
+|securityContact|string|false|none|String that specifies a single email address for the specified organization to receive security-related notifications. Specifying a security contact does not grant them authorization or access to Atlas for security decisions or approvals. An empty string is valid and clears the existing security contact (if any). Addresses are trimmed and converted to lowercase before validation; each normalized address must contain at most 254 characters.|
 |streamsCrossGroupEnabled|boolean|false|none|Flag that indicates whether a group's Atlas Stream Processing workspaces in this organization can create connections to other group's clusters in the same organization.|
 
 <h2 id="tocS_OtelLogIntegrationRequest">OtelLogIntegrationRequest</h2>
@@ -129471,7 +130868,7 @@ PagerDuty notification configuration for MongoDB Cloud to send information when 
         "customOpensslCipherConfigTls13": [
           "TLS_AES_256_GCM_SHA384"
         ],
-        "minimumEnabledTlsProtocol": "TLS1_0",
+        "minimumEnabledTlsProtocol": "TLS1_2",
         "tlsCipherConfigMode": "CUSTOM"
       },
       "backupEnabled": false,
@@ -130587,6 +131984,38 @@ List of MongoDB Database users granted access to databases in the specified proj
 |results|[[SkuResponse](#schemaskuresponse)]|true|read-only|List of returned documents that MongoDB Cloud provides when completing this request.|
 |totalCount|integer(int32)|false|read-only|Total number of documents available. When `includeCount` is set to `false`, MongoDB Cloud may omit this value or return it when the count is available without additional calculation. The total number is an estimate and may not be exact.|
 
+<h2 id="tocS_PaginatedApiSkuServiceView">PaginatedApiSkuServiceView</h2>
+<!-- backwards compatibility -->
+<a id="schemapaginatedapiskuserviceview"></a>
+<a id="schema_PaginatedApiSkuServiceView"></a>
+<a id="tocSpaginatedapiskuserviceview"></a>
+<a id="tocspaginatedapiskuserviceview"></a>
+
+```json
+{
+  "links": [
+    {
+      "href": "https://cloud.mongodb.com/api/atlas",
+      "rel": "self"
+    }
+  ],
+  "results": [
+    {
+      "name": "string"
+    }
+  ],
+  "totalCount": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|links|[[Link](#schemalink)]|false|read-only|List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.|
+|results|[[SkuServiceResponse](#schemaskuserviceresponse)]|true|read-only|List of returned documents that MongoDB Cloud provides when completing this request.|
+|totalCount|integer(int32)|false|read-only|Total number of documents available. When `includeCount` is set to `false`, MongoDB Cloud may omit this value or return it when the count is available without additional calculation. The total number is an estimate and may not be exact.|
+
 <h2 id="tocS_PaginatedApiStandbyLinkFailoverResponse">PaginatedApiStandbyLinkFailoverResponse</h2>
 <!-- backwards compatibility -->
 <a id="schemapaginatedapistandbylinkfailoverresponse"></a>
@@ -130679,6 +132108,7 @@ List of MongoDB Database users granted access to databases in the specified proj
   ],
   "results": [
     {
+      "errorMessage": "string",
       "id": "string",
       "links": [
         {
@@ -130912,6 +132342,7 @@ List of MongoDB Database users granted access to databases in the specified proj
       "_id": "32b6e34b3d91647abb20e7b8",
       "connections": [
         {
+          "errorMessage": "string",
           "id": "string",
           "links": [
             {
@@ -131658,7 +133089,7 @@ List of Network Peering Containers that Amazon Web Services serves.
         "customOpensslCipherConfigTls13": [
           "TLS_AES_256_GCM_SHA384"
         ],
-        "minimumEnabledTlsProtocol": "TLS1_0",
+        "minimumEnabledTlsProtocol": "TLS1_2",
         "tlsCipherConfigMode": "CUSTOM"
       },
       "backupEnabled": true,
@@ -131784,6 +133215,9 @@ List of Network Peering Containers that Amazon Web Services serves.
       ],
       "retainBackups": false,
       "rootCertType": "ISRGROOTX1",
+      "searchAutoMigration": {
+        "disabled": false
+      },
       "stateName": "IDLE",
       "tags": [
         {
@@ -131833,7 +133267,6 @@ List of Network Peering Containers that Amazon Web Services serves.
       ],
       "domainRestrictionEnabled": true,
       "identityProviderId": "string",
-      "instantUserProvisioningDisabled": true,
       "orgId": "32b6e34b3d91647abb20e7b8",
       "postAuthRoleGrants": [
         "ORG_OWNER"
@@ -132095,7 +133528,6 @@ A list of user-configurable, project-level limits with descriptions.
           ],
           "domainRestrictionEnabled": true,
           "identityProviderId": "string",
-          "instantUserProvisioningDisabled": true,
           "orgId": "32b6e34b3d91647abb20e7b8",
           "postAuthRoleGrants": [
             "ORG_OWNER"
@@ -132513,7 +133945,7 @@ A list of Project Service Accounts.
         "customOpensslCipherConfigTls13": [
           "TLS_AES_256_GCM_SHA384"
         ],
-        "minimumEnabledTlsProtocol": "TLS1_0",
+        "minimumEnabledTlsProtocol": "TLS1_2",
         "tlsCipherConfigMode": "CUSTOM"
       },
       "autoScaling": {
@@ -132806,6 +134238,47 @@ A list of Project Service Accounts.
 |---|---|---|---|---|
 |links|[[Link](#schemalink)]|false|read-only|List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.|
 |results|[[MetricIntegrationResponse](#schemametricintegrationresponse)]|true|read-only|List of returned documents that MongoDB Cloud provides when completing this request.|
+|totalCount|integer(int32)|false|read-only|Total number of documents available. When `includeCount` is set to `false`, MongoDB Cloud may omit this value or return it when the count is available without additional calculation. The total number is an estimate and may not be exact.|
+
+<h2 id="tocS_PaginatedMongosTopologyResourceResponse">PaginatedMongosTopologyResourceResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemapaginatedmongostopologyresourceresponse"></a>
+<a id="schema_PaginatedMongosTopologyResourceResponse"></a>
+<a id="tocSpaginatedmongostopologyresourceresponse"></a>
+<a id="tocspaginatedmongostopologyresourceresponse"></a>
+
+```json
+{
+  "links": [
+    {
+      "href": "https://cloud.mongodb.com/api/atlas",
+      "rel": "self"
+    }
+  ],
+  "results": [
+    {
+      "clusterName": "string",
+      "instanceSize": "string",
+      "regionPlacements": [
+        {
+          "nodeCount": 0,
+          "providerName": "AWS",
+          "regionName": "string"
+        }
+      ],
+      "status": "PENDING_CLUSTER_CREATION"
+    }
+  ],
+  "totalCount": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|links|[[Link](#schemalink)]|false|read-only|List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.|
+|results|[[MongosTopologyResourceResponse](#schemamongostopologyresourceresponse)]|true|read-only|List of returned documents that MongoDB Cloud provides when completing this request.|
 |totalCount|integer(int32)|false|read-only|Total number of documents available. When `includeCount` is set to `false`, MongoDB Cloud may omit this value or return it when the count is available without additional calculation. The total number is an estimate and may not be exact.|
 
 <h2 id="tocS_PaginatedNetworkAccessView">PaginatedNetworkAccessView</h2>
@@ -134443,6 +135916,12 @@ Details that this resource returned about the specified query.
 
 ```json
 {
+  "message": "string",
+  "scale": {
+    "docsUrl": "string",
+    "minimumTier": "M10",
+    "scaleUrl": "string"
+  },
   "shapes": [
     {
       "avgMs": 0,
@@ -134493,6 +135972,8 @@ Response that contains Performance Advisor suggested indexes and query shapes.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|message|string|false|read-only|Explanation of Performance Advisor availability limitations on the current tier.|
+|scale|[ApiClusterScaleView](#schemaapiclusterscaleview)|false|read-only|Information on scaling the cluster to a tier that supports the requested feature. Present only when the feature is unavailable on the cluster's current tier.|
 |shapes|[[PerformanceAdvisorShape](#schemaperformanceadvisorshape)]|false|read-only|List of query predicates, sorts, and projections that the Performance Advisor suggests.|
 |suggestedIndexes|[[PerformanceAdvisorIndex](#schemaperformanceadvisorindex)]|false|read-only|List that contains the documents with information about the indexes that the Performance Advisor suggests.|
 
@@ -135740,8 +137221,14 @@ A summary of execution statistics for a given query shape.
 
 ```json
 {
+  "message": "string",
   "queryStatsCollection": {
     "mode": "RATE_LIMITED"
+  },
+  "scale": {
+    "docsUrl": "string",
+    "minimumTier": "M10",
+    "scaleUrl": "string"
   },
   "summaries": [
     {
@@ -135782,7 +137269,9 @@ A summary of execution statistics for a given query shape.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|message|string|false|read-only|Explanation of query shape insights availability limitations on the current tier.|
 |queryStatsCollection|[QueryStatsCollectionResponse](#schemaquerystatscollectionresponse)|false|read-only|How `queryStats` entries were collected on this cluster's processes. Reflects the collection mode of the cluster's processes regardless of any host or process type filters in the request. Omitted when the collection mode cannot be determined. Sample-based collection requires MongoDB 9.0 or later but may not be enabled on every such cluster; this reflects the mode in effect on the cluster.|
+|scale|[ApiClusterScaleView](#schemaapiclusterscaleview)|false|read-only|Information on scaling the cluster to a tier that supports the requested feature. Present only when the feature is unavailable on the cluster's current tier.|
 |summaries|[[QueryStatsSummary](#schemaquerystatssummary)]|false|none|List of query shape statistic summaries from Query Shape Insights.|
 
 <h2 id="tocS_QueryTargetingScannedObjectsPerReturnedRawMetricThresholdView">QueryTargetingScannedObjectsPerReturnedRawMetricThresholdView</h2>
@@ -137012,6 +138501,29 @@ Resource event reflects different activities about resources.
 |eventTypeName|TAGS_MODIFIED|
 |eventTypeName|GROUP_TAGS_MODIFIED|
 
+<h2 id="tocS_ResourcePolicyReference">ResourcePolicyReference</h2>
+<!-- backwards compatibility -->
+<a id="schemaresourcepolicyreference"></a>
+<a id="schema_ResourcePolicyReference"></a>
+<a id="tocSresourcepolicyreference"></a>
+<a id="tocsresourcepolicyreference"></a>
+
+```json
+{
+  "id": "32b6e34b3d91647abb20e7b8",
+  "name": "string"
+}
+```
+
+Atlas Resource Policy that caused the request to be denied.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|read-only|Unique 24-hexadecimal character string that identifies the Atlas Resource Policy.|
+|name|string|true|read-only|Human-readable label that identifies the Atlas Resource Policy.|
+
 <h2 id="tocS_ResourceTag">ResourceTag</h2>
 <!-- backwards compatibility -->
 <a id="schemaresourcetag"></a>
@@ -137150,7 +138662,7 @@ Request schema for creating or updating an S3 log export integration.
 |kmsKey|string \| null|false|none|AWS KMS key ID or ARN for server-side encryption (optional). If not provided, uses bucket default encryption settings.|
 |prefixPath|string|true|none|Path prefix where the log files will be stored. Atlas will add further sub-directories based on the log type.|
 |type|string|true|none|Human-readable label that identifies the service to which you want to integrate with Atlas. The value must match the log integration type. This value cannot be modified after the integration is created.|
-|useLegacyPathStructure|boolean \| null|false|none|When true, uses the legacy daily-folder path structure compatible with Push-Based Log Export: `{prefix}/{cluster}/{hostname}/{logType}/{YYYY-MM-DD}/{timestamp}-{logType}.log`. When false (default), uses the flat timestamped structure: `{prefix}/{cluster}/{hostname}/{logType}/{timestamp}-{logType}.log`.|
+|useLegacyPathStructure|boolean|false|none|When true, uses the legacy daily-folder path structure compatible with Push-Based Log Export: `{prefix}/{cluster}/{hostname}/{logType}/{YYYY-MM-DD}/{timestamp}-{logType}.log`. When false (default), uses the flat timestamped structure: `{prefix}/{cluster}/{hostname}/{logType}/{timestamp}-{logType}.log`.|
 
 #### Enumerated Values
 
@@ -137212,7 +138724,7 @@ Details to integrate S3 log export with one Atlas project.
 |kmsKey|string \| null|false|none|AWS KMS key ID or ARN for server-side encryption (optional). If not provided, uses bucket default encryption settings.|
 |prefixPath|string|true|none|Path prefix where the log files will be stored. Atlas will add further sub-directories based on the log type.|
 |type|string|true|none|Human-readable label that identifies the service to which you want to integrate with Atlas. The value must match the log integration type. This value cannot be modified after the integration is created.|
-|useLegacyPathStructure|boolean \| null|false|none|When true, uses the legacy daily-folder path structure compatible with Push-Based Log Export: `{prefix}/{cluster}/{hostname}/{logType}/{YYYY-MM-DD}/{timestamp}-{logType}.log`. When false (default), uses the flat timestamped structure: `{prefix}/{cluster}/{hostname}/{logType}/{timestamp}-{logType}.log`.|
+|useLegacyPathStructure|boolean|false|none|When true, uses the legacy daily-folder path structure compatible with Push-Based Log Export: `{prefix}/{cluster}/{hostname}/{logType}/{YYYY-MM-DD}/{timestamp}-{logType}.log`. When false (default), uses the flat timestamped structure: `{prefix}/{cluster}/{hostname}/{logType}/{timestamp}-{logType}.log`.|
 
 #### Enumerated Values
 
@@ -137491,6 +139003,7 @@ Settings to update an existing sandbox for an organization.
 
 ```json
 {
+  "message": "string",
   "recommendations": [
     {
       "affectedNamespaces": [
@@ -137507,7 +139020,12 @@ Settings to update an existing sandbox for an organization.
       "description": "string",
       "recommendation": "REDUCE_LOOKUP_OPS"
     }
-  ]
+  ],
+  "scale": {
+    "docsUrl": "string",
+    "minimumTier": "M10",
+    "scaleUrl": "string"
+  }
 }
 ```
 
@@ -137517,7 +139035,9 @@ Response that contains Performance Advisor schema suggestions.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|message|string|false|read-only|Explanation of Performance Advisor availability limitations on the current tier.|
 |recommendations|[[SchemaAdvisorItemRecommendation](#schemaschemaadvisoritemrecommendation)]|false|read-only|List that contains the documents with information about the schema advice that Performance Advisor suggests.|
+|scale|[ApiClusterScaleView](#schemaapiclusterscaleview)|false|read-only|Information on scaling the cluster to a tier that supports the requested feature. Present only when the feature is unavailable on the cluster's current tier.|
 
 <h2 id="tocS_SchemaAdvisorTriggerDetails">SchemaAdvisorTriggerDetails</h2>
 <!-- backwards compatibility -->
@@ -137583,6 +139103,27 @@ Authentication configuration for Schema Registry.
 |---|---|
 |type|USER_INFO|
 |type|SASL_INHERIT|
+
+<h2 id="tocS_SearchAutoMigration">SearchAutoMigration</h2>
+<!-- backwards compatibility -->
+<a id="schemasearchautomigration"></a>
+<a id="schema_SearchAutoMigration"></a>
+<a id="tocSsearchautomigration"></a>
+<a id="tocssearchautomigration"></a>
+
+```json
+{
+  "disabled": false
+}
+```
+
+Configuration for automatically adding Dedicated Search Nodes on eligible Atlas Infinite clusters. This setting has no effect on Atlas Core clusters.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|disabled|boolean|false|none|Flag that disables future automatic Search Node provisioning. Defaults to false on creation. Omission on update preserves the stored choice. Disabling retains existing Search Nodes and allows in-flight migrations to continue. Enabling does not bypass resource policies; if indexes exceed the migration threshold, the next eligible evaluation may start provisioning.|
 
 <h2 id="tocS_SearchDeploymentAuditTypeView">SearchDeploymentAuditTypeView</h2>
 <!-- backwards compatibility -->
@@ -138103,7 +139644,7 @@ Object which includes the version number of the index definition and the time th
 |latestDefinition|[SearchIndexDefinition](#schemasearchindexdefinition)|false|none|The search index definition set by the user.|
 |latestDefinitionVersion|[SearchIndexDefinitionVersion](#schemasearchindexdefinitionversion)|false|none|Object which includes the version number of the index definition and the time that the index definition was created.|
 |name|string|false|none|Label that identifies this index. Within each namespace, the names of all indexes must be unique.|
-|queryable|boolean|false|none|Flag that indicates whether the index is queryable on all hosts.|
+|queryable|boolean|false|none|Flag that indicates whether the index is queryable on the nodes currently receiving query traffic.|
 |status|string|false|none|Condition of the search index when you made this request.<br><br>- `DELETING`: The index is being deleted.<br>- `FAILED` The index build failed. Indexes can enter the FAILED state due to an invalid index definition.<br>- `STALE`: The index is queryable but has stopped replicating data from the indexed collection. Searches on the index may return out-of-date data.<br>- `PENDING`: Atlas has not yet started building the index.<br>- `BUILDING`: Atlas is building or re-building the index after an edit.<br>- `READY`: The index is ready and can support queries.|
 |statusDetail|[[SearchHostStatusDetail](#schemasearchhoststatusdetail)]|false|none|List of documents detailing index status on each host.|
 |type|string|false|none|Type of the index. The default type is search.|
@@ -141504,6 +143045,25 @@ Document that configures sharding on the destination cluster when migrating from
 |description|string|false|read-only|Human-readable short summary of what this SKU represents.|
 |id|string|false|read-only|Unique string that identifies the SKU.|
 
+<h2 id="tocS_SkuServiceResponse">SkuServiceResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaskuserviceresponse"></a>
+<a id="schema_SkuServiceResponse"></a>
+<a id="tocSskuserviceresponse"></a>
+<a id="tocsskuserviceresponse"></a>
+
+```json
+{
+  "name": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|false|read-only|Human-readable name of the SKU service as shown on invoices.|
+
 <h2 id="tocS_Slack">Slack</h2>
 <!-- backwards compatibility -->
 <a id="schemaslack"></a>
@@ -142354,6 +143914,7 @@ AWS configurations for AWS-based connection types.
 
 ```json
 {
+  "errorMessage": "string",
   "id": "string",
   "links": [
     {
@@ -142404,6 +143965,7 @@ The configuration for AWS Kinesis Data Stream connections.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|errorMessage|string|false|read-only|Connection error message.|
 |id|string|false|read-only|Unique identifier of the connection.|
 |links|[[Link](#schemalink)]|false|read-only|List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.|
 |name|string|false|none|Human-readable label that identifies the stream connection. For the Sample type, this is the name of the sample source.|
@@ -142420,6 +143982,7 @@ The configuration for AWS Kinesis Data Stream connections.
 |*oneOf*|[StreamsSchemaRegistryConnection](#schemastreamsschemaregistryconnection)|false|none|The configuration for Schema Registry connections.|
 |*oneOf*|[StreamsAzureBlobStorageConnection](#schemastreamsazureblobstorageconnection)|false|none|The configuration for Azure Blob Storage connections.|
 |*oneOf*|[StreamsGCPPubSubConnection](#schemastreamsgcppubsubconnection)|false|none|The configuration for GCP Pub/Sub connections.|
+|*oneOf*|[StreamsDataCatalogConnection](#schemastreamsdatacatalogconnection)|false|none|The configuration for Iceberg Data Catalog connections.|
 |aws|[StreamsAWSConnectionConfig](#schemastreamsawsconnectionconfig)|false|none|AWS configurations for AWS-based connection types.|
 |networking|[StreamsKafkaNetworking](#schemastreamskafkanetworking)|false|none|Networking configuration for Streams connections.|
 
@@ -142440,6 +144003,7 @@ The configuration for AWS Kinesis Data Stream connections.
 |type|AWSKinesisDataStreams|
 |type|SchemaRegistry|
 |type|GCPPubSub|
+|type|DataCatalog|
 
 <h2 id="tocS_StreamsAWSLambdaConnection">StreamsAWSLambdaConnection</h2>
 <!-- backwards compatibility -->
@@ -142450,6 +144014,7 @@ The configuration for AWS Kinesis Data Stream connections.
 
 ```json
 {
+  "errorMessage": "string",
   "id": "string",
   "links": [
     {
@@ -142498,6 +144063,7 @@ The configuration for AWS Lambda connections.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|errorMessage|string|false|read-only|Connection error message.|
 |id|string|false|read-only|Unique identifier of the connection.|
 |links|[[Link](#schemalink)]|false|read-only|List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.|
 |name|string|false|none|Human-readable label that identifies the stream connection. For the Sample type, this is the name of the sample source.|
@@ -142514,6 +144080,7 @@ The configuration for AWS Lambda connections.
 |*oneOf*|[StreamsSchemaRegistryConnection](#schemastreamsschemaregistryconnection)|false|none|The configuration for Schema Registry connections.|
 |*oneOf*|[StreamsAzureBlobStorageConnection](#schemastreamsazureblobstorageconnection)|false|none|The configuration for Azure Blob Storage connections.|
 |*oneOf*|[StreamsGCPPubSubConnection](#schemastreamsgcppubsubconnection)|false|none|The configuration for GCP Pub/Sub connections.|
+|*oneOf*|[StreamsDataCatalogConnection](#schemastreamsdatacatalogconnection)|false|none|The configuration for Iceberg Data Catalog connections.|
 |aws|[StreamsAWSConnectionConfig](#schemastreamsawsconnectionconfig)|false|none|AWS configurations for AWS-based connection types.|
 |publicPrivateNetworking|[StreamsPublicPrivateLinkNetworking](#schemastreamspublicprivatelinknetworking)|false|none|Networking configuration for connections that support `PUBLIC` and `PRIVATE_LINK` access types. For GCP connections, use `PRIVATE_LINK` for GCP Private Service Connect (PSC).|
 
@@ -142534,6 +144101,7 @@ The configuration for AWS Lambda connections.
 |type|AWSKinesisDataStreams|
 |type|SchemaRegistry|
 |type|GCPPubSub|
+|type|DataCatalog|
 
 <h2 id="tocS_StreamsAutoscaling">StreamsAutoscaling</h2>
 <!-- backwards compatibility -->
@@ -142591,6 +144159,7 @@ Autoscaling configuration for a stream processor.
 
 ```json
 {
+  "errorMessage": "string",
   "id": "string",
   "links": [
     {
@@ -142640,6 +144209,7 @@ The configuration for Azure Blob Storage connections.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|errorMessage|string|false|read-only|Connection error message.|
 |id|string|false|read-only|Unique identifier of the connection.|
 |links|[[Link](#schemalink)]|false|read-only|List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.|
 |name|string|false|none|Human-readable label that identifies the stream connection. For the Sample type, this is the name of the sample source.|
@@ -142656,6 +144226,7 @@ The configuration for Azure Blob Storage connections.
 |*oneOf*|[StreamsSchemaRegistryConnection](#schemastreamsschemaregistryconnection)|false|none|The configuration for Schema Registry connections.|
 |*oneOf*|[StreamsAzureBlobStorageConnection](#schemastreamsazureblobstorageconnection)|false|none|The configuration for Azure Blob Storage connections.|
 |*oneOf*|[StreamsGCPPubSubConnection](#schemastreamsgcppubsubconnection)|false|none|The configuration for GCP Pub/Sub connections.|
+|*oneOf*|[StreamsDataCatalogConnection](#schemastreamsdatacatalogconnection)|false|none|The configuration for Iceberg Data Catalog connections.|
 |azure|[AzureConnection](#schemaazureconnection)|false|none|Azure-specific configuration for the connection.|
 |publicPrivateNetworking|[StreamsPublicPrivateLinkNetworking](#schemastreamspublicprivatelinknetworking)|false|none|Networking configuration for connections that support `PUBLIC` and `PRIVATE_LINK` access types. For GCP connections, use `PRIVATE_LINK` for GCP Private Service Connect (PSC).|
 
@@ -142676,6 +144247,7 @@ The configuration for Azure Blob Storage connections.
 |type|AWSKinesisDataStreams|
 |type|SchemaRegistry|
 |type|GCPPubSub|
+|type|DataCatalog|
 
 <h2 id="tocS_StreamsClusterConnection">StreamsClusterConnection</h2>
 <!-- backwards compatibility -->
@@ -142686,6 +144258,7 @@ The configuration for Azure Blob Storage connections.
 
 ```json
 {
+  "errorMessage": "string",
   "id": "string",
   "links": [
     {
@@ -142716,6 +144289,7 @@ The configuration for Azure Blob Storage connections.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|errorMessage|string|false|read-only|Connection error message.|
 |id|string|false|read-only|Unique identifier of the connection.|
 |links|[[Link](#schemalink)]|false|read-only|List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.|
 |name|string|false|none|Human-readable label that identifies the stream connection. For the Sample type, this is the name of the sample source.|
@@ -142732,6 +144306,7 @@ The configuration for Azure Blob Storage connections.
 |*oneOf*|[StreamsSchemaRegistryConnection](#schemastreamsschemaregistryconnection)|false|none|The configuration for Schema Registry connections.|
 |*oneOf*|[StreamsAzureBlobStorageConnection](#schemastreamsazureblobstorageconnection)|false|none|The configuration for Azure Blob Storage connections.|
 |*oneOf*|[StreamsGCPPubSubConnection](#schemastreamsgcppubsubconnection)|false|none|The configuration for GCP Pub/Sub connections.|
+|*oneOf*|[StreamsDataCatalogConnection](#schemastreamsdatacatalogconnection)|false|none|The configuration for Iceberg Data Catalog connections.|
 |clusterGroupId|string \| null|false|none|Unique 24-hexadecimal digit string that identifies the project that contains the configured cluster. Required if the ID does not match the project containing the streams workspace. You must first enable the organization setting.|
 |clusterName|string|false|none|Name of the cluster configured for this connection.|
 |dbRoleToExecute|[DBRoleToExecute](#schemadbroletoexecute)|false|none|Name of a built-in or custom DB Role to connect to a MongoDB Cloud Cluster.|
@@ -142753,6 +144328,7 @@ The configuration for Azure Blob Storage connections.
 |type|AWSKinesisDataStreams|
 |type|SchemaRegistry|
 |type|GCPPubSub|
+|type|DataCatalog|
 
 <h2 id="tocS_StreamsConnection">StreamsConnection</h2>
 <!-- backwards compatibility -->
@@ -142763,6 +144339,7 @@ The configuration for Azure Blob Storage connections.
 
 ```json
 {
+  "errorMessage": "string",
   "id": "string",
   "links": [
     {
@@ -142783,6 +144360,7 @@ Settings that define a connection to an external data store.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|errorMessage|string|false|read-only|Connection error message.|
 |id|string|false|read-only|Unique identifier of the connection.|
 |links|[[Link](#schemalink)]|false|read-only|List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.|
 |name|string|false|none|Human-readable label that identifies the stream connection. For the Sample type, this is the name of the sample source.|
@@ -142799,6 +144377,7 @@ Settings that define a connection to an external data store.
 |*oneOf*|[StreamsSchemaRegistryConnection](#schemastreamsschemaregistryconnection)|false|none|The configuration for Schema Registry connections.|
 |*oneOf*|[StreamsAzureBlobStorageConnection](#schemastreamsazureblobstorageconnection)|false|none|The configuration for Azure Blob Storage connections.|
 |*oneOf*|[StreamsGCPPubSubConnection](#schemastreamsgcppubsubconnection)|false|none|The configuration for GCP Pub/Sub connections.|
+|*oneOf*|[StreamsDataCatalogConnection](#schemastreamsdatacatalogconnection)|false|none|The configuration for Iceberg Data Catalog connections.|
 
 #### Enumerated Values
 
@@ -142817,6 +144396,7 @@ Settings that define a connection to an external data store.
 |type|AWSKinesisDataStreams|
 |type|SchemaRegistry|
 |type|GCPPubSub|
+|type|DataCatalog|
 
 <h2 id="tocS_StreamsDLQ">StreamsDLQ</h2>
 <!-- backwards compatibility -->
@@ -142849,6 +144429,85 @@ Dead letter queue for the stream processor.
 |connectionName|string|false|none|Name of the connection to write DLQ messages to. Must be an Atlas connection.|
 |db|string|false|none|Name of the database to use for the DLQ.|
 |links|[[Link](#schemalink)]|false|read-only|List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.|
+
+<h2 id="tocS_StreamsDataCatalogConnection">StreamsDataCatalogConnection</h2>
+<!-- backwards compatibility -->
+<a id="schemastreamsdatacatalogconnection"></a>
+<a id="schema_StreamsDataCatalogConnection"></a>
+<a id="tocSstreamsdatacatalogconnection"></a>
+<a id="tocsstreamsdatacatalogconnection"></a>
+
+```json
+{
+  "errorMessage": "string",
+  "id": "string",
+  "links": [
+    {
+      "href": "https://cloud.mongodb.com/api/atlas",
+      "rel": "self"
+    }
+  ],
+  "name": "string",
+  "region": "string",
+  "state": "PENDING",
+  "type": "Kafka",
+  "catalogUrl": "http://example.com",
+  "catalogProvider": "DATABRICKS_UNITY",
+  "databricks": {
+    "authentication": {
+      "clientId": "string",
+      "clientSecret": "password"
+    }
+  }
+}
+```
+
+The configuration for Iceberg Data Catalog connections.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|errorMessage|string|false|read-only|Connection error message.|
+|id|string|false|read-only|Unique identifier of the connection.|
+|links|[[Link](#schemalink)]|false|read-only|List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.|
+|name|string|false|none|Human-readable label that identifies the stream connection. For the Sample type, this is the name of the sample source.|
+|region|string|false|none|Connection region.|
+|state|string|false|read-only|Connection state.|
+|type|string|false|none|Connection type.|
+|*oneOf*|[StreamsSampleConnection](#schemastreamssampleconnection)|false|none|none|
+|*oneOf*|[StreamsClusterConnection](#schemastreamsclusterconnection)|false|none|none|
+|*oneOf*|[StreamsKafkaConnection](#schemastreamskafkaconnection)|false|none|none|
+|*oneOf*|[StreamsHttpsConnection](#schemastreamshttpsconnection)|false|none|none|
+|*oneOf*|[StreamsAWSLambdaConnection](#schemastreamsawslambdaconnection)|false|none|The configuration for AWS Lambda connections.|
+|*oneOf*|[StreamsS3Connection](#schemastreamss3connection)|false|none|The configuration for S3 connections.|
+|*oneOf*|[StreamsAWSKinesisDataStreamsConnection](#schemastreamsawskinesisdatastreamsconnection)|false|none|The configuration for AWS Kinesis Data Stream connections.|
+|*oneOf*|[StreamsSchemaRegistryConnection](#schemastreamsschemaregistryconnection)|false|none|The configuration for Schema Registry connections.|
+|*oneOf*|[StreamsAzureBlobStorageConnection](#schemastreamsazureblobstorageconnection)|false|none|The configuration for Azure Blob Storage connections.|
+|*oneOf*|[StreamsGCPPubSubConnection](#schemastreamsgcppubsubconnection)|false|none|The configuration for GCP Pub/Sub connections.|
+|*oneOf*|[StreamsDataCatalogConnection](#schemastreamsdatacatalogconnection)|false|none|The configuration for Iceberg Data Catalog connections.|
+|catalogUrl|string(uri)|true|none|Base HTTPS URL of the catalog. Must be on the provider's domain: `*.cloud.databricks.com` or `*.azuredatabricks.net` for Databricks Unity, and `*.snowflakecomputing.com` for Snowflake Horizon.|
+|*oneOf*|[StreamsDatabricksUnityCatalogConnection](#schemastreamsdatabricksunitycatalogconnection)|false|none|The configuration for a Databricks Unity Catalog connection.|
+|*oneOf*|[StreamsSnowflakeHorizonCatalogConnection](#schemastreamssnowflakehorizoncatalogconnection)|false|none|The configuration for a Snowflake Horizon catalog connection.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|state|PENDING|
+|state|READY|
+|state|DELETING|
+|state|FAILED|
+|type|Kafka|
+|type|Cluster|
+|type|Sample|
+|type|Https|
+|type|AzureBlobStorage|
+|type|AWSLambda|
+|type|AWSKinesisDataStreams|
+|type|SchemaRegistry|
+|type|GCPPubSub|
+|type|DataCatalog|
 
 <h2 id="tocS_StreamsDataProcessRegion">StreamsDataProcessRegion</h2>
 <!-- backwards compatibility -->
@@ -142889,6 +144548,91 @@ Information about the cloud provider region in which MongoDB Cloud processes the
 |cloudProvider|AZURE|
 |cloudProvider|TENANT|
 |cloudProvider|SERVERLESS|
+
+<h2 id="tocS_StreamsDatabricksAuthentication">StreamsDatabricksAuthentication</h2>
+<!-- backwards compatibility -->
+<a id="schemastreamsdatabricksauthentication"></a>
+<a id="schema_StreamsDatabricksAuthentication"></a>
+<a id="tocSstreamsdatabricksauthentication"></a>
+<a id="tocsstreamsdatabricksauthentication"></a>
+
+```json
+{
+  "clientId": "string",
+  "clientSecret": "password"
+}
+```
+
+Databricks service principal credentials used to obtain an OAuth token.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|clientId|string|true|none|OAuth client ID of the Databricks service principal.|
+|clientSecret|string(password)|true|write-only|OAuth client secret of the Databricks service principal. Never returned in responses; omit or leave blank on update to keep the stored secret.|
+
+<h2 id="tocS_StreamsDatabricksConnectionConfig">StreamsDatabricksConnectionConfig</h2>
+<!-- backwards compatibility -->
+<a id="schemastreamsdatabricksconnectionconfig"></a>
+<a id="schema_StreamsDatabricksConnectionConfig"></a>
+<a id="tocSstreamsdatabricksconnectionconfig"></a>
+<a id="tocsstreamsdatabricksconnectionconfig"></a>
+
+```json
+{
+  "authentication": {
+    "clientId": "string",
+    "clientSecret": "password"
+  }
+}
+```
+
+Databricks settings for a connection.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|authentication|[StreamsDatabricksAuthentication](#schemastreamsdatabricksauthentication)|true|none|Databricks service principal credentials used to obtain an OAuth token.|
+
+<h2 id="tocS_StreamsDatabricksUnityCatalogConnection">StreamsDatabricksUnityCatalogConnection</h2>
+<!-- backwards compatibility -->
+<a id="schemastreamsdatabricksunitycatalogconnection"></a>
+<a id="schema_StreamsDatabricksUnityCatalogConnection"></a>
+<a id="tocSstreamsdatabricksunitycatalogconnection"></a>
+<a id="tocsstreamsdatabricksunitycatalogconnection"></a>
+
+```json
+{
+  "catalogUrl": "http://example.com",
+  "catalogProvider": "DATABRICKS_UNITY",
+  "databricks": {
+    "authentication": {
+      "clientId": "string",
+      "clientSecret": "password"
+    }
+  }
+}
+```
+
+The configuration for a Databricks Unity Catalog connection.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|catalogUrl|string(uri)|true|none|Base HTTPS URL of the catalog. Must be on the provider's domain: `*.cloud.databricks.com` or `*.azuredatabricks.net` for Databricks Unity, and `*.snowflakecomputing.com` for Snowflake Horizon.|
+|*oneOf*|[StreamsDatabricksUnityCatalogConnection](#schemastreamsdatabricksunitycatalogconnection)|false|none|The configuration for a Databricks Unity Catalog connection.|
+|*oneOf*|[StreamsSnowflakeHorizonCatalogConnection](#schemastreamssnowflakehorizoncatalogconnection)|false|none|The configuration for a Snowflake Horizon catalog connection.|
+|catalogProvider|string|true|none|Catalog system the connection points at. Cannot be changed after creation.|
+|databricks|[StreamsDatabricksConnectionConfig](#schemastreamsdatabricksconnectionconfig)|true|none|Databricks settings for a connection.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|catalogProvider|DATABRICKS_UNITY|
 
 <h2 id="tocS_StreamsEventTypeViewForNdsGroup">StreamsEventTypeViewForNdsGroup</h2>
 <!-- backwards compatibility -->
@@ -143237,6 +144981,7 @@ GCP-specific configuration for the connection.
 
 ```json
 {
+  "errorMessage": "string",
   "id": "string",
   "links": [
     {
@@ -143284,6 +145029,7 @@ The configuration for GCP Pub/Sub connections.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|errorMessage|string|false|read-only|Connection error message.|
 |id|string|false|read-only|Unique identifier of the connection.|
 |links|[[Link](#schemalink)]|false|read-only|List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.|
 |name|string|false|none|Human-readable label that identifies the stream connection. For the Sample type, this is the name of the sample source.|
@@ -143300,6 +145046,7 @@ The configuration for GCP Pub/Sub connections.
 |*oneOf*|[StreamsSchemaRegistryConnection](#schemastreamsschemaregistryconnection)|false|none|The configuration for Schema Registry connections.|
 |*oneOf*|[StreamsAzureBlobStorageConnection](#schemastreamsazureblobstorageconnection)|false|none|The configuration for Azure Blob Storage connections.|
 |*oneOf*|[StreamsGCPPubSubConnection](#schemastreamsgcppubsubconnection)|false|none|The configuration for GCP Pub/Sub connections.|
+|*oneOf*|[StreamsDataCatalogConnection](#schemastreamsdatacatalogconnection)|false|none|The configuration for Iceberg Data Catalog connections.|
 |gcp|[StreamsGCPConnectionConfig](#schemastreamsgcpconnectionconfig)|false|none|GCP-specific configuration for the connection.|
 |publicPrivateNetworking|[StreamsPublicPrivateLinkNetworking](#schemastreamspublicprivatelinknetworking)|false|none|Networking configuration for connections that support `PUBLIC` and `PRIVATE_LINK` access types. For GCP connections, use `PRIVATE_LINK` for GCP Private Service Connect (PSC).|
 
@@ -143320,6 +145067,7 @@ The configuration for GCP Pub/Sub connections.
 |type|AWSKinesisDataStreams|
 |type|SchemaRegistry|
 |type|GCPPubSub|
+|type|DataCatalog|
 
 <h2 id="tocS_StreamsHttpsConnection">StreamsHttpsConnection</h2>
 <!-- backwards compatibility -->
@@ -143330,6 +145078,7 @@ The configuration for GCP Pub/Sub connections.
 
 ```json
 {
+  "errorMessage": "string",
   "id": "string",
   "links": [
     {
@@ -143353,6 +145102,7 @@ The configuration for GCP Pub/Sub connections.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|errorMessage|string|false|read-only|Connection error message.|
 |id|string|false|read-only|Unique identifier of the connection.|
 |links|[[Link](#schemalink)]|false|read-only|List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.|
 |name|string|false|none|Human-readable label that identifies the stream connection. For the Sample type, this is the name of the sample source.|
@@ -143369,6 +145119,7 @@ The configuration for GCP Pub/Sub connections.
 |*oneOf*|[StreamsSchemaRegistryConnection](#schemastreamsschemaregistryconnection)|false|none|The configuration for Schema Registry connections.|
 |*oneOf*|[StreamsAzureBlobStorageConnection](#schemastreamsazureblobstorageconnection)|false|none|The configuration for Azure Blob Storage connections.|
 |*oneOf*|[StreamsGCPPubSubConnection](#schemastreamsgcppubsubconnection)|false|none|The configuration for GCP Pub/Sub connections.|
+|*oneOf*|[StreamsDataCatalogConnection](#schemastreamsdatacatalogconnection)|false|none|The configuration for Iceberg Data Catalog connections.|
 |headers|object|false|none|A map of key-value pairs that will be passed as headers for the request.|
 |url|string|false|none|The URL to be used for the request.|
 
@@ -143389,6 +145140,7 @@ The configuration for GCP Pub/Sub connections.
 |type|AWSKinesisDataStreams|
 |type|SchemaRegistry|
 |type|GCPPubSub|
+|type|DataCatalog|
 
 <h2 id="tocS_StreamsKafkaAuthentication">StreamsKafkaAuthentication</h2>
 <!-- backwards compatibility -->
@@ -143460,6 +145212,7 @@ User credentials required to connect to a Kafka Cluster. Includes the authentica
 
 ```json
 {
+  "errorMessage": "string",
   "id": "string",
   "links": [
     {
@@ -143543,6 +145296,7 @@ User credentials required to connect to a Kafka Cluster. Includes the authentica
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|errorMessage|string|false|read-only|Connection error message.|
 |id|string|false|read-only|Unique identifier of the connection.|
 |links|[[Link](#schemalink)]|false|read-only|List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.|
 |name|string|false|none|Human-readable label that identifies the stream connection. For the Sample type, this is the name of the sample source.|
@@ -143559,6 +145313,7 @@ User credentials required to connect to a Kafka Cluster. Includes the authentica
 |*oneOf*|[StreamsSchemaRegistryConnection](#schemastreamsschemaregistryconnection)|false|none|The configuration for Schema Registry connections.|
 |*oneOf*|[StreamsAzureBlobStorageConnection](#schemastreamsazureblobstorageconnection)|false|none|The configuration for Azure Blob Storage connections.|
 |*oneOf*|[StreamsGCPPubSubConnection](#schemastreamsgcppubsubconnection)|false|none|The configuration for GCP Pub/Sub connections.|
+|*oneOf*|[StreamsDataCatalogConnection](#schemastreamsdatacatalogconnection)|false|none|The configuration for Iceberg Data Catalog connections.|
 |authentication|[StreamsKafkaAuthentication](#schemastreamskafkaauthentication)|false|none|User credentials required to connect to a Kafka Cluster. Includes the authentication type, as well as the parameters for that authentication mode.|
 |bootstrapServers|string|false|none|Comma separated list of server addresses.|
 |config|object|false|none|Map of Kafka key-value pairs for optional configuration. This object is flat, and keys can have '.' characters.|
@@ -143582,6 +145337,7 @@ User credentials required to connect to a Kafka Cluster. Includes the authentica
 |type|AWSKinesisDataStreams|
 |type|SchemaRegistry|
 |type|GCPPubSub|
+|type|DataCatalog|
 
 <h2 id="tocS_StreamsKafkaNetworking">StreamsKafkaNetworking</h2>
 <!-- backwards compatibility -->
@@ -144548,6 +146304,7 @@ Information about networking access.
 
 ```json
 {
+  "errorMessage": "string",
   "id": "string",
   "links": [
     {
@@ -144598,6 +146355,7 @@ The configuration for S3 connections.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|errorMessage|string|false|read-only|Connection error message.|
 |id|string|false|read-only|Unique identifier of the connection.|
 |links|[[Link](#schemalink)]|false|read-only|List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.|
 |name|string|false|none|Human-readable label that identifies the stream connection. For the Sample type, this is the name of the sample source.|
@@ -144614,6 +146372,7 @@ The configuration for S3 connections.
 |*oneOf*|[StreamsSchemaRegistryConnection](#schemastreamsschemaregistryconnection)|false|none|The configuration for Schema Registry connections.|
 |*oneOf*|[StreamsAzureBlobStorageConnection](#schemastreamsazureblobstorageconnection)|false|none|The configuration for Azure Blob Storage connections.|
 |*oneOf*|[StreamsGCPPubSubConnection](#schemastreamsgcppubsubconnection)|false|none|The configuration for GCP Pub/Sub connections.|
+|*oneOf*|[StreamsDataCatalogConnection](#schemastreamsdatacatalogconnection)|false|none|The configuration for Iceberg Data Catalog connections.|
 |aws|[StreamsAWSConnectionConfig](#schemastreamsawsconnectionconfig)|false|none|AWS configurations for AWS-based connection types.|
 |networking|[StreamsKafkaNetworking](#schemastreamskafkanetworking)|false|none|Networking configuration for Streams connections.|
 
@@ -144634,6 +146393,7 @@ The configuration for S3 connections.
 |type|AWSKinesisDataStreams|
 |type|SchemaRegistry|
 |type|GCPPubSub|
+|type|DataCatalog|
 
 <h2 id="tocS_StreamsSampleConnection">StreamsSampleConnection</h2>
 <!-- backwards compatibility -->
@@ -144644,6 +146404,7 @@ The configuration for S3 connections.
 
 ```json
 {
+  "errorMessage": "string",
   "id": "string",
   "links": [
     {
@@ -144662,6 +146423,7 @@ The configuration for S3 connections.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|errorMessage|string|false|read-only|Connection error message.|
 |id|string|false|read-only|Unique identifier of the connection.|
 |links|[[Link](#schemalink)]|false|read-only|List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.|
 |name|string|false|none|Human-readable label that identifies the stream connection. For the Sample type, this is the name of the sample source.|
@@ -144678,6 +146440,7 @@ The configuration for S3 connections.
 |*oneOf*|[StreamsSchemaRegistryConnection](#schemastreamsschemaregistryconnection)|false|none|The configuration for Schema Registry connections.|
 |*oneOf*|[StreamsAzureBlobStorageConnection](#schemastreamsazureblobstorageconnection)|false|none|The configuration for Azure Blob Storage connections.|
 |*oneOf*|[StreamsGCPPubSubConnection](#schemastreamsgcppubsubconnection)|false|none|The configuration for GCP Pub/Sub connections.|
+|*oneOf*|[StreamsDataCatalogConnection](#schemastreamsdatacatalogconnection)|false|none|The configuration for Iceberg Data Catalog connections.|
 
 #### Enumerated Values
 
@@ -144696,6 +146459,7 @@ The configuration for S3 connections.
 |type|AWSKinesisDataStreams|
 |type|SchemaRegistry|
 |type|GCPPubSub|
+|type|DataCatalog|
 
 <h2 id="tocS_StreamsSampleConnections">StreamsSampleConnections</h2>
 <!-- backwards compatibility -->
@@ -144734,6 +146498,7 @@ Sample connections to add to SPI.
 
 ```json
 {
+  "errorMessage": "string",
   "id": "string",
   "links": [
     {
@@ -144761,6 +146526,7 @@ The configuration for Schema Registry connections.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|errorMessage|string|false|read-only|Connection error message.|
 |id|string|false|read-only|Unique identifier of the connection.|
 |links|[[Link](#schemalink)]|false|read-only|List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.|
 |name|string|false|none|Human-readable label that identifies the stream connection. For the Sample type, this is the name of the sample source.|
@@ -144777,6 +146543,7 @@ The configuration for Schema Registry connections.
 |*oneOf*|[StreamsSchemaRegistryConnection](#schemastreamsschemaregistryconnection)|false|none|The configuration for Schema Registry connections.|
 |*oneOf*|[StreamsAzureBlobStorageConnection](#schemastreamsazureblobstorageconnection)|false|none|The configuration for Azure Blob Storage connections.|
 |*oneOf*|[StreamsGCPPubSubConnection](#schemastreamsgcppubsubconnection)|false|none|The configuration for GCP Pub/Sub connections.|
+|*oneOf*|[StreamsDataCatalogConnection](#schemastreamsdatacatalogconnection)|false|none|The configuration for Iceberg Data Catalog connections.|
 |provider|string|true|none|The Schema Registry provider.|
 |schemaRegistryAuthentication|[SchemaRegistryAuthentication](#schemaschemaregistryauthentication)|true|none|Authentication configuration for Schema Registry.|
 |schemaRegistryUrls|[string(uri)]|true|none|List of Schema Registry endpoint URLs used by this connection. Each URL must use the http or https scheme and specify a valid host and optional port.|
@@ -144798,7 +146565,101 @@ The configuration for Schema Registry connections.
 |type|AWSKinesisDataStreams|
 |type|SchemaRegistry|
 |type|GCPPubSub|
+|type|DataCatalog|
 |provider|CONFLUENT|
+
+<h2 id="tocS_StreamsSnowflakeAuthentication">StreamsSnowflakeAuthentication</h2>
+<!-- backwards compatibility -->
+<a id="schemastreamssnowflakeauthentication"></a>
+<a id="schema_StreamsSnowflakeAuthentication"></a>
+<a id="tocSstreamssnowflakeauthentication"></a>
+<a id="tocsstreamssnowflakeauthentication"></a>
+
+```json
+{
+  "account": "string",
+  "privateKey": "password",
+  "role": "string",
+  "user": "string"
+}
+```
+
+Snowflake service user and key pair used to authenticate to Snowflake.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|account|string|true|none|Snowflake account identifier.|
+|privateKey|string(password)|true|write-only|Private key of the service user's key pair. Never returned in responses; omit or leave blank on update to keep the stored key.|
+|role|string|true|none|Snowflake role the service user assumes.|
+|user|string|true|none|Snowflake service user.|
+
+<h2 id="tocS_StreamsSnowflakeConnectionConfig">StreamsSnowflakeConnectionConfig</h2>
+<!-- backwards compatibility -->
+<a id="schemastreamssnowflakeconnectionconfig"></a>
+<a id="schema_StreamsSnowflakeConnectionConfig"></a>
+<a id="tocSstreamssnowflakeconnectionconfig"></a>
+<a id="tocsstreamssnowflakeconnectionconfig"></a>
+
+```json
+{
+  "authentication": {
+    "account": "string",
+    "privateKey": "password",
+    "role": "string",
+    "user": "string"
+  }
+}
+```
+
+Snowflake settings for a connection.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|authentication|[StreamsSnowflakeAuthentication](#schemastreamssnowflakeauthentication)|true|none|Snowflake service user and key pair used to authenticate to Snowflake.|
+
+<h2 id="tocS_StreamsSnowflakeHorizonCatalogConnection">StreamsSnowflakeHorizonCatalogConnection</h2>
+<!-- backwards compatibility -->
+<a id="schemastreamssnowflakehorizoncatalogconnection"></a>
+<a id="schema_StreamsSnowflakeHorizonCatalogConnection"></a>
+<a id="tocSstreamssnowflakehorizoncatalogconnection"></a>
+<a id="tocsstreamssnowflakehorizoncatalogconnection"></a>
+
+```json
+{
+  "catalogUrl": "http://example.com",
+  "catalogProvider": "SNOWFLAKE_HORIZON",
+  "snowflake": {
+    "authentication": {
+      "account": "string",
+      "privateKey": "password",
+      "role": "string",
+      "user": "string"
+    }
+  }
+}
+```
+
+The configuration for a Snowflake Horizon catalog connection.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|catalogUrl|string(uri)|true|none|Base HTTPS URL of the catalog. Must be on the provider's domain: `*.cloud.databricks.com` or `*.azuredatabricks.net` for Databricks Unity, and `*.snowflakecomputing.com` for Snowflake Horizon.|
+|*oneOf*|[StreamsDatabricksUnityCatalogConnection](#schemastreamsdatabricksunitycatalogconnection)|false|none|The configuration for a Databricks Unity Catalog connection.|
+|*oneOf*|[StreamsSnowflakeHorizonCatalogConnection](#schemastreamssnowflakehorizoncatalogconnection)|false|none|The configuration for a Snowflake Horizon catalog connection.|
+|catalogProvider|string|true|none|Catalog system the connection points at. Cannot be changed after creation.|
+|snowflake|[StreamsSnowflakeConnectionConfig](#schemastreamssnowflakeconnectionconfig)|true|none|Snowflake settings for a connection.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|catalogProvider|SNOWFLAKE_HORIZON|
 
 <h2 id="tocS_StreamsStartProcessorFailover">StreamsStartProcessorFailover</h2>
 <!-- backwards compatibility -->
@@ -144907,6 +146768,7 @@ A request to start a stream processor.
   "_id": "32b6e34b3d91647abb20e7b8",
   "connections": [
     {
+      "errorMessage": "string",
       "id": "string",
       "links": [
         {
@@ -145081,15 +146943,15 @@ Details to update a stream tenant, optionally accompanied by a processor status 
 }
 ```
 
-Customer VPC endpoint to register for inbound private connectivity to Atlas Stream Processing.
+VPC endpoint to register for inbound private connectivity to Atlas Stream Processing.
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|customerDnsName|string|true|none|DNS name of the customer's VPC endpoint.|
-|id|string|true|none|Unique identifier of the customer's VPC endpoint.|
-|region|string|true|none|Human-readable label identifying the region of the customer's VPC endpoint.|
+|customerDnsName|string|true|none|DNS name of your VPC endpoint.|
+|id|string|true|none|Unique identifier of your VPC endpoint.|
+|region|string|true|none|Human-readable label identifying the region of your VPC endpoint.|
 
 <h2 id="tocS_StreamsWorkspacePrivateEndpointResponse">StreamsWorkspacePrivateEndpointResponse</h2>
 <!-- backwards compatibility -->
@@ -145109,17 +146971,17 @@ Customer VPC endpoint to register for inbound private connectivity to Atlas Stre
 }
 ```
 
-Customer VPC endpoint registered for inbound private connectivity to Atlas Stream Processing.
+VPC endpoint registered for inbound private connectivity to Atlas Stream Processing.
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|customerDnsName|string|false|none|DNS name of the customer's VPC endpoint.|
-|endpointServiceName|string|false|read-only|Name of the Atlas endpoint service the customer's VPC endpoint connects to. Absent when no endpoint service is configured for the endpoint's region.|
-|id|string|false|none|Unique identifier of the customer's VPC endpoint.|
-|provider|string|false|read-only|Cloud provider hosting the customer's VPC endpoint.|
-|region|string|false|none|Human-readable label identifying the region of the customer's VPC endpoint.|
+|customerDnsName|string|false|none|DNS name of your VPC endpoint.|
+|endpointServiceName|string|false|read-only|Name of the Atlas endpoint service your VPC endpoint connects to. Absent when no endpoint service is configured for the endpoint's region.|
+|id|string|false|none|Unique identifier of your VPC endpoint.|
+|provider|string|false|read-only|Cloud provider hosting the VPC endpoint.|
+|region|string|false|none|Human-readable label identifying the region of your VPC endpoint.|
 |status|string|false|read-only|Status of the endpoint registration.|
 
 #### Enumerated Values
@@ -146964,7 +148826,7 @@ The text search index definition set by the user.
 |latestDefinition|[SearchIndexDefinition](#schemasearchindexdefinition)|false|none|The search index definition set by the user.|
 |latestDefinitionVersion|[SearchIndexDefinitionVersion](#schemasearchindexdefinitionversion)|false|none|Object which includes the version number of the index definition and the time that the index definition was created.|
 |name|string|false|none|Label that identifies this index. Within each namespace, the names of all indexes must be unique.|
-|queryable|boolean|false|none|Flag that indicates whether the index is queryable on all hosts.|
+|queryable|boolean|false|none|Flag that indicates whether the index is queryable on the nodes currently receiving query traffic.|
 |status|string|false|none|Condition of the search index when you made this request.<br><br>- `DELETING`: The index is being deleted.<br>- `FAILED` The index build failed. Indexes can enter the FAILED state due to an invalid index definition.<br>- `STALE`: The index is queryable but has stopped replicating data from the indexed collection. Searches on the index may return out-of-date data.<br>- `PENDING`: Atlas has not yet started building the index.<br>- `BUILDING`: Atlas is building or re-building the index after an edit.<br>- `READY`: The index is ready and can support queries.|
 |statusDetail|[[SearchHostStatusDetail](#schemasearchhoststatusdetail)]|false|none|List of documents detailing index status on each host.|
 |type|string|false|none|Type of the index. The default type is search.|
@@ -147912,7 +149774,7 @@ Request body to toggle the private-networking requirement for an existing export
   ],
   "includeZeroCentLineItems": true,
   "skuServices": [
-    "Atlas"
+    "string"
   ],
   "usageEndDate": "1970-01-01",
   "usageStartDate": "1970-01-01"
@@ -147933,33 +149795,6 @@ Request body which contains various fields to filter line items as part of certa
 |skuServices|[string]|false|none|The list of projects to be included in the Cost Explorer Query.|
 |usageEndDate|string(date)|false|none|The inclusive billing start date for usage details filter.|
 |usageStartDate|string(date)|false|none|The inclusive usage start date for usage details filter.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|skuServices|Atlas|
-|skuServices|Clusters|
-|skuServices|Storage|
-|skuServices|Serverless Instances|
-|skuServices|Backup|
-|skuServices|Data Transfer|
-|skuServices|BI Connector|
-|skuServices|Premium Features|
-|skuServices|Atlas Data Federation|
-|skuServices|Atlas Stream Processing|
-|skuServices|App Services|
-|skuServices|Charts|
-|skuServices|Cloud Manager|
-|skuServices|Cloud Manager Standard/Premium|
-|skuServices|Legacy Backup|
-|skuServices|AI Model APIs|
-|skuServices|Automated Embedding|
-|skuServices|Native Reranking|
-|skuServices|Agent Engine|
-|skuServices|Flex Consulting|
-|skuServices|Support|
-|skuServices|Credits|
 
 <h2 id="tocS_UserAccessListRequest">UserAccessListRequest</h2>
 <!-- backwards compatibility -->
@@ -148899,7 +150734,7 @@ The vector search index definition set by the user.
 |latestDefinition|[SearchIndexDefinition](#schemasearchindexdefinition)|false|none|The search index definition set by the user.|
 |latestDefinitionVersion|[SearchIndexDefinitionVersion](#schemasearchindexdefinitionversion)|false|none|Object which includes the version number of the index definition and the time that the index definition was created.|
 |name|string|false|none|Label that identifies this index. Within each namespace, the names of all indexes must be unique.|
-|queryable|boolean|false|none|Flag that indicates whether the index is queryable on all hosts.|
+|queryable|boolean|false|none|Flag that indicates whether the index is queryable on the nodes currently receiving query traffic.|
 |status|string|false|none|Condition of the search index when you made this request.<br><br>- `DELETING`: The index is being deleted.<br>- `FAILED` The index build failed. Indexes can enter the FAILED state due to an invalid index definition.<br>- `STALE`: The index is queryable but has stopped replicating data from the indexed collection. Searches on the index may return out-of-date data.<br>- `PENDING`: Atlas has not yet started building the index.<br>- `BUILDING`: Atlas is building or re-building the index after an edit.<br>- `READY`: The index is ready and can support queries.|
 |statusDetail|[[SearchHostStatusDetail](#schemasearchhoststatusdetail)]|false|none|List of documents detailing index status on each host.|
 |type|string|false|none|Type of the index. The default type is search.|

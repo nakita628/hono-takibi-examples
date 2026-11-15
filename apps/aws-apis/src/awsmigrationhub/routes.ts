@@ -1,10 +1,12 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AssociateCreatedArtifactResultSchema = z.object({}).openapi('AssociateCreatedArtifactResult')
+const AssociateCreatedArtifactResultSchema = z
+  .looseObject({})
+  .openapi('AssociateCreatedArtifactResult')
 
 const ProgressUpdateStreamSchema = z
   .string()
-  .regex(/[^\/:|\000-\037]+/)
+  .regex(/[^\/:|\x00-\x1f]+/)
   .min(1)
   .max(50)
   .openapi('ProgressUpdateStream')
@@ -32,21 +34,13 @@ const CreatedArtifactDescriptionSchema = z
 
 const CreatedArtifactSchema = z
   .object({
-    Name: CreatedArtifactNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An ARN that uniquely identifies the result of a migration task.',
-        }),
-    ),
-    Description: CreatedArtifactDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A description that can be free-form text to record additional detail about the artifact for clarity or for later reference.',
-        }),
-    ).exactOptional(),
+    Name: CreatedArtifactNameSchema.openapi({
+      description: 'An ARN that uniquely identifies the result of a migration task.',
+    }),
+    Description: CreatedArtifactDescriptionSchema.exactOptional().openapi({
+      description:
+        'A description that can be free-form text to record additional detail about the artifact for clarity or for later reference.',
+    }),
   })
   .openapi({
     required: ['Name'],
@@ -59,33 +53,21 @@ const DryRunSchema = z.boolean().openapi('DryRun')
 
 const AssociateCreatedArtifactRequestSchema = z
   .object({
-    ProgressUpdateStream: ProgressUpdateStreamSchema.and(
-      z.any().openapi({ description: 'The name of the ProgressUpdateStream. ' }),
-    ),
-    MigrationTaskName: MigrationTaskNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique identifier that references the migration task. <i>Do not store personal data in this field.</i> ',
-        }),
-    ),
-    CreatedArtifact: CreatedArtifactSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An ARN of the AWS resource related to the migration (e.g., AMI, EC2 instance, RDS instance, etc.) ',
-        }),
-    ),
-    DryRun: DryRunSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional boolean flag to indicate whether any effect should take place. Used to test if the caller has permission to make the call.',
-        }),
-    ).exactOptional(),
+    ProgressUpdateStream: ProgressUpdateStreamSchema.openapi({
+      description: 'The name of the ProgressUpdateStream. ',
+    }),
+    MigrationTaskName: MigrationTaskNameSchema.openapi({
+      description:
+        'Unique identifier that references the migration task. <i>Do not store personal data in this field.</i> ',
+    }),
+    CreatedArtifact: CreatedArtifactSchema.openapi({
+      description:
+        'An ARN of the AWS resource related to the migration (e.g., AMI, EC2 instance, RDS instance, etc.) ',
+    }),
+    DryRun: DryRunSchema.exactOptional().openapi({
+      description:
+        'Optional boolean flag to indicate whether any effect should take place. Used to test if the caller has permission to make the call.',
+    }),
   })
   .openapi({
     required: ['ProgressUpdateStream', 'MigrationTaskName', 'CreatedArtifact'],
@@ -112,7 +94,7 @@ const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundExcepti
 const HomeRegionNotSetExceptionSchema = z.any().openapi('HomeRegionNotSetException')
 
 const AssociateDiscoveredResourceResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AssociateDiscoveredResourceResult')
 
 const ConfigurationIdSchema = z
@@ -131,22 +113,14 @@ const DiscoveredResourceDescriptionSchema = z
 
 const DiscoveredResourceSchema = z
   .object({
-    ConfigurationId: ConfigurationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configurationId in Application Discovery Service that uniquely identifies the on-premise resource.',
-        }),
-    ),
-    Description: DiscoveredResourceDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A description that can be free-form text to record additional detail about the discovered resource for clarity or later reference.',
-        }),
-    ).exactOptional(),
+    ConfigurationId: ConfigurationIdSchema.openapi({
+      description:
+        'The configurationId in Application Discovery Service that uniquely identifies the on-premise resource.',
+    }),
+    Description: DiscoveredResourceDescriptionSchema.exactOptional().openapi({
+      description:
+        'A description that can be free-form text to record additional detail about the discovered resource for clarity or later reference.',
+    }),
   })
   .openapi({
     required: ['ConfigurationId'],
@@ -156,28 +130,20 @@ const DiscoveredResourceSchema = z
 
 const AssociateDiscoveredResourceRequestSchema = z
   .object({
-    ProgressUpdateStream: ProgressUpdateStreamSchema.and(
-      z.any().openapi({ description: 'The name of the ProgressUpdateStream.' }),
-    ),
-    MigrationTaskName: MigrationTaskNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier given to the MigrationTask. <i>Do not store personal data in this field.</i> ',
-        }),
-    ),
-    DiscoveredResource: DiscoveredResourceSchema.and(
-      z.any().openapi({ description: 'Object representing a Resource.' }),
-    ),
-    DryRun: DryRunSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional boolean flag to indicate whether any effect should take place. Used to test if the caller has permission to make the call.',
-        }),
-    ).exactOptional(),
+    ProgressUpdateStream: ProgressUpdateStreamSchema.openapi({
+      description: 'The name of the ProgressUpdateStream.',
+    }),
+    MigrationTaskName: MigrationTaskNameSchema.openapi({
+      description:
+        'The identifier given to the MigrationTask. <i>Do not store personal data in this field.</i> ',
+    }),
+    DiscoveredResource: DiscoveredResourceSchema.openapi({
+      description: 'Object representing a Resource.',
+    }),
+    DryRun: DryRunSchema.exactOptional().openapi({
+      description:
+        'Optional boolean flag to indicate whether any effect should take place. Used to test if the caller has permission to make the call.',
+    }),
   })
   .openapi({
     required: ['ProgressUpdateStream', 'MigrationTaskName', 'DiscoveredResource'],
@@ -188,53 +154,37 @@ const AssociateDiscoveredResourceRequestSchema = z
 const PolicyErrorExceptionSchema = z.any().openapi('PolicyErrorException')
 
 const CreateProgressUpdateStreamResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi('CreateProgressUpdateStreamResult')
 
 const CreateProgressUpdateStreamRequestSchema = z
   .object({
-    ProgressUpdateStreamName: ProgressUpdateStreamSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the ProgressUpdateStream. <i>Do not store personal data in this field.</i> ',
-        }),
-    ),
-    DryRun: DryRunSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional boolean flag to indicate whether any effect should take place. Used to test if the caller has permission to make the call.',
-        }),
-    ).exactOptional(),
+    ProgressUpdateStreamName: ProgressUpdateStreamSchema.openapi({
+      description:
+        'The name of the ProgressUpdateStream. <i>Do not store personal data in this field.</i> ',
+    }),
+    DryRun: DryRunSchema.exactOptional().openapi({
+      description:
+        'Optional boolean flag to indicate whether any effect should take place. Used to test if the caller has permission to make the call.',
+    }),
   })
   .openapi({ required: ['ProgressUpdateStreamName'], title: 'CreateProgressUpdateStreamRequest' })
   .openapi('CreateProgressUpdateStreamRequest')
 
 const DeleteProgressUpdateStreamResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteProgressUpdateStreamResult')
 
 const DeleteProgressUpdateStreamRequestSchema = z
   .object({
-    ProgressUpdateStreamName: ProgressUpdateStreamSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the ProgressUpdateStream. <i>Do not store personal data in this field.</i> ',
-        }),
-    ),
-    DryRun: DryRunSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional boolean flag to indicate whether any effect should take place. Used to test if the caller has permission to make the call.',
-        }),
-    ).exactOptional(),
+    ProgressUpdateStreamName: ProgressUpdateStreamSchema.openapi({
+      description:
+        'The name of the ProgressUpdateStream. <i>Do not store personal data in this field.</i> ',
+    }),
+    DryRun: DryRunSchema.exactOptional().openapi({
+      description:
+        'Optional boolean flag to indicate whether any effect should take place. Used to test if the caller has permission to make the call.',
+    }),
   })
   .openapi({ required: ['ProgressUpdateStreamName'], title: 'DeleteProgressUpdateStreamRequest' })
   .openapi('DeleteProgressUpdateStreamRequest')
@@ -247,18 +197,12 @@ const UpdateDateTimeSchema = z.iso.datetime({ offset: true }).openapi('UpdateDat
 
 const DescribeApplicationStateResultSchema = z
   .object({
-    ApplicationStatus: ApplicationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Status of the application - Not Started, In-Progress, Complete.',
-        }),
-    ).exactOptional(),
-    LastUpdatedTime: UpdateDateTimeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The timestamp when the application status was last updated.' }),
-    ).exactOptional(),
+    ApplicationStatus: ApplicationStatusSchema.exactOptional().openapi({
+      description: 'Status of the application - Not Started, In-Progress, Complete.',
+    }),
+    LastUpdatedTime: UpdateDateTimeSchema.exactOptional().openapi({
+      description: 'The timestamp when the application status was last updated.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeApplicationStateResult')
@@ -272,14 +216,10 @@ const ApplicationIdSchema = z
 
 const DescribeApplicationStateRequestSchema = z
   .object({
-    ApplicationId: ApplicationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configurationId in Application Discovery Service that uniquely identifies the grouped application.',
-        }),
-    ),
+    ApplicationId: ApplicationIdSchema.openapi({
+      description:
+        'The configurationId in Application Discovery Service that uniquely identifies the grouped application.',
+    }),
   })
   .openapi({ required: ['ApplicationId'], title: 'DescribeApplicationStateRequest' })
   .openapi('DescribeApplicationStateRequest')
@@ -297,20 +237,16 @@ const ProgressPercentSchema = z.int().min(0).max(100).openapi('ProgressPercent')
 
 const TaskSchema = z
   .object({
-    Status: StatusSchema.and(
-      z.any().openapi({ description: 'Status of the task - Not Started, In-Progress, Complete.' }),
-    ),
-    StatusDetail: StatusDetailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Details of task status as notified by a migration tool. A tool might use this field to provide clarifying information about the status that is unique to that tool or that explains an error state.',
-        }),
-    ).exactOptional(),
-    ProgressPercent: ProgressPercentSchema.and(
-      z.any().openapi({ description: 'Indication of the percentage completion of the task.' }),
-    ).exactOptional(),
+    Status: StatusSchema.openapi({
+      description: 'Status of the task - Not Started, In-Progress, Complete.',
+    }),
+    StatusDetail: StatusDetailSchema.exactOptional().openapi({
+      description:
+        'Details of task status as notified by a migration tool. A tool might use this field to provide clarifying information about the status that is unique to that tool or that explains an error state.',
+    }),
+    ProgressPercent: ProgressPercentSchema.exactOptional().openapi({
+      description: 'Indication of the percentage completion of the task.',
+    }),
   })
   .openapi({ required: ['Status'], description: 'Task object encapsulating task information.' })
   .openapi('Task')
@@ -339,10 +275,8 @@ const ResourceAttributeValueSchema = z
 
 const ResourceAttributeSchema = z
   .object({
-    Type: ResourceAttributeTypeSchema.and(z.any().openapi({ description: 'Type of resource.' })),
-    Value: ResourceAttributeValueSchema.and(
-      z.any().openapi({ description: 'Value of the resource type.' }),
-    ),
+    Type: ResourceAttributeTypeSchema.openapi({ description: 'Type of resource.' }),
+    Value: ResourceAttributeValueSchema.openapi({ description: 'Value of the resource type.' }),
   })
   .openapi({
     required: ['Type', 'Value'],
@@ -359,63 +293,45 @@ const LatestResourceAttributeListSchema = z
 
 const MigrationTaskSchema = z
   .object({
-    ProgressUpdateStream: ProgressUpdateStreamSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A name that identifies the vendor of the migration tool being used.',
-        }),
-    ).exactOptional(),
-    MigrationTaskName: MigrationTaskNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique identifier that references the migration task. <i>Do not store personal data in this field.</i> ',
-        }),
-    ).exactOptional(),
-    Task: TaskSchema.and(
-      z.any().openapi({ description: 'Task object encapsulating task information.' }),
-    ).exactOptional(),
-    UpdateDateTime: UpdateDateTimeSchema.and(
-      z.any().openapi({ description: 'The timestamp when the task was gathered.' }),
-    ).exactOptional(),
-    ResourceAttributeList: LatestResourceAttributeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the resource that is being migrated. This data will be used to map the task to a resource in the Application Discovery Service repository.',
-        }),
-    ).exactOptional(),
+    ProgressUpdateStream: ProgressUpdateStreamSchema.exactOptional().openapi({
+      description: 'A name that identifies the vendor of the migration tool being used.',
+    }),
+    MigrationTaskName: MigrationTaskNameSchema.exactOptional().openapi({
+      description:
+        'Unique identifier that references the migration task. <i>Do not store personal data in this field.</i> ',
+    }),
+    Task: TaskSchema.exactOptional().openapi({
+      description: 'Task object encapsulating task information.',
+    }),
+    UpdateDateTime: UpdateDateTimeSchema.exactOptional().openapi({
+      description: 'The timestamp when the task was gathered.',
+    }),
+    ResourceAttributeList: LatestResourceAttributeListSchema.exactOptional().openapi({
+      description:
+        'Information about the resource that is being migrated. This data will be used to map the task to a resource in the Application Discovery Service repository.',
+    }),
   })
   .openapi({ description: 'Represents a migration task in a migration tool.', required: [] })
   .openapi('MigrationTask')
 
 const DescribeMigrationTaskResultSchema = z
   .object({
-    MigrationTask: MigrationTaskSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Object encapsulating information about the migration task.' }),
-    ).exactOptional(),
+    MigrationTask: MigrationTaskSchema.exactOptional().openapi({
+      description: 'Object encapsulating information about the migration task.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeMigrationTaskResult')
 
 const DescribeMigrationTaskRequestSchema = z
   .object({
-    ProgressUpdateStream: ProgressUpdateStreamSchema.and(
-      z.any().openapi({ description: 'The name of the ProgressUpdateStream. ' }),
-    ),
-    MigrationTaskName: MigrationTaskNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier given to the MigrationTask. <i>Do not store personal data in this field.</i> ',
-        }),
-    ),
+    ProgressUpdateStream: ProgressUpdateStreamSchema.openapi({
+      description: 'The name of the ProgressUpdateStream. ',
+    }),
+    MigrationTaskName: MigrationTaskNameSchema.openapi({
+      description:
+        'The identifier given to the MigrationTask. <i>Do not store personal data in this field.</i> ',
+    }),
   })
   .openapi({
     required: ['ProgressUpdateStream', 'MigrationTaskName'],
@@ -424,38 +340,26 @@ const DescribeMigrationTaskRequestSchema = z
   .openapi('DescribeMigrationTaskRequest')
 
 const DisassociateCreatedArtifactResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateCreatedArtifactResult')
 
 const DisassociateCreatedArtifactRequestSchema = z
   .object({
-    ProgressUpdateStream: ProgressUpdateStreamSchema.and(
-      z.any().openapi({ description: 'The name of the ProgressUpdateStream. ' }),
-    ),
-    MigrationTaskName: MigrationTaskNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique identifier that references the migration task to be disassociated with the artifact. <i>Do not store personal data in this field.</i> ',
-        }),
-    ),
-    CreatedArtifactName: CreatedArtifactNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An ARN of the AWS resource related to the migration (e.g., AMI, EC2 instance, RDS instance, etc.)',
-        }),
-    ),
-    DryRun: DryRunSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional boolean flag to indicate whether any effect should take place. Used to test if the caller has permission to make the call.',
-        }),
-    ).exactOptional(),
+    ProgressUpdateStream: ProgressUpdateStreamSchema.openapi({
+      description: 'The name of the ProgressUpdateStream. ',
+    }),
+    MigrationTaskName: MigrationTaskNameSchema.openapi({
+      description:
+        'Unique identifier that references the migration task to be disassociated with the artifact. <i>Do not store personal data in this field.</i> ',
+    }),
+    CreatedArtifactName: CreatedArtifactNameSchema.openapi({
+      description:
+        'An ARN of the AWS resource related to the migration (e.g., AMI, EC2 instance, RDS instance, etc.)',
+    }),
+    DryRun: DryRunSchema.exactOptional().openapi({
+      description:
+        'Optional boolean flag to indicate whether any effect should take place. Used to test if the caller has permission to make the call.',
+    }),
   })
   .openapi({
     required: ['ProgressUpdateStream', 'MigrationTaskName', 'CreatedArtifactName'],
@@ -464,38 +368,26 @@ const DisassociateCreatedArtifactRequestSchema = z
   .openapi('DisassociateCreatedArtifactRequest')
 
 const DisassociateDiscoveredResourceResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateDiscoveredResourceResult')
 
 const DisassociateDiscoveredResourceRequestSchema = z
   .object({
-    ProgressUpdateStream: ProgressUpdateStreamSchema.and(
-      z.any().openapi({ description: 'The name of the ProgressUpdateStream.' }),
-    ),
-    MigrationTaskName: MigrationTaskNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier given to the MigrationTask. <i>Do not store personal data in this field.</i> ',
-        }),
-    ),
-    ConfigurationId: ConfigurationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'ConfigurationId of the Application Discovery Service resource to be disassociated.',
-        }),
-    ),
-    DryRun: DryRunSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional boolean flag to indicate whether any effect should take place. Used to test if the caller has permission to make the call.',
-        }),
-    ).exactOptional(),
+    ProgressUpdateStream: ProgressUpdateStreamSchema.openapi({
+      description: 'The name of the ProgressUpdateStream.',
+    }),
+    MigrationTaskName: MigrationTaskNameSchema.openapi({
+      description:
+        'The identifier given to the MigrationTask. <i>Do not store personal data in this field.</i> ',
+    }),
+    ConfigurationId: ConfigurationIdSchema.openapi({
+      description:
+        'ConfigurationId of the Application Discovery Service resource to be disassociated.',
+    }),
+    DryRun: DryRunSchema.exactOptional().openapi({
+      description:
+        'Optional boolean flag to indicate whether any effect should take place. Used to test if the caller has permission to make the call.',
+    }),
   })
   .openapi({
     required: ['ProgressUpdateStream', 'MigrationTaskName', 'ConfigurationId'],
@@ -503,29 +395,21 @@ const DisassociateDiscoveredResourceRequestSchema = z
   })
   .openapi('DisassociateDiscoveredResourceRequest')
 
-const ImportMigrationTaskResultSchema = z.object({}).openapi('ImportMigrationTaskResult')
+const ImportMigrationTaskResultSchema = z.looseObject({}).openapi('ImportMigrationTaskResult')
 
 const ImportMigrationTaskRequestSchema = z
   .object({
-    ProgressUpdateStream: ProgressUpdateStreamSchema.and(
-      z.any().openapi({ description: 'The name of the ProgressUpdateStream. &gt;' }),
-    ),
-    MigrationTaskName: MigrationTaskNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique identifier that references the migration task. <i>Do not store personal data in this field.</i> ',
-        }),
-    ),
-    DryRun: DryRunSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional boolean flag to indicate whether any effect should take place. Used to test if the caller has permission to make the call.',
-        }),
-    ).exactOptional(),
+    ProgressUpdateStream: ProgressUpdateStreamSchema.openapi({
+      description: 'The name of the ProgressUpdateStream. &gt;',
+    }),
+    MigrationTaskName: MigrationTaskNameSchema.openapi({
+      description:
+        'Unique identifier that references the migration task. <i>Do not store personal data in this field.</i> ',
+    }),
+    DryRun: DryRunSchema.exactOptional().openapi({
+      description:
+        'Optional boolean flag to indicate whether any effect should take place. Used to test if the caller has permission to make the call.',
+    }),
   })
   .openapi({
     required: ['ProgressUpdateStream', 'MigrationTaskName'],
@@ -535,22 +419,16 @@ const ImportMigrationTaskRequestSchema = z
 
 const ApplicationStateSchema = z
   .object({
-    ApplicationId: ApplicationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configurationId from the Application Discovery Service that uniquely identifies an application.',
-        }),
-    ).exactOptional(),
-    ApplicationStatus: ApplicationStatusSchema.and(
-      z.any().openapi({ description: 'The current status of an application.' }),
-    ).exactOptional(),
-    LastUpdatedTime: UpdateDateTimeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The timestamp when the application status was last updated.' }),
-    ).exactOptional(),
+    ApplicationId: ApplicationIdSchema.exactOptional().openapi({
+      description:
+        'The configurationId from the Application Discovery Service that uniquely identifies an application.',
+    }),
+    ApplicationStatus: ApplicationStatusSchema.exactOptional().openapi({
+      description: 'The current status of an application.',
+    }),
+    LastUpdatedTime: UpdateDateTimeSchema.exactOptional().openapi({
+      description: 'The timestamp when the application status was last updated.',
+    }),
   })
   .openapi({
     description:
@@ -574,21 +452,13 @@ const TokenSchema = z
 
 const ListApplicationStatesResultSchema = z
   .object({
-    ApplicationStateList: ApplicationStateListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of Applications that exist in Application Discovery Service.',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If a <code>NextToken</code> was returned by a previous call, there are more results available. To retrieve the next page of results, make the call again using the returned token in <code>NextToken</code>.',
-        }),
-    ).exactOptional(),
+    ApplicationStateList: ApplicationStateListSchema.exactOptional().openapi({
+      description: 'A list of Applications that exist in Application Discovery Service.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'If a <code>NextToken</code> was returned by a previous call, there are more results available. To retrieve the next page of results, make the call again using the returned token in <code>NextToken</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListApplicationStatesResult')
@@ -599,25 +469,17 @@ const MaxResultsSchema = z.int().min(1).max(100).openapi('MaxResults')
 
 const ListApplicationStatesRequestSchema = z
   .object({
-    ApplicationIds: ApplicationIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configurationIds from the Application Discovery Service that uniquely identifies your applications.',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If a <code>NextToken</code> was returned by a previous call, there are more results available. To retrieve the next page of results, make the call again using the returned token in <code>NextToken</code>.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'Maximum number of results to be returned per page.' }),
-    ).exactOptional(),
+    ApplicationIds: ApplicationIdsSchema.exactOptional().openapi({
+      description:
+        'The configurationIds from the Application Discovery Service that uniquely identifies your applications.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'If a <code>NextToken</code> was returned by a previous call, there are more results available. To retrieve the next page of results, make the call again using the returned token in <code>NextToken</code>.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'Maximum number of results to be returned per page.',
+    }),
   })
   .openapi({ title: 'ListApplicationStatesRequest', required: [] })
   .openapi('ListApplicationStatesRequest')
@@ -626,22 +488,14 @@ const CreatedArtifactListSchema = z.array(CreatedArtifactSchema).openapi('Create
 
 const ListCreatedArtifactsResultSchema = z
   .object({
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are more created artifacts than the max result, return the next token to be passed to the next call as a bookmark of where to start from.',
-        }),
-    ).exactOptional(),
-    CreatedArtifactList: CreatedArtifactListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of created artifacts up to the maximum number of results specified in the request.',
-        }),
-    ).exactOptional(),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'If there are more created artifacts than the max result, return the next token to be passed to the next call as a bookmark of where to start from.',
+    }),
+    CreatedArtifactList: CreatedArtifactListSchema.exactOptional().openapi({
+      description:
+        'List of created artifacts up to the maximum number of results specified in the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListCreatedArtifactsResult')
@@ -654,28 +508,20 @@ const MaxResultsCreatedArtifactsSchema = z
 
 const ListCreatedArtifactsRequestSchema = z
   .object({
-    ProgressUpdateStream: ProgressUpdateStreamSchema.and(
-      z.any().openapi({ description: 'The name of the ProgressUpdateStream. ' }),
-    ),
-    MigrationTaskName: MigrationTaskNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique identifier that references the migration task. <i>Do not store personal data in this field.</i> ',
-        }),
-    ),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If a <code>NextToken</code> was returned by a previous call, there are more results available. To retrieve the next page of results, make the call again using the returned token in <code>NextToken</code>.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsCreatedArtifactsSchema.and(
-      z.any().openapi({ description: 'Maximum number of results to be returned per page.' }),
-    ).exactOptional(),
+    ProgressUpdateStream: ProgressUpdateStreamSchema.openapi({
+      description: 'The name of the ProgressUpdateStream. ',
+    }),
+    MigrationTaskName: MigrationTaskNameSchema.openapi({
+      description:
+        'Unique identifier that references the migration task. <i>Do not store personal data in this field.</i> ',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'If a <code>NextToken</code> was returned by a previous call, there are more results available. To retrieve the next page of results, make the call again using the returned token in <code>NextToken</code>.',
+    }),
+    MaxResults: MaxResultsCreatedArtifactsSchema.exactOptional().openapi({
+      description: 'Maximum number of results to be returned per page.',
+    }),
   })
   .openapi({
     required: ['ProgressUpdateStream', 'MigrationTaskName'],
@@ -689,22 +535,13 @@ const DiscoveredResourceListSchema = z
 
 const ListDiscoveredResourcesResultSchema = z
   .object({
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are more discovered resources than the max result, return the next token to be passed to the next call as a bookmark of where to start from.',
-        }),
-    ).exactOptional(),
-    DiscoveredResourceList: DiscoveredResourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returned list of discovered resources associated with the given MigrationTask.',
-        }),
-    ).exactOptional(),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'If there are more discovered resources than the max result, return the next token to be passed to the next call as a bookmark of where to start from.',
+    }),
+    DiscoveredResourceList: DiscoveredResourceListSchema.exactOptional().openapi({
+      description: 'Returned list of discovered resources associated with the given MigrationTask.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDiscoveredResourcesResult')
@@ -713,28 +550,20 @@ const MaxResultsResourcesSchema = z.int().min(1).max(10).openapi('MaxResultsReso
 
 const ListDiscoveredResourcesRequestSchema = z
   .object({
-    ProgressUpdateStream: ProgressUpdateStreamSchema.and(
-      z.any().openapi({ description: 'The name of the ProgressUpdateStream.' }),
-    ),
-    MigrationTaskName: MigrationTaskNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the MigrationTask. <i>Do not store personal data in this field.</i> ',
-        }),
-    ),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If a <code>NextToken</code> was returned by a previous call, there are more results available. To retrieve the next page of results, make the call again using the returned token in <code>NextToken</code>.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsResourcesSchema.and(
-      z.any().openapi({ description: 'The maximum number of results returned per page.' }),
-    ).exactOptional(),
+    ProgressUpdateStream: ProgressUpdateStreamSchema.openapi({
+      description: 'The name of the ProgressUpdateStream.',
+    }),
+    MigrationTaskName: MigrationTaskNameSchema.openapi({
+      description:
+        'The name of the MigrationTask. <i>Do not store personal data in this field.</i> ',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'If a <code>NextToken</code> was returned by a previous call, there are more results available. To retrieve the next page of results, make the call again using the returned token in <code>NextToken</code>.',
+    }),
+    MaxResults: MaxResultsResourcesSchema.exactOptional().openapi({
+      description: 'The maximum number of results returned per page.',
+    }),
   })
   .openapi({
     required: ['ProgressUpdateStream', 'MigrationTaskName'],
@@ -744,38 +573,24 @@ const ListDiscoveredResourcesRequestSchema = z
 
 const MigrationTaskSummarySchema = z
   .object({
-    ProgressUpdateStream: ProgressUpdateStreamSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An AWS resource used for access control. It should uniquely identify the migration tool as it is used for all updates made by the tool.',
-        }),
-    ).exactOptional(),
-    MigrationTaskName: MigrationTaskNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique identifier that references the migration task. <i>Do not store personal data in this field.</i> ',
-        }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z.any().openapi({ description: 'Status of the task.' }),
-    ).exactOptional(),
-    ProgressPercent: ProgressPercentSchema.and(
-      z.any().openapi({ description: 'Indication of the percentage completion of the task.' }),
-    ).exactOptional(),
-    StatusDetail: StatusDetailSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Detail information of what is being done within the overall status state.',
-        }),
-    ).exactOptional(),
-    UpdateDateTime: UpdateDateTimeSchema.and(
-      z.any().openapi({ description: 'The timestamp when the task was gathered.' }),
-    ).exactOptional(),
+    ProgressUpdateStream: ProgressUpdateStreamSchema.exactOptional().openapi({
+      description:
+        'An AWS resource used for access control. It should uniquely identify the migration tool as it is used for all updates made by the tool.',
+    }),
+    MigrationTaskName: MigrationTaskNameSchema.exactOptional().openapi({
+      description:
+        'Unique identifier that references the migration task. <i>Do not store personal data in this field.</i> ',
+    }),
+    Status: StatusSchema.exactOptional().openapi({ description: 'Status of the task.' }),
+    ProgressPercent: ProgressPercentSchema.exactOptional().openapi({
+      description: 'Indication of the percentage completion of the task.',
+    }),
+    StatusDetail: StatusDetailSchema.exactOptional().openapi({
+      description: 'Detail information of what is being done within the overall status state.',
+    }),
+    UpdateDateTime: UpdateDateTimeSchema.exactOptional().openapi({
+      description: 'The timestamp when the task was gathered.',
+    }),
   })
   .openapi({
     description:
@@ -790,22 +605,14 @@ const MigrationTaskSummaryListSchema = z
 
 const ListMigrationTasksResultSchema = z
   .object({
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are more migration tasks than the max result, return the next token to be passed to the next call as a bookmark of where to start from.',
-        }),
-    ).exactOptional(),
-    MigrationTaskSummaryList: MigrationTaskSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Lists the migration task's summary which includes: <code>MigrationTaskName</code>, <code>ProgressPercent</code>, <code>ProgressUpdateStream</code>, <code>Status</code>, and the <code>UpdateDateTime</code> for each task.",
-        }),
-    ).exactOptional(),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'If there are more migration tasks than the max result, return the next token to be passed to the next call as a bookmark of where to start from.',
+    }),
+    MigrationTaskSummaryList: MigrationTaskSummaryListSchema.exactOptional().openapi({
+      description:
+        "Lists the migration task's summary which includes: <code>MigrationTaskName</code>, <code>ProgressPercent</code>, <code>ProgressUpdateStream</code>, <code>Status</code>, and the <code>UpdateDateTime</code> for each task.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListMigrationTasksResult')
@@ -819,34 +626,26 @@ const ResourceNameSchema = z
 
 const ListMigrationTasksRequestSchema = z
   .object({
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If a <code>NextToken</code> was returned by a previous call, there are more results available. To retrieve the next page of results, make the call again using the returned token in <code>NextToken</code>.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'Value to specify how many results are returned per page.' }),
-    ).exactOptional(),
-    ResourceName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'Filter migration tasks by discovered resource name.' }),
-    ).exactOptional(),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'If a <code>NextToken</code> was returned by a previous call, there are more results available. To retrieve the next page of results, make the call again using the returned token in <code>NextToken</code>.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'Value to specify how many results are returned per page.',
+    }),
+    ResourceName: ResourceNameSchema.exactOptional().openapi({
+      description: 'Filter migration tasks by discovered resource name.',
+    }),
   })
   .openapi({ title: 'ListMigrationTasksRequest', required: [] })
   .openapi('ListMigrationTasksRequest')
 
 const ProgressUpdateStreamSummarySchema = z
   .object({
-    ProgressUpdateStreamName: ProgressUpdateStreamSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the ProgressUpdateStream. <i>Do not store personal data in this field.</i> ',
-        }),
-    ).exactOptional(),
+    ProgressUpdateStreamName: ProgressUpdateStreamSchema.exactOptional().openapi({
+      description:
+        'The name of the ProgressUpdateStream. <i>Do not store personal data in this field.</i> ',
+    }),
   })
   .openapi({
     description:
@@ -861,120 +660,80 @@ const ProgressUpdateStreamSummaryListSchema = z
 
 const ListProgressUpdateStreamsResultSchema = z
   .object({
-    ProgressUpdateStreamSummaryList: ProgressUpdateStreamSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of progress update streams up to the max number of results passed in the input.',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are more streams created than the max result, return the next token to be passed to the next call as a bookmark of where to start from.',
-        }),
-    ).exactOptional(),
+    ProgressUpdateStreamSummaryList: ProgressUpdateStreamSummaryListSchema.exactOptional().openapi({
+      description:
+        'List of progress update streams up to the max number of results passed in the input.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'If there are more streams created than the max result, return the next token to be passed to the next call as a bookmark of where to start from.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListProgressUpdateStreamsResult')
 
 const ListProgressUpdateStreamsRequestSchema = z
   .object({
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If a <code>NextToken</code> was returned by a previous call, there are more results available. To retrieve the next page of results, make the call again using the returned token in <code>NextToken</code>.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Filter to limit the maximum number of results to list per page.',
-        }),
-    ).exactOptional(),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'If a <code>NextToken</code> was returned by a previous call, there are more results available. To retrieve the next page of results, make the call again using the returned token in <code>NextToken</code>.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'Filter to limit the maximum number of results to list per page.',
+    }),
   })
   .openapi({ title: 'ListProgressUpdateStreamsRequest', required: [] })
   .openapi('ListProgressUpdateStreamsRequest')
 
-const NotifyApplicationStateResultSchema = z.object({}).openapi('NotifyApplicationStateResult')
+const NotifyApplicationStateResultSchema = z.looseObject({}).openapi('NotifyApplicationStateResult')
 
 const NotifyApplicationStateRequestSchema = z
   .object({
-    ApplicationId: ApplicationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configurationId in Application Discovery Service that uniquely identifies the grouped application.',
-        }),
-    ),
-    Status: ApplicationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Status of the application - Not Started, In-Progress, Complete.',
-        }),
-    ),
-    UpdateDateTime: UpdateDateTimeSchema.and(
-      z.any().openapi({ description: 'The timestamp when the application state changed.' }),
-    ).exactOptional(),
-    DryRun: DryRunSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional boolean flag to indicate whether any effect should take place. Used to test if the caller has permission to make the call.',
-        }),
-    ).exactOptional(),
+    ApplicationId: ApplicationIdSchema.openapi({
+      description:
+        'The configurationId in Application Discovery Service that uniquely identifies the grouped application.',
+    }),
+    Status: ApplicationStatusSchema.openapi({
+      description: 'Status of the application - Not Started, In-Progress, Complete.',
+    }),
+    UpdateDateTime: UpdateDateTimeSchema.exactOptional().openapi({
+      description: 'The timestamp when the application state changed.',
+    }),
+    DryRun: DryRunSchema.exactOptional().openapi({
+      description:
+        'Optional boolean flag to indicate whether any effect should take place. Used to test if the caller has permission to make the call.',
+    }),
   })
   .openapi({ required: ['ApplicationId', 'Status'], title: 'NotifyApplicationStateRequest' })
   .openapi('NotifyApplicationStateRequest')
 
-const NotifyMigrationTaskStateResultSchema = z.object({}).openapi('NotifyMigrationTaskStateResult')
+const NotifyMigrationTaskStateResultSchema = z
+  .looseObject({})
+  .openapi('NotifyMigrationTaskStateResult')
 
 const NextUpdateSecondsSchema = z.int().min(0).openapi('NextUpdateSeconds')
 
 const NotifyMigrationTaskStateRequestSchema = z
   .object({
-    ProgressUpdateStream: ProgressUpdateStreamSchema.and(
-      z.any().openapi({ description: 'The name of the ProgressUpdateStream. ' }),
-    ),
-    MigrationTaskName: MigrationTaskNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique identifier that references the migration task. <i>Do not store personal data in this field.</i> ',
-        }),
-    ),
-    Task: TaskSchema.and(
-      z.any().openapi({ description: "Information about the task's progress and status." }),
-    ),
-    UpdateDateTime: UpdateDateTimeSchema.and(
-      z.any().openapi({ description: 'The timestamp when the task was gathered.' }),
-    ),
-    NextUpdateSeconds: NextUpdateSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Number of seconds after the UpdateDateTime within which the Migration Hub can expect an update. If Migration Hub does not receive an update within the specified interval, then the migration task will be considered stale.',
-        }),
-    ),
-    DryRun: DryRunSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional boolean flag to indicate whether any effect should take place. Used to test if the caller has permission to make the call.',
-        }),
-    ).exactOptional(),
+    ProgressUpdateStream: ProgressUpdateStreamSchema.openapi({
+      description: 'The name of the ProgressUpdateStream. ',
+    }),
+    MigrationTaskName: MigrationTaskNameSchema.openapi({
+      description:
+        'Unique identifier that references the migration task. <i>Do not store personal data in this field.</i> ',
+    }),
+    Task: TaskSchema.openapi({ description: "Information about the task's progress and status." }),
+    UpdateDateTime: UpdateDateTimeSchema.openapi({
+      description: 'The timestamp when the task was gathered.',
+    }),
+    NextUpdateSeconds: NextUpdateSecondsSchema.openapi({
+      description:
+        'Number of seconds after the UpdateDateTime within which the Migration Hub can expect an update. If Migration Hub does not receive an update within the specified interval, then the migration task will be considered stale.',
+    }),
+    DryRun: DryRunSchema.exactOptional().openapi({
+      description:
+        'Optional boolean flag to indicate whether any effect should take place. Used to test if the caller has permission to make the call.',
+    }),
   })
   .openapi({
     required: [
@@ -988,7 +747,7 @@ const NotifyMigrationTaskStateRequestSchema = z
   })
   .openapi('NotifyMigrationTaskStateRequest')
 
-const PutResourceAttributesResultSchema = z.object({}).openapi('PutResourceAttributesResult')
+const PutResourceAttributesResultSchema = z.looseObject({}).openapi('PutResourceAttributesResult')
 
 const ResourceAttributeListSchema = z
   .array(ResourceAttributeSchema)
@@ -998,33 +757,21 @@ const ResourceAttributeListSchema = z
 
 const PutResourceAttributesRequestSchema = z
   .object({
-    ProgressUpdateStream: ProgressUpdateStreamSchema.and(
-      z.any().openapi({ description: 'The name of the ProgressUpdateStream. ' }),
-    ),
-    MigrationTaskName: MigrationTaskNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique identifier that references the migration task. <i>Do not store personal data in this field.</i> ',
-        }),
-    ),
-    ResourceAttributeList: ResourceAttributeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Information about the resource that is being migrated. This data will be used to map the task to a resource in the Application Discovery Service repository.</p> <note> <p>Takes the object array of <code>ResourceAttribute</code> where the <code>Type</code> field is reserved for the following values: <code>IPV4_ADDRESS | IPV6_ADDRESS | MAC_ADDRESS | FQDN | VM_MANAGER_ID | VM_MANAGED_OBJECT_REFERENCE | VM_NAME | VM_PATH | BIOS_ID | MOTHERBOARD_SERIAL_NUMBER</code> where the identifying value can be a string up to 256 characters.</p> </note> <important> <ul> <li> <p>If any "VM" related value is set for a <code>ResourceAttribute</code> object, it is required that <code>VM_MANAGER_ID</code>, as a minimum, is always set. If <code>VM_MANAGER_ID</code> is not set, then all "VM" fields will be discarded and "VM" fields will not be used for matching the migration task to a server in Application Discovery Service repository. See the <a href="https://docs.aws.amazon.com/migrationhub/latest/ug/API_PutResourceAttributes.html#API_PutResourceAttributes_Examples">Example</a> section below for a use case of specifying "VM" related values.</p> </li> <li> <p> If a server you are trying to match has multiple IP or MAC addresses, you should provide as many as you know in separate type/value pairs passed to the <code>ResourceAttributeList</code> parameter to maximize the chances of matching.</p> </li> </ul> </important>',
-        }),
-    ),
-    DryRun: DryRunSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional boolean flag to indicate whether any effect should take place. Used to test if the caller has permission to make the call.',
-        }),
-    ).exactOptional(),
+    ProgressUpdateStream: ProgressUpdateStreamSchema.openapi({
+      description: 'The name of the ProgressUpdateStream. ',
+    }),
+    MigrationTaskName: MigrationTaskNameSchema.openapi({
+      description:
+        'Unique identifier that references the migration task. <i>Do not store personal data in this field.</i> ',
+    }),
+    ResourceAttributeList: ResourceAttributeListSchema.openapi({
+      description:
+        '<p>Information about the resource that is being migrated. This data will be used to map the task to a resource in the Application Discovery Service repository.</p> <note> <p>Takes the object array of <code>ResourceAttribute</code> where the <code>Type</code> field is reserved for the following values: <code>IPV4_ADDRESS | IPV6_ADDRESS | MAC_ADDRESS | FQDN | VM_MANAGER_ID | VM_MANAGED_OBJECT_REFERENCE | VM_NAME | VM_PATH | BIOS_ID | MOTHERBOARD_SERIAL_NUMBER</code> where the identifying value can be a string up to 256 characters.</p> </note> <important> <ul> <li> <p>If any "VM" related value is set for a <code>ResourceAttribute</code> object, it is required that <code>VM_MANAGER_ID</code>, as a minimum, is always set. If <code>VM_MANAGER_ID</code> is not set, then all "VM" fields will be discarded and "VM" fields will not be used for matching the migration task to a server in Application Discovery Service repository. See the <a href="https://docs.aws.amazon.com/migrationhub/latest/ug/API_PutResourceAttributes.html#API_PutResourceAttributes_Examples">Example</a> section below for a use case of specifying "VM" related values.</p> </li> <li> <p> If a server you are trying to match has multiple IP or MAC addresses, you should provide as many as you know in separate type/value pairs passed to the <code>ResourceAttributeList</code> parameter to maximize the chances of matching.</p> </li> </ul> </important>',
+    }),
+    DryRun: DryRunSchema.exactOptional().openapi({
+      description:
+        'Optional boolean flag to indicate whether any effect should take place. Used to test if the caller has permission to make the call.',
+    }),
   })
   .openapi({
     required: ['ProgressUpdateStream', 'MigrationTaskName', 'ResourceAttributeList'],

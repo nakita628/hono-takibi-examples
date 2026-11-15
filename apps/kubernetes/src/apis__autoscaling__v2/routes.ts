@@ -1,305 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const IoK8sApimachineryPkgApiResourceQuantitySchema = z
-  .xor([z.string(), z.number()])
-  .openapi({
-    description:
-      'Quantity is a fixed-point representation of a number. It provides convenient marshaling/unmarshaling in JSON and YAML, in addition to String() and AsInt64() accessors.\n\nThe serialization format is:\n\n- `<quantity>`: `<signedNumber><suffix>`\n\n- `<digit>`: `0 | 1 | ... | 9`\n\n- `<digits>`: `<digit> | <digit><digits>`\n\n- `<number>`: `<digits> | <digits>.<digits> | <digits>. | .<digits>`\n\n- `<sign>`: `"+" | "-"`\n\n- `<signedNumber>`: `<number> | <sign><number>`\n\n- `<signedDigits>`: `<digits> | <sign><digits>`\n\n- `<suffix>`: `<binarySI> | <decimalExponent> | <decimalSI>`\n\n- `<binarySI>`: `Ki | Mi | Gi | Ti | Pi | Ei`\n\n- `<decimalSI>`: `n | u | m | "" | k | M | G | T | P | E`\n\n- `<decimalExponent>`: `"e" <signedDigits> | "E" <signedDigits>`\n\nNote that `<suffix>` may be empty, from the `""` case in `<decimalSI>`. For `<binarySI>`, 1024 = 1Ki but 1000 = 1k; I didn\'t choose the capitalization. See http://physics.nist.gov/cuu/Units/binary.html.\n\nA decimal quantity is not capped at 2^63-1 in magnitude, and no quantity is limited to three decimal places: "18446744073709551616" keeps its value, and "1.2345" keeps its precision (String reports it as "1234500u"). Parsing does cap a binarySI quantity, silently, at 2^63-1: "8Ei" parses as 2^63-1. Parsing also preserves a value only down to nano, rounding a finer non-zero value away from zero, so "0.9n" becomes "1n". The int64 accessors round and may overflow on top of that: see Value, MilliValue and ScaledValue.\n\nWhen a Quantity is parsed from a string, it will remember the type of suffix it had, and will use the same type again when it is serialized.\n\nBefore serializing, Quantity will be put in "canonical form". This means that Exponent/suffix will be adjusted up or down (with a corresponding increase or decrease in Mantissa) such that:\n\n- No precision is lost\n\n- No fractional digits will be emitted\n\n- The exponent (or suffix) is as large as possible.\n\nThe sign will be omitted unless the number is negative.\n\nExamples:\n\n- 1.5 will be serialized as "1500m"\n\n- 1.5Gi will be serialized as "1536Mi"\n\nNote that the quantity will NEVER be internally represented by a floating point number. That is the whole point of this exercise.\n\nNon-canonical values will still parse as long as they are well formed, but will be re-emitted in their canonical form. (So always use canonical form, or don\'t diff.)\n\nThis format is intended to make it difficult to use these numbers without writing some sort of special handling code in the hopes that that will cause implementors to also use a fixed point implementation.',
-  })
-  .openapi('IoK8sApimachineryPkgApiResourceQuantity')
-
-const IoK8sApiAutoscalingV2MetricTargetSchema = z
-  .object({
-    averageUtilization: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'averageUtilization is the target value of the average of the resource metric across all relevant pods, represented as a percentage of the requested value of the resource for the pods. Currently only valid for Resource metric source type',
-      }),
-    averageValue: IoK8sApimachineryPkgApiResourceQuantitySchema.exactOptional().openapi({
-      description:
-        'averageValue is the target value of the average of the metric across all relevant pods (as a quantity)',
-    }),
-    type: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'type represents whether the metric type is Utilization, Value, or AverageValue',
-      }),
-    value: IoK8sApimachineryPkgApiResourceQuantitySchema.exactOptional().openapi({
-      description: 'value is the target value of the metric (as a quantity).',
-    }),
-  })
-  .openapi({
-    description:
-      'MetricTarget defines the target value, average value, or average utilization of a specific metric',
-    required: ['type'],
-  })
-  .openapi('IoK8sApiAutoscalingV2MetricTarget')
-
-const IoK8sApiAutoscalingV2ContainerResourceMetricSourceSchema = z
-  .object({
-    container: z
-      .string()
-      .default('')
-      .openapi({
-        description: 'container is the name of the container in the pods of the scaling target',
-      }),
-    name: z
-      .string()
-      .default('')
-      .openapi({ description: 'name is the name of the resource in question.' }),
-    target: IoK8sApiAutoscalingV2MetricTargetSchema.default({}).openapi({
-      description: 'target specifies the target value for the given metric',
-    }),
-  })
-  .openapi({
-    description:
-      'ContainerResourceMetricSource indicates how to scale on a resource metric known to Kubernetes, as specified in requests and limits, describing each pod in the current scale target (e.g. CPU or memory).  The values will be averaged together before being compared to the target.  Such metrics are built in to Kubernetes, and have special scaling options on top of those available to normal per-pod metrics using the "pods" source.  Only one "target" type should be set.',
-    required: ['name', 'target', 'container'],
-  })
-  .openapi('IoK8sApiAutoscalingV2ContainerResourceMetricSource')
-
-const IoK8sApiAutoscalingV2MetricValueStatusSchema = z
-  .object({
-    averageUtilization: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'averageUtilization is the current value of the average of the resource metric across all relevant pods, represented as a percentage of the requested value of the resource for the pods.',
-      }),
-    averageValue: IoK8sApimachineryPkgApiResourceQuantitySchema.exactOptional().openapi({
-      description:
-        'averageValue is the current value of the average of the metric across all relevant pods (as a quantity)',
-    }),
-    value: IoK8sApimachineryPkgApiResourceQuantitySchema.exactOptional().openapi({
-      description: 'value is the current value of the metric (as a quantity).',
-    }),
-  })
-  .openapi({ description: 'MetricValueStatus holds the current value for a metric', required: [] })
-  .openapi('IoK8sApiAutoscalingV2MetricValueStatus')
-
-const IoK8sApiAutoscalingV2ContainerResourceMetricStatusSchema = z
-  .object({
-    container: z
-      .string()
-      .default('')
-      .exactOptional()
-      .openapi({
-        description: 'container is the name of the container in the pods of the scaling target',
-      }),
-    current: IoK8sApiAutoscalingV2MetricValueStatusSchema.default({})
-      .exactOptional()
-      .openapi({ description: 'current contains the current value for the given metric' }),
-    name: z
-      .string()
-      .default('')
-      .exactOptional()
-      .openapi({ description: 'name is the name of the resource in question.' }),
-  })
-  .openapi({
-    description:
-      'ContainerResourceMetricStatus indicates the current value of a resource metric known to Kubernetes, as specified in requests and limits, describing a single container in each pod in the current scale target (e.g. CPU or memory).  Such metrics are built in to Kubernetes, and have special scaling options on top of those available to normal per-pod metrics using the "pods" source.',
-    required: [],
-  })
-  .openapi('IoK8sApiAutoscalingV2ContainerResourceMetricStatus')
-
-const IoK8sApiAutoscalingV2CrossVersionObjectReferenceSchema = z
-  .object({
-    apiVersion: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'apiVersion is the API version of the referent' }),
-    kind: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'kind is the kind of the referent; More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-    name: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'name is the name of the referent; More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names',
-      }),
-  })
-  .openapi({
-    description:
-      'CrossVersionObjectReference contains enough information to let you identify the referred resource.',
-    required: ['kind', 'name'],
-  })
-  .openapi('IoK8sApiAutoscalingV2CrossVersionObjectReference')
-
-const IoK8sApimachineryPkgApisMetaV1LabelSelectorRequirementSchema = z
-  .object({
-    key: z
-      .string()
-      .default('')
-      .openapi({ description: 'key is the label key that the selector applies to.' }),
-    operator: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.",
-      }),
-    values: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-  })
-  .openapi({
-    description:
-      'A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.',
-    required: ['key', 'operator'],
-  })
-  .openapi('IoK8sApimachineryPkgApisMetaV1LabelSelectorRequirement')
-
-const IoK8sApimachineryPkgApisMetaV1LabelSelectorSchema = z
-  .object({
-    matchExpressions: z
-      .array(IoK8sApimachineryPkgApisMetaV1LabelSelectorRequirementSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'matchExpressions is a list of label selector requirements. The requirements are ANDed.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-    matchLabels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.',
-      }),
-  })
-  .openapi({
-    description:
-      'A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.',
-    'x-kubernetes-map-type': 'atomic',
-    required: [],
-  })
-  .openapi('IoK8sApimachineryPkgApisMetaV1LabelSelector')
-
-const IoK8sApiAutoscalingV2MetricIdentifierSchema = z
-  .object({
-    name: z.string().default('').openapi({ description: 'name is the name of the given metric' }),
-    selector: IoK8sApimachineryPkgApisMetaV1LabelSelectorSchema.exactOptional().openapi({
-      description:
-        'selector is the string-encoded form of a standard kubernetes label selector for the given metric When set, it is passed as an additional parameter to the metrics server for more specific metrics scoping. When unset, just the metricName will be used to gather metrics.',
-    }),
-  })
-  .openapi({
-    description: 'MetricIdentifier defines the name and optionally selector for a metric',
-    required: ['name'],
-  })
-  .openapi('IoK8sApiAutoscalingV2MetricIdentifier')
-
-const IoK8sApiAutoscalingV2ExternalMetricSourceSchema = z
-  .object({
-    metric: IoK8sApiAutoscalingV2MetricIdentifierSchema.default({}).openapi({
-      description: 'metric identifies the target metric by name and selector',
-    }),
-    target: IoK8sApiAutoscalingV2MetricTargetSchema.default({}).openapi({
-      description: 'target specifies the target value for the given metric',
-    }),
-  })
-  .openapi({
-    description:
-      'ExternalMetricSource indicates how to scale on a metric not associated with any Kubernetes object (for example length of queue in cloud messaging service, or QPS from loadbalancer running outside of cluster).',
-    required: ['metric', 'target'],
-  })
-  .openapi('IoK8sApiAutoscalingV2ExternalMetricSource')
-
-const IoK8sApiAutoscalingV2ExternalMetricStatusSchema = z
-  .object({
-    current: IoK8sApiAutoscalingV2MetricValueStatusSchema.default({})
-      .exactOptional()
-      .openapi({ description: 'current contains the current value for the given metric' }),
-    metric: IoK8sApiAutoscalingV2MetricIdentifierSchema.default({})
-      .exactOptional()
-      .openapi({ description: 'metric identifies the target metric by name and selector' }),
-  })
-  .openapi({
-    description:
-      'ExternalMetricStatus indicates the current value of a global metric not associated with any Kubernetes object.',
-    required: [],
-  })
-  .openapi('IoK8sApiAutoscalingV2ExternalMetricStatus')
-
-const IoK8sApiAutoscalingV2HPAScalingPolicySchema = z
-  .object({
-    periodSeconds: z
-      .int32()
-      .default(0)
-      .openapi({
-        description:
-          'periodSeconds specifies the window of time for which the policy should hold true. PeriodSeconds must be greater than zero and less than or equal to 1800 (30 min).',
-      }),
-    type: z
-      .string()
-      .default('')
-      .openapi({ description: 'type is used to specify the scaling policy.' }),
-    value: z
-      .int32()
-      .default(0)
-      .openapi({
-        description:
-          'value contains the amount of change which is permitted by the policy. It must be greater than zero',
-      }),
-  })
-  .openapi({
-    description:
-      'HPAScalingPolicy is a single policy which must hold true for a specified past interval.',
-    required: ['type', 'value', 'periodSeconds'],
-  })
-  .openapi('IoK8sApiAutoscalingV2HPAScalingPolicy')
-
-const IoK8sApiAutoscalingV2HPAScalingRulesSchema = z
-  .object({
-    policies: z
-      .array(IoK8sApiAutoscalingV2HPAScalingPolicySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'policies is a list of potential scaling polices which can be used during scaling. If not set, use the default values: - For scale up: allow doubling the number of pods, or an absolute change of 4 pods in a 15s window. - For scale down: allow all pods to be removed in a 15s window.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-    selectPolicy: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'selectPolicy is used to specify which policy should be used. If not set, the default value Max is used.',
-      }),
-    stabilizationWindowSeconds: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'stabilizationWindowSeconds is the number of seconds for which past recommendations should be considered while scaling up or scaling down. StabilizationWindowSeconds must be greater than or equal to zero and less than or equal to 3600 (one hour). If not set, use the default values: - For scale up: 0 (i.e. no stabilization is done). - For scale down: 300 (i.e. the stabilization window is 300 seconds long).',
-      }),
-    tolerance: IoK8sApimachineryPkgApiResourceQuantitySchema.exactOptional().openapi({
-      description:
-        'tolerance is the tolerance on the ratio between the current and desired metric value under which no updates are made to the desired number of replicas (e.g. 0.01 for 1%). Must be greater than or equal to zero. If not set, the default cluster-wide tolerance is applied (by default 10%).\n\nFor example, if autoscaling is configured with a memory consumption target of 100Mi, and scale-down and scale-up tolerances of 5% and 1% respectively, scaling will be triggered when the actual consumption falls below 95Mi or exceeds 101Mi.',
-    }),
-  })
-  .openapi({
-    description:
-      'HPAScalingRules configures the scaling behavior for one direction via scaling Policy Rules and a configurable metric tolerance.\n\nScaling Policy Rules are applied after calculating DesiredReplicas from metrics for the HPA. They can limit the scaling velocity by specifying scaling policies. They can prevent flapping by specifying the stabilization window, so that the number of replicas is not set instantly, instead, the safest value from the stabilization window is chosen.\n\nThe tolerance is applied to the metric values and prevents scaling too eagerly for small metric variations.',
-    required: [],
-  })
-  .openapi('IoK8sApiAutoscalingV2HPAScalingRules')
-
 const IoK8sApimachineryPkgApisMetaV1TimeSchema = z.iso
   .datetime({ offset: true })
   .openapi({
@@ -309,7 +9,7 @@ const IoK8sApimachineryPkgApisMetaV1TimeSchema = z.iso
   .openapi('IoK8sApimachineryPkgApisMetaV1Time')
 
 const IoK8sApimachineryPkgApisMetaV1FieldsV1Schema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       "FieldsV1 stores a set of fields in a data structure like a Trie, in JSON format.\n\nEach key is either a '.' representing the field itself, and will always map to an empty set, or a string representing a sub-field or item. The string will follow one of these four formats: 'f:<name>', where <name> is the name of a field in a struct, or key in a map 'v:<value>', where <value> is the exact json formatted value of a list item 'i:<index>', where <index> is position of a item in a list 'k:<keys>', where <keys> is a map of  a list item's key fields to their unique values If a key maps to an empty Fields value, the field that key represents is part of the set.\n\nThe exact format is defined in sigs.k8s.io/structured-merge-diff",
@@ -546,6 +246,78 @@ const IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema = z
   })
   .openapi('IoK8sApimachineryPkgApisMetaV1ObjectMeta')
 
+const IoK8sApiAutoscalingV2HPAScalingPolicySchema = z
+  .object({
+    periodSeconds: z
+      .int32()
+      .default(0)
+      .openapi({
+        description:
+          'periodSeconds specifies the window of time for which the policy should hold true. PeriodSeconds must be greater than zero and less than or equal to 1800 (30 min).',
+      }),
+    type: z
+      .string()
+      .default('')
+      .openapi({ description: 'type is used to specify the scaling policy.' }),
+    value: z
+      .int32()
+      .default(0)
+      .openapi({
+        description:
+          'value contains the amount of change which is permitted by the policy. It must be greater than zero',
+      }),
+  })
+  .openapi({
+    description:
+      'HPAScalingPolicy is a single policy which must hold true for a specified past interval.',
+    required: ['type', 'value', 'periodSeconds'],
+  })
+  .openapi('IoK8sApiAutoscalingV2HPAScalingPolicy')
+
+const IoK8sApimachineryPkgApiResourceQuantitySchema = z
+  .xor([z.string(), z.number()])
+  .openapi({
+    description:
+      'Quantity is a fixed-point representation of a number. It provides convenient marshaling/unmarshaling in JSON and YAML, in addition to String() and AsInt64() accessors.\n\nThe serialization format is:\n\n- `<quantity>`: `<signedNumber><suffix>`\n\n- `<digit>`: `0 | 1 | ... | 9`\n\n- `<digits>`: `<digit> | <digit><digits>`\n\n- `<number>`: `<digits> | <digits>.<digits> | <digits>. | .<digits>`\n\n- `<sign>`: `"+" | "-"`\n\n- `<signedNumber>`: `<number> | <sign><number>`\n\n- `<signedDigits>`: `<digits> | <sign><digits>`\n\n- `<suffix>`: `<binarySI> | <decimalExponent> | <decimalSI>`\n\n- `<binarySI>`: `Ki | Mi | Gi | Ti | Pi | Ei`\n\n- `<decimalSI>`: `n | u | m | "" | k | M | G | T | P | E`\n\n- `<decimalExponent>`: `"e" <signedDigits> | "E" <signedDigits>`\n\nNote that `<suffix>` may be empty, from the `""` case in `<decimalSI>`. For `<binarySI>`, 1024 = 1Ki but 1000 = 1k; I didn\'t choose the capitalization. See http://physics.nist.gov/cuu/Units/binary.html.\n\nA decimal quantity is not capped at 2^63-1 in magnitude, and no quantity is limited to three decimal places: "18446744073709551616" keeps its value, and "1.2345" keeps its precision (String reports it as "1234500u"). Parsing does cap a binarySI quantity, silently, at 2^63-1: "8Ei" parses as 2^63-1. Parsing keeps at most 29 significant digits, enough for any int64 value at nano precision, and rounds any precision beyond this away from zero. Parsing also preserves a value only down to nano, rounding a finer non-zero value away from zero, so "0.9n" becomes "1n". Parsing saturates the exponent to [-2147483647, 2147483647] after accounting for any digits after the decimal point, so "0.01e2147483649" keeps its value but "1e4294967297" parses as 1e2147483647. The int64 accessors round and may overflow on top of that: see Value, MilliValue and ScaledValue.\n\nWhen a Quantity is parsed from a string, it will remember the type of suffix it had, and will use the same type again when it is serialized.\n\nBefore serializing, Quantity will be put in "canonical form". This means that Exponent/suffix will be adjusted up or down (with a corresponding increase or decrease in Mantissa) such that:\n\n- No precision is lost\n\n- No fractional digits will be emitted\n\n- The exponent (or suffix) is as large as possible.\n\nThe sign will be omitted unless the number is negative.\n\nExamples:\n\n- 1.5 will be serialized as "1500m"\n\n- 1.5Gi will be serialized as "1536Mi"\n\nNote that the quantity will NEVER be internally represented by a floating point number. That is the whole point of this exercise.\n\nNon-canonical values will still parse as long as they are well formed, but will be re-emitted in their canonical form. (So always use canonical form, or don\'t diff.)\n\nThis format is intended to make it difficult to use these numbers without writing some sort of special handling code in the hopes that that will cause implementors to also use a fixed point implementation.',
+  })
+  .openapi('IoK8sApimachineryPkgApiResourceQuantity')
+
+const IoK8sApiAutoscalingV2HPAScalingRulesSchema = z
+  .object({
+    policies: z
+      .array(IoK8sApiAutoscalingV2HPAScalingPolicySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'policies is a list of potential scaling polices which can be used during scaling. If not set, use the default values: - For scale up: allow doubling the number of pods, or an absolute change of 4 pods in a 15s window. - For scale down: allow all pods to be removed in a 15s window.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+    selectPolicy: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'selectPolicy is used to specify which policy should be used. If not set, the default value Max is used.',
+      }),
+    stabilizationWindowSeconds: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'stabilizationWindowSeconds is the number of seconds for which past recommendations should be considered while scaling up or scaling down. StabilizationWindowSeconds must be greater than or equal to zero and less than or equal to 3600 (one hour). If not set, use the default values: - For scale up: 0 (i.e. no stabilization is done). - For scale down: 300 (i.e. the stabilization window is 300 seconds long).',
+      }),
+    tolerance: IoK8sApimachineryPkgApiResourceQuantitySchema.exactOptional().openapi({
+      description:
+        'tolerance is the tolerance on the ratio between the current and desired metric value under which no updates are made to the desired number of replicas (e.g. 0.01 for 1%). Must be greater than or equal to zero. If not set, the default cluster-wide tolerance is applied (by default 10%).\n\nFor example, if autoscaling is configured with a memory consumption target of 100Mi, and scale-down and scale-up tolerances of 5% and 1% respectively, scaling will be triggered when the actual consumption falls below 95Mi or exceeds 101Mi.',
+    }),
+  })
+  .openapi({
+    description:
+      'HPAScalingRules configures the scaling behavior for one direction via scaling Policy Rules and a configurable metric tolerance.\n\nScaling Policy Rules are applied after calculating DesiredReplicas from metrics for the HPA. They can limit the scaling velocity by specifying scaling policies. They can prevent flapping by specifying the stabilization window, so that the number of replicas is not set instantly, instead, the safest value from the stabilization window is chosen.\n\nThe tolerance is applied to the metric values and prevents scaling too eagerly for small metric variations.',
+    required: [],
+  })
+  .openapi('IoK8sApiAutoscalingV2HPAScalingRules')
+
 const IoK8sApiAutoscalingV2HorizontalPodAutoscalerBehaviorSchema = z
   .object({
     scaleDown: IoK8sApiAutoscalingV2HPAScalingRulesSchema.exactOptional().openapi({
@@ -564,17 +336,190 @@ const IoK8sApiAutoscalingV2HorizontalPodAutoscalerBehaviorSchema = z
   })
   .openapi('IoK8sApiAutoscalingV2HorizontalPodAutoscalerBehavior')
 
+const IoK8sApiAutoscalingV2MetricTargetSchema = z
+  .object({
+    averageUtilization: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'averageUtilization is the target value of the average of the resource metric across all relevant pods, represented as a percentage of the requested value of the resource for the pods. Currently only valid for Resource metric source type',
+      }),
+    averageValue: IoK8sApimachineryPkgApiResourceQuantitySchema.exactOptional().openapi({
+      description:
+        'averageValue is the target value of the average of the metric across all relevant pods (as a quantity)',
+    }),
+    type: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'type represents whether the metric type is Utilization, Value, or AverageValue',
+      }),
+    value: IoK8sApimachineryPkgApiResourceQuantitySchema.exactOptional().openapi({
+      description: 'value is the target value of the metric (as a quantity).',
+    }),
+  })
+  .openapi({
+    description:
+      'MetricTarget defines the target value, average value, or average utilization of a specific metric',
+    required: ['type'],
+  })
+  .openapi('IoK8sApiAutoscalingV2MetricTarget')
+
+const IoK8sApiAutoscalingV2ContainerResourceMetricSourceSchema = z
+  .object({
+    container: z
+      .string()
+      .default('')
+      .openapi({
+        description: 'container is the name of the container in the pods of the scaling target',
+      }),
+    name: z
+      .string()
+      .default('')
+      .openapi({ description: 'name is the name of the resource in question.' }),
+    target: IoK8sApiAutoscalingV2MetricTargetSchema.openapi({
+      description: 'target specifies the target value for the given metric',
+      default: {},
+    }),
+  })
+  .openapi({
+    description:
+      'ContainerResourceMetricSource indicates how to scale on a resource metric known to Kubernetes, as specified in requests and limits, describing each pod in the current scale target (e.g. CPU or memory).  The values will be averaged together before being compared to the target.  Such metrics are built in to Kubernetes, and have special scaling options on top of those available to normal per-pod metrics using the "pods" source.  Only one "target" type should be set.',
+    required: ['name', 'target', 'container'],
+  })
+  .openapi('IoK8sApiAutoscalingV2ContainerResourceMetricSource')
+
+const IoK8sApimachineryPkgApisMetaV1LabelSelectorRequirementSchema = z
+  .object({
+    key: z
+      .string()
+      .default('')
+      .openapi({ description: 'key is the label key that the selector applies to.' }),
+    operator: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.",
+      }),
+    values: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+  })
+  .openapi({
+    description:
+      'A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.',
+    required: ['key', 'operator'],
+  })
+  .openapi('IoK8sApimachineryPkgApisMetaV1LabelSelectorRequirement')
+
+const IoK8sApimachineryPkgApisMetaV1LabelSelectorSchema = z
+  .object({
+    matchExpressions: z
+      .array(IoK8sApimachineryPkgApisMetaV1LabelSelectorRequirementSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'matchExpressions is a list of label selector requirements. The requirements are ANDed.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+    matchLabels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.',
+      }),
+  })
+  .openapi({
+    description:
+      'A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.',
+    'x-kubernetes-map-type': 'atomic',
+    required: [],
+  })
+  .openapi('IoK8sApimachineryPkgApisMetaV1LabelSelector')
+
+const IoK8sApiAutoscalingV2MetricIdentifierSchema = z
+  .object({
+    name: z.string().default('').openapi({ description: 'name is the name of the given metric' }),
+    selector: IoK8sApimachineryPkgApisMetaV1LabelSelectorSchema.exactOptional().openapi({
+      description:
+        'selector is the string-encoded form of a standard kubernetes label selector for the given metric When set, it is passed as an additional parameter to the metrics server for more specific metrics scoping. When unset, just the metricName will be used to gather metrics.',
+    }),
+  })
+  .openapi({
+    description: 'MetricIdentifier defines the name and optionally selector for a metric',
+    required: ['name'],
+  })
+  .openapi('IoK8sApiAutoscalingV2MetricIdentifier')
+
+const IoK8sApiAutoscalingV2ExternalMetricSourceSchema = z
+  .object({
+    metric: IoK8sApiAutoscalingV2MetricIdentifierSchema.openapi({
+      description: 'metric identifies the target metric by name and selector',
+      default: {},
+    }),
+    target: IoK8sApiAutoscalingV2MetricTargetSchema.openapi({
+      description: 'target specifies the target value for the given metric',
+      default: {},
+    }),
+  })
+  .openapi({
+    description:
+      'ExternalMetricSource indicates how to scale on a metric not associated with any Kubernetes object (for example length of queue in cloud messaging service, or QPS from loadbalancer running outside of cluster).',
+    required: ['metric', 'target'],
+  })
+  .openapi('IoK8sApiAutoscalingV2ExternalMetricSource')
+
+const IoK8sApiAutoscalingV2CrossVersionObjectReferenceSchema = z
+  .object({
+    apiVersion: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'apiVersion is the API version of the referent' }),
+    kind: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'kind is the kind of the referent; More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+      }),
+    name: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'name is the name of the referent; More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names',
+      }),
+  })
+  .openapi({
+    description:
+      'CrossVersionObjectReference contains enough information to let you identify the referred resource.',
+    required: ['kind', 'name'],
+  })
+  .openapi('IoK8sApiAutoscalingV2CrossVersionObjectReference')
+
 const IoK8sApiAutoscalingV2ObjectMetricSourceSchema = z
   .object({
-    describedObject: IoK8sApiAutoscalingV2CrossVersionObjectReferenceSchema.default({}).openapi({
+    describedObject: IoK8sApiAutoscalingV2CrossVersionObjectReferenceSchema.openapi({
       description:
         'describedObject specifies the descriptions of a object,such as kind,name apiVersion',
+      default: {},
     }),
-    metric: IoK8sApiAutoscalingV2MetricIdentifierSchema.default({}).openapi({
+    metric: IoK8sApiAutoscalingV2MetricIdentifierSchema.openapi({
       description: 'metric identifies the target metric by name and selector',
+      default: {},
     }),
-    target: IoK8sApiAutoscalingV2MetricTargetSchema.default({}).openapi({
+    target: IoK8sApiAutoscalingV2MetricTargetSchema.openapi({
       description: 'target specifies the target value for the given metric',
+      default: {},
     }),
   })
   .openapi({
@@ -586,11 +531,13 @@ const IoK8sApiAutoscalingV2ObjectMetricSourceSchema = z
 
 const IoK8sApiAutoscalingV2PodsMetricSourceSchema = z
   .object({
-    metric: IoK8sApiAutoscalingV2MetricIdentifierSchema.default({}).openapi({
+    metric: IoK8sApiAutoscalingV2MetricIdentifierSchema.openapi({
       description: 'metric identifies the target metric by name and selector',
+      default: {},
     }),
-    target: IoK8sApiAutoscalingV2MetricTargetSchema.default({}).openapi({
+    target: IoK8sApiAutoscalingV2MetricTargetSchema.openapi({
       description: 'target specifies the target value for the given metric',
+      default: {},
     }),
   })
   .openapi({
@@ -606,8 +553,9 @@ const IoK8sApiAutoscalingV2ResourceMetricSourceSchema = z
       .string()
       .default('')
       .openapi({ description: 'name is the name of the resource in question.' }),
-    target: IoK8sApiAutoscalingV2MetricTargetSchema.default({}).openapi({
+    target: IoK8sApiAutoscalingV2MetricTargetSchema.openapi({
       description: 'target specifies the target value for the given metric',
+      default: {},
     }),
   })
   .openapi({
@@ -655,45 +603,55 @@ const IoK8sApiAutoscalingV2MetricSpecSchema = z
   })
   .openapi('IoK8sApiAutoscalingV2MetricSpec')
 
-const IoK8sApiAutoscalingV2HorizontalPodAutoscalerSpecSchema = z
-  .object({
-    behavior: IoK8sApiAutoscalingV2HorizontalPodAutoscalerBehaviorSchema.exactOptional().openapi({
+type IoK8sApiAutoscalingV2HorizontalPodAutoscalerSpecType = {
+  behavior?: z.infer<typeof IoK8sApiAutoscalingV2HorizontalPodAutoscalerBehaviorSchema>
+  maxReplicas: number
+  metrics?: z.infer<typeof IoK8sApiAutoscalingV2MetricSpecSchema>[]
+  minReplicas?: number
+  scaleTargetRef: z.infer<typeof IoK8sApiAutoscalingV2CrossVersionObjectReferenceSchema>
+}
+
+const IoK8sApiAutoscalingV2HorizontalPodAutoscalerSpecSchema: z.ZodType<IoK8sApiAutoscalingV2HorizontalPodAutoscalerSpecType> =
+  z
+    .object({
+      behavior: IoK8sApiAutoscalingV2HorizontalPodAutoscalerBehaviorSchema.exactOptional().openapi({
+        description:
+          'behavior configures the scaling behavior of the target in both Up and Down directions (scaleUp and scaleDown fields respectively). If not set, the default HPAScalingRules for scale up and scale down are used.',
+      }),
+      maxReplicas: z
+        .int32()
+        .default(0)
+        .openapi({
+          description:
+            'maxReplicas is the upper limit for the number of replicas to which the autoscaler can scale up. It cannot be less that minReplicas.',
+        }),
+      metrics: z
+        .array(IoK8sApiAutoscalingV2MetricSpecSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'metrics contains the specifications for which to use to calculate the desired replica count (the maximum replica count across all metrics will be used).  The desired replica count is calculated multiplying the ratio between the target value and the current value by the current number of pods.  Ergo, metrics used must decrease as the pod count is increased, and vice-versa.  See the individual metric source types for more information about how each type of metric must respond. If not set, the default metric will be set to 80% average CPU utilization.',
+          'x-kubernetes-list-type': 'atomic',
+        }),
+      minReplicas: z
+        .int32()
+        .exactOptional()
+        .openapi({
+          description:
+            'minReplicas is the lower limit for the number of replicas to which the autoscaler can scale down.  It defaults to 1 pod.  minReplicas is allowed to be 0 if the alpha feature gate HPAScaleToZero is enabled and at least one Object or External metric is configured.  Scaling is active as long as at least one metric value is available.',
+        }),
+      scaleTargetRef: IoK8sApiAutoscalingV2CrossVersionObjectReferenceSchema.openapi({
+        description:
+          'scaleTargetRef points to the target resource to scale, and is used to the pods for which metrics should be collected, as well as to actually change the replica count.',
+        default: {},
+      }),
+    })
+    .openapi({
       description:
-        'behavior configures the scaling behavior of the target in both Up and Down directions (scaleUp and scaleDown fields respectively). If not set, the default HPAScalingRules for scale up and scale down are used.',
-    }),
-    maxReplicas: z
-      .int32()
-      .default(0)
-      .openapi({
-        description:
-          'maxReplicas is the upper limit for the number of replicas to which the autoscaler can scale up. It cannot be less that minReplicas.',
-      }),
-    metrics: z
-      .array(IoK8sApiAutoscalingV2MetricSpecSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'metrics contains the specifications for which to use to calculate the desired replica count (the maximum replica count across all metrics will be used).  The desired replica count is calculated multiplying the ratio between the target value and the current value by the current number of pods.  Ergo, metrics used must decrease as the pod count is increased, and vice-versa.  See the individual metric source types for more information about how each type of metric must respond. If not set, the default metric will be set to 80% average CPU utilization.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-    minReplicas: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'minReplicas is the lower limit for the number of replicas to which the autoscaler can scale down.  It defaults to 1 pod.  minReplicas is allowed to be 0 if the alpha feature gate HPAScaleToZero is enabled and at least one Object or External metric is configured.  Scaling is active as long as at least one metric value is available.',
-      }),
-    scaleTargetRef: IoK8sApiAutoscalingV2CrossVersionObjectReferenceSchema.default({}).openapi({
-      description:
-        'scaleTargetRef points to the target resource to scale, and is used to the pods for which metrics should be collected, as well as to actually change the replica count.',
-    }),
-  })
-  .openapi({
-    description:
-      'HorizontalPodAutoscalerSpec describes the desired functionality of the HorizontalPodAutoscaler.',
-    required: ['scaleTargetRef', 'maxReplicas'],
-  })
-  .openapi('IoK8sApiAutoscalingV2HorizontalPodAutoscalerSpec')
+        'HorizontalPodAutoscalerSpec describes the desired functionality of the HorizontalPodAutoscaler.',
+      required: ['scaleTargetRef', 'maxReplicas'],
+    })
+    .openapi('IoK8sApiAutoscalingV2HorizontalPodAutoscalerSpec')
 
 const IoK8sApiAutoscalingV2HorizontalPodAutoscalerConditionSchema = z
   .object({
@@ -749,20 +707,84 @@ const IoK8sApiAutoscalingV2HorizontalPodAutoscalerConditionSchema = z
   })
   .openapi('IoK8sApiAutoscalingV2HorizontalPodAutoscalerCondition')
 
+const IoK8sApiAutoscalingV2MetricValueStatusSchema = z
+  .object({
+    averageUtilization: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'averageUtilization is the current value of the average of the resource metric across all relevant pods, represented as a percentage of the requested value of the resource for the pods.',
+      }),
+    averageValue: IoK8sApimachineryPkgApiResourceQuantitySchema.exactOptional().openapi({
+      description:
+        'averageValue is the current value of the average of the metric across all relevant pods (as a quantity)',
+    }),
+    value: IoK8sApimachineryPkgApiResourceQuantitySchema.exactOptional().openapi({
+      description: 'value is the current value of the metric (as a quantity).',
+    }),
+  })
+  .openapi({ description: 'MetricValueStatus holds the current value for a metric', required: [] })
+  .openapi('IoK8sApiAutoscalingV2MetricValueStatus')
+
+const IoK8sApiAutoscalingV2ContainerResourceMetricStatusSchema = z
+  .object({
+    container: z
+      .string()
+      .default('')
+      .exactOptional()
+      .openapi({
+        description: 'container is the name of the container in the pods of the scaling target',
+      }),
+    current: IoK8sApiAutoscalingV2MetricValueStatusSchema.default({})
+      .exactOptional()
+      .openapi({ description: 'current contains the current value for the given metric' }),
+    name: z
+      .string()
+      .default('')
+      .exactOptional()
+      .openapi({ description: 'name is the name of the resource in question.' }),
+  })
+  .openapi({
+    description:
+      'ContainerResourceMetricStatus indicates the current value of a resource metric known to Kubernetes, as specified in requests and limits, describing a single container in each pod in the current scale target (e.g. CPU or memory).  Such metrics are built in to Kubernetes, and have special scaling options on top of those available to normal per-pod metrics using the "pods" source.',
+    required: [],
+  })
+  .openapi('IoK8sApiAutoscalingV2ContainerResourceMetricStatus')
+
+const IoK8sApiAutoscalingV2ExternalMetricStatusSchema = z
+  .object({
+    current: IoK8sApiAutoscalingV2MetricValueStatusSchema.default({})
+      .exactOptional()
+      .openapi({ description: 'current contains the current value for the given metric' }),
+    metric: IoK8sApiAutoscalingV2MetricIdentifierSchema.exactOptional().openapi({
+      description: 'metric identifies the target metric by name and selector',
+      default: {},
+    }),
+  })
+  .openapi({
+    description:
+      'ExternalMetricStatus indicates the current value of a global metric not associated with any Kubernetes object.',
+    required: [],
+  })
+  .openapi('IoK8sApiAutoscalingV2ExternalMetricStatus')
+
 const IoK8sApiAutoscalingV2ObjectMetricStatusSchema = z
   .object({
     current: IoK8sApiAutoscalingV2MetricValueStatusSchema.default({})
       .exactOptional()
       .openapi({ description: 'current contains the current value for the given metric' }),
-    describedObject: IoK8sApiAutoscalingV2CrossVersionObjectReferenceSchema.default({})
-      .exactOptional()
-      .openapi({
+    describedObject: IoK8sApiAutoscalingV2CrossVersionObjectReferenceSchema.exactOptional().openapi(
+      {
         description:
           'describedObject specifies the descriptions of a object,such as kind,name apiVersion',
-      }),
-    metric: IoK8sApiAutoscalingV2MetricIdentifierSchema.default({})
-      .exactOptional()
-      .openapi({ description: 'metric identifies the target metric by name and selector' }),
+        default: {},
+      },
+    ),
+    metric: IoK8sApiAutoscalingV2MetricIdentifierSchema.exactOptional().openapi({
+      description: 'metric identifies the target metric by name and selector',
+      default: {},
+    }),
   })
   .openapi({
     description:
@@ -776,9 +798,10 @@ const IoK8sApiAutoscalingV2PodsMetricStatusSchema = z
     current: IoK8sApiAutoscalingV2MetricValueStatusSchema.default({})
       .exactOptional()
       .openapi({ description: 'current contains the current value for the given metric' }),
-    metric: IoK8sApiAutoscalingV2MetricIdentifierSchema.default({})
-      .exactOptional()
-      .openapi({ description: 'metric identifies the target metric by name and selector' }),
+    metric: IoK8sApiAutoscalingV2MetricIdentifierSchema.exactOptional().openapi({
+      description: 'metric identifies the target metric by name and selector',
+      default: {},
+    }),
   })
   .openapi({
     description:
@@ -843,110 +866,130 @@ const IoK8sApiAutoscalingV2MetricStatusSchema = z
   })
   .openapi('IoK8sApiAutoscalingV2MetricStatus')
 
-const IoK8sApiAutoscalingV2HorizontalPodAutoscalerStatusSchema = z
-  .object({
-    conditions: z
-      .array(IoK8sApiAutoscalingV2HorizontalPodAutoscalerConditionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'conditions is the set of conditions required for this autoscaler to scale its target, and indicates whether or not those conditions are met.',
-        'x-kubernetes-list-map-keys': ['type'],
-        'x-kubernetes-list-type': 'map',
-        'x-kubernetes-patch-merge-key': 'type',
-        'x-kubernetes-patch-strategy': 'merge',
-      }),
-    currentMetrics: z
-      .array(IoK8sApiAutoscalingV2MetricStatusSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'currentMetrics is the last read state of the metrics used by this autoscaler.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-    currentReplicas: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'currentReplicas is current number of replicas of pods managed by this autoscaler, as last seen by the autoscaler.',
-      }),
-    desiredReplicas: z
-      .int32()
-      .default(0)
-      .exactOptional()
-      .openapi({
-        description:
-          'desiredReplicas is the desired number of replicas of pods managed by this autoscaler, as last calculated by the autoscaler.',
-      }),
-    lastScaleTime: IoK8sApimachineryPkgApisMetaV1TimeSchema.exactOptional().openapi({
-      description:
-        'lastScaleTime is the last time the HorizontalPodAutoscaler scaled the number of pods, used by the autoscaler to control how often the number of pods is changed.',
-    }),
-    observedGeneration: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'observedGeneration is the most recent generation observed by this autoscaler.',
-      }),
-  })
-  .openapi({
-    description:
-      'HorizontalPodAutoscalerStatus describes the current status of a horizontal pod autoscaler.',
-    required: [],
-  })
-  .openapi('IoK8sApiAutoscalingV2HorizontalPodAutoscalerStatus')
+type IoK8sApiAutoscalingV2HorizontalPodAutoscalerStatusType = {
+  conditions?: z.infer<typeof IoK8sApiAutoscalingV2HorizontalPodAutoscalerConditionSchema>[]
+  currentMetrics?: z.infer<typeof IoK8sApiAutoscalingV2MetricStatusSchema>[]
+  currentReplicas?: number
+  desiredReplicas?: number
+  lastScaleTime?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1TimeSchema>
+  observedGeneration?: bigint
+}
 
-const IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema = z
-  .object({
-    apiVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
+const IoK8sApiAutoscalingV2HorizontalPodAutoscalerStatusSchema: z.ZodType<IoK8sApiAutoscalingV2HorizontalPodAutoscalerStatusType> =
+  z
+    .object({
+      conditions: z
+        .array(IoK8sApiAutoscalingV2HorizontalPodAutoscalerConditionSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'conditions is the set of conditions required for this autoscaler to scale its target, and indicates whether or not those conditions are met.',
+          'x-kubernetes-list-map-keys': ['type'],
+          'x-kubernetes-list-type': 'map',
+          'x-kubernetes-patch-merge-key': 'type',
+          'x-kubernetes-patch-strategy': 'merge',
+        }),
+      currentMetrics: z
+        .array(IoK8sApiAutoscalingV2MetricStatusSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'currentMetrics is the last read state of the metrics used by this autoscaler.',
+          'x-kubernetes-list-type': 'atomic',
+        }),
+      currentReplicas: z
+        .int32()
+        .exactOptional()
+        .openapi({
+          description:
+            'currentReplicas is current number of replicas of pods managed by this autoscaler, as last seen by the autoscaler.',
+        }),
+      desiredReplicas: z
+        .int32()
+        .default(0)
+        .exactOptional()
+        .openapi({
+          description:
+            'desiredReplicas is the desired number of replicas of pods managed by this autoscaler, as last calculated by the autoscaler.',
+        }),
+      lastScaleTime: IoK8sApimachineryPkgApisMetaV1TimeSchema.exactOptional().openapi({
         description:
-          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+          'lastScaleTime is the last time the HorizontalPodAutoscaler scaled the number of pods, used by the autoscaler to control how often the number of pods is changed.',
       }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          'metadata is the standard object metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata',
-      }),
-    spec: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSpecSchema.default({}).openapi({
+      observedGeneration: z
+        .preprocess(
+          (val) =>
+            typeof val === 'number' && Number.isSafeInteger(val)
+              ? BigInt(val)
+              : typeof val === 'string' && /^-?\d+$/.test(val)
+                ? BigInt(val)
+                : val,
+          z.int64(),
+        )
+        .exactOptional()
+        .openapi({
+          type: 'integer',
+          format: 'int64',
+          description:
+            'observedGeneration is the most recent generation observed by this autoscaler.',
+        }),
+    })
+    .openapi({
       description:
-        'spec is the specification for the behaviour of the autoscaler. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status.',
-    }),
-    status: IoK8sApiAutoscalingV2HorizontalPodAutoscalerStatusSchema.default({})
-      .exactOptional()
-      .openapi({ description: 'status is the current information about the autoscaler.' }),
-  })
-  .openapi({
-    description:
-      'HorizontalPodAutoscaler is the configuration for a horizontal pod autoscaler, which automatically manages the replica count of any resource implementing the scale subresource based on the metrics specified.',
-    required: ['spec'],
-    'x-kubernetes-group-version-kind': [
-      { group: 'autoscaling', kind: 'HorizontalPodAutoscaler', version: 'v2' },
-    ],
-  })
-  .openapi('IoK8sApiAutoscalingV2HorizontalPodAutoscaler')
+        'HorizontalPodAutoscalerStatus describes the current status of a horizontal pod autoscaler.',
+      required: [],
+    })
+    .openapi('IoK8sApiAutoscalingV2HorizontalPodAutoscalerStatus')
+
+type IoK8sApiAutoscalingV2HorizontalPodAutoscalerType = {
+  apiVersion?: string
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema>
+  spec: z.infer<typeof IoK8sApiAutoscalingV2HorizontalPodAutoscalerSpecSchema>
+  status?: z.infer<typeof IoK8sApiAutoscalingV2HorizontalPodAutoscalerStatusSchema>
+}
+
+const IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema: z.ZodType<IoK8sApiAutoscalingV2HorizontalPodAutoscalerType> =
+  z
+    .object({
+      apiVersion: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+        }),
+      kind: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+        }),
+      metadata: IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema.default({})
+        .exactOptional()
+        .openapi({
+          description:
+            'metadata is the standard object metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata',
+        }),
+      spec: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSpecSchema.openapi({
+        description:
+          'spec is the specification for the behaviour of the autoscaler. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status.',
+        default: {},
+      }),
+      status: IoK8sApiAutoscalingV2HorizontalPodAutoscalerStatusSchema.default({})
+        .exactOptional()
+        .openapi({ description: 'status is the current information about the autoscaler.' }),
+    })
+    .openapi({
+      description:
+        'HorizontalPodAutoscaler is the configuration for a horizontal pod autoscaler, which automatically manages the replica count of any resource implementing the scale subresource based on the metrics specified.',
+      required: ['spec'],
+      'x-kubernetes-group-version-kind': [
+        { group: 'autoscaling', kind: 'HorizontalPodAutoscaler', version: 'v2' },
+      ],
+    })
+    .openapi('IoK8sApiAutoscalingV2HorizontalPodAutoscaler')
 
 const IoK8sApimachineryPkgApisMetaV1ShardInfoSchema = z
   .object({
@@ -1017,37 +1060,45 @@ const IoK8sApimachineryPkgApisMetaV1ListMetaSchema = z
   })
   .openapi('IoK8sApimachineryPkgApisMetaV1ListMeta')
 
-const IoK8sApiAutoscalingV2HorizontalPodAutoscalerListSchema = z
-  .object({
-    apiVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
-      }),
-    items: z
-      .array(IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema)
-      .openapi({ description: 'items is the list of horizontal pod autoscaler objects.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
-      .exactOptional()
-      .openapi({ description: 'metadata is the standard list metadata.' }),
-  })
-  .openapi({
-    description: 'HorizontalPodAutoscalerList is a list of horizontal pod autoscaler objects.',
-    required: ['items'],
-    'x-kubernetes-group-version-kind': [
-      { group: 'autoscaling', kind: 'HorizontalPodAutoscalerList', version: 'v2' },
-    ],
-  })
-  .openapi('IoK8sApiAutoscalingV2HorizontalPodAutoscalerList')
+type IoK8sApiAutoscalingV2HorizontalPodAutoscalerListType = {
+  apiVersion?: string
+  items: z.infer<typeof IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema>[]
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ListMetaSchema>
+}
+
+const IoK8sApiAutoscalingV2HorizontalPodAutoscalerListSchema: z.ZodType<IoK8sApiAutoscalingV2HorizontalPodAutoscalerListType> =
+  z
+    .object({
+      apiVersion: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+        }),
+      items: z
+        .array(IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema)
+        .openapi({ description: 'items is the list of horizontal pod autoscaler objects.' }),
+      kind: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+        }),
+      metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
+        .exactOptional()
+        .openapi({ description: 'metadata is the standard list metadata.' }),
+    })
+    .openapi({
+      description: 'HorizontalPodAutoscalerList is a list of horizontal pod autoscaler objects.',
+      required: ['items'],
+      'x-kubernetes-group-version-kind': [
+        { group: 'autoscaling', kind: 'HorizontalPodAutoscalerList', version: 'v2' },
+      ],
+    })
+    .openapi('IoK8sApiAutoscalingV2HorizontalPodAutoscalerList')
 
 const IoK8sApimachineryPkgApisMetaV1APIResourceSchema = z
   .object({
@@ -1252,7 +1303,7 @@ const IoK8sApimachineryPkgApisMetaV1DeleteOptionsSchema = z
   .openapi('IoK8sApimachineryPkgApisMetaV1DeleteOptions')
 
 const IoK8sApimachineryPkgApisMetaV1PatchSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Patch is provided to give a concrete name and type to the Kubernetes PATCH request body.',
@@ -1399,7 +1450,7 @@ const IoK8sApimachineryPkgApisMetaV1StatusSchema = z
   .openapi('IoK8sApimachineryPkgApisMetaV1Status')
 
 const IoK8sApimachineryPkgRuntimeRawExtensionSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'RawExtension is used to hold extensions in external versions.\n\nTo use this, make a field which has RawExtension as its type in your external, versioned struct, and Object in your internal struct. You also need to register your various plugin types.\n\n// Internal package:\n\n\ttype MyAPIObject struct {\n\t\truntime.TypeMeta `json:""`\n\t\tMyPlugin runtime.Object `json:"myPlugin"`\n\t}\n\n\ttype PluginA struct {\n\t\tAOption string `json:"aOption"`\n\t}\n\n// External package:\n\n\ttype MyAPIObject struct {\n\t\truntime.TypeMeta `json:""`\n\t\tMyPlugin runtime.RawExtension `json:"myPlugin"`\n\t}\n\n\ttype PluginA struct {\n\t\tAOption string `json:"aOption"`\n\t}\n\n// On the wire, the JSON will look something like this:\n\n\t{\n\t\t"kind":"MyAPIObject",\n\t\t"apiVersion":"v1",\n\t\t"myPlugin": {\n\t\t\t"kind":"PluginA",\n\t\t\t"aOption":"foo",\n\t\t},\n\t}\n\nSo what happens? Decode first uses json or yaml to unmarshal the serialized data into your external MyAPIObject. That causes the raw JSON to be stored, but not unpacked. The next step is to copy (using pkg/conversion) into the internal struct. The runtime package\'s DefaultScheme has conversion functions installed which will unpack the JSON stored in RawExtension, turning it into the correct object type, and storing it in the Object. (TODO: In the case where the object is of an unknown type, a runtime.Unknown object will be created and stored.)',

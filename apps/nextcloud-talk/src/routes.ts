@@ -642,6 +642,12 @@ const CapabilitiesSchema = z
             'matterbridge-enabled': z
               .boolean()
               .openapi({ description: 'Whether Matterbridge is enabled' }),
+            'mobile-preload-chat': z
+              .boolean()
+              .openapi({
+                description:
+                  'Whether mobile clients should preload the chat messages of conversations',
+              }),
           })
           .openapi({
             required: [
@@ -653,6 +659,7 @@ const CapabilitiesSchema = z
               'summary-threshold',
               'style',
               'matterbridge-enabled',
+              'mobile-preload-chat',
             ],
           }),
         conversations: z
@@ -1108,6 +1115,13 @@ const ChatMessageMetaDataSchema = z
       .openapi({
         description:
           'Set when a thread is created with this message. If missing, no thread creation is associated with this message',
+      }),
+    actorRole: z
+      .enum(['owner', 'moderator'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Role of the author at the time of posting. If missing, the author was a regular participant, the conversation has no ranks or the message predates it',
       }),
     replyToMessageId: z
       .preprocess(
@@ -1921,7 +1935,7 @@ const MatrixVerificationSchema = z
   .openapi('MatrixVerification')
 
 const MatterbridgeConfigFieldsSchema = z
-  .array(z.record(z.string(), z.object({})))
+  .array(z.record(z.string(), z.looseObject({})))
   .openapi('MatterbridgeConfigFields')
 
 const MatterbridgeSchema = z
@@ -3083,6 +3097,22 @@ const RoomSchema = z
         description:
           'Bit-flag of enabled attributes of this conversation (only available with capability: `conversation-attributes`). See [attributes list](https://nextcloud-talk.readthedocs.io/en/latest/constants/#conversation-attributes) for details',
       }),
+    muteUntil: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Required capability: `mute-conversations`. Timestamp until the conversation is muted, i.e. not receiving chat notifications',
+      }),
   })
   .openapi({
     required: [
@@ -3145,6 +3175,7 @@ const RoomSchema = z
       'hiddenPinnedId',
       'hasScheduledMessages',
       'attributes',
+      'muteUntil',
     ],
   })
   .openapi('Room')
@@ -7331,18 +7362,14 @@ export const getOcsV2PhpAppsSpreedApiApiVersionChatTokenRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-Chat-Last-Common-Read': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Chat-Last-Given': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Chat-Last-Common-Read': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Chat-Last-Given': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     304: { description: 'No messages' },
@@ -7522,12 +7549,10 @@ export const postOcsV2PhpAppsSpreedApiApiVersionChatTokenRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-Chat-Last-Common-Read': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Chat-Last-Common-Read': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -7698,12 +7723,10 @@ export const deleteOcsV2PhpAppsSpreedApiApiVersionChatTokenRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-Chat-Last-Common-Read': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Chat-Last-Common-Read': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     202: {
@@ -7721,12 +7744,10 @@ export const deleteOcsV2PhpAppsSpreedApiApiVersionChatTokenRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-Chat-Last-Common-Read': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Chat-Last-Common-Read': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     401: {
@@ -8347,7 +8368,7 @@ export const deleteOcsV2PhpAppsSpreedApiApiVersionChatTokenScheduleMessageIdRout
           schema: z
             .object({
               ocs: z
-                .object({ meta: OCSMetaSchema, data: z.object({}) })
+                .object({ meta: OCSMetaSchema, data: z.looseObject({}) })
                 .openapi({ required: ['meta', 'data'] }),
             })
             .openapi({ required: ['ocs'] }),
@@ -8504,12 +8525,10 @@ export const getOcsV2PhpAppsSpreedApiApiVersionChatTokenShareRoute = createRoute
         },
       },
       headers: z.object({
-        'X-Chat-Last-Given': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Chat-Last-Given': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -8628,12 +8647,10 @@ export const postOcsV2PhpAppsSpreedApiApiVersionChatTokenShareRoute = createRout
         },
       },
       headers: z.object({
-        'X-Chat-Last-Common-Read': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Chat-Last-Common-Read': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -8968,18 +8985,14 @@ export const getOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdContextRoute = 
         },
       },
       headers: z.object({
-        'X-Chat-Last-Common-Read': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Chat-Last-Given': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Chat-Last-Common-Read': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Chat-Last-Given': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     304: { description: 'No messages' },
@@ -9105,12 +9118,10 @@ export const putOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdRoute = createR
         },
       },
       headers: z.object({
-        'X-Chat-Last-Common-Read': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Chat-Last-Common-Read': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     202: {
@@ -9128,12 +9139,10 @@ export const putOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdRoute = createR
         },
       },
       headers: z.object({
-        'X-Chat-Last-Common-Read': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Chat-Last-Common-Read': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -9334,12 +9343,10 @@ export const deleteOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdRoute = crea
         },
       },
       headers: z.object({
-        'X-Chat-Last-Common-Read': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Chat-Last-Common-Read': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     202: {
@@ -9357,12 +9364,10 @@ export const deleteOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdRoute = crea
         },
       },
       headers: z.object({
-        'X-Chat-Last-Common-Read': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Chat-Last-Common-Read': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -10036,12 +10041,10 @@ export const postOcsV2PhpAppsSpreedApiApiVersionChatTokenReadRoute = createRoute
         },
       },
       headers: z.object({
-        'X-Chat-Last-Common-Read': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Chat-Last-Common-Read': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -10122,12 +10125,10 @@ export const deleteOcsV2PhpAppsSpreedApiApiVersionChatTokenReadRoute = createRou
         },
       },
       headers: z.object({
-        'X-Chat-Last-Common-Read': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Chat-Last-Common-Read': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -10345,12 +10346,10 @@ export const postOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdPinRoute = cre
         },
       },
       headers: z.object({
-        'X-Chat-Last-Common-Read': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Chat-Last-Common-Read': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -10487,12 +10486,10 @@ export const deleteOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdPinRoute = c
         },
       },
       headers: z.object({
-        'X-Chat-Last-Common-Read': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Chat-Last-Common-Read': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -16697,6 +16694,145 @@ export const deleteOcsV2PhpAppsSpreedApiApiVersionRecordingTokenNotificationRout
   security: [{ bearer_auth: [] }, { basic_auth: [] }],
 })
 
+export const postOcsV2PhpAppsSpreedApiApiVersionRecordingTokenRetryRoute = createRoute({
+  method: 'post',
+  path: '/ocs/v2.php/apps/spreed/api/{apiVersion}/recording/{token}/retry',
+  tags: ['recording'],
+  summary: 'Retry a failed transcription or summary of a call recording',
+  operationId: 'recording-retry-task',
+  request: {
+    params: z.object({
+      apiVersion: z
+        .literal('v1')
+        .default('v1')
+        .openapi({
+          param: {
+            name: 'apiVersion',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', enum: ['v1'], default: 'v1' },
+          },
+        }),
+      token: z
+        .string()
+        .regex(/^[a-z0-9]{4,30}$/)
+        .openapi({
+          param: {
+            name: 'token',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', pattern: '^[a-z0-9]{4,30}$' },
+          },
+        }),
+    }),
+    headers: z.object({
+      'OCS-APIRequest': z
+        .stringbool()
+        .default(true)
+        .openapi({
+          param: {
+            name: 'OCS-APIRequest',
+            in: 'header',
+            description: 'Required to be true for the API request to pass',
+            required: true,
+            schema: { type: 'boolean', default: true },
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              taskId: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64().min(0n),
+                )
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  minimum: 0,
+                  description: 'ID of the failed task',
+                }),
+              timestamp: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64().min(0n),
+                )
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  minimum: 0,
+                  description: 'Timestamp of the notification to be dismissed',
+                }),
+            })
+            .openapi({ required: ['taskId', 'timestamp'] }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'Task rescheduled successfully',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              ocs: z
+                .object({ meta: OCSMetaSchema, data: z.any().nullable() })
+                .openapi({ required: ['meta', 'data'] }),
+            })
+            .openapi({ required: ['ocs'] }),
+        },
+      },
+    },
+    400: {
+      description: 'Retrying the task is not possible',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              ocs: z
+                .object({
+                  meta: OCSMetaSchema,
+                  data: z.object({ error: z.string() }).openapi({ required: ['error'] }),
+                })
+                .openapi({ required: ['meta', 'data'] }),
+            })
+            .openapi({ required: ['ocs'] }),
+        },
+      },
+    },
+    401: {
+      description: 'Current user is not logged in',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              ocs: z
+                .object({ meta: OCSMetaSchema, data: z.any() })
+                .openapi({ required: ['meta', 'data'] }),
+            })
+            .openapi({ required: ['ocs'] }),
+        },
+      },
+    },
+  },
+  security: [{ bearer_auth: [] }, { basic_auth: [] }],
+})
+
 export const postOcsV2PhpAppsSpreedApiApiVersionRecordingTokenShareChatRoute = createRoute({
   method: 'post',
   path: '/ocs/v2.php/apps/spreed/api/{apiVersion}/recording/{token}/share-chat',
@@ -16957,24 +17093,18 @@ export const getOcsV2PhpAppsSpreedApiApiVersionRoomRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-Nextcloud-Talk-Hash': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Nextcloud-Talk-Modified-Before': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Nextcloud-Talk-Federation-Invites': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Nextcloud-Talk-Hash': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Nextcloud-Talk-Modified-Before': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Nextcloud-Talk-Federation-Invites': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     401: {
@@ -17320,12 +17450,11 @@ export const postOcsV2PhpAppsSpreedApiApiVersionRoomRoute = createRoute({
                   description:
                     'Background color of the avatar (Only considered when an emoji was provided) (only available with `conversation-creation-all` capability)',
                 }),
-              participants: InvitationListSchema.default([])
-                .exactOptional()
-                .openapi({
-                  description:
-                    'List of participants to add grouped by type (only available with `conversation-creation-all` capability)',
-                }),
+              participants: InvitationListSchema.exactOptional().openapi({
+                description:
+                  'List of participants to add grouped by type (only available with `conversation-creation-all` capability)',
+                default: [],
+              }),
               owner: z
                 .string()
                 .default('')
@@ -17828,12 +17957,10 @@ export const getOcsV2PhpAppsSpreedApiApiVersionRoomTokenRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-Nextcloud-Talk-Hash': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Nextcloud-Talk-Hash': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     401: {
@@ -18190,12 +18317,10 @@ export const getOcsV2PhpAppsSpreedApiApiVersionRoomNoteToSelfRoute = createRoute
         },
       },
       headers: z.object({
-        'X-Nextcloud-Talk-Hash': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Nextcloud-Talk-Hash': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     401: {
@@ -18206,625 +18331,6 @@ export const getOcsV2PhpAppsSpreedApiApiVersionRoomNoteToSelfRoute = createRoute
             .object({
               ocs: z
                 .object({ meta: OCSMetaSchema, data: z.any() })
-                .openapi({ required: ['meta', 'data'] }),
-            })
-            .openapi({ required: ['ocs'] }),
-        },
-      },
-    },
-  },
-  security: [{ bearer_auth: [] }, { basic_auth: [] }],
-})
-
-export const getOcsV2PhpAppsSpreedApiApiVersionRoomTokenParticipantsRoute = createRoute({
-  method: 'get',
-  path: '/ocs/v2.php/apps/spreed/api/{apiVersion}/room/{token}/participants',
-  tags: ['room'],
-  summary: 'Get a list of participants for a room',
-  operationId: 'room-get-participants',
-  request: {
-    params: z.object({
-      apiVersion: z
-        .literal('v4')
-        .default('v4')
-        .openapi({
-          param: {
-            name: 'apiVersion',
-            in: 'path',
-            required: true,
-            schema: { type: 'string', enum: ['v4'], default: 'v4' },
-          },
-        }),
-      token: z
-        .string()
-        .regex(/^[a-z0-9]{4,30}$/)
-        .openapi({
-          param: {
-            name: 'token',
-            in: 'path',
-            required: true,
-            schema: { type: 'string', pattern: '^[a-z0-9]{4,30}$' },
-          },
-        }),
-    }),
-    query: z.object({
-      includeStatus: z
-        .stringbool()
-        .default(false)
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'includeStatus',
-            in: 'query',
-            description: 'Include the user statuses',
-            schema: { type: 'boolean', default: false },
-            required: false,
-          },
-        }),
-    }),
-    headers: z.object({
-      'x-nextcloud-federation': z
-        .string()
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'x-nextcloud-federation',
-            in: 'header',
-            description:
-              'Set to 1 when the request is performed by another Nextcloud Server to indicate a federation request',
-            schema: { type: 'string' },
-            required: false,
-          },
-        }),
-      'OCS-APIRequest': z
-        .stringbool()
-        .default(true)
-        .openapi({
-          param: {
-            name: 'OCS-APIRequest',
-            in: 'header',
-            description: 'Required to be true for the API request to pass',
-            required: true,
-            schema: { type: 'boolean', default: true },
-          },
-        }),
-    }),
-  },
-  responses: {
-    200: {
-      description: 'Participants returned',
-      content: {
-        'application/json': {
-          schema: z
-            .object({
-              ocs: z
-                .object({ meta: OCSMetaSchema, data: z.array(ParticipantSchema) })
-                .openapi({ required: ['meta', 'data'] }),
-            })
-            .openapi({ required: ['ocs'] }),
-        },
-      },
-      headers: z.object({
-        'X-Nextcloud-Has-User-Statuses': {
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-      }),
-    },
-    403: {
-      description: 'Missing permissions for getting participants',
-      content: {
-        'application/json': {
-          schema: z
-            .object({
-              ocs: z
-                .object({ meta: OCSMetaSchema, data: z.any().nullable() })
-                .openapi({ required: ['meta', 'data'] }),
-            })
-            .openapi({ required: ['ocs'] }),
-        },
-      },
-    },
-  },
-  security: [{}, { bearer_auth: [] }, { basic_auth: [] }],
-})
-
-export const putOcsV2PhpAppsSpreedApiApiVersionRoomTokenParticipantsRoute = createRoute({
-  method: 'put',
-  path: '/ocs/v2.php/apps/spreed/api/{apiVersion}/room/{token}/participants',
-  tags: ['room'],
-  summary: 'Synchronize the participants of a conversation with the given list',
-  description:
-    'Only available for the external call service. Participants missing from the list are removed (except owners), participants new in the list are added.',
-  operationId: 'room-sync-participants',
-  request: {
-    params: z.object({
-      apiVersion: z
-        .literal('v4')
-        .default('v4')
-        .openapi({
-          param: {
-            name: 'apiVersion',
-            in: 'path',
-            required: true,
-            schema: { type: 'string', enum: ['v4'], default: 'v4' },
-          },
-        }),
-      token: z
-        .string()
-        .regex(/^[a-z0-9]{4,30}$/)
-        .openapi({
-          param: {
-            name: 'token',
-            in: 'path',
-            description: 'Token of the room',
-            required: true,
-            schema: { type: 'string', pattern: '^[a-z0-9]{4,30}$' },
-          },
-        }),
-    }),
-    headers: z.object({
-      'x-nextcloud-talk-external-service-random': z
-        .string()
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'x-nextcloud-talk-external-service-random',
-            in: 'header',
-            description:
-              'Random seed (at least 32 bytes) used together with the owner user ID to generate the SHA256-HMAC request checksum',
-            schema: { type: 'string' },
-            required: false,
-          },
-        }),
-      'x-nextcloud-talk-external-service-checksum': z
-        .string()
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'x-nextcloud-talk-external-service-checksum',
-            in: 'header',
-            description:
-              'SHA256-HMAC checksum over the concatenation of the random seed and the owner user ID, signed with the shared external call service secret, to verify authenticity from the external call service',
-            schema: { type: 'string' },
-            required: false,
-          },
-        }),
-      'OCS-APIRequest': z
-        .stringbool()
-        .default(true)
-        .openapi({
-          param: {
-            name: 'OCS-APIRequest',
-            in: 'header',
-            description: 'Required to be true for the API request to pass',
-            required: true,
-            schema: { type: 'boolean', default: true },
-          },
-        }),
-    }),
-    body: {
-      content: {
-        'application/json': {
-          schema: z
-            .object({
-              participants: InvitationListSchema.default([])
-                .exactOptional()
-                .openapi({
-                  description: 'List of participants the conversation should have grouped by type',
-                }),
-              owner: z
-                .string()
-                .default('')
-                .exactOptional()
-                .openapi({
-                  description: 'User ID of an owner of the conversation that will be used as actor',
-                }),
-            })
-            .openapi({ required: [] }),
-        },
-      },
-    },
-  },
-  responses: {
-    200: {
-      description: 'Participants synchronized successfully',
-      content: {
-        'application/json': {
-          schema: z
-            .object({
-              ocs: z
-                .object({ meta: OCSMetaSchema, data: RoomSchema })
-                .openapi({ required: ['meta', 'data'] }),
-            })
-            .openapi({ required: ['ocs'] }),
-        },
-      },
-    },
-    202: {
-      description: 'Participants synchronized but not all participants could be added',
-      content: {
-        'application/json': {
-          schema: z
-            .object({
-              ocs: z
-                .object({ meta: OCSMetaSchema, data: RoomWithInvalidInvitationsSchema })
-                .openapi({ required: ['meta', 'data'] }),
-            })
-            .openapi({ required: ['ocs'] }),
-        },
-      },
-    },
-    400: {
-      description: 'Room is not an external call service conversation',
-      content: {
-        'application/json': {
-          schema: z
-            .object({
-              ocs: z
-                .object({
-                  meta: OCSMetaSchema,
-                  data: z
-                    .object({ error: z.enum(['owner', 'room', 'room-type']) })
-                    .openapi({ required: ['error'] }),
-                })
-                .openapi({ required: ['meta', 'data'] }),
-            })
-            .openapi({ required: ['ocs'] }),
-        },
-      },
-    },
-    401: {
-      description: 'Invalid external call service secret',
-      content: {
-        'application/json': {
-          schema: z
-            .object({
-              ocs: z
-                .object({
-                  meta: OCSMetaSchema,
-                  data: z.object({ error: z.literal('auth') }).openapi({ required: ['error'] }),
-                })
-                .openapi({ required: ['meta', 'data'] }),
-            })
-            .openapi({ required: ['ocs'] }),
-        },
-      },
-    },
-    403: {
-      description: 'Owner is not an owner of the conversation',
-      content: {
-        'application/json': {
-          schema: z
-            .object({
-              ocs: z
-                .object({
-                  meta: OCSMetaSchema,
-                  data: z
-                    .object({ error: z.enum(['owner', 'room', 'room-type']) })
-                    .openapi({ required: ['error'] }),
-                })
-                .openapi({ required: ['meta', 'data'] }),
-            })
-            .openapi({ required: ['ocs'] }),
-        },
-      },
-    },
-    404: {
-      description: 'Room or owner not found',
-      content: {
-        'application/json': {
-          schema: z
-            .object({
-              ocs: z
-                .object({
-                  meta: OCSMetaSchema,
-                  data: z
-                    .object({ error: z.enum(['owner', 'room', 'room-type']) })
-                    .openapi({ required: ['error'] }),
-                })
-                .openapi({ required: ['meta', 'data'] }),
-            })
-            .openapi({ required: ['ocs'] }),
-        },
-      },
-    },
-  },
-  security: [{}, { bearer_auth: [] }, { basic_auth: [] }],
-})
-
-export const postOcsV2PhpAppsSpreedApiApiVersionRoomTokenParticipantsRoute = createRoute({
-  method: 'post',
-  path: '/ocs/v2.php/apps/spreed/api/{apiVersion}/room/{token}/participants',
-  tags: ['room'],
-  summary: 'Add a participant to a room',
-  operationId: 'room-add-participant-to-room',
-  request: {
-    params: z.object({
-      apiVersion: z
-        .literal('v4')
-        .default('v4')
-        .openapi({
-          param: {
-            name: 'apiVersion',
-            in: 'path',
-            required: true,
-            schema: { type: 'string', enum: ['v4'], default: 'v4' },
-          },
-        }),
-      token: z
-        .string()
-        .regex(/^[a-z0-9]{4,30}$/)
-        .openapi({
-          param: {
-            name: 'token',
-            in: 'path',
-            required: true,
-            schema: { type: 'string', pattern: '^[a-z0-9]{4,30}$' },
-          },
-        }),
-    }),
-    headers: z.object({
-      'OCS-APIRequest': z
-        .stringbool()
-        .default(true)
-        .openapi({
-          param: {
-            name: 'OCS-APIRequest',
-            in: 'header',
-            description: 'Required to be true for the API request to pass',
-            required: true,
-            schema: { type: 'boolean', default: true },
-          },
-        }),
-    }),
-    body: {
-      content: {
-        'application/json': {
-          schema: z
-            .object({
-              newParticipant: z.string().openapi({ description: 'New participant' }),
-              source: z
-                .enum([
-                  'users',
-                  'groups',
-                  'circles',
-                  'emails',
-                  'federated_users',
-                  'phones',
-                  'teams',
-                ])
-                .default('users')
-                .exactOptional()
-                .openapi({ description: 'Source of the participant' }),
-            })
-            .openapi({ required: ['newParticipant'] }),
-        },
-      },
-      required: true,
-    },
-  },
-  responses: {
-    200: {
-      description:
-        'Participant successfully added, in Matrix conversations the user is invited and added once they accepted',
-      content: {
-        'application/json': {
-          schema: z
-            .object({
-              ocs: z
-                .object({
-                  meta: OCSMetaSchema,
-                  data: z
-                    .object({
-                      type: z
-                        .preprocess(
-                          (val) =>
-                            typeof val === 'number' && Number.isSafeInteger(val)
-                              ? BigInt(val)
-                              : typeof val === 'string' && /^-?\d+$/.test(val)
-                                ? BigInt(val)
-                                : val,
-                          z.int64(),
-                        )
-                        .exactOptional()
-                        .openapi({ type: 'integer', format: 'int64' }),
-                    })
-                    .openapi({ required: [] }),
-                })
-                .openapi({ required: ['meta', 'data'] }),
-            })
-            .openapi({ required: ['ocs'] }),
-        },
-      },
-    },
-    400: {
-      description:
-        'Adding participant is not possible, e.g. when the user is banned or an email, phone number or federated user is added to a classified conversation (check error attribute of response for detail key)',
-      content: {
-        'application/json': {
-          schema: z.union([
-            z
-              .object({
-                ocs: z
-                  .object({
-                    meta: OCSMetaSchema,
-                    data: z
-                      .object({
-                        error: z.enum([
-                          'ban',
-                          'classified',
-                          'cloud-id',
-                          'federation',
-                          'moderator',
-                          'new-participant',
-                          'outgoing',
-                          'reach-remote',
-                          'room-type',
-                          'sip',
-                          'source',
-                          'trusted-servers',
-                        ]),
-                      })
-                      .openapi({ required: ['error'] }),
-                  })
-                  .openapi({ required: ['meta', 'data'] }),
-              })
-              .openapi({ required: ['ocs'] }),
-            z
-              .object({
-                ocs: z
-                  .object({
-                    meta: OCSMetaSchema,
-                    data: z
-                      .object({
-                        error: z.enum(['account', 'encrypted', 'matrix', 'message', 'permission']),
-                      })
-                      .openapi({ required: ['error'] }),
-                  })
-                  .openapi({ required: ['meta', 'data'] }),
-              })
-              .openapi({ required: ['ocs'] }),
-          ]),
-        },
-      },
-    },
-    401: {
-      description: 'Current user is not logged in',
-      content: {
-        'application/json': {
-          schema: z
-            .object({
-              ocs: z
-                .object({ meta: OCSMetaSchema, data: z.any() })
-                .openapi({ required: ['meta', 'data'] }),
-            })
-            .openapi({ required: ['ocs'] }),
-        },
-      },
-    },
-    403: {
-      description: 'The Matrix account of the user can not invite to the Matrix room',
-      content: {
-        'application/json': {
-          schema: z
-            .object({
-              ocs: z
-                .object({
-                  meta: OCSMetaSchema,
-                  data: z
-                    .object({
-                      error: z.enum(['account', 'encrypted', 'matrix', 'message', 'permission']),
-                    })
-                    .openapi({ required: ['error'] }),
-                })
-                .openapi({ required: ['meta', 'data'] }),
-            })
-            .openapi({ required: ['ocs'] }),
-        },
-      },
-    },
-    404: {
-      description: 'User, group or other target to invite was not found',
-      content: {
-        'application/json': {
-          schema: z.union([
-            z
-              .object({
-                ocs: z
-                  .object({
-                    meta: OCSMetaSchema,
-                    data: z
-                      .object({
-                        error: z.enum([
-                          'ban',
-                          'classified',
-                          'cloud-id',
-                          'federation',
-                          'moderator',
-                          'new-participant',
-                          'outgoing',
-                          'reach-remote',
-                          'room-type',
-                          'sip',
-                          'source',
-                          'trusted-servers',
-                        ]),
-                      })
-                      .openapi({ required: ['error'] }),
-                  })
-                  .openapi({ required: ['meta', 'data'] }),
-              })
-              .openapi({ required: ['ocs'] }),
-            z
-              .object({
-                ocs: z
-                  .object({
-                    meta: OCSMetaSchema,
-                    data: z
-                      .object({
-                        error: z.enum(['account', 'encrypted', 'matrix', 'message', 'permission']),
-                      })
-                      .openapi({ required: ['error'] }),
-                  })
-                  .openapi({ required: ['meta', 'data'] }),
-              })
-              .openapi({ required: ['ocs'] }),
-          ]),
-        },
-      },
-    },
-    501: {
-      description: 'SIP dial-out is not configured',
-      content: {
-        'application/json': {
-          schema: z
-            .object({
-              ocs: z
-                .object({
-                  meta: OCSMetaSchema,
-                  data: z
-                    .object({
-                      error: z.enum([
-                        'ban',
-                        'classified',
-                        'cloud-id',
-                        'federation',
-                        'moderator',
-                        'new-participant',
-                        'outgoing',
-                        'reach-remote',
-                        'room-type',
-                        'sip',
-                        'source',
-                        'trusted-servers',
-                      ]),
-                    })
-                    .openapi({ required: ['error'] }),
-                })
-                .openapi({ required: ['meta', 'data'] }),
-            })
-            .openapi({ required: ['ocs'] }),
-        },
-      },
-    },
-    502: {
-      description: 'The Matrix homeserver rejected the invite or could not be reached',
-      content: {
-        'application/json': {
-          schema: z
-            .object({
-              ocs: z
-                .object({
-                  meta: OCSMetaSchema,
-                  data: z
-                    .object({
-                      error: z.enum(['account', 'encrypted', 'matrix', 'message', 'permission']),
-                    })
-                    .openapi({ required: ['error'] }),
-                })
                 .openapi({ required: ['meta', 'data'] }),
             })
             .openapi({ required: ['ocs'] }),
@@ -19494,6 +19000,622 @@ export const deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenObjectRoute = createR
   security: [{}, { bearer_auth: [] }, { basic_auth: [] }],
 })
 
+export const getOcsV2PhpAppsSpreedApiApiVersionRoomTokenParticipantsRoute = createRoute({
+  method: 'get',
+  path: '/ocs/v2.php/apps/spreed/api/{apiVersion}/room/{token}/participants',
+  tags: ['room'],
+  summary: 'Get a list of participants for a room',
+  operationId: 'room-get-participants',
+  request: {
+    params: z.object({
+      apiVersion: z
+        .literal('v4')
+        .default('v4')
+        .openapi({
+          param: {
+            name: 'apiVersion',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', enum: ['v4'], default: 'v4' },
+          },
+        }),
+      token: z
+        .string()
+        .regex(/^[a-z0-9]{4,30}$/)
+        .openapi({
+          param: {
+            name: 'token',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', pattern: '^[a-z0-9]{4,30}$' },
+          },
+        }),
+    }),
+    query: z.object({
+      includeStatus: z
+        .stringbool()
+        .default(false)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'includeStatus',
+            in: 'query',
+            description: 'Include the user statuses',
+            schema: { type: 'boolean', default: false },
+            required: false,
+          },
+        }),
+    }),
+    headers: z.object({
+      'x-nextcloud-federation': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'x-nextcloud-federation',
+            in: 'header',
+            description:
+              'Set to 1 when the request is performed by another Nextcloud Server to indicate a federation request',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'OCS-APIRequest': z
+        .stringbool()
+        .default(true)
+        .openapi({
+          param: {
+            name: 'OCS-APIRequest',
+            in: 'header',
+            description: 'Required to be true for the API request to pass',
+            required: true,
+            schema: { type: 'boolean', default: true },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Participants returned',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              ocs: z
+                .object({ meta: OCSMetaSchema, data: z.array(ParticipantSchema) })
+                .openapi({ required: ['meta', 'data'] }),
+            })
+            .openapi({ required: ['ocs'] }),
+        },
+      },
+      headers: z.object({
+        'X-Nextcloud-Has-User-Statuses': z
+          .boolean()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+      }),
+    },
+    403: {
+      description: 'Missing permissions for getting participants',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              ocs: z
+                .object({ meta: OCSMetaSchema, data: z.any().nullable() })
+                .openapi({ required: ['meta', 'data'] }),
+            })
+            .openapi({ required: ['ocs'] }),
+        },
+      },
+    },
+  },
+  security: [{}, { bearer_auth: [] }, { basic_auth: [] }],
+})
+
+export const putOcsV2PhpAppsSpreedApiApiVersionRoomTokenParticipantsRoute = createRoute({
+  method: 'put',
+  path: '/ocs/v2.php/apps/spreed/api/{apiVersion}/room/{token}/participants',
+  tags: ['room'],
+  summary: 'Synchronize the participants of a conversation with the given list',
+  description:
+    'Only available for the external call service. Participants missing from the list are removed (except owners), participants new in the list are added.',
+  operationId: 'room-sync-participants',
+  request: {
+    params: z.object({
+      apiVersion: z
+        .literal('v4')
+        .default('v4')
+        .openapi({
+          param: {
+            name: 'apiVersion',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', enum: ['v4'], default: 'v4' },
+          },
+        }),
+      token: z
+        .string()
+        .regex(/^[a-z0-9]{4,30}$/)
+        .openapi({
+          param: {
+            name: 'token',
+            in: 'path',
+            description: 'Token of the room',
+            required: true,
+            schema: { type: 'string', pattern: '^[a-z0-9]{4,30}$' },
+          },
+        }),
+    }),
+    headers: z.object({
+      'x-nextcloud-talk-external-service-random': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'x-nextcloud-talk-external-service-random',
+            in: 'header',
+            description:
+              'Random seed (at least 32 bytes) used together with the owner user ID to generate the SHA256-HMAC request checksum',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'x-nextcloud-talk-external-service-checksum': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'x-nextcloud-talk-external-service-checksum',
+            in: 'header',
+            description:
+              'SHA256-HMAC checksum over the concatenation of the random seed and the owner user ID, signed with the shared external call service secret, to verify authenticity from the external call service',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'OCS-APIRequest': z
+        .stringbool()
+        .default(true)
+        .openapi({
+          param: {
+            name: 'OCS-APIRequest',
+            in: 'header',
+            description: 'Required to be true for the API request to pass',
+            required: true,
+            schema: { type: 'boolean', default: true },
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              participants: InvitationListSchema.exactOptional().openapi({
+                description: 'List of participants the conversation should have grouped by type',
+                default: [],
+              }),
+              owner: z
+                .string()
+                .default('')
+                .exactOptional()
+                .openapi({
+                  description: 'User ID of an owner of the conversation that will be used as actor',
+                }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'Participants synchronized successfully',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              ocs: z
+                .object({ meta: OCSMetaSchema, data: RoomSchema })
+                .openapi({ required: ['meta', 'data'] }),
+            })
+            .openapi({ required: ['ocs'] }),
+        },
+      },
+    },
+    202: {
+      description: 'Participants synchronized but not all participants could be added',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              ocs: z
+                .object({ meta: OCSMetaSchema, data: RoomWithInvalidInvitationsSchema })
+                .openapi({ required: ['meta', 'data'] }),
+            })
+            .openapi({ required: ['ocs'] }),
+        },
+      },
+    },
+    400: {
+      description: 'Room is not an external call service conversation',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              ocs: z
+                .object({
+                  meta: OCSMetaSchema,
+                  data: z
+                    .object({ error: z.enum(['owner', 'room', 'room-type']) })
+                    .openapi({ required: ['error'] }),
+                })
+                .openapi({ required: ['meta', 'data'] }),
+            })
+            .openapi({ required: ['ocs'] }),
+        },
+      },
+    },
+    401: {
+      description: 'Invalid external call service secret',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              ocs: z
+                .object({
+                  meta: OCSMetaSchema,
+                  data: z.object({ error: z.literal('auth') }).openapi({ required: ['error'] }),
+                })
+                .openapi({ required: ['meta', 'data'] }),
+            })
+            .openapi({ required: ['ocs'] }),
+        },
+      },
+    },
+    403: {
+      description: 'Owner is not an owner of the conversation',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              ocs: z
+                .object({
+                  meta: OCSMetaSchema,
+                  data: z
+                    .object({ error: z.enum(['owner', 'room', 'room-type']) })
+                    .openapi({ required: ['error'] }),
+                })
+                .openapi({ required: ['meta', 'data'] }),
+            })
+            .openapi({ required: ['ocs'] }),
+        },
+      },
+    },
+    404: {
+      description: 'Room or owner not found',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              ocs: z
+                .object({
+                  meta: OCSMetaSchema,
+                  data: z
+                    .object({ error: z.enum(['owner', 'room', 'room-type']) })
+                    .openapi({ required: ['error'] }),
+                })
+                .openapi({ required: ['meta', 'data'] }),
+            })
+            .openapi({ required: ['ocs'] }),
+        },
+      },
+    },
+  },
+  security: [{}, { bearer_auth: [] }, { basic_auth: [] }],
+})
+
+export const postOcsV2PhpAppsSpreedApiApiVersionRoomTokenParticipantsRoute = createRoute({
+  method: 'post',
+  path: '/ocs/v2.php/apps/spreed/api/{apiVersion}/room/{token}/participants',
+  tags: ['room'],
+  summary: 'Add a participant to a room',
+  operationId: 'room-add-participant-to-room',
+  request: {
+    params: z.object({
+      apiVersion: z
+        .literal('v4')
+        .default('v4')
+        .openapi({
+          param: {
+            name: 'apiVersion',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', enum: ['v4'], default: 'v4' },
+          },
+        }),
+      token: z
+        .string()
+        .regex(/^[a-z0-9]{4,30}$/)
+        .openapi({
+          param: {
+            name: 'token',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', pattern: '^[a-z0-9]{4,30}$' },
+          },
+        }),
+    }),
+    headers: z.object({
+      'OCS-APIRequest': z
+        .stringbool()
+        .default(true)
+        .openapi({
+          param: {
+            name: 'OCS-APIRequest',
+            in: 'header',
+            description: 'Required to be true for the API request to pass',
+            required: true,
+            schema: { type: 'boolean', default: true },
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              newParticipant: z.string().openapi({ description: 'New participant' }),
+              source: z
+                .enum([
+                  'users',
+                  'groups',
+                  'circles',
+                  'emails',
+                  'federated_users',
+                  'phones',
+                  'teams',
+                ])
+                .default('users')
+                .exactOptional()
+                .openapi({ description: 'Source of the participant' }),
+            })
+            .openapi({ required: ['newParticipant'] }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description:
+        'Participant successfully added, in Matrix conversations the user is invited and added once they accepted',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              ocs: z
+                .object({
+                  meta: OCSMetaSchema,
+                  data: z
+                    .object({
+                      type: z
+                        .preprocess(
+                          (val) =>
+                            typeof val === 'number' && Number.isSafeInteger(val)
+                              ? BigInt(val)
+                              : typeof val === 'string' && /^-?\d+$/.test(val)
+                                ? BigInt(val)
+                                : val,
+                          z.int64(),
+                        )
+                        .exactOptional()
+                        .openapi({ type: 'integer', format: 'int64' }),
+                    })
+                    .openapi({ required: [] }),
+                })
+                .openapi({ required: ['meta', 'data'] }),
+            })
+            .openapi({ required: ['ocs'] }),
+        },
+      },
+    },
+    400: {
+      description:
+        'Adding participant is not possible, e.g. when the user is banned or an email, phone number or federated user is added to a classified conversation (check error attribute of response for detail key)',
+      content: {
+        'application/json': {
+          schema: z.union([
+            z
+              .object({
+                ocs: z
+                  .object({
+                    meta: OCSMetaSchema,
+                    data: z
+                      .object({
+                        error: z.enum([
+                          'ban',
+                          'classified',
+                          'cloud-id',
+                          'federation',
+                          'moderator',
+                          'new-participant',
+                          'outgoing',
+                          'reach-remote',
+                          'room-type',
+                          'sip',
+                          'source',
+                          'trusted-servers',
+                        ]),
+                      })
+                      .openapi({ required: ['error'] }),
+                  })
+                  .openapi({ required: ['meta', 'data'] }),
+              })
+              .openapi({ required: ['ocs'] }),
+            z
+              .object({
+                ocs: z
+                  .object({
+                    meta: OCSMetaSchema,
+                    data: z
+                      .object({
+                        error: z.enum(['account', 'encrypted', 'matrix', 'message', 'permission']),
+                      })
+                      .openapi({ required: ['error'] }),
+                  })
+                  .openapi({ required: ['meta', 'data'] }),
+              })
+              .openapi({ required: ['ocs'] }),
+          ]),
+        },
+      },
+    },
+    401: {
+      description: 'Current user is not logged in',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              ocs: z
+                .object({ meta: OCSMetaSchema, data: z.any() })
+                .openapi({ required: ['meta', 'data'] }),
+            })
+            .openapi({ required: ['ocs'] }),
+        },
+      },
+    },
+    403: {
+      description: 'The Matrix account of the user can not invite to the Matrix room',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              ocs: z
+                .object({
+                  meta: OCSMetaSchema,
+                  data: z
+                    .object({
+                      error: z.enum(['account', 'encrypted', 'matrix', 'message', 'permission']),
+                    })
+                    .openapi({ required: ['error'] }),
+                })
+                .openapi({ required: ['meta', 'data'] }),
+            })
+            .openapi({ required: ['ocs'] }),
+        },
+      },
+    },
+    404: {
+      description: 'User, group or other target to invite was not found',
+      content: {
+        'application/json': {
+          schema: z.union([
+            z
+              .object({
+                ocs: z
+                  .object({
+                    meta: OCSMetaSchema,
+                    data: z
+                      .object({
+                        error: z.enum([
+                          'ban',
+                          'classified',
+                          'cloud-id',
+                          'federation',
+                          'moderator',
+                          'new-participant',
+                          'outgoing',
+                          'reach-remote',
+                          'room-type',
+                          'sip',
+                          'source',
+                          'trusted-servers',
+                        ]),
+                      })
+                      .openapi({ required: ['error'] }),
+                  })
+                  .openapi({ required: ['meta', 'data'] }),
+              })
+              .openapi({ required: ['ocs'] }),
+            z
+              .object({
+                ocs: z
+                  .object({
+                    meta: OCSMetaSchema,
+                    data: z
+                      .object({
+                        error: z.enum(['account', 'encrypted', 'matrix', 'message', 'permission']),
+                      })
+                      .openapi({ required: ['error'] }),
+                  })
+                  .openapi({ required: ['meta', 'data'] }),
+              })
+              .openapi({ required: ['ocs'] }),
+          ]),
+        },
+      },
+    },
+    501: {
+      description: 'SIP dial-out is not configured',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              ocs: z
+                .object({
+                  meta: OCSMetaSchema,
+                  data: z
+                    .object({
+                      error: z.enum([
+                        'ban',
+                        'classified',
+                        'cloud-id',
+                        'federation',
+                        'moderator',
+                        'new-participant',
+                        'outgoing',
+                        'reach-remote',
+                        'room-type',
+                        'sip',
+                        'source',
+                        'trusted-servers',
+                      ]),
+                    })
+                    .openapi({ required: ['error'] }),
+                })
+                .openapi({ required: ['meta', 'data'] }),
+            })
+            .openapi({ required: ['ocs'] }),
+        },
+      },
+    },
+    502: {
+      description: 'The Matrix homeserver rejected the invite or could not be reached',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              ocs: z
+                .object({
+                  meta: OCSMetaSchema,
+                  data: z
+                    .object({
+                      error: z.enum(['account', 'encrypted', 'matrix', 'message', 'permission']),
+                    })
+                    .openapi({ required: ['error'] }),
+                })
+                .openapi({ required: ['meta', 'data'] }),
+            })
+            .openapi({ required: ['ocs'] }),
+        },
+      },
+    },
+  },
+  security: [{ bearer_auth: [] }, { basic_auth: [] }],
+})
+
 export const getOcsV2PhpAppsSpreedApiApiVersionRoomTokenBreakoutRoomsParticipantsRoute =
   createRoute({
     method: 'get',
@@ -19571,12 +19693,10 @@ export const getOcsV2PhpAppsSpreedApiApiVersionRoomTokenBreakoutRoomsParticipant
           },
         },
         headers: z.object({
-          'X-Nextcloud-Has-User-Statuses': {
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({ param: { required: false } }),
-          },
+          'X-Nextcloud-Has-User-Statuses': z
+            .boolean()
+            .exactOptional()
+            .openapi({ param: { required: false } }),
         }),
       },
       400: {
@@ -21715,12 +21835,10 @@ export const postOcsV2PhpAppsSpreedApiApiVersionRoomTokenParticipantsActiveRoute
         },
       },
       headers: z.object({
-        'X-Nextcloud-Talk-Proxy-Hash': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Nextcloud-Talk-Proxy-Hash': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -22795,12 +22913,10 @@ export const putOcsV2PhpAppsSpreedApiApiVersionRoomTokenAttendeesPermissionsRout
         },
       },
       headers: z.object({
-        'X-Nextcloud-Has-User-Statuses': {
-          schema: z
-            .literal(true)
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Nextcloud-Has-User-Statuses': z
+          .literal(true)
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -24139,18 +24255,14 @@ export const getOcsV2PhpAppsSpreedApiApiVersionRoomTokenCapabilitiesRoute = crea
         },
       },
       headers: z.object({
-        'X-Nextcloud-Talk-Hash': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Nextcloud-Talk-Proxy-Hash': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Nextcloud-Talk-Hash': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Nextcloud-Talk-Proxy-Hash': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -24325,6 +24437,213 @@ export const postOcsV2PhpAppsSpreedApiApiVersionRoomTokenMeetingRoute = createRo
                     })
                     .openapi({ required: ['error'] }),
                 })
+                .openapi({ required: ['meta', 'data'] }),
+            })
+            .openapi({ required: ['ocs'] }),
+        },
+      },
+    },
+    401: {
+      description: 'Current user is not logged in',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              ocs: z
+                .object({ meta: OCSMetaSchema, data: z.any() })
+                .openapi({ required: ['meta', 'data'] }),
+            })
+            .openapi({ required: ['ocs'] }),
+        },
+      },
+    },
+  },
+  security: [{ bearer_auth: [] }, { basic_auth: [] }],
+})
+
+export const postOcsV2PhpAppsSpreedApiApiVersionRoomTokenMuteRoute = createRoute({
+  method: 'post',
+  path: '/ocs/v2.php/apps/spreed/api/{apiVersion}/room/{token}/mute',
+  tags: ['room'],
+  summary:
+    'Mute chat notifications in a conversation until a specific time. Does not alter notification settings for the attendee.',
+  description: 'Required capability: `mute-conversations`',
+  operationId: 'room-mute-conversation',
+  request: {
+    params: z.object({
+      apiVersion: z
+        .literal('v4')
+        .default('v4')
+        .openapi({
+          param: {
+            name: 'apiVersion',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', enum: ['v4'], default: 'v4' },
+          },
+        }),
+      token: z
+        .string()
+        .regex(/^[a-z0-9]{4,30}$/)
+        .openapi({
+          param: {
+            name: 'token',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', pattern: '^[a-z0-9]{4,30}$' },
+          },
+        }),
+    }),
+    headers: z.object({
+      'OCS-APIRequest': z
+        .stringbool()
+        .default(true)
+        .openapi({
+          param: {
+            name: 'OCS-APIRequest',
+            in: 'header',
+            description: 'Required to be true for the API request to pass',
+            required: true,
+            schema: { type: 'boolean', default: true },
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              muteUntil: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64(),
+                )
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  description: 'Unix timestamp until notifications are muted',
+                }),
+            })
+            .openapi({ required: ['muteUntil'] }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'Conversation muted',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              ocs: z
+                .object({ meta: OCSMetaSchema, data: RoomSchema })
+                .openapi({ required: ['meta', 'data'] }),
+            })
+            .openapi({ required: ['ocs'] }),
+        },
+      },
+    },
+    400: {
+      description: 'Timestamp is in the past',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              ocs: z
+                .object({
+                  meta: OCSMetaSchema,
+                  data: z
+                    .object({ error: z.literal('mute-until') })
+                    .openapi({ required: ['error'] }),
+                })
+                .openapi({ required: ['meta', 'data'] }),
+            })
+            .openapi({ required: ['ocs'] }),
+        },
+      },
+    },
+    401: {
+      description: 'Current user is not logged in',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              ocs: z
+                .object({ meta: OCSMetaSchema, data: z.any() })
+                .openapi({ required: ['meta', 'data'] }),
+            })
+            .openapi({ required: ['ocs'] }),
+        },
+      },
+    },
+  },
+  security: [{ bearer_auth: [] }, { basic_auth: [] }],
+})
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenMuteRoute = createRoute({
+  method: 'delete',
+  path: '/ocs/v2.php/apps/spreed/api/{apiVersion}/room/{token}/mute',
+  tags: ['room'],
+  summary:
+    'Unmute chat notifications in a conversation, when they were muted before. Does not alter notification settings for the attendee.',
+  description: 'Required capability: `mute-conversations`',
+  operationId: 'room-unmute-conversation',
+  request: {
+    params: z.object({
+      apiVersion: z
+        .literal('v4')
+        .default('v4')
+        .openapi({
+          param: {
+            name: 'apiVersion',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', enum: ['v4'], default: 'v4' },
+          },
+        }),
+      token: z
+        .string()
+        .regex(/^[a-z0-9]{4,30}$/)
+        .openapi({
+          param: {
+            name: 'token',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', pattern: '^[a-z0-9]{4,30}$' },
+          },
+        }),
+    }),
+    headers: z.object({
+      'OCS-APIRequest': z
+        .stringbool()
+        .default(true)
+        .openapi({
+          param: {
+            name: 'OCS-APIRequest',
+            in: 'header',
+            description: 'Required to be true for the API request to pass',
+            required: true,
+            schema: { type: 'boolean', default: true },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Conversation unmuted',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              ocs: z
+                .object({ meta: OCSMetaSchema, data: RoomSchema })
                 .openapi({ required: ['meta', 'data'] }),
             })
             .openapi({ required: ['ocs'] }),
@@ -26482,12 +26801,10 @@ export const postOcsV2PhpAppsSpreedApiApiVersionRoomTokenFederationActiveRoute =
         },
       },
       headers: z.object({
-        'X-Nextcloud-Talk-Hash': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Nextcloud-Talk-Hash': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
@@ -27553,7 +27870,7 @@ export const postOcsV2PhpAppsSpreedApiApiVersionHostedsignalingserverRequesttria
             schema: z
               .object({
                 ocs: z
-                  .object({ meta: OCSMetaSchema, data: z.record(z.string(), z.object({})) })
+                  .object({ meta: OCSMetaSchema, data: z.record(z.string(), z.looseObject({})) })
                   .openapi({ required: ['meta', 'data'] }),
               })
               .openapi({ required: ['ocs'] }),
@@ -30429,7 +30746,7 @@ export const postOcsV2PhpAppsSpreedApiApiVersionSignalingBackendRoute = createRo
                         .object({
                           version: z.string(),
                           userid: z.string().exactOptional(),
-                          user: z.record(z.string(), z.object({})).exactOptional(),
+                          user: z.record(z.string(), z.looseObject({})).exactOptional(),
                         })
                         .exactOptional()
                         .openapi({ required: ['version'] }),
@@ -30437,9 +30754,9 @@ export const postOcsV2PhpAppsSpreedApiApiVersionSignalingBackendRoute = createRo
                         .object({
                           version: z.string(),
                           roomid: z.string().exactOptional(),
-                          properties: z.record(z.string(), z.object({})).exactOptional(),
+                          properties: z.record(z.string(), z.looseObject({})).exactOptional(),
                           permissions: z.array(z.string()).exactOptional(),
-                          session: z.record(z.string(), z.object({})).exactOptional(),
+                          session: z.record(z.string(), z.looseObject({})).exactOptional(),
                         })
                         .exactOptional()
                         .openapi({ required: ['version'] }),

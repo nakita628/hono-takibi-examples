@@ -24,7 +24,6 @@ export const getAnythingNumbersRoute = createRoute({
             in: 'query',
             name: 'id-exclusive-required',
             schema: {
-              $schema: 'https://json-schema.org/draft/2020-12/schema#',
               type: 'number',
               exclusiveMinimum: 10,
               exclusiveMaximum: 20,
@@ -34,7 +33,6 @@ export const getAnythingNumbersRoute = createRoute({
             },
             required: true,
           },
-          $schema: 'https://json-schema.org/draft/2020-12/schema#',
           example: 14,
         }),
       'id-exclusive-required-schema-v4': z

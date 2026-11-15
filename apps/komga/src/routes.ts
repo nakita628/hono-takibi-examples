@@ -1,33 +1,61 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const SearchOperatorNumericNullableIntegerSchema: z.ZodType<SearchOperatorNumericNullableIntegerType> =
-  z
-    .lazy(() =>
-      z
-        .xor([
-          SearchOperatorGreaterThanSchema,
-          SearchOperatorLessThanSchema,
-          SearchOperatorIsNullTSchema,
-          SearchOperatorIsNotNullTSchema,
-          SearchOperatorIsSchema,
-          SearchOperatorIsNotSchema,
-        ])
-        .openapi({
-          discriminator: {
-            mapping: {
-              greaterThan: '#/components/schemas/SearchOperatorGreaterThan',
-              is: '#/components/schemas/SearchOperatorIs',
-              isNot: '#/components/schemas/SearchOperatorIsNot',
-              isNotNull: '#/components/schemas/SearchOperatorIsNotNullT',
-              isNull: '#/components/schemas/SearchOperatorIsNullT',
-              lessThan: '#/components/schemas/SearchOperatorLessThan',
-            },
-            propertyName: 'operator',
-          },
-          required: ['operator'],
-        }),
-    )
-    .openapi('SearchOperatorNumericNullableInteger')
+const SearchOperatorGreaterThanSchema = z
+  .object({ value: z.any() })
+  .openapi({ required: ['value'] })
+  .openapi('SearchOperatorGreaterThan')
+
+const SearchOperatorLessThanSchema = z
+  .object({ value: z.any() })
+  .openapi({ required: ['value'] })
+  .openapi('SearchOperatorLessThan')
+
+const SearchOperatorIsNullTSchema = z
+  .object({ operator: z.string() })
+  .openapi({ required: ['operator'] })
+  .and(z.object({ operator: z.string() }).openapi({ required: ['operator'] }))
+  .openapi('SearchOperatorIsNullT')
+
+const SearchOperatorIsNotNullTSchema = z
+  .object({ operator: z.string() })
+  .openapi({ required: ['operator'] })
+  .and(z.object({ operator: z.string() }).openapi({ required: ['operator'] }))
+  .openapi('SearchOperatorIsNotNullT')
+
+const SearchOperatorIsSchema = z
+  .object({ value: z.any() })
+  .openapi({ required: ['value'] })
+  .openapi('SearchOperatorIs')
+
+const SearchOperatorIsNotSchema = z
+  .object({ value: z.any() })
+  .openapi({ required: ['value'] })
+  .openapi('SearchOperatorIsNot')
+
+const SearchOperatorNumericNullableIntegerSchema = z
+  .xor([
+    SearchOperatorGreaterThanSchema,
+    SearchOperatorLessThanSchema,
+    SearchOperatorIsNullTSchema,
+    SearchOperatorIsNotNullTSchema,
+    SearchOperatorIsSchema,
+    SearchOperatorIsNotSchema,
+  ])
+  .openapi({
+    discriminator: {
+      propertyName: 'operator',
+      mapping: {
+        greaterThan: '#/components/schemas/SearchOperatorGreaterThan',
+        is: '#/components/schemas/SearchOperatorIs',
+        isNot: '#/components/schemas/SearchOperatorIsNot',
+        isNotNull: '#/components/schemas/SearchOperatorIsNotNullT',
+        isNull: '#/components/schemas/SearchOperatorIsNullT',
+        lessThan: '#/components/schemas/SearchOperatorLessThan',
+      },
+    },
+    required: ['operator'],
+  })
+  .openapi('SearchOperatorNumericNullableInteger')
 
 type SearchConditionAgeRatingType = {
   ageRating: z.infer<typeof SearchOperatorNumericNullableIntegerSchema>
@@ -92,29 +120,15 @@ type SearchConditionAnyOfBookType = { anyOf: z.infer<typeof SearchConditionBookS
 
 type SearchConditionAnyOfSeriesType = { anyOf: z.infer<typeof SearchConditionSeriesSchema>[] }
 
-type SearchOperatorIsType = { value: unknown }
-
-const SearchOperatorIsSchema: z.ZodType<SearchOperatorIsType> = z
-  .object({ value: z.any() })
-  .openapi({ required: ['value'] })
-  .openapi('SearchOperatorIs')
-
-type SearchOperatorIsNotType = { value: unknown }
-
-const SearchOperatorIsNotSchema: z.ZodType<SearchOperatorIsNotType> = z
-  .object({ value: z.any() })
-  .openapi({ required: ['value'] })
-  .openapi('SearchOperatorIsNot')
-
 const SearchOperatorEqualityAuthorMatchSchema = z
   .xor([SearchOperatorIsSchema, SearchOperatorIsNotSchema])
   .openapi({
     discriminator: {
+      propertyName: 'operator',
       mapping: {
         is: '#/components/schemas/SearchOperatorIs',
         isNot: '#/components/schemas/SearchOperatorIsNot',
       },
-      propertyName: 'operator',
     },
     required: ['operator'],
   })
@@ -138,11 +152,11 @@ const SearchOperatorEqualityStringSchema = z
   .xor([SearchOperatorIsSchema, SearchOperatorIsNotSchema])
   .openapi({
     discriminator: {
+      propertyName: 'operator',
       mapping: {
         is: '#/components/schemas/SearchOperatorIs',
         isNot: '#/components/schemas/SearchOperatorIsNot',
       },
-      propertyName: 'operator',
     },
     required: ['operator'],
   })
@@ -173,21 +187,28 @@ const SearchConditionSeriesIdSchema: z.ZodType<SearchConditionSeriesIdType> = z
   .openapi({ required: ['seriesId'] })
   .openapi('SearchConditionSeriesId')
 
-const SearchOperatorBooleanSchema: z.ZodType<SearchOperatorBooleanType> = z
-  .lazy(() =>
-    z
-      .xor([SearchOperatorIsTrueSchema, SearchOperatorIsFalseSchema])
-      .openapi({
-        discriminator: {
-          mapping: {
-            isFalse: '#/components/schemas/SearchOperatorIsFalse',
-            isTrue: '#/components/schemas/SearchOperatorIsTrue',
-          },
-          propertyName: 'operator',
-        },
-        required: ['operator'],
-      }),
-  )
+const SearchOperatorIsTrueSchema = z
+  .object({ operator: z.string() })
+  .openapi({ required: ['operator'] })
+  .openapi('SearchOperatorIsTrue')
+
+const SearchOperatorIsFalseSchema = z
+  .object({ operator: z.string() })
+  .openapi({ required: ['operator'] })
+  .openapi('SearchOperatorIsFalse')
+
+const SearchOperatorBooleanSchema = z
+  .xor([SearchOperatorIsTrueSchema, SearchOperatorIsFalseSchema])
+  .openapi({
+    discriminator: {
+      propertyName: 'operator',
+      mapping: {
+        isFalse: '#/components/schemas/SearchOperatorIsFalse',
+        isTrue: '#/components/schemas/SearchOperatorIsTrue',
+      },
+    },
+    required: ['operator'],
+  })
   .openapi('SearchOperatorBoolean')
 
 type SearchConditionDeletedType = { deleted: z.infer<typeof SearchOperatorBooleanSchema> }
@@ -247,6 +268,7 @@ const SearchOperatorStringSchema = z
   ])
   .openapi({
     discriminator: {
+      propertyName: 'operator',
       mapping: {
         beginsWith: '#/components/schemas/SearchOperatorBeginsWith',
         contains: '#/components/schemas/SearchOperatorContains',
@@ -257,7 +279,6 @@ const SearchOperatorStringSchema = z
         is: '#/components/schemas/SearchOperatorIs',
         isNot: '#/components/schemas/SearchOperatorIsNot',
       },
-      propertyName: 'operator',
     },
     required: ['operator'],
   })
@@ -270,32 +291,59 @@ const SearchConditionTitleSchema: z.ZodType<SearchConditionTitleType> = z
   .openapi({ required: ['title'] })
   .openapi('SearchConditionTitle')
 
-const SearchOperatorDateSchema: z.ZodType<SearchOperatorDateType> = z
-  .lazy(() =>
-    z
-      .xor([
-        SearchOperatorBeforeSchema,
-        SearchOperatorAfterSchema,
-        SearchOperatorIsInTheLastSchema,
-        SearchOperatorIsNotInTheLastSchema,
-        SearchOperatorIsNullSchema,
-        SearchOperatorIsNotNullSchema,
-      ])
-      .openapi({
-        discriminator: {
-          mapping: {
-            after: '#/components/schemas/SearchOperatorAfter',
-            before: '#/components/schemas/SearchOperatorBefore',
-            isInTheLast: '#/components/schemas/SearchOperatorIsInTheLast',
-            isNotInTheLast: '#/components/schemas/SearchOperatorIsNotInTheLast',
-            isNotNull: '#/components/schemas/SearchOperatorIsNotNull',
-            isNull: '#/components/schemas/SearchOperatorIsNull',
-          },
-          propertyName: 'operator',
-        },
-        required: ['operator'],
-      }),
-  )
+const SearchOperatorBeforeSchema = z
+  .object({ dateTime: z.iso.datetime({ offset: true }) })
+  .openapi({ required: ['dateTime'] })
+  .openapi('SearchOperatorBefore')
+
+const SearchOperatorAfterSchema = z
+  .object({ dateTime: z.iso.datetime({ offset: true }) })
+  .openapi({ required: ['dateTime'] })
+  .openapi('SearchOperatorAfter')
+
+const SearchOperatorIsInTheLastSchema = z
+  .object({ duration: z.string() })
+  .openapi({ required: ['duration'] })
+  .openapi('SearchOperatorIsInTheLast')
+
+const SearchOperatorIsNotInTheLastSchema = z
+  .object({ duration: z.string() })
+  .openapi({ required: ['duration'] })
+  .openapi('SearchOperatorIsNotInTheLast')
+
+const SearchOperatorIsNullSchema = z
+  .object({ operator: z.string() })
+  .openapi({ required: ['operator'] })
+  .openapi('SearchOperatorIsNull')
+
+const SearchOperatorIsNotNullSchema = z
+  .object({ operator: z.string() })
+  .openapi({ required: ['operator'] })
+  .openapi('SearchOperatorIsNotNull')
+
+const SearchOperatorDateSchema = z
+  .xor([
+    SearchOperatorBeforeSchema,
+    SearchOperatorAfterSchema,
+    SearchOperatorIsInTheLastSchema,
+    SearchOperatorIsNotInTheLastSchema,
+    SearchOperatorIsNullSchema,
+    SearchOperatorIsNotNullSchema,
+  ])
+  .openapi({
+    discriminator: {
+      propertyName: 'operator',
+      mapping: {
+        after: '#/components/schemas/SearchOperatorAfter',
+        before: '#/components/schemas/SearchOperatorBefore',
+        isInTheLast: '#/components/schemas/SearchOperatorIsInTheLast',
+        isNotInTheLast: '#/components/schemas/SearchOperatorIsNotInTheLast',
+        isNotNull: '#/components/schemas/SearchOperatorIsNotNull',
+        isNull: '#/components/schemas/SearchOperatorIsNull',
+      },
+    },
+    required: ['operator'],
+  })
   .openapi('SearchOperatorDate')
 
 type SearchConditionReleaseDateType = { releaseDate: z.infer<typeof SearchOperatorDateSchema> }
@@ -305,30 +353,26 @@ const SearchConditionReleaseDateSchema: z.ZodType<SearchConditionReleaseDateType
   .openapi({ required: ['releaseDate'] })
   .openapi('SearchConditionReleaseDate')
 
-const SearchOperatorEqualityNullableStringSchema: z.ZodType<SearchOperatorEqualityNullableStringType> =
-  z
-    .lazy(() =>
-      z
-        .xor([
-          SearchOperatorIsSchema,
-          SearchOperatorIsNotSchema,
-          SearchOperatorIsNullTSchema,
-          SearchOperatorIsNotNullTSchema,
-        ])
-        .openapi({
-          discriminator: {
-            mapping: {
-              is: '#/components/schemas/SearchOperatorIs',
-              isNot: '#/components/schemas/SearchOperatorIsNot',
-              isNotNull: '#/components/schemas/SearchOperatorIsNotNullT',
-              isNull: '#/components/schemas/SearchOperatorIsNullT',
-            },
-            propertyName: 'operator',
-          },
-          required: ['operator'],
-        }),
-    )
-    .openapi('SearchOperatorEqualityNullableString')
+const SearchOperatorEqualityNullableStringSchema = z
+  .xor([
+    SearchOperatorIsSchema,
+    SearchOperatorIsNotSchema,
+    SearchOperatorIsNullTSchema,
+    SearchOperatorIsNotNullTSchema,
+  ])
+  .openapi({
+    discriminator: {
+      propertyName: 'operator',
+      mapping: {
+        is: '#/components/schemas/SearchOperatorIs',
+        isNot: '#/components/schemas/SearchOperatorIsNot',
+        isNotNull: '#/components/schemas/SearchOperatorIsNotNullT',
+        isNull: '#/components/schemas/SearchOperatorIsNullT',
+      },
+    },
+    required: ['operator'],
+  })
+  .openapi('SearchOperatorEqualityNullableString')
 
 type SearchConditionTagType = { tag: z.infer<typeof SearchOperatorEqualityNullableStringSchema> }
 
@@ -336,20 +380,6 @@ const SearchConditionTagSchema: z.ZodType<SearchConditionTagType> = z
   .object({ tag: SearchOperatorEqualityNullableStringSchema })
   .openapi({ required: ['tag'] })
   .openapi('SearchConditionTag')
-
-type SearchOperatorGreaterThanType = { value: unknown }
-
-const SearchOperatorGreaterThanSchema: z.ZodType<SearchOperatorGreaterThanType> = z
-  .object({ value: z.any() })
-  .openapi({ required: ['value'] })
-  .openapi('SearchOperatorGreaterThan')
-
-type SearchOperatorLessThanType = { value: unknown }
-
-const SearchOperatorLessThanSchema: z.ZodType<SearchOperatorLessThanType> = z
-  .object({ value: z.any() })
-  .openapi({ required: ['value'] })
-  .openapi('SearchOperatorLessThan')
 
 const SearchOperatorNumericTFloatSchema = z
   .xor([
@@ -360,13 +390,13 @@ const SearchOperatorNumericTFloatSchema = z
   ])
   .openapi({
     discriminator: {
+      propertyName: 'operator',
       mapping: {
         greaterThan: '#/components/schemas/SearchOperatorGreaterThan',
         is: '#/components/schemas/SearchOperatorIs',
         isNot: '#/components/schemas/SearchOperatorIsNot',
         lessThan: '#/components/schemas/SearchOperatorLessThan',
       },
-      propertyName: 'operator',
     },
     required: ['operator'],
   })
@@ -385,11 +415,11 @@ const SearchOperatorEqualityReadStatusSchema = z
   .xor([SearchOperatorIsSchema, SearchOperatorIsNotSchema])
   .openapi({
     discriminator: {
+      propertyName: 'operator',
       mapping: {
         is: '#/components/schemas/SearchOperatorIs',
         isNot: '#/components/schemas/SearchOperatorIsNot',
       },
-      propertyName: 'operator',
     },
     required: ['operator'],
   })
@@ -408,11 +438,11 @@ const SearchOperatorEqualityStatusSchema = z
   .xor([SearchOperatorIsSchema, SearchOperatorIsNotSchema])
   .openapi({
     discriminator: {
+      propertyName: 'operator',
       mapping: {
         is: '#/components/schemas/SearchOperatorIs',
         isNot: '#/components/schemas/SearchOperatorIsNot',
       },
-      propertyName: 'operator',
     },
     required: ['operator'],
   })
@@ -431,11 +461,11 @@ const SearchOperatorEqualityMediaProfileSchema = z
   .xor([SearchOperatorIsSchema, SearchOperatorIsNotSchema])
   .openapi({
     discriminator: {
+      propertyName: 'operator',
       mapping: {
         is: '#/components/schemas/SearchOperatorIs',
         isNot: '#/components/schemas/SearchOperatorIsNot',
       },
-      propertyName: 'operator',
     },
     required: ['operator'],
   })
@@ -459,11 +489,11 @@ const SearchOperatorEqualityNotableEntityMatchSchema = z
   .xor([SearchOperatorIsSchema, SearchOperatorIsNotSchema])
   .openapi({
     discriminator: {
+      propertyName: 'operator',
       mapping: {
         is: '#/components/schemas/SearchOperatorIs',
         isNot: '#/components/schemas/SearchOperatorIsNot',
       },
-      propertyName: 'operator',
     },
     required: ['operator'],
   })
@@ -482,11 +512,11 @@ const SearchOperatorEqualityPosterMatchSchema = z
   .xor([SearchOperatorIsSchema, SearchOperatorIsNotSchema])
   .openapi({
     discriminator: {
+      propertyName: 'operator',
       mapping: {
         is: '#/components/schemas/SearchOperatorIs',
         isNot: '#/components/schemas/SearchOperatorIsNot',
       },
-      propertyName: 'operator',
     },
     required: ['operator'],
   })
@@ -623,101 +653,123 @@ type SearchConditionSeriesType =
   | z.infer<typeof SearchConditionAuthorSchema>
   | z.infer<typeof SearchConditionNotableEntitySchema>
 
-type SearchOperatorAfterType = { dateTime: string }
+const WPLinkDtoSchema = z
+  .object({
+    height: z.int32().exactOptional(),
+    href: z.string().exactOptional(),
+    properties: z.record(z.string(), z.record(z.string(), z.any())),
+    rel: z.string().exactOptional(),
+    templated: z.boolean().exactOptional(),
+    title: z.string().exactOptional(),
+    type: z.string().exactOptional(),
+    width: z.int32().exactOptional(),
+  })
+  .openapi({ required: ['properties'] })
+  .openapi('WPLinkDto')
 
-type SearchOperatorBeforeType = { dateTime: string }
+const WPContributorDtoSchema = z
+  .object({
+    links: z.array(WPLinkDtoSchema),
+    name: z.string(),
+    position: z.float32().exactOptional(),
+  })
+  .openapi({ required: ['links', 'name'] })
+  .openapi('WPContributorDto')
 
-const SearchOperatorIsTrueSchema: z.ZodType<SearchOperatorIsTrueType> = z
-  .lazy(() => SearchOperatorBooleanSchema)
-  .openapi('SearchOperatorIsTrue')
+const WPBelongsToDtoSchema = z
+  .object({ collection: z.array(WPContributorDtoSchema), series: z.array(WPContributorDtoSchema) })
+  .openapi({ required: ['collection', 'series'] })
+  .openapi('WPBelongsToDto')
 
-const SearchOperatorIsFalseSchema: z.ZodType<SearchOperatorIsFalseType> = z
-  .lazy(() => SearchOperatorBooleanSchema)
-  .openapi('SearchOperatorIsFalse')
+type WPMetadataDtoType = {
+  artist: string[]
+  author: string[]
+  belongsTo?: z.infer<typeof WPBelongsToDtoSchema>
+  colorist: string[]
+  conformsTo?: string
+  contributor: string[]
+  description?: string
+  editor: string[]
+  identifier?: string
+  illustrator: string[]
+  inker: string[]
+  language?: string
+  letterer: string[]
+  modified?: string
+  numberOfPages?: number
+  penciler: string[]
+  published?: string
+  publisher: string[]
+  readingProgression?: 'rtl' | 'ltr' | 'ttb' | 'btt' | 'auto'
+  rendition: { [key: string]: unknown }
+  sortAs?: string
+  subject: string[]
+  subtitle?: string
+  title: string
+  translator: string[]
+  type?: string
+}
 
-type SearchOperatorBooleanType =
-  | z.infer<typeof SearchOperatorIsTrueSchema>
-  | z.infer<typeof SearchOperatorIsFalseSchema>
+const WPMetadataDtoSchema: z.ZodType<WPMetadataDtoType> = z
+  .object({
+    artist: z.array(z.string()),
+    author: z.array(z.string()),
+    belongsTo: WPBelongsToDtoSchema.exactOptional(),
+    colorist: z.array(z.string()),
+    conformsTo: z.string().exactOptional(),
+    contributor: z.array(z.string()),
+    description: z.string().exactOptional(),
+    editor: z.array(z.string()),
+    identifier: z.string().exactOptional(),
+    illustrator: z.array(z.string()),
+    inker: z.array(z.string()),
+    language: z.string().exactOptional(),
+    letterer: z.array(z.string()),
+    modified: z.iso.datetime({ offset: true }).exactOptional(),
+    numberOfPages: z.int32().exactOptional(),
+    penciler: z.array(z.string()),
+    published: z.iso.date().exactOptional(),
+    publisher: z.array(z.string()),
+    readingProgression: z.enum(['rtl', 'ltr', 'ttb', 'btt', 'auto']).exactOptional(),
+    rendition: z.record(z.string(), z.any()),
+    sortAs: z.string().exactOptional(),
+    subject: z.array(z.string()),
+    subtitle: z.string().exactOptional(),
+    title: z.string(),
+    translator: z.array(z.string()),
+    type: z.string().exactOptional(),
+  })
+  .openapi({
+    required: [
+      'artist',
+      'author',
+      'colorist',
+      'contributor',
+      'editor',
+      'illustrator',
+      'inker',
+      'letterer',
+      'penciler',
+      'publisher',
+      'rendition',
+      'subject',
+      'title',
+      'translator',
+    ],
+  })
+  .openapi('WPMetadataDto')
 
-const SearchOperatorBeforeSchema: z.ZodType<SearchOperatorBeforeType> = z
-  .object({ dateTime: z.iso.datetime({ offset: true }) })
-  .openapi({ required: ['dateTime'] })
-  .openapi('SearchOperatorBefore')
-
-const SearchOperatorAfterSchema: z.ZodType<SearchOperatorAfterType> = z
-  .object({ dateTime: z.iso.datetime({ offset: true }) })
-  .openapi({ required: ['dateTime'] })
-  .openapi('SearchOperatorAfter')
-
-type SearchOperatorIsInTheLastType = { duration: string }
-
-const SearchOperatorIsInTheLastSchema: z.ZodType<SearchOperatorIsInTheLastType> = z
-  .object({ duration: z.string() })
-  .openapi({ required: ['duration'] })
-  .openapi('SearchOperatorIsInTheLast')
-
-type SearchOperatorIsNotInTheLastType = { duration: string }
-
-const SearchOperatorIsNotInTheLastSchema: z.ZodType<SearchOperatorIsNotInTheLastType> = z
-  .object({ duration: z.string() })
-  .openapi({ required: ['duration'] })
-  .openapi('SearchOperatorIsNotInTheLast')
-
-const SearchOperatorIsNullSchema: z.ZodType<SearchOperatorIsNullType> = z
-  .lazy(() => SearchOperatorDateSchema)
-  .openapi('SearchOperatorIsNull')
-
-const SearchOperatorIsNotNullSchema: z.ZodType<SearchOperatorIsNotNullType> = z
-  .lazy(() => SearchOperatorDateSchema)
-  .openapi('SearchOperatorIsNotNull')
-
-type SearchOperatorDateType =
-  | z.infer<typeof SearchOperatorBeforeSchema>
-  | z.infer<typeof SearchOperatorAfterSchema>
-  | z.infer<typeof SearchOperatorIsInTheLastSchema>
-  | z.infer<typeof SearchOperatorIsNotInTheLastSchema>
-  | z.infer<typeof SearchOperatorIsNullSchema>
-  | z.infer<typeof SearchOperatorIsNotNullSchema>
-
-const SearchOperatorIsNullTSchema: z.ZodType<SearchOperatorIsNullTType> = z
-  .lazy(() =>
-    SearchOperatorNumericNullableIntegerSchema.and(SearchOperatorEqualityNullableStringSchema),
-  )
-  .openapi('SearchOperatorIsNullT')
-
-const SearchOperatorIsNotNullTSchema: z.ZodType<SearchOperatorIsNotNullTType> = z
-  .lazy(() =>
-    SearchOperatorNumericNullableIntegerSchema.and(SearchOperatorEqualityNullableStringSchema),
-  )
-  .openapi('SearchOperatorIsNotNullT')
-
-type SearchOperatorEqualityNullableStringType =
-  | z.infer<typeof SearchOperatorIsSchema>
-  | z.infer<typeof SearchOperatorIsNotSchema>
-  | z.infer<typeof SearchOperatorIsNullTSchema>
-  | z.infer<typeof SearchOperatorIsNotNullTSchema>
-
-type SearchOperatorIsFalseType = z.infer<typeof SearchOperatorBooleanSchema>
-
-type SearchOperatorIsNotNullType = z.infer<typeof SearchOperatorDateSchema>
-
-type SearchOperatorIsNotNullTType = z.infer<typeof SearchOperatorNumericNullableIntegerSchema> &
-  z.infer<typeof SearchOperatorEqualityNullableStringSchema>
-
-type SearchOperatorIsNullType = z.infer<typeof SearchOperatorDateSchema>
-
-type SearchOperatorIsNullTType = z.infer<typeof SearchOperatorNumericNullableIntegerSchema> &
-  z.infer<typeof SearchOperatorEqualityNullableStringSchema>
-
-type SearchOperatorIsTrueType = z.infer<typeof SearchOperatorBooleanSchema>
-
-type SearchOperatorNumericNullableIntegerType =
-  | z.infer<typeof SearchOperatorGreaterThanSchema>
-  | z.infer<typeof SearchOperatorLessThanSchema>
-  | z.infer<typeof SearchOperatorIsNullTSchema>
-  | z.infer<typeof SearchOperatorIsNotNullTSchema>
-  | z.infer<typeof SearchOperatorIsSchema>
-  | z.infer<typeof SearchOperatorIsNotSchema>
+type WPPublicationDtoType = {
+  context?: string
+  images: z.infer<typeof WPLinkDtoSchema>[]
+  landmarks: z.infer<typeof WPLinkDtoSchema>[]
+  links: z.infer<typeof WPLinkDtoSchema>[]
+  metadata: z.infer<typeof WPMetadataDtoSchema>
+  pageList: z.infer<typeof WPLinkDtoSchema>[]
+  readingOrder: z.infer<typeof WPLinkDtoSchema>[]
+  resources: z.infer<typeof WPLinkDtoSchema>[]
+  toc: z.infer<typeof WPLinkDtoSchema>[]
+}
 
 const AgeRestrictionDtoSchema = z
   .object({ age: z.int32(), restriction: z.enum(['ALLOW_ONLY', 'EXCLUDE']) })
@@ -1253,6 +1305,30 @@ const JsonFeedDtoSchema = z
       title: 'Announcements',
       home_page_url: 'https://komga.org/blog',
       description: 'Latest Komga announcements',
+      items: [
+        {
+          id: 'https://komga.org/blog/ebook-drop2',
+          url: 'https://komga.org/blog/ebook-drop2',
+          title: 'eBook drop 2',
+          summary: 'Version 1.9.0 contains the second feature drop for Ebooks support.',
+          content_html: '<p>A longer text…</p>',
+          date_modified: '2023-12-15T00:00:00Z',
+          author: { name: 'gotson', url: 'https://github.com/gotson' },
+          tags: ['upgrade', 'komga'],
+          _komga: { read: false },
+        },
+        {
+          id: 'https://komga.org/blog/ebook-support',
+          url: 'https://komga.org/blog/ebook-support',
+          title: 'eBook support',
+          summary: 'Version 1.8.0 is bringing a long awaited feature: proper eBook support!',
+          content_html: '<p>A longer text…</p>',
+          date_modified: '2023-11-29T00:00:00Z',
+          author: { name: 'gotson', url: 'https://github.com/gotson' },
+          tags: ['upgrade', 'komga'],
+          _komga: { read: true },
+        },
+      ],
     },
     required: ['items', 'title', 'version'],
   })
@@ -2868,84 +2944,7 @@ const ValidationErrorResponseSchema = z
   .openapi({ required: ['violations'] })
   .openapi('ValidationErrorResponse')
 
-const WPLinkDtoSchema = z
-  .object({
-    height: z.int32().exactOptional(),
-    href: z.string().exactOptional(),
-    properties: z.record(z.string(), z.record(z.string(), z.any())),
-    rel: z.string().exactOptional(),
-    templated: z.boolean().exactOptional(),
-    title: z.string().exactOptional(),
-    type: z.string().exactOptional(),
-    width: z.int32().exactOptional(),
-  })
-  .openapi({ required: ['properties'] })
-  .openapi('WPLinkDto')
-
-const WPContributorDtoSchema = z
-  .object({
-    links: z.array(WPLinkDtoSchema),
-    name: z.string(),
-    position: z.float32().exactOptional(),
-  })
-  .openapi({ required: ['links', 'name'] })
-  .openapi('WPContributorDto')
-
-const WPBelongsToDtoSchema = z
-  .object({ collection: z.array(WPContributorDtoSchema), series: z.array(WPContributorDtoSchema) })
-  .openapi({ required: ['collection', 'series'] })
-  .openapi('WPBelongsToDto')
-
-const WPMetadataDtoSchema = z
-  .object({
-    artist: z.array(z.string()),
-    author: z.array(z.string()),
-    belongsTo: WPBelongsToDtoSchema.exactOptional(),
-    colorist: z.array(z.string()),
-    conformsTo: z.string().exactOptional(),
-    contributor: z.array(z.string()),
-    description: z.string().exactOptional(),
-    editor: z.array(z.string()),
-    identifier: z.string().exactOptional(),
-    illustrator: z.array(z.string()),
-    inker: z.array(z.string()),
-    language: z.string().exactOptional(),
-    letterer: z.array(z.string()),
-    modified: z.iso.datetime({ offset: true }).exactOptional(),
-    numberOfPages: z.int32().exactOptional(),
-    penciler: z.array(z.string()),
-    published: z.iso.date().exactOptional(),
-    publisher: z.array(z.string()),
-    readingProgression: z.enum(['rtl', 'ltr', 'ttb', 'btt', 'auto']).exactOptional(),
-    rendition: z.record(z.string(), z.any()),
-    sortAs: z.string().exactOptional(),
-    subject: z.array(z.string()),
-    subtitle: z.string().exactOptional(),
-    title: z.string(),
-    translator: z.array(z.string()),
-    type: z.string().exactOptional(),
-  })
-  .openapi({
-    required: [
-      'artist',
-      'author',
-      'colorist',
-      'contributor',
-      'editor',
-      'illustrator',
-      'inker',
-      'letterer',
-      'penciler',
-      'publisher',
-      'rendition',
-      'subject',
-      'title',
-      'translator',
-    ],
-  })
-  .openapi('WPMetadataDto')
-
-const WPPublicationDtoSchema = z
+const WPPublicationDtoSchema: z.ZodType<WPPublicationDtoType> = z
   .object({
     context: z.string().exactOptional(),
     images: z.array(WPLinkDtoSchema),

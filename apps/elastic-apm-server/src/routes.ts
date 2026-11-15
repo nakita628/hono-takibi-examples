@@ -137,7 +137,7 @@ const ErrorSchema = z
                 required: [],
               }),
             custom: z
-              .object({})
+              .looseObject({})
               .nullable()
               .exactOptional()
               .openapi({
@@ -252,7 +252,7 @@ const ErrorSchema = z
             request: z
               .object({
                 body: z
-                  .union([z.string(), z.object({})])
+                  .union([z.string(), z.looseObject({})])
                   .nullable()
                   .exactOptional()
                   .openapi({
@@ -260,14 +260,14 @@ const ErrorSchema = z
                       'Body only contais the request bod, not the query string information. It can either be a dictionary (for standard HTTP requests) or a raw request body.',
                   }),
                 cookies: z
-                  .object({})
+                  .looseObject({})
                   .nullable()
                   .exactOptional()
                   .openapi({
                     description: 'Cookies used by the request, parsed as key-value objects.',
                   }),
                 env: z
-                  .object({})
+                  .looseObject({})
                   .nullable()
                   .exactOptional()
                   .openapi({
@@ -768,12 +768,12 @@ const ErrorSchema = z
             z
               .object({
                 attributes: z
-                  .object({})
+                  .looseObject({})
                   .nullable()
                   .exactOptional()
                   .openapi({ description: 'Attributes of the exception.' }),
                 cause: z
-                  .array(z.object({}))
+                  .array(z.looseObject({}))
                   .min(0)
                   .nullable()
                   .exactOptional()
@@ -895,7 +895,7 @@ const ErrorSchema = z
                                   "PreContext is a slice of code lines immediately after the line from the frame's file.",
                               }),
                             vars: z
-                              .object({})
+                              .looseObject({})
                               .nullable()
                               .exactOptional()
                               .openapi({
@@ -1041,7 +1041,7 @@ const ErrorSchema = z
                               "PreContext is a slice of code lines immediately after the line from the frame's file.",
                           }),
                         vars: z
-                          .object({})
+                          .looseObject({})
                           .nullable()
                           .exactOptional()
                           .openapi({
@@ -1136,7 +1136,6 @@ const ErrorSchema = z
       .openapi({ required: ['id'] }),
   )
   .openapi({
-    $id: 'docs/spec/v2/error',
     description:
       'errorEvent represents an error or a logged error message, captured by an APM agent in a monitored service.',
     required: ['id'],
@@ -1621,7 +1620,7 @@ const MetadataSchema = z
         required: [],
       }),
   })
-  .openapi({ $id: 'docs/spec/v2/metadata', required: ['service'] })
+  .openapi({ required: ['service'] })
   .openapi('Metadata')
 
 const MetadataEventSchema = z
@@ -1875,7 +1874,7 @@ const MetricsetSchema = z
         required: [],
       }),
   })
-  .openapi({ $id: 'docs/spec/v2/metricset', required: ['samples'] })
+  .openapi({ required: ['samples'] })
   .openapi('Metricset')
 
 const MetricSetEventSchema = z
@@ -2502,7 +2501,7 @@ const SpanSchema = z
         otel: z
           .object({
             attributes: z
-              .object({})
+              .looseObject({})
               .nullable()
               .exactOptional()
               .openapi({ description: 'Attributes hold the unmapped OpenTelemetry attributes.' }),
@@ -2627,7 +2626,7 @@ const SpanSchema = z
                           "PreContext is a slice of code lines immediately after the line from the frame's file.",
                       }),
                     vars: z
-                      .object({})
+                      .looseObject({})
                       .nullable()
                       .exactOptional()
                       .openapi({
@@ -2700,10 +2699,7 @@ const SpanSchema = z
       })
       .openapi({ required: ['id', 'trace_id', 'name', 'parent_id', 'type', 'duration'] }),
   )
-  .openapi({
-    $id: 'docs/spec/v2/span',
-    required: ['id', 'trace_id', 'name', 'parent_id', 'type', 'duration'],
-  })
+  .openapi({ required: ['id', 'trace_id', 'name', 'parent_id', 'type', 'duration'] })
   .openapi('Span')
 
 const SpanEventSchema = z
@@ -2786,7 +2782,7 @@ const TransactionSchema = z
             required: [],
           }),
         custom: z
-          .object({})
+          .looseObject({})
           .nullable()
           .exactOptional()
           .openapi({
@@ -2899,7 +2895,7 @@ const TransactionSchema = z
         request: z
           .object({
             body: z
-              .union([z.string(), z.object({})])
+              .union([z.string(), z.looseObject({})])
               .nullable()
               .exactOptional()
               .openapi({
@@ -2907,14 +2903,14 @@ const TransactionSchema = z
                   'Body only contais the request bod, not the query string information. It can either be a dictionary (for standard HTTP requests) or a raw request body.',
               }),
             cookies: z
-              .object({})
+              .looseObject({})
               .nullable()
               .exactOptional()
               .openapi({
                 description: 'Cookies used by the request, parsed as key-value objects.',
               }),
             env: z
-              .object({})
+              .looseObject({})
               .nullable()
               .exactOptional()
               .openapi({
@@ -3625,7 +3621,7 @@ const TransactionSchema = z
     otel: z
       .object({
         attributes: z
-          .object({})
+          .looseObject({})
           .nullable()
           .exactOptional()
           .openapi({ description: 'Attributes hold the unmapped OpenTelemetry attributes.' }),
@@ -3741,10 +3737,7 @@ const TransactionSchema = z
           "Type expresses the transaction's type as keyword that has specific relevance within the service's domain, eg: 'request', 'backgroundjob'.",
       }),
   })
-  .openapi({
-    $id: 'docs/spec/v2/transaction',
-    required: ['trace_id', 'id', 'type', 'span_count', 'duration'],
-  })
+  .openapi({ required: ['trace_id', 'id', 'type', 'span_count', 'duration'] })
   .openapi('Transaction')
 
 const TransactionEventSchema = z
@@ -3826,7 +3819,7 @@ const Error_2Schema = z
         c: z
           .object({
             cu: z
-              .object({})
+              .looseObject({})
               .nullable()
               .exactOptional()
               .openapi({
@@ -3870,7 +3863,7 @@ const Error_2Schema = z
             q: z
               .object({
                 en: z
-                  .object({})
+                  .looseObject({})
                   .nullable()
                   .exactOptional()
                   .openapi({
@@ -4158,12 +4151,12 @@ const Error_2Schema = z
             z
               .object({
                 at: z
-                  .object({})
+                  .looseObject({})
                   .nullable()
                   .exactOptional()
                   .openapi({ description: 'Attributes of the exception.' }),
                 ca: z
-                  .array(z.object({}))
+                  .array(z.looseObject({}))
                   .min(0)
                   .nullable()
                   .exactOptional()
@@ -4474,7 +4467,7 @@ const Error_2Schema = z
       })
       .openapi({ required: ['id'] }),
   )
-  .openapi({ $id: 'docs/spec/rumv3/error', required: ['id'] })
+  .openapi({ required: ['id'] })
   .openapi('Error_2')
 
 const ErrorEventv3Schema = z
@@ -4641,7 +4634,7 @@ const Metadata_2Schema = z
         required: [],
       }),
   })
-  .openapi({ $id: 'docs/spec/rumv3/metadata', required: ['se'] })
+  .openapi({ required: ['se'] })
   .openapi('Metadata_2')
 
 const MetadataEventv3Schema = z
@@ -4965,7 +4958,7 @@ const Span_2Schema = z
           "Type holds the span's type, and can have specific keywords within the service's domain (eg: 'request', 'backgroundjob', etc)",
       }),
   })
-  .openapi({ $id: 'docs/spec/rumv3/span', required: ['n', 't', 'id', 's', 'd'] })
+  .openapi({ required: ['n', 't', 'id', 's', 'd'] })
   .openapi('Span_2')
 
 const SpanEventv3Schema = z
@@ -4978,7 +4971,7 @@ const Transaction_2Schema = z
     c: z
       .object({
         cu: z
-          .object({})
+          .looseObject({})
           .nullable()
           .exactOptional()
           .openapi({
@@ -5018,7 +5011,7 @@ const Transaction_2Schema = z
         q: z
           .object({
             en: z
-              .object({})
+              .looseObject({})
               .nullable()
               .exactOptional()
               .openapi({
@@ -5874,7 +5867,7 @@ const Transaction_2Schema = z
       })
       .openapi({ description: 'SpanCount counts correlated spans.', required: ['sd'] }),
   })
-  .openapi({ $id: 'docs/spec/rumv3/transaction', required: ['tid', 't', 'id', 'yc', 'd'] })
+  .openapi({ required: ['tid', 't', 'id', 'yc', 'd'] })
   .openapi('Transaction_2')
 
 const TransactionEventv3Schema = z
@@ -6048,7 +6041,7 @@ export const getConfigV1AgentsRoute = createRoute({
   responses: {
     200: {
       description: 'A successful response.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
   },
 })
@@ -6223,7 +6216,7 @@ export const postOpentelemetryProtoCollectorMetricsV1MetricsServiceExportRoute =
   description:
     'APM Server supports receiving metrics over the OpenTelemetry Protocol (OTLP). This API uses the OTLP/gRPC communication protocol.\n',
   operationId: 'postOtlpGrpcMetrics',
-  request: { body: { content: { 'application/json': { schema: z.object({}) } } } },
+  request: { body: { content: { 'application/json': { schema: z.looseObject({}) } } } },
   responses: { 200: { description: 'OK' } },
 })
 
@@ -6235,7 +6228,7 @@ export const postOpentelemetryProtoCollectorTraceV1TraceServiceExportRoute = cre
   description:
     'APM Server supports receiving traces over the OpenTelemetry Protocol (OTLP). This API uses the OTLP/gRPC communication protocol.\n',
   operationId: 'postOtlpGrpcTraces',
-  request: { body: { content: { 'application/json': { schema: z.object({}) } } } },
+  request: { body: { content: { 'application/json': { schema: z.looseObject({}) } } } },
   responses: { 200: { description: 'OK' } },
 })
 
@@ -6247,7 +6240,7 @@ export const postOpentelemetryProtoCollectorLogsV1LogsServiceExportRoute = creat
   description:
     'APM Server supports receiving logs over the OpenTelemetry Protocol (OTLP). This API uses the OTLP/gRPC communication protocol.\n',
   operationId: 'postOtlpGrpcLogs',
-  request: { body: { content: { 'application/json': { schema: z.object({}) } } } },
+  request: { body: { content: { 'application/json': { schema: z.looseObject({}) } } } },
   responses: { 200: { description: 'OK' } },
 })
 
@@ -6259,7 +6252,7 @@ export const postV1MetricsRoute = createRoute({
   description:
     'APM Server supports receiving metrics over the OpenTelemetry Protocol (OTLP). This API uses the OTLP/HTTP (protobuf) communication protocol.\n',
   operationId: 'postOtlpHttpMetrics',
-  request: { body: { content: { 'application/json': { schema: z.object({}) } } } },
+  request: { body: { content: { 'application/json': { schema: z.looseObject({}) } } } },
   responses: { 200: { description: 'OK' } },
 })
 
@@ -6271,7 +6264,7 @@ export const postV1TracesRoute = createRoute({
   description:
     'APM Server supports receiving traces over the OpenTelemetry Protocol (OTLP). This API uses the OTLP/HTTP (protobuf) communication protocol.\n',
   operationId: 'postOtlpHttpTraces',
-  request: { body: { content: { 'application/json': { schema: z.object({}) } } } },
+  request: { body: { content: { 'application/json': { schema: z.looseObject({}) } } } },
   responses: { 200: { description: 'OK' } },
 })
 
@@ -6283,6 +6276,6 @@ export const postV1LogsRoute = createRoute({
   description:
     'APM Server supports receiving logs over the OpenTelemetry Protocol (OTLP). This API uses the OTLP/HTTP (protobuf) communication protocol.\n',
   operationId: 'postOtlpHttpLogs',
-  request: { body: { content: { 'application/json': { schema: z.object({}) } } } },
+  request: { body: { content: { 'application/json': { schema: z.looseObject({}) } } } },
   responses: { 200: { description: 'OK' } },
 })

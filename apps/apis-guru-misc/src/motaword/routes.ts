@@ -1,562 +1,6 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const MonetarySchema = z
-  .object({
-    amount: z.float32().exactOptional(),
-    currency: z.string().default('usd').exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Monetary')
-
-const ClientStatsSchema = z
-  .object({
-    document_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    nps: z.float32().exactOptional(),
-    started_project_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    total_discounted: MonetarySchema.exactOptional(),
-    total_project_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    total_spending: z.float32().exactOptional(),
-    translator_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ClientStats')
-
-const VendorEarningStatsSchema = z
-  .object({
-    total: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description: 'total amount of USD that this user has earned in the platform so far.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('VendorEarningStats')
-
-const VendorProjectStatsSchema = z
-  .object({
-    invited: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'total number of projects that this user was invited to. TODO this key is to replace "total" key due to naming ambiguity.',
-      }),
-    total: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'total number of projects that this user was invited to.',
-      }),
-    worked: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'total number of projects that this user actually worked on.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('VendorProjectStats')
-
-const VendorWordStatsSchema = z
-  .object({
-    approved: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'total number of words that this user has approved so far.',
-      }),
-    translated: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'total number of words that this user has translated so far.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('VendorWordStats')
-
-const VendorStatsSchema = z
-  .object({
-    earnings: VendorEarningStatsSchema.exactOptional(),
-    projects: VendorProjectStatsSchema.exactOptional(),
-    words: VendorWordStatsSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('VendorStats')
-
-type StatsType = {
-  client?: z.infer<typeof ClientStatsSchema>
-  vendor?: z.infer<typeof VendorStatsSchema>
-}
-
-const AccountGlossaryUploadRequestSchema = z
-  .object({
-    glossary: z
-      .file()
-      .openapi({
-        type: 'string',
-        format: 'binary',
-        description: 'Glossary file. Currently supported formats: .xlsx, .tbx',
-      }),
-  })
-  .openapi({ required: ['glossary'] })
-  .openapi('AccountGlossaryUploadRequest')
-
-const AccountStyleGuideUploadRequestSchema = z
-  .object({
-    styleguide: z
-      .file()
-      .openapi({
-        type: 'string',
-        format: 'binary',
-        description: 'Style guide file. Currently supported formats: .pdf, .docx, .txt',
-      }),
-  })
-  .openapi({ required: ['styleguide'] })
-  .openapi('AccountStyleGuideUploadRequest')
-
-const ActiveWidgetSchema = z
-  .object({
-    allow_hash_in_url: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'When true, hash params are included in filenames. When false, params are ignored.',
-      }),
-    allow_query_in_url: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'When true, query params are included in filenames. When false, params are ignored.',
-      }),
-    auto_detect_source_language: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'When true, we will ignore the source language of your project and try to automatically detect the source language of the given content. This is especially useful in environments with unpredictable source contents, such as a chat environment.',
-      }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'the date-time notation as defined by RFC 3339, section 5.6, for example, 2017-07-21T17:32:28Z',
-      }),
-    elements: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Continuous project exclusive elements and rules' }),
-    follow_user: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Specify whether we should follow the user around in your website and automatically translate pages.',
-      }),
-    force_cache_refresh_interval: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Determines whether to force-refresh local browser cache of your translations in certain period of times, no matter if there is a new activity in the project.',
-      }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    language_mappings: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Continuous project language mappings' }),
-    live: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether ActiveJS should be considered live in an embedded site. Use `false` if you are still testing Active. Go to your Active dashboard and follow links to your website to actually test Active.',
-      }),
-    modify_links: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'We can automatically localize the same-domain URLs in your page. The way we localize the URL depends on urlMode configuration. We can either add/update the locale query parameter, or add/update the path of the URL.',
-      }),
-    name: z.string().exactOptional(),
-    optimize_per_page: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'When true, Active ecosystem will optimize the script and data flows per page, rather than per project. This decreases the bandwidth usage per script, but makes translation publishing more complex and script serving per-page.',
-      }),
-    pages: z.string().exactOptional().openapi({ description: 'Continuous project page rules' }),
-    path_regex: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Custom regex for path-type URL mode.' }),
-    position: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Options are "bottom-left", "bottom-right", "in-place"' }),
-    query_name: z
-      .string()
-      .default('locale')
-      .exactOptional()
-      .openapi({
-        description:
-          "Query parameter name to be used with query-type URL mode. Default is 'locale'.",
-      }),
-    reboot_on_url_change: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'When true, Active ecosystem reboots itself when url changes.' }),
-    restricted_domains: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "JSON string for a list of domains that this widget's API interactions are limited to.",
-      }),
-    sections: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Continuous project section rules' }),
-    test_mode: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Is the Active Widget in test mode? This changes a couple behaviors in the widget to make it easier for you to test and develop your Active integration.',
-      }),
-    theme: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '\\"light\\", \\"dark\\" OR custom JSON.' }),
-    token: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Token that you should use when you are using this widget on your website.',
-      }),
-    url_change_mode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "When a user changes locale (or when we automatically detect and change it for them), we will change the URL of the page they are in. We can do this by actually redirecting the user to the new page, or by simply changing the URL in the address bar via browser's History API. When NULL, we won't apply any URL changes.",
-      }),
-    url_mode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "When a user changes locale (or when we automatically detect and change it for them), we will change the URL of the page they are in. We can either change the path of the URL to prefix it with the locale code, or we can add a query parameter to the URL. We also use this mode to detect the locale for the current page when a user directly loads a page. When NULL, locale detection from URL will be disabled (even then, if the user has selected a locale manually, and followUser is enabled, we will still automatically translate the page in user's locale.",
-      }),
-    use_cache: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Should we make use of local browser cache for your visitors? We will refresh the cache when Active JS detects new activity in your project.',
-      }),
-    use_dummy_translations: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'When enabled, we will translate your website with dummy content, rather than actually using MT/TM.',
-      }),
-    variables: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Continuous project variable definitions' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ActiveWidget')
-
-const HrefSchema = z
-  .object({ href: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('Href')
-
-const LinksMetaSchema = z
-  .object({ self: HrefSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('LinksMeta')
-
-const PagingLinksMetaSchema = LinksMetaSchema.and(
-  z
-    .object({ next: z.string().exactOptional(), previous: z.string().exactOptional() })
-    .openapi({ required: [] }),
-).openapi('PagingLinksMeta')
-
-const PagingMetaSchema = z
-  .object({
-    paging: z
-      .object({
-        count: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({ type: 'integer', format: 'int64' }),
-        links: PagingLinksMetaSchema.exactOptional(),
-        page: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .default(1n)
-          .exactOptional()
-          .openapi({ type: 'integer', format: 'int64', default: 1 }),
-        per_page: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .default(10n)
-          .exactOptional()
-          .openapi({ type: 'integer', format: 'int64', default: 10 }),
-        total_count: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({ type: 'integer', format: 'int64' }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: [] })
-  .openapi('PagingMeta')
-
-const ActiveWidgetListSchema = z
-  .object({
-    meta: PagingMetaSchema.exactOptional(),
-    widgets: z.array(ActiveWidgetSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ActiveWidgetList')
-
-const ActivityLinksSchema = LinksMetaSchema.and(
-  z
-    .object({ comments: HrefSchema.exactOptional(), project: HrefSchema.exactOptional() })
-    .openapi({ required: [] }),
-).openapi('ActivityLinks')
-
-const ActivitySchema = z
-  .object({
-    activity_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: 'Unix epoch time' }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    links: ActivityLinksSchema.exactOptional(),
-    source_text: z.string().exactOptional().openapi({ description: 'Source text' }),
-    target_text: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Target text of the activity, which is actually the translation of the source text.',
-      }),
-    translator: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Unique identifier of the translator/proofreader of this activity.',
-      }),
-    type: z
-      .enum(['translated', 'proofread'])
-      .exactOptional()
-      .openapi({
-        description: "Currently there are two available activity types; 'translated', 'proofread'.",
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('Activity')
-
-const ActivityListSchema = z
-  .object({
-    activities: z.array(ActivitySchema).exactOptional(),
-    meta: PagingMetaSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ActivityList')
-
-const FileAsDataSchema = z
-  .object({
-    data: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Base64 encoded contents of your file.' }),
-    name: z.string().exactOptional().openapi({ description: 'Name of your file' }),
-  })
-  .openapi({ required: [] })
-  .openapi('FileAsData')
-
-const AddOrUpdateDocumentRequestSchema = z
-  .object({ document: FileAsDataSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('AddOrUpdateDocumentRequest')
+const LanguageScoreSchema = z.float32().openapi('LanguageScore')
 
 const AddressSchema = z
   .object({
@@ -569,75 +13,6 @@ const AddressSchema = z
   })
   .openapi({ required: [] })
   .openapi('Address')
-
-const AnalyticsCollectionSchema = z
-  .object({
-    anonymousId: z.string().exactOptional(),
-    properties: z.record(z.string(), z.string()).exactOptional(),
-    sessionId: z.string().exactOptional(),
-    type: z.string().exactOptional(),
-    userId: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AnalyticsCollection')
-
-const AnalyticsTokenSchema = z
-  .object({ jwt: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('AnalyticsToken')
-
-const AsyncOperationStatusEnumSchema = z
-  .enum(['sent', 'started', 'completed', 'failed'])
-  .default('sent')
-  .openapi('AsyncOperationStatusEnum')
-
-const AsyncOperationStatusSchema = z
-  .object({
-    duration: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'operation duration in milliseconds',
-      }),
-    key: z.string().exactOptional(),
-    message: z.object({}).exactOptional(),
-    status: AsyncOperationStatusEnumSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AsyncOperationStatus')
-
-const AvailableVendorsFilterSchema = z
-  .object({
-    corporateId: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Corporate account ID to filter for vendor authorization' }),
-    manualWorkPermission: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Filter vendors for manual work permission', default: 0 }),
-    sourceLanguage: z.string().exactOptional().openapi({ description: 'Source language code' }),
-    targetLanguages: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'List of target language codes.' }),
-    types: z
-      .array(z.enum(['translator', 'proofreader', 'both']))
-      .exactOptional()
-      .openapi({ description: 'List of vendor types' }),
-  })
-  .openapi({ required: [] })
-  .openapi('AvailableVendorsFilter')
 
 const BillingAddressSchema = AddressSchema.and(
   z
@@ -653,79 +28,6 @@ const BillingAddressSchema = AddressSchema.and(
     .openapi({ required: [] }),
 ).openapi('BillingAddress')
 
-const BlogArticleLinksSchema = LinksMetaSchema.and(
-  z
-    .object({
-      android: HrefSchema.exactOptional(),
-      header_image: HrefSchema.exactOptional(),
-      ios: HrefSchema.exactOptional(),
-      web: HrefSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('BlogArticleLinks')
-
-const BlogArticleSchema = z
-  .object({
-    announcement_type: z.enum(['article', 'case', 'famous-translators', 'sales']).exactOptional(),
-    author: z.string().exactOptional(),
-    content: z.string().exactOptional().openapi({ description: 'Article content' }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'the date-time notation as defined by RFC 3339, section 5.6, for example, 2017-07-21T17:32:28Z',
-      }),
-    excerpt: z.string().exactOptional().openapi({ description: 'Article excerpt' }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    language: z.string().exactOptional().openapi({ description: 'language code' }),
-    links: BlogArticleLinksSchema.exactOptional(),
-    slug: z.string().exactOptional(),
-    title: z.string().exactOptional(),
-    topic: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('BlogArticle')
-
-const BlogArticleListSchema = z
-  .object({
-    articles: z.array(BlogArticleSchema).exactOptional(),
-    meta: PagingMetaSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('BlogArticleList')
-
-const CMSchema = z
-  .object({
-    user_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({ required: [] })
-  .openapi('CM')
-
-const LanguageScoreSchema = z.float32().openapi('LanguageScore')
-
 const LanguagePairSchema = z
   .object({
     source_language: z.string().exactOptional(),
@@ -733,6 +35,16 @@ const LanguagePairSchema = z
   })
   .openapi({ required: [] })
   .openapi('LanguagePair')
+
+const HrefSchema = z
+  .object({ href: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('Href')
+
+const LinksMetaSchema = z
+  .object({ self: HrefSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('LinksMeta')
 
 const UserLinksSchema = LinksMetaSchema.and(
   z
@@ -1147,7 +459,7 @@ const ProjectSchema = z
       .exactOptional()
       .openapi({ type: 'integer', format: 'int64', description: 'Unix epoch time' }),
     custom: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Custom data provided while creating a new project.' }),
     delivery_at: z
@@ -1313,7 +625,813 @@ const ProjectSchema = z
   .openapi({ required: [] })
   .openapi('Project')
 
-const CallbackResultSchema = z
+type CallbackResultType = {
+  data?: z.infer<typeof ProjectSchema>
+  result?: string
+  type?: z.infer<typeof ProjectStatusSchema>
+  url?: string
+}
+
+const MonetarySchema = z
+  .object({
+    amount: z.float32().exactOptional(),
+    currency: z.string().default('usd').exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Monetary')
+
+type CommissionType = {
+  amount?: z.infer<typeof MonetarySchema>
+  date?: string
+  project?: z.infer<typeof ProjectSchema>
+  status?: 'completed' | 'unclaimed' | 'failed' | 'sent' | 'waiting' | 'waiting_invoice'
+}
+
+const CommissionSchema: z.ZodType<CommissionType> = z
+  .object({
+    amount: MonetarySchema.exactOptional(),
+    date: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'the date-time notation as defined by RFC 3339, section 5.6, for example, 2017-07-21T17:32:28Z',
+      }),
+    project: ProjectSchema.exactOptional(),
+    status: z
+      .enum(['completed', 'unclaimed', 'failed', 'sent', 'waiting', 'waiting_invoice'])
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Commission')
+
+const PagingLinksMetaSchema = LinksMetaSchema.and(
+  z
+    .object({ next: z.string().exactOptional(), previous: z.string().exactOptional() })
+    .openapi({ required: [] }),
+).openapi('PagingLinksMeta')
+
+const PagingMetaSchema = z
+  .object({
+    paging: z
+      .object({
+        count: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({ type: 'integer', format: 'int64' }),
+        links: PagingLinksMetaSchema.exactOptional(),
+        page: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .default(1n)
+          .exactOptional()
+          .openapi({ type: 'integer', format: 'int64', default: 1 }),
+        per_page: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .default(10n)
+          .exactOptional()
+          .openapi({ type: 'integer', format: 'int64', default: 10 }),
+        total_count: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({ type: 'integer', format: 'int64' }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: [] })
+  .openapi('PagingMeta')
+
+type CommissionListType = {
+  commissions?: z.infer<typeof CommissionSchema>[]
+  meta?: z.infer<typeof PagingMetaSchema>
+}
+
+type ProjectListType = {
+  meta?: z.infer<typeof PagingMetaSchema>
+  projects?: z.infer<typeof ProjectSchema>[]
+}
+
+const DocumentLinksSchema = LinksMetaSchema.and(
+  z
+    .object({
+      admins: z
+        .record(
+          z.string(),
+          HrefSchema.openapi({
+            description: 'MotaWord admin link for this file, in this language code.',
+          }),
+        )
+        .exactOptional(),
+      download: HrefSchema.exactOptional(),
+      editors: z
+        .record(
+          z.string(),
+          HrefSchema.openapi({
+            description: 'MotaWord editor link for this file, in this language code.',
+          }),
+        )
+        .exactOptional(),
+      'preview-box': HrefSchema.exactOptional().openapi({
+        description:
+          'Box.com URL to preview this document. This URL is temporary. You need to re-fetch the file to refresh the Box.com preview URL. Available for documents and style guides.',
+      }),
+      'preview-pdf': HrefSchema.exactOptional().openapi({
+        description:
+          'This is our fallback preview URL, providing a PDF file. Use this file to embed in your PDF viewer. Available for documents and style guides.',
+      }),
+      'preview-pdf-viewer': HrefSchema.exactOptional().openapi({
+        description:
+          'This is another version of preview-pdf, this time pointing to a preview viewer page on front application. This page requires authentication and comes with its own PDF viewer.',
+      }),
+      progress: HrefSchema.exactOptional().openapi({
+        description: 'Progress endpoint URL for this file',
+      }),
+      project: HrefSchema.exactOptional(),
+      strings: HrefSchema.exactOptional().openapi({
+        description: 'Strings endpoint URL for this file',
+      }),
+      thumbnail: HrefSchema.exactOptional().openapi({
+        description:
+          'Thumbnail preview URL of the document. If doc has a page structure, this is probably only the first page.',
+      }),
+    })
+    .openapi({ required: [] }),
+).openapi('DocumentLinks')
+
+const ManualFileSchema = z
+  .object({
+    driveFileId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    isProofread: z.boolean().exactOptional(),
+    isTranslated: z.boolean().exactOptional(),
+    language: z.string().exactOptional(),
+    proofreadingFileId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    translationFileId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ManualFile')
+
+const DocumentSchema = z
+  .object({
+    file_type: z.string().exactOptional().openapi({ description: 'Extension of the file' }),
+    has_custom_package: z.boolean().exactOptional(),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    links: DocumentLinksSchema.exactOptional(),
+    manual_files: z.array(ManualFileSchema).exactOptional(),
+    name: z.string().exactOptional(),
+    project_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    review_in_manual_editor: z.boolean().exactOptional(),
+    scheme: z.looseObject({}).exactOptional(),
+    search_score: z.float32().exactOptional(),
+    source_language: z.string().exactOptional(),
+    subject: z.string().exactOptional(),
+    target_languages: z.array(z.string()).exactOptional(),
+    uploaded_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'Unix epoch time' }),
+    word_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({ required: [] })
+  .openapi('Document')
+
+const DocumentInSearchSchema = DocumentSchema.and(
+  z.object({ search_result_reason: z.string().exactOptional() }).openapi({ required: [] }),
+).openapi('DocumentInSearch')
+
+const ProjectInSearchSchema = ProjectSchema.and(
+  z.object({ search_result_reason: z.string().exactOptional() }).openapi({ required: [] }),
+).openapi('ProjectInSearch')
+
+const StringTranslationStateSchema = z
+  .enum(['Approved', 'Translated'])
+  .openapi('StringTranslationState')
+
+const StringInSearchSchema = z
+  .object({
+    file_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    internal_project_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    last_updated: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'the date-time notation as defined by RFC 3339, section 5.6, for example, 2017-07-21T17:32:28Z',
+      }),
+    project_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    search_score: z.float32().exactOptional(),
+    source: z.string().exactOptional(),
+    status: StringTranslationStateSchema.exactOptional(),
+    string_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    target: z.string().exactOptional(),
+    targets: z.array(z.string()).exactOptional(),
+    tm_name: z.string().exactOptional(),
+    type: z
+      .enum(['LOCAL_PROJECT', 'IMPORTED_TM'])
+      .exactOptional()
+      .openapi({
+        description:
+          'String search result typ from ZNT. Options are LOCAL_PROJECT, IMPORTED_TM. Imported TM results should probably not be visible to end users.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('StringInSearch')
+
+type SearchEverywhereResultType = {
+  meta?: z.infer<typeof PagingMetaSchema>
+  result?: {
+    documents?: z.infer<typeof DocumentInSearchSchema>[]
+    projects?: z.infer<typeof ProjectInSearchSchema>[]
+    strings?: z.infer<typeof StringInSearchSchema>[]
+  }
+}
+
+const AccountGlossaryUploadRequestSchema = z
+  .object({
+    glossary: z
+      .file()
+      .openapi({
+        type: 'string',
+        format: 'binary',
+        description: 'Glossary file. Currently supported formats: .xlsx, .tbx',
+      }),
+  })
+  .openapi({ required: ['glossary'] })
+  .openapi('AccountGlossaryUploadRequest')
+
+const AccountStyleGuideUploadRequestSchema = z
+  .object({
+    styleguide: z
+      .file()
+      .openapi({
+        type: 'string',
+        format: 'binary',
+        description: 'Style guide file. Currently supported formats: .pdf, .docx, .txt',
+      }),
+  })
+  .openapi({ required: ['styleguide'] })
+  .openapi('AccountStyleGuideUploadRequest')
+
+const ActiveWidgetSchema = z
+  .object({
+    allow_hash_in_url: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When true, hash params are included in filenames. When false, params are ignored.',
+      }),
+    allow_query_in_url: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When true, query params are included in filenames. When false, params are ignored.',
+      }),
+    auto_detect_source_language: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When true, we will ignore the source language of your project and try to automatically detect the source language of the given content. This is especially useful in environments with unpredictable source contents, such as a chat environment.',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'the date-time notation as defined by RFC 3339, section 5.6, for example, 2017-07-21T17:32:28Z',
+      }),
+    elements: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Continuous project exclusive elements and rules' }),
+    follow_user: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specify whether we should follow the user around in your website and automatically translate pages.',
+      }),
+    force_cache_refresh_interval: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Determines whether to force-refresh local browser cache of your translations in certain period of times, no matter if there is a new activity in the project.',
+      }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    language_mappings: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Continuous project language mappings' }),
+    live: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether ActiveJS should be considered live in an embedded site. Use `false` if you are still testing Active. Go to your Active dashboard and follow links to your website to actually test Active.',
+      }),
+    modify_links: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'We can automatically localize the same-domain URLs in your page. The way we localize the URL depends on urlMode configuration. We can either add/update the locale query parameter, or add/update the path of the URL.',
+      }),
+    name: z.string().exactOptional(),
+    optimize_per_page: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When true, Active ecosystem will optimize the script and data flows per page, rather than per project. This decreases the bandwidth usage per script, but makes translation publishing more complex and script serving per-page.',
+      }),
+    pages: z.string().exactOptional().openapi({ description: 'Continuous project page rules' }),
+    path_regex: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Custom regex for path-type URL mode.' }),
+    position: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Options are "bottom-left", "bottom-right", "in-place"' }),
+    query_name: z
+      .string()
+      .default('locale')
+      .exactOptional()
+      .openapi({
+        description:
+          "Query parameter name to be used with query-type URL mode. Default is 'locale'.",
+      }),
+    reboot_on_url_change: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'When true, Active ecosystem reboots itself when url changes.' }),
+    restricted_domains: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "JSON string for a list of domains that this widget's API interactions are limited to.",
+      }),
+    sections: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Continuous project section rules' }),
+    test_mode: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Is the Active Widget in test mode? This changes a couple behaviors in the widget to make it easier for you to test and develop your Active integration.',
+      }),
+    theme: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '\\"light\\", \\"dark\\" OR custom JSON.' }),
+    token: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Token that you should use when you are using this widget on your website.',
+      }),
+    url_change_mode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "When a user changes locale (or when we automatically detect and change it for them), we will change the URL of the page they are in. We can do this by actually redirecting the user to the new page, or by simply changing the URL in the address bar via browser's History API. When NULL, we won't apply any URL changes.",
+      }),
+    url_mode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "When a user changes locale (or when we automatically detect and change it for them), we will change the URL of the page they are in. We can either change the path of the URL to prefix it with the locale code, or we can add a query parameter to the URL. We also use this mode to detect the locale for the current page when a user directly loads a page. When NULL, locale detection from URL will be disabled (even then, if the user has selected a locale manually, and followUser is enabled, we will still automatically translate the page in user's locale.",
+      }),
+    use_cache: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Should we make use of local browser cache for your visitors? We will refresh the cache when Active JS detects new activity in your project.',
+      }),
+    use_dummy_translations: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When enabled, we will translate your website with dummy content, rather than actually using MT/TM.',
+      }),
+    variables: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Continuous project variable definitions' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ActiveWidget')
+
+const ActiveWidgetListSchema = z
+  .object({
+    meta: PagingMetaSchema.exactOptional(),
+    widgets: z.array(ActiveWidgetSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ActiveWidgetList')
+
+const ActivityLinksSchema = LinksMetaSchema.and(
+  z
+    .object({ comments: HrefSchema.exactOptional(), project: HrefSchema.exactOptional() })
+    .openapi({ required: [] }),
+).openapi('ActivityLinks')
+
+const ActivitySchema = z
+  .object({
+    activity_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'Unix epoch time' }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    links: ActivityLinksSchema.exactOptional(),
+    source_text: z.string().exactOptional().openapi({ description: 'Source text' }),
+    target_text: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Target text of the activity, which is actually the translation of the source text.',
+      }),
+    translator: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Unique identifier of the translator/proofreader of this activity.',
+      }),
+    type: z
+      .enum(['translated', 'proofread'])
+      .exactOptional()
+      .openapi({
+        description: "Currently there are two available activity types; 'translated', 'proofread'.",
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('Activity')
+
+const ActivityListSchema = z
+  .object({
+    activities: z.array(ActivitySchema).exactOptional(),
+    meta: PagingMetaSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ActivityList')
+
+const FileAsDataSchema = z
+  .object({
+    data: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Base64 encoded contents of your file.' }),
+    name: z.string().exactOptional().openapi({ description: 'Name of your file' }),
+  })
+  .openapi({ required: [] })
+  .openapi('FileAsData')
+
+const AddOrUpdateDocumentRequestSchema = z
+  .object({ document: FileAsDataSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('AddOrUpdateDocumentRequest')
+
+const AnalyticsCollectionSchema = z
+  .object({
+    anonymousId: z.string().exactOptional(),
+    properties: z.record(z.string(), z.string()).exactOptional(),
+    sessionId: z.string().exactOptional(),
+    type: z.string().exactOptional(),
+    userId: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AnalyticsCollection')
+
+const AnalyticsTokenSchema = z
+  .object({ jwt: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('AnalyticsToken')
+
+const AsyncOperationStatusEnumSchema = z
+  .enum(['sent', 'started', 'completed', 'failed'])
+  .default('sent')
+  .openapi('AsyncOperationStatusEnum')
+
+const AsyncOperationStatusSchema = z
+  .object({
+    duration: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'operation duration in milliseconds',
+      }),
+    key: z.string().exactOptional(),
+    message: z.looseObject({}).exactOptional(),
+    status: AsyncOperationStatusEnumSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AsyncOperationStatus')
+
+const AvailableVendorsFilterSchema = z
+  .object({
+    corporateId: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Corporate account ID to filter for vendor authorization' }),
+    manualWorkPermission: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Filter vendors for manual work permission', default: 0 }),
+    sourceLanguage: z.string().exactOptional().openapi({ description: 'Source language code' }),
+    targetLanguages: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'List of target language codes.' }),
+    types: z
+      .array(z.enum(['translator', 'proofreader', 'both']))
+      .exactOptional()
+      .openapi({ description: 'List of vendor types' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AvailableVendorsFilter')
+
+const BlogArticleLinksSchema = LinksMetaSchema.and(
+  z
+    .object({
+      android: HrefSchema.exactOptional(),
+      header_image: HrefSchema.exactOptional(),
+      ios: HrefSchema.exactOptional(),
+      web: HrefSchema.exactOptional(),
+    })
+    .openapi({ required: [] }),
+).openapi('BlogArticleLinks')
+
+const BlogArticleSchema = z
+  .object({
+    announcement_type: z.enum(['article', 'case', 'famous-translators', 'sales']).exactOptional(),
+    author: z.string().exactOptional(),
+    content: z.string().exactOptional().openapi({ description: 'Article content' }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'the date-time notation as defined by RFC 3339, section 5.6, for example, 2017-07-21T17:32:28Z',
+      }),
+    excerpt: z.string().exactOptional().openapi({ description: 'Article excerpt' }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    language: z.string().exactOptional().openapi({ description: 'language code' }),
+    links: BlogArticleLinksSchema.exactOptional(),
+    slug: z.string().exactOptional(),
+    title: z.string().exactOptional(),
+    topic: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('BlogArticle')
+
+const BlogArticleListSchema = z
+  .object({
+    articles: z.array(BlogArticleSchema).exactOptional(),
+    meta: PagingMetaSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('BlogArticleList')
+
+const CMSchema = z
+  .object({
+    user_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({ required: [] })
+  .openapi('CM')
+
+const CallbackResultSchema: z.ZodType<CallbackResultType> = z
   .object({
     data: ProjectSchema.exactOptional(),
     result: z
@@ -1488,6 +1606,63 @@ const ClientProjectStatsSchema = z
   .openapi({ required: [] })
   .openapi('ClientProjectStats')
 
+const ClientStatsSchema = z
+  .object({
+    document_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    nps: z.float32().exactOptional(),
+    started_project_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    total_discounted: MonetarySchema.exactOptional(),
+    total_project_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    total_spending: z.float32().exactOptional(),
+    translator_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ClientStats')
+
 const LanguageStringStatSchema = z
   .object({
     project_string_count: z
@@ -1643,25 +1818,7 @@ const CommentListSchema = z
   .openapi({ required: [] })
   .openapi('CommentList')
 
-const CommissionSchema = z
-  .object({
-    amount: MonetarySchema.exactOptional(),
-    date: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'the date-time notation as defined by RFC 3339, section 5.6, for example, 2017-07-21T17:32:28Z',
-      }),
-    project: ProjectSchema.exactOptional(),
-    status: z
-      .enum(['completed', 'unclaimed', 'failed', 'sent', 'waiting', 'waiting_invoice'])
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Commission')
-
-const CommissionListSchema = z
+const CommissionListSchema: z.ZodType<CommissionListType> = z
   .object({
     commissions: z.array(CommissionSchema).exactOptional(),
     meta: PagingMetaSchema.exactOptional(),
@@ -1858,53 +2015,6 @@ const ContinuousProjectCostsSchema = z
   })
   .openapi({ required: [] })
   .openapi('ContinuousProjectCosts')
-
-const DocumentLinksSchema = LinksMetaSchema.and(
-  z
-    .object({
-      admins: z
-        .record(
-          z.string(),
-          HrefSchema.openapi({
-            description: 'MotaWord admin link for this file, in this language code.',
-          }),
-        )
-        .exactOptional(),
-      download: HrefSchema.exactOptional(),
-      editors: z
-        .record(
-          z.string(),
-          HrefSchema.openapi({
-            description: 'MotaWord editor link for this file, in this language code.',
-          }),
-        )
-        .exactOptional(),
-      'preview-box': HrefSchema.exactOptional().openapi({
-        description:
-          'Box.com URL to preview this document. This URL is temporary. You need to re-fetch the file to refresh the Box.com preview URL. Available for documents and style guides.',
-      }),
-      'preview-pdf': HrefSchema.exactOptional().openapi({
-        description:
-          'This is our fallback preview URL, providing a PDF file. Use this file to embed in your PDF viewer. Available for documents and style guides.',
-      }),
-      'preview-pdf-viewer': HrefSchema.exactOptional().openapi({
-        description:
-          'This is another version of preview-pdf, this time pointing to a preview viewer page on front application. This page requires authentication and comes with its own PDF viewer.',
-      }),
-      progress: HrefSchema.exactOptional().openapi({
-        description: 'Progress endpoint URL for this file',
-      }),
-      project: HrefSchema.exactOptional(),
-      strings: HrefSchema.exactOptional().openapi({
-        description: 'Strings endpoint URL for this file',
-      }),
-      thumbnail: HrefSchema.exactOptional().openapi({
-        description:
-          'Thumbnail preview URL of the document. If doc has a page structure, this is probably only the first page.',
-      }),
-    })
-    .openapi({ required: [] }),
-).openapi('DocumentLinks')
 
 const ContinuousProjectDocumentSchema = z
   .object({
@@ -2229,120 +2339,6 @@ const DeprecatedStringTranslationContentSchema = z
   })
   .openapi({ required: [] })
   .openapi('DeprecatedStringTranslationContent')
-
-const ManualFileSchema = z
-  .object({
-    driveFileId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    isProofread: z.boolean().exactOptional(),
-    isTranslated: z.boolean().exactOptional(),
-    language: z.string().exactOptional(),
-    proofreadingFileId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    translationFileId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ManualFile')
-
-const DocumentSchema = z
-  .object({
-    file_type: z.string().exactOptional().openapi({ description: 'Extension of the file' }),
-    has_custom_package: z.boolean().exactOptional(),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    links: DocumentLinksSchema.exactOptional(),
-    manual_files: z.array(ManualFileSchema).exactOptional(),
-    name: z.string().exactOptional(),
-    project_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    review_in_manual_editor: z.boolean().exactOptional(),
-    scheme: z.object({}).exactOptional(),
-    search_score: z.float32().exactOptional(),
-    source_language: z.string().exactOptional(),
-    subject: z.string().exactOptional(),
-    target_languages: z.array(z.string()).exactOptional(),
-    uploaded_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: 'Unix epoch time' }),
-    word_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({ required: [] })
-  .openapi('Document')
-
-const DocumentInSearchSchema = DocumentSchema.and(
-  z.object({ search_result_reason: z.string().exactOptional() }).openapi({ required: [] }),
-).openapi('DocumentInSearch')
 
 const DocumentListSchema = z
   .object({
@@ -2860,7 +2856,7 @@ const InstantTranslationRequestSchema = z
       .openapi({ description: 'You can add as many files as you want in documents parameter.' }),
     filters: InstantTranslationFilterSchema.exactOptional(),
     meta: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -3241,10 +3237,6 @@ const ProjectIdSchema = z
   .openapi({ required: [] })
   .openapi('ProjectId')
 
-const ProjectInSearchSchema = ProjectSchema.and(
-  z.object({ search_result_reason: z.string().exactOptional() }).openapi({ required: [] }),
-).openapi('ProjectInSearch')
-
 const ProjectLaunchResponseEnumSchema = z.literal('started').openapi('ProjectLaunchResponseEnum')
 
 const ProjectLaunchResponseSchema = z
@@ -3252,7 +3244,7 @@ const ProjectLaunchResponseSchema = z
   .openapi({ required: [] })
   .openapi('ProjectLaunchResponse')
 
-const ProjectListSchema = z
+const ProjectListSchema: z.ZodType<ProjectListType> = z
   .object({
     meta: PagingMetaSchema.exactOptional(),
     projects: z.array(ProjectSchema).exactOptional(),
@@ -3574,85 +3566,7 @@ const SalesActivityTypeSchema = z
   .enum(['EMAIL', 'NOTE', 'INCOMING_EMAIL', 'TASK'])
   .openapi('SalesActivityType')
 
-const StringTranslationStateSchema = z
-  .enum(['Approved', 'Translated'])
-  .openapi('StringTranslationState')
-
-const StringInSearchSchema = z
-  .object({
-    file_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    internal_project_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    last_updated: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'the date-time notation as defined by RFC 3339, section 5.6, for example, 2017-07-21T17:32:28Z',
-      }),
-    project_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    search_score: z.float32().exactOptional(),
-    source: z.string().exactOptional(),
-    status: StringTranslationStateSchema.exactOptional(),
-    string_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    target: z.string().exactOptional(),
-    targets: z.array(z.string()).exactOptional(),
-    tm_name: z.string().exactOptional(),
-    type: z
-      .enum(['LOCAL_PROJECT', 'IMPORTED_TM'])
-      .exactOptional()
-      .openapi({
-        description:
-          'String search result typ from ZNT. Options are LOCAL_PROJECT, IMPORTED_TM. Imported TM results should probably not be visible to end users.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('StringInSearch')
-
-const SearchEverywhereResultSchema = z
+const SearchEverywhereResultSchema: z.ZodType<SearchEverywhereResultType> = z
   .object({
     meta: PagingMetaSchema.exactOptional(),
     result: z
@@ -3687,15 +3601,123 @@ const SingleStringSchema = z
   .openapi({ required: [] })
   .openapi('SingleString')
 
-const StatsSchema: z.ZodType<StatsType> = z
-  .lazy(() =>
-    z
-      .object({
-        client: ClientStatsSchema.exactOptional(),
-        vendor: VendorStatsSchema.exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
+const VendorEarningStatsSchema = z
+  .object({
+    total: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description: 'total amount of USD that this user has earned in the platform so far.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('VendorEarningStats')
+
+const VendorProjectStatsSchema = z
+  .object({
+    invited: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'total number of projects that this user was invited to. TODO this key is to replace "total" key due to naming ambiguity.',
+      }),
+    total: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'total number of projects that this user was invited to.',
+      }),
+    worked: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'total number of projects that this user actually worked on.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('VendorProjectStats')
+
+const VendorWordStatsSchema = z
+  .object({
+    approved: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'total number of words that this user has approved so far.',
+      }),
+    translated: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'total number of words that this user has translated so far.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('VendorWordStats')
+
+const VendorStatsSchema = z
+  .object({
+    earnings: VendorEarningStatsSchema.exactOptional(),
+    projects: VendorProjectStatsSchema.exactOptional(),
+    words: VendorWordStatsSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('VendorStats')
+
+const StatsSchema = z
+  .object({ client: ClientStatsSchema.exactOptional(), vendor: VendorStatsSchema.exactOptional() })
+  .openapi({ required: [] })
   .openapi('Stats')
 
 const StringTranslationSchema = z
@@ -4210,7 +4232,7 @@ export const getRoute = createRoute({
   responses: {
     200: {
       description: 'YAML representation of our OpenAPI definition.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: {
       description: 'Authentication error',
@@ -5356,13 +5378,7 @@ export const getContinuousProjectsProjectIdDocumentsRoute = createRoute({
     },
     404: {
       description: 'ProjectNotFound',
-      content: {
-        'application/json': {
-          schema: ErrorSchema.openapi({
-            '/continuous_projects/{id}/translate/{targetLanguage}': null,
-          }),
-        },
-      },
+      content: { 'application/json': { schema: ErrorSchema } },
     },
   },
 })
@@ -7157,7 +7173,7 @@ export const getFormatsRoute = createRoute({
   responses: {
     200: {
       description: 'A list of supported formats',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
   },
   security: [],

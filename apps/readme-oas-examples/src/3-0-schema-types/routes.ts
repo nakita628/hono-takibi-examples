@@ -32,8 +32,11 @@ export const putAnythingStringsRoute = createRoute({
               binary: z.file().exactOptional().openapi({ type: 'string', format: 'binary' }),
               'binary (with default)': z
                 .file()
-                .default('data:text/plain;name=file1.txt;base64,dGVzdDE=')
-                .openapi({ type: 'string', format: 'binary' }),
+                .openapi({
+                  type: 'string',
+                  format: 'binary',
+                  default: 'data:text/plain;name=file1.txt;base64,dGVzdDE=',
+                }),
               blob: z
                 .string()
                 .exactOptional()
@@ -675,7 +678,7 @@ export const postAnythingObjectsRoute = createRoute({
                 }),
               'object (additionalProperties)': z.looseObject({}).exactOptional(),
               'object (without `properties`)': z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:

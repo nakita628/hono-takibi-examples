@@ -288,7 +288,7 @@ const CryptoGroupedResultsSchema = z
 const CryptoHistoricTradesSchema = z
   .object({
     day: z.iso.date().openapi({ description: 'The date that was evaluated from the request.' }),
-    map: z.object({}).openapi({ description: 'A map for shortened result keys.' }),
+    map: z.looseObject({}).openapi({ description: 'A map for shortened result keys.' }),
     msLatency: z
       .int()
       .openapi({ description: 'The milliseconds of latency for the query results.' }),
@@ -688,7 +688,7 @@ const CryptoSnapshotTickerFullBookSchema = z
             .object({
               p: z.float64().openapi({ description: 'The price of this book level.' }),
               x: z
-                .object({})
+                .looseObject({})
                 .openapi({
                   description:
                     'A map of the exchange ID to number of shares at this price level.\n<br />\n<br />\n**Example:**\n<br />\n`{\n  "p": 16302.94,\n  "x": {\n    "1": 0.02859424,\n    "6": 0.023455\n  }\n}`\n<br />\n<br />\nIn this example, exchange ID 1 has 0.02859424 shares available at $16,302.94,\nand exchange ID 6 has 0.023455 shares at the same price level.\n',
@@ -704,7 +704,7 @@ const CryptoSnapshotTickerFullBookSchema = z
             .object({
               p: z.float64().openapi({ description: 'The price of this book level.' }),
               x: z
-                .object({})
+                .looseObject({})
                 .openapi({
                   description:
                     'A map of the exchange ID to number of shares at this price level.\n<br />\n<br />\n**Example:**\n<br />\n`{\n  "p": 16302.94,\n  "x": {\n    "1": 0.02859424,\n    "6": 0.023455\n  }\n}`\n<br />\n<br />\nIn this example, exchange ID 1 has 0.02859424 shares available at $16,302.94,\nand exchange ID 6 has 0.023455 shares at the same price level.\n',
@@ -1272,7 +1272,7 @@ const ForexGroupedResultsSchema = z
 const ForexHistoricTradesSchema = z
   .object({
     day: z.iso.date().openapi({ description: 'The date that was evaluated from the request.' }),
-    map: z.object({}).openapi({ description: 'A map for shortened result keys.' }),
+    map: z.looseObject({}).openapi({ description: 'A map for shortened result keys.' }),
     msLatency: z
       .int()
       .openapi({ description: 'The milliseconds of latency for the query results.' }),
@@ -4957,6 +4957,14 @@ export const getBenzingaV1AnalystInsightsRoute = createRoute({
             status: 'OK',
           },
         },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
       },
     },
     400: {
@@ -5447,6 +5455,14 @@ export const getBenzingaV1AnalystsRoute = createRoute({
             status: 'OK',
           },
         },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
       },
     },
     400: {
@@ -5812,6 +5828,14 @@ export const getBenzingaV1BullsBearsSayRoute = createRoute({
             status: 'OK',
           },
         },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
       },
     },
     400: {
@@ -6163,6 +6187,14 @@ export const getBenzingaV1ConsensusRatingsTickerRoute = createRoute({
             ],
             status: 'OK',
           },
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
         },
       },
     },
@@ -7285,6 +7317,14 @@ export const getBenzingaV1EarningsRoute = createRoute({
             status: 'OK',
           },
         },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
       },
     },
     400: {
@@ -7499,6 +7539,14 @@ export const getBenzingaV1FirmsRoute = createRoute({
             ],
             status: 'OK',
           },
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
         },
       },
     },
@@ -8407,6 +8455,14 @@ export const getBenzingaV1GuidanceRoute = createRoute({
             ],
             status: 'OK',
           },
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
         },
       },
     },
@@ -9360,6 +9416,14 @@ export const getBenzingaV1RatingsRoute = createRoute({
             status: 'OK',
           },
         },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
       },
     },
     400: {
@@ -9863,6 +9927,14 @@ export const getBenzingaV2NewsRoute = createRoute({
             ],
             status: 'OK',
           },
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
         },
       },
     },
@@ -10558,6 +10630,14 @@ export const getConsumerSpendingEuV1MerchantAggregatesRoute = createRoute({
             status: 'OK',
           },
         },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
       },
     },
     400: {
@@ -11101,6 +11181,14 @@ export const getConsumerSpendingEuV1MerchantHierarchyRoute = createRoute({
             status: 'OK',
           },
         },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
       },
     },
     400: {
@@ -11221,6 +11309,14 @@ export const getCryptoV1ExchangesRoute = createRoute({
             ],
             status: 'OK',
           },
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
         },
       },
     },
@@ -12805,6 +12901,14 @@ export const getEtfGlobalV1AnalyticsRoute = createRoute({
             status: 'OK',
           },
         },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
       },
     },
     400: {
@@ -13635,6 +13739,14 @@ export const getEtfGlobalV1ConstituentsRoute = createRoute({
             status: 'OK',
           },
         },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
       },
     },
     400: {
@@ -14008,6 +14120,14 @@ export const getEtfGlobalV1FundFlowsRoute = createRoute({
             ],
             status: 'OK',
           },
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
         },
       },
     },
@@ -14905,6 +15025,14 @@ export const getEtfGlobalV1ProfilesRoute = createRoute({
             status: 'OK',
           },
         },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
       },
     },
     400: {
@@ -15475,6 +15603,14 @@ export const getEtfGlobalV1TaxonomiesRoute = createRoute({
             status: 'OK',
           },
         },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
       },
     },
     400: {
@@ -15822,6 +15958,14 @@ export const getFedV1FundingConditionsRoute = createRoute({
             status: 'OK',
           },
         },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
       },
     },
     400: {
@@ -16058,6 +16202,14 @@ export const getFedV1InflationRoute = createRoute({
             ],
             status: 'OK',
           },
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
         },
       },
     },
@@ -16304,6 +16456,14 @@ export const getFedV1InflationExpectationsRoute = createRoute({
             status: 'OK',
           },
         },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
       },
     },
     400: {
@@ -16524,6 +16684,14 @@ export const getFedV1LaborMarketRoute = createRoute({
             ],
             status: 'OK',
           },
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
         },
       },
     },
@@ -16791,6 +16959,14 @@ export const getFedV1TreasuryYieldsRoute = createRoute({
             status: 'OK',
           },
         },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
       },
     },
     400: {
@@ -16902,6 +17078,14 @@ export const getForexV1ExchangesRoute = createRoute({
             results: [{ id: '48', name: 'Currency Banks 1', type: 'exchange' }],
             status: 'OK',
           },
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
         },
       },
     },
@@ -17871,6 +18055,14 @@ export const getFuturesV1ContractsRoute = createRoute({
             status: 'OK',
           },
         },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
       },
     },
     400: {
@@ -18025,6 +18217,14 @@ export const getFuturesV1ExchangesRoute = createRoute({
             ],
             status: 'OK',
           },
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
         },
       },
     },
@@ -18233,6 +18433,14 @@ export const getFuturesV1MarketStatusRoute = createRoute({
             ],
             status: 'OK',
           },
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
         },
       },
     },
@@ -19182,6 +19390,14 @@ export const getFuturesV1ProductsRoute = createRoute({
             status: 'OK',
           },
         },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
       },
     },
     400: {
@@ -19543,6 +19759,14 @@ export const getFuturesV1QuotesTickerRoute = createRoute({
             ],
             status: 'OK',
           },
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
         },
       },
     },
@@ -19921,6 +20145,14 @@ export const getFuturesV1SchedulesRoute = createRoute({
             ],
             status: 'OK',
           },
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
         },
       },
     },
@@ -20494,6 +20726,14 @@ export const getFuturesV1SnapshotRoute = createRoute({
             status: 'OK',
           },
         },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
       },
     },
     400: {
@@ -20819,6 +21059,736 @@ export const getFuturesV1TradesTickerRoute = createRoute({
             status: 'OK',
           },
         },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
+      },
+    },
+    400: {
+      description: 'An error message.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              error: z
+                .string()
+                .openapi({ description: 'A message describing the source of the error.' }),
+              request_id: z
+                .string()
+                .openapi({ description: 'A request id assigned by the server.' }),
+              status: z
+                .literal('ERROR')
+                .openapi({ description: "The status of this request's response." }),
+            })
+            .openapi({ required: ['status', 'request_id', 'error'] }),
+        },
+      },
+    },
+  },
+})
+
+export const getOptionsV1AdminMessagesRoute = createRoute({
+  method: 'get',
+  path: '/options/v1/admin-messages',
+  tags: ['us_options'],
+  description:
+    "OPRA administrative messages: the free-text channel of the OPRA feed, carrying FLEX option prints and quotes, operational notices, and other messages that don't fit a fixed format. One record per OPRA Category C message, written once and never modified.",
+  operationId: 'get_options_v1_admin-messages',
+  request: {
+    query: z.object({
+      'timestamp.gt': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "Filter greater than the value. Value must be an integer timestamp in nanoseconds, formatted 'yyyy-mm-dd', or ISO 8601/RFC 3339 (e.g. '2024-05-28T20:27:41Z').",
+            in: 'query',
+            name: 'timestamp.gt',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'timestamp.gte': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "Filter greater than or equal to the value. Value must be an integer timestamp in nanoseconds, formatted 'yyyy-mm-dd', or ISO 8601/RFC 3339 (e.g. '2024-05-28T20:27:41Z').",
+            in: 'query',
+            name: 'timestamp.gte',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'timestamp.lt': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "Filter less than the value. Value must be an integer timestamp in nanoseconds, formatted 'yyyy-mm-dd', or ISO 8601/RFC 3339 (e.g. '2024-05-28T20:27:41Z').",
+            in: 'query',
+            name: 'timestamp.lt',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'timestamp.lte': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "Filter less than or equal to the value. Value must be an integer timestamp in nanoseconds, formatted 'yyyy-mm-dd', or ISO 8601/RFC 3339 (e.g. '2024-05-28T20:27:41Z').",
+            in: 'query',
+            name: 'timestamp.lte',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      exchange: z
+        .preprocess((val) => {
+          if (typeof val !== 'string' || !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val))
+            return val
+          if (/^-?\d+$/.test(val)) return BigInt(val)
+          const num = Number(val)
+          return Number.isSafeInteger(num) ? BigInt(num) : val
+        }, z.int64())
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'The exchange ID. See Exchanges mapping for details. Value must be an integer.',
+            in: 'query',
+            name: 'exchange',
+            schema: { format: 'int64', type: 'integer' },
+            required: false,
+          },
+        }),
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(1).max(50000),
+        )
+        .default(1000)
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "Limit the maximum number of results returned. Defaults to '1000' if not specified. The maximum allowed limit is '50000'.",
+            in: 'query',
+            name: 'limit',
+            schema: { default: 1000, maximum: 50000, minimum: 1, type: 'integer' },
+            required: false,
+          },
+        }),
+      sort: z
+        .string()
+        .default('timestamp.asc')
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "A comma separated list of sort columns. For each column, append '.asc' or '.desc' to specify the sort direction. The sort column defaults to 'timestamp' if not specified. The sort order defaults to 'asc' if not specified.",
+            in: 'query',
+            name: 'sort',
+            schema: { default: 'timestamp.asc', type: 'string' },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'A list of results.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              next_url: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description: 'If present, this value can be used to fetch the next page.',
+                }),
+              request_id: z
+                .string()
+                .openapi({ description: 'A request id assigned by the server.' }),
+              results: z
+                .array(
+                  z
+                    .object({
+                      exchange: z
+                        .int32()
+                        .openapi({
+                          description: 'The exchange ID. See Exchanges mapping for details.',
+                        }),
+                      id: z
+                        .string()
+                        .openapi({
+                          description:
+                            'The unique identifier for this admin message, composed of the SIP timestamp and the sequence number.',
+                        }),
+                      message: z
+                        .string()
+                        .openapi({
+                          description: 'The administrative message text as distributed by OPRA.',
+                        }),
+                      retransmission: z
+                        .boolean()
+                        .exactOptional()
+                        .openapi({
+                          description: 'True if this record was retransmitted. Omitted when false.',
+                        }),
+                      sequence_number: z
+                        .preprocess(
+                          (val) =>
+                            typeof val === 'number' && Number.isSafeInteger(val)
+                              ? BigInt(val)
+                              : typeof val === 'string' && /^-?\d+$/.test(val)
+                                ? BigInt(val)
+                                : val,
+                          z.int64(),
+                        )
+                        .openapi({
+                          type: 'integer',
+                          format: 'int64',
+                          description:
+                            'The sequence number represents the sequence in which admin events happened. These are increasing and unique, but will not always be sequential.',
+                        }),
+                      timestamp: z
+                        .preprocess(
+                          (val) =>
+                            typeof val === 'number' && Number.isSafeInteger(val)
+                              ? BigInt(val)
+                              : typeof val === 'string' && /^-?\d+$/.test(val)
+                                ? BigInt(val)
+                                : val,
+                          z.int64(),
+                        )
+                        .openapi({
+                          type: 'integer',
+                          format: 'int64',
+                          description: 'The SIP timestamp in Unix nanoseconds.',
+                        }),
+                    })
+                    .openapi({
+                      required: ['id', 'timestamp', 'exchange', 'message', 'sequence_number'],
+                    }),
+                )
+                .openapi({ description: 'The results for this request.' }),
+              status: z
+                .literal('OK')
+                .openapi({ description: "The status of this request's response." }),
+            })
+            .openapi({ required: ['status', 'request_id', 'results'] }),
+          example: {
+            next_url:
+              'https://api.massive.com/options/v1/admin-messages?cursor=YXA9dGltZXN0YW1wPTE3OTM5MTE0NDI5MzA1NjgwNzkmbGltaXQ9MiZzb3J0PXRpbWVzdGFtcC5hc2M',
+            request_id: '9b1c3f7a2e5d4b8c6f0a1d2e3b4c5d6e',
+            results: [
+              {
+                exchange: 302,
+                id: '1793911442930568079-4043826282',
+                message: 'FLEX AAPL 20270115 C 00200000 PRINT 150 @ 12.35',
+                sequence_number: 4043826282,
+                timestamp: 1793911442930568200,
+              },
+              {
+                exchange: 300,
+                id: '1793911460115302244-4043826283',
+                message: 'OPRA SYSTEM NORMAL',
+                retransmission: true,
+                sequence_number: 4043826283,
+                timestamp: 1793911460115302100,
+              },
+            ],
+            status: 'OK',
+          },
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
+      },
+    },
+    400: {
+      description: 'An error message.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              error: z
+                .string()
+                .openapi({ description: 'A message describing the source of the error.' }),
+              request_id: z
+                .string()
+                .openapi({ description: 'A request id assigned by the server.' }),
+              status: z
+                .literal('ERROR')
+                .openapi({ description: "The status of this request's response." }),
+            })
+            .openapi({ required: ['status', 'request_id', 'error'] }),
+        },
+      },
+    },
+  },
+})
+
+export const getOptionsV1AnalyticsRoute = createRoute({
+  method: 'get',
+  path: '/options/v1/analytics',
+  tags: ['us_options'],
+  description:
+    'Daily end-of-day greeks and implied volatility for every listed US options contract, with every input used to compute them.',
+  operationId: 'get_options_v1_analytics',
+  request: {
+    query: z.object({
+      ticker: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'Options contract ticker in Massive format (e.g. O:AMD261121C00220000)',
+            in: 'query',
+            name: 'ticker',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'ticker.any_of': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Filter equal to any of the values. Multiple values can be specified by using a comma separated list.',
+            in: 'query',
+            name: 'ticker.any_of',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      underlying_ticker: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'Underlying symbol',
+            in: 'query',
+            name: 'underlying_ticker',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'underlying_ticker.any_of': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Filter equal to any of the values. Multiple values can be specified by using a comma separated list.',
+            in: 'query',
+            name: 'underlying_ticker.any_of',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      expiration_date: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description: "Contract expiration date Value must be formatted 'yyyy-mm-dd'.",
+            in: 'query',
+            name: 'expiration_date',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      contract_type: z
+        .enum(['call', 'put'])
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'call or put',
+            in: 'query',
+            name: 'contract_type',
+            schema: { enum: ['call', 'put'], type: 'string' },
+            required: false,
+          },
+        }),
+      'contract_type.any_of': z
+        .enum(['call', 'put'])
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Filter equal to any of the values. Multiple values can be specified by using a comma separated list.',
+            in: 'query',
+            name: 'contract_type.any_of',
+            schema: { enum: ['call', 'put'], type: 'string' },
+            required: false,
+          },
+        }),
+      date: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "The trading date the values reflect Value must be formatted 'yyyy-mm-dd'.",
+            in: 'query',
+            name: 'date',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'date.gt': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description: "Filter greater than the value. Value must be formatted 'yyyy-mm-dd'.",
+            in: 'query',
+            name: 'date.gt',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'date.gte': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "Filter greater than or equal to the value. Value must be formatted 'yyyy-mm-dd'.",
+            in: 'query',
+            name: 'date.gte',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'date.lt': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description: "Filter less than the value. Value must be formatted 'yyyy-mm-dd'.",
+            in: 'query',
+            name: 'date.lt',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'date.lte': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "Filter less than or equal to the value. Value must be formatted 'yyyy-mm-dd'.",
+            in: 'query',
+            name: 'date.lte',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(1).max(50000),
+        )
+        .default(1000)
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "Limit the maximum number of results returned. Defaults to '1000' if not specified. The maximum allowed limit is '50000'.",
+            in: 'query',
+            name: 'limit',
+            schema: { default: 1000, maximum: 50000, minimum: 1, type: 'integer' },
+            required: false,
+          },
+        }),
+      sort: z
+        .string()
+        .default('date.desc')
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "A comma separated list of sort columns. For each column, append '.asc' or '.desc' to specify the sort direction. The sort column defaults to 'date' if not specified. The sort order defaults to 'desc' if not specified.",
+            in: 'query',
+            name: 'sort',
+            schema: { default: 'date.desc', type: 'string' },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'A list of results.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              next_url: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description: 'If present, this value can be used to fetch the next page.',
+                }),
+              request_id: z
+                .string()
+                .openapi({ description: 'A request id assigned by the server.' }),
+              results: z
+                .array(
+                  z
+                    .object({
+                      ask: z
+                        .float64()
+                        .exactOptional()
+                        .openapi({ description: 'NBBO ask 15 minutes before the close' }),
+                      bid: z
+                        .float64()
+                        .exactOptional()
+                        .openapi({ description: 'NBBO bid 15 minutes before the close' }),
+                      contract_type: z.string().openapi({ description: 'call or put' }),
+                      date: z.iso
+                        .date()
+                        .openapi({ description: 'The trading date the values reflect' }),
+                      delta: z
+                        .float64()
+                        .exactOptional()
+                        .openapi({
+                          description: 'Change in option price per $1 move in the underlying',
+                        }),
+                      dividend_yield: z
+                        .float64()
+                        .openapi({
+                          description:
+                            'The most recent regular dividend by ex-date times its yearly frequency, divided by underlying_price, as a decimal. 0 if none',
+                        }),
+                      exercise_style: z.string().openapi({ description: 'american or european' }),
+                      expiration_date: z.iso
+                        .date()
+                        .openapi({ description: 'Contract expiration date' }),
+                      gamma: z
+                        .float64()
+                        .exactOptional()
+                        .openapi({ description: 'Change in delta per $1 move in the underlying' }),
+                      implied_volatility: z
+                        .float64()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'Annualized implied volatility solved against option_price, as a decimal (0.48 means 48%). Null when the solver cannot produce a value',
+                        }),
+                      model: z.string().openapi({ description: 'Pricing model: binomial' }),
+                      open_interest: z
+                        .preprocess(
+                          (val) =>
+                            typeof val === 'number' && Number.isSafeInteger(val)
+                              ? BigInt(val)
+                              : typeof val === 'string' && /^-?\d+$/.test(val)
+                                ? BigInt(val)
+                                : val,
+                          z.int64(),
+                        )
+                        .exactOptional()
+                        .openapi({
+                          type: 'integer',
+                          format: 'int64',
+                          description:
+                            "Open interest as published the morning of date, for the prior trading day's close",
+                        }),
+                      option_price: z
+                        .float64()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'The option price the solver used: the NBBO midpoint 15 minutes before the close',
+                        }),
+                      quote_timestamp: z
+                        .preprocess(
+                          (val) =>
+                            typeof val === 'number' && Number.isSafeInteger(val)
+                              ? BigInt(val)
+                              : typeof val === 'string' && /^-?\d+$/.test(val)
+                                ? BigInt(val)
+                                : val,
+                          z.int64(),
+                        )
+                        .exactOptional()
+                        .openapi({
+                          type: 'integer',
+                          format: 'int64',
+                          description: 'Nanosecond timestamp of the NBBO used',
+                        }),
+                      rho: z
+                        .float64()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'Change in option price per 1 percentage point move in the risk-free rate',
+                        }),
+                      risk_free_rate: z
+                        .float64()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            "Annualized Treasury yield at the option's maturity, interpolated on the curve published before date, as a decimal",
+                        }),
+                      root: z
+                        .string()
+                        .exactOptional()
+                        .openapi({ description: 'Option root symbol' }),
+                      strike_price: z.float64().openapi({ description: 'Contract strike price' }),
+                      theta: z
+                        .float64()
+                        .exactOptional()
+                        .openapi({ description: 'Change in option price per calendar day' }),
+                      ticker: z
+                        .string()
+                        .openapi({
+                          description:
+                            'Options contract ticker in Massive format (e.g. O:AMD261121C00220000)',
+                        }),
+                      underlying_price: z
+                        .float64()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'Underlying price used by the solver: the last SIP trade, or the last published index value, at or before 15 minutes before the close',
+                        }),
+                      underlying_ticker: z
+                        .string()
+                        .exactOptional()
+                        .openapi({ description: 'Underlying symbol' }),
+                      underlying_timestamp: z
+                        .preprocess(
+                          (val) =>
+                            typeof val === 'number' && Number.isSafeInteger(val)
+                              ? BigInt(val)
+                              : typeof val === 'string' && /^-?\d+$/.test(val)
+                                ? BigInt(val)
+                                : val,
+                          z.int64(),
+                        )
+                        .exactOptional()
+                        .openapi({
+                          type: 'integer',
+                          format: 'int64',
+                          description: 'Nanosecond timestamp of the underlying price used',
+                        }),
+                      vega: z
+                        .float64()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'Change in option price per 1 point move in implied volatility',
+                        }),
+                      volume: z
+                        .preprocess(
+                          (val) =>
+                            typeof val === 'number' && Number.isSafeInteger(val)
+                              ? BigInt(val)
+                              : typeof val === 'string' && /^-?\d+$/.test(val)
+                                ? BigInt(val)
+                                : val,
+                          z.int64(),
+                        )
+                        .openapi({
+                          type: 'integer',
+                          format: 'int64',
+                          description: 'Contracts traded on date',
+                        }),
+                    })
+                    .openapi({
+                      required: [
+                        'ticker',
+                        'contract_type',
+                        'expiration_date',
+                        'strike_price',
+                        'date',
+                        'volume',
+                        'dividend_yield',
+                        'model',
+                        'exercise_style',
+                      ],
+                    }),
+                )
+                .openapi({ description: 'The results for this request.' }),
+              status: z
+                .literal('OK')
+                .openapi({ description: "The status of this request's response." }),
+            })
+            .openapi({ required: ['status', 'request_id', 'results'] }),
+          example: {
+            request_id: 'c1d4a9e07b2f4f6e9a3b5d8e2f1c0a7b',
+            results: [
+              {
+                ask: 9.5,
+                bid: 9.35,
+                contract_type: 'call',
+                date: '2026-10-29',
+                delta: 0.5312,
+                dividend_yield: 0,
+                exercise_style: 'american',
+                expiration_date: '2026-11-21',
+                gamma: 0.0218,
+                implied_volatility: 0.5137,
+                model: 'binomial',
+                open_interest: 14823,
+                option_price: 9.425,
+                quote_timestamp: 1793303099841234000,
+                rho: 0.0689,
+                risk_free_rate: 0.0431,
+                root: 'AMD',
+                strike_price: 220,
+                theta: -0.3861,
+                ticker: 'O:AMD261121C00220000',
+                underlying_price: 221.35,
+                underlying_ticker: 'AMD',
+                underlying_timestamp: 1793303099812004400,
+                vega: 0.2204,
+                volume: 6210,
+              },
+            ],
+            status: 'OK',
+          },
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
       },
     },
     400: {
@@ -20991,6 +21961,881 @@ export const getOptionsV1ExchangesRoute = createRoute({
             ],
             status: 'OK',
           },
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
+      },
+    },
+    400: {
+      description: 'An error message.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              error: z
+                .string()
+                .openapi({ description: 'A message describing the source of the error.' }),
+              request_id: z
+                .string()
+                .openapi({ description: 'A request id assigned by the server.' }),
+              status: z
+                .literal('ERROR')
+                .openapi({ description: "The status of this request's response." }),
+            })
+            .openapi({ required: ['status', 'request_id', 'error'] }),
+        },
+      },
+    },
+  },
+})
+
+export const getOptionsV1OpenInterestRoute = createRoute({
+  method: 'get',
+  path: '/options/v1/open-interest',
+  tags: ['us_options'],
+  description:
+    "Daily open interest for every US options contract as reported by OPRA, one row per contract per trading day, with the contract's underlying, type, expiration and strike.",
+  operationId: 'get_options_v1_open-interest',
+  request: {
+    query: z.object({
+      ticker: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'The options ticker symbol (e.g., O:SPY260123C00687000).',
+            in: 'query',
+            name: 'ticker',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'ticker.any_of': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Filter equal to any of the values. Multiple values can be specified by using a comma separated list.',
+            in: 'query',
+            name: 'ticker.any_of',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'ticker.gt': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'Filter greater than the value.',
+            in: 'query',
+            name: 'ticker.gt',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'ticker.gte': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'Filter greater than or equal to the value.',
+            in: 'query',
+            name: 'ticker.gte',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'ticker.lt': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'Filter less than the value.',
+            in: 'query',
+            name: 'ticker.lt',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'ticker.lte': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'Filter less than or equal to the value.',
+            in: 'query',
+            name: 'ticker.lte',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      root: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'The OCC root symbol of the contract (e.g., SPXW). Differs from the underlying for weekly roots and for contracts adjusted after a corporate action (e.g., AMCR1).',
+            in: 'query',
+            name: 'root',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'root.any_of': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Filter equal to any of the values. Multiple values can be specified by using a comma separated list.',
+            in: 'query',
+            name: 'root.any_of',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'root.gt': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'Filter greater than the value.',
+            in: 'query',
+            name: 'root.gt',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'root.gte': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'Filter greater than or equal to the value.',
+            in: 'query',
+            name: 'root.gte',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'root.lt': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'Filter less than the value.',
+            in: 'query',
+            name: 'root.lt',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'root.lte': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'Filter less than or equal to the value.',
+            in: 'query',
+            name: 'root.lte',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      contract_type: z
+        .enum(['call', 'put'])
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'The contract type. Possible values: call, put.',
+            in: 'query',
+            name: 'contract_type',
+            schema: { enum: ['call', 'put'], type: 'string' },
+            required: false,
+          },
+        }),
+      'contract_type.any_of': z
+        .enum(['call', 'put'])
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Filter equal to any of the values. Multiple values can be specified by using a comma separated list.',
+            in: 'query',
+            name: 'contract_type.any_of',
+            schema: { enum: ['call', 'put'], type: 'string' },
+            required: false,
+          },
+        }),
+      expiration_date: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "The date the contract expires (formatted as YYYY-MM-DD). Value must be formatted 'yyyy-mm-dd'.",
+            in: 'query',
+            name: 'expiration_date',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'expiration_date.gt': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description: "Filter greater than the value. Value must be formatted 'yyyy-mm-dd'.",
+            in: 'query',
+            name: 'expiration_date.gt',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'expiration_date.gte': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "Filter greater than or equal to the value. Value must be formatted 'yyyy-mm-dd'.",
+            in: 'query',
+            name: 'expiration_date.gte',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'expiration_date.lt': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description: "Filter less than the value. Value must be formatted 'yyyy-mm-dd'.",
+            in: 'query',
+            name: 'expiration_date.lt',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'expiration_date.lte': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "Filter less than or equal to the value. Value must be formatted 'yyyy-mm-dd'.",
+            in: 'query',
+            name: 'expiration_date.lte',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      date: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "The trading date the open interest applies to (formatted as YYYY-MM-DD). Value must be formatted 'yyyy-mm-dd'.",
+            in: 'query',
+            name: 'date',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'date.gt': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description: "Filter greater than the value. Value must be formatted 'yyyy-mm-dd'.",
+            in: 'query',
+            name: 'date.gt',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'date.gte': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "Filter greater than or equal to the value. Value must be formatted 'yyyy-mm-dd'.",
+            in: 'query',
+            name: 'date.gte',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'date.lt': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description: "Filter less than the value. Value must be formatted 'yyyy-mm-dd'.",
+            in: 'query',
+            name: 'date.lt',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'date.lte': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "Filter less than or equal to the value. Value must be formatted 'yyyy-mm-dd'.",
+            in: 'query',
+            name: 'date.lte',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(1).max(50000),
+        )
+        .default(100)
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "Limit the maximum number of results returned. Defaults to '100' if not specified. The maximum allowed limit is '50000'.",
+            in: 'query',
+            name: 'limit',
+            schema: { default: 100, maximum: 50000, minimum: 1, type: 'integer' },
+            required: false,
+          },
+        }),
+      sort: z
+        .string()
+        .default('date.desc')
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "A comma separated list of sort columns. For each column, append '.asc' or '.desc' to specify the sort direction. The sort column defaults to 'date' if not specified. The sort order defaults to 'desc' if not specified.",
+            in: 'query',
+            name: 'sort',
+            schema: { default: 'date.desc', type: 'string' },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'A list of results.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              next_url: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description: 'If present, this value can be used to fetch the next page.',
+                }),
+              request_id: z
+                .string()
+                .openapi({ description: 'A request id assigned by the server.' }),
+              results: z
+                .array(
+                  z
+                    .object({
+                      contract_type: z
+                        .string()
+                        .exactOptional()
+                        .openapi({ description: 'The contract type. Possible values: call, put.' }),
+                      date: z.iso
+                        .date()
+                        .openapi({
+                          description:
+                            'The trading date the open interest applies to (formatted as YYYY-MM-DD).',
+                        }),
+                      expiration_date: z.iso
+                        .date()
+                        .exactOptional()
+                        .openapi({
+                          description: 'The date the contract expires (formatted as YYYY-MM-DD).',
+                        }),
+                      open_interest: z
+                        .preprocess(
+                          (val) =>
+                            typeof val === 'number' && Number.isSafeInteger(val)
+                              ? BigInt(val)
+                              : typeof val === 'string' && /^-?\d+$/.test(val)
+                                ? BigInt(val)
+                                : val,
+                          z.int64(),
+                        )
+                        .exactOptional()
+                        .openapi({
+                          type: 'integer',
+                          format: 'int64',
+                          description:
+                            'The number of outstanding contracts that have not been closed or exercised, as of the last open interest update of the day.',
+                        }),
+                      root: z
+                        .string()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'The OCC root symbol of the contract (e.g., SPXW). Differs from the underlying for weekly roots and for contracts adjusted after a corporate action (e.g., AMCR1).',
+                        }),
+                      strike_price: z
+                        .float64()
+                        .exactOptional()
+                        .openapi({ description: 'The strike price of the contract.' }),
+                      ticker: z
+                        .string()
+                        .openapi({
+                          description: 'The options ticker symbol (e.g., O:SPY260123C00687000).',
+                        }),
+                      underlying_ticker: z
+                        .string()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            "The ticker of the contract's underlying (e.g., SPX). Weekly and adjusted roots are folded in, so SPXW contracts report SPX and AMCR1 contracts report AMCR; see root to tell them apart.",
+                        }),
+                    })
+                    .openapi({ required: ['ticker', 'date'] }),
+                )
+                .openapi({ description: 'The results for this request.' }),
+              status: z
+                .literal('OK')
+                .openapi({ description: "The status of this request's response." }),
+            })
+            .openapi({ required: ['status', 'request_id', 'results'] }),
+          example: {
+            next_url:
+              'https://api.massive.com/options/v1/open-interest?cursor=YXA9ZGF0ZT0yMDI2LTAxLTIyJnRpY2tlcj1POlNQWTI2MDEyM0MwMDY4NzAwMCZsaW1pdD0yJnNvcnQ9ZGF0ZS5kZXNj',
+            request_id: '6f1d2c9a8b7e4d3c2b1a0f9e8d7c6b5a',
+            results: [
+              {
+                contract_type: 'put',
+                date: '2026-01-22',
+                expiration_date: '2026-01-23',
+                open_interest: 9871,
+                root: 'SPY',
+                strike_price: 687,
+                ticker: 'O:SPY260123P00687000',
+                underlying_ticker: 'SPY',
+              },
+              {
+                contract_type: 'call',
+                date: '2026-01-22',
+                expiration_date: '2026-01-23',
+                open_interest: 15234,
+                root: 'SPY',
+                strike_price: 687,
+                ticker: 'O:SPY260123C00687000',
+                underlying_ticker: 'SPY',
+              },
+            ],
+            status: 'OK',
+          },
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
+      },
+    },
+    400: {
+      description: 'An error message.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              error: z
+                .string()
+                .openapi({ description: 'A message describing the source of the error.' }),
+              request_id: z
+                .string()
+                .openapi({ description: 'A request id assigned by the server.' }),
+              status: z
+                .literal('ERROR')
+                .openapi({ description: "The status of this request's response." }),
+            })
+            .openapi({ required: ['status', 'request_id', 'error'] }),
+        },
+      },
+    },
+  },
+})
+
+export const getOptionsV1UnusualTradesRoute = createRoute({
+  method: 'get',
+  path: '/options/v1/unusual-trades',
+  tags: ['us_options'],
+  description:
+    'Contains unusual trades for US options contracts, from real-time data for the most recent days and from historical trade records before that. A trade qualifies when its notional premium (price x size x 100) is $100,000 or more, when its size is 1,000 contracts or more, or when it is an intermarket sweep (condition 219). Cancels, late reports, and compression trades are excluded. The flags column lists every case the trade meets. Each record captures trade execution details including pricing, timing, and exchange information.',
+  operationId: 'get_options_v1_unusual-trades',
+  request: {
+    query: z.object({
+      ticker: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'The options ticker symbol (e.g., O:SPY260123C00687000).',
+            in: 'query',
+            name: 'ticker',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'ticker.any_of': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Filter equal to any of the values. Multiple values can be specified by using a comma separated list.',
+            in: 'query',
+            name: 'ticker.any_of',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'ticker.gt': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'Filter greater than the value.',
+            in: 'query',
+            name: 'ticker.gt',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'ticker.gte': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'Filter greater than or equal to the value.',
+            in: 'query',
+            name: 'ticker.gte',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'ticker.lt': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'Filter less than the value.',
+            in: 'query',
+            name: 'ticker.lt',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'ticker.lte': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'Filter less than or equal to the value.',
+            in: 'query',
+            name: 'ticker.lte',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      sip_timestamp: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "The nanosecond accuracy SIP Unix Timestamp. This is the timestamp of when the SIP received this trade from the exchange which produced it. Value must be an integer timestamp in nanoseconds, formatted 'yyyy-mm-dd', or ISO 8601/RFC 3339 (e.g. '2024-05-28T20:27:41Z').",
+            in: 'query',
+            name: 'sip_timestamp',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'sip_timestamp.gt': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "Filter greater than the value. Value must be an integer timestamp in nanoseconds, formatted 'yyyy-mm-dd', or ISO 8601/RFC 3339 (e.g. '2024-05-28T20:27:41Z').",
+            in: 'query',
+            name: 'sip_timestamp.gt',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'sip_timestamp.gte': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "Filter greater than or equal to the value. Value must be an integer timestamp in nanoseconds, formatted 'yyyy-mm-dd', or ISO 8601/RFC 3339 (e.g. '2024-05-28T20:27:41Z').",
+            in: 'query',
+            name: 'sip_timestamp.gte',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'sip_timestamp.lt': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "Filter less than the value. Value must be an integer timestamp in nanoseconds, formatted 'yyyy-mm-dd', or ISO 8601/RFC 3339 (e.g. '2024-05-28T20:27:41Z').",
+            in: 'query',
+            name: 'sip_timestamp.lt',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'sip_timestamp.lte': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "Filter less than or equal to the value. Value must be an integer timestamp in nanoseconds, formatted 'yyyy-mm-dd', or ISO 8601/RFC 3339 (e.g. '2024-05-28T20:27:41Z').",
+            in: 'query',
+            name: 'sip_timestamp.lte',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(1).max(50000),
+        )
+        .default(100)
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "Limit the maximum number of results returned. Defaults to '100' if not specified. The maximum allowed limit is '50000'.",
+            in: 'query',
+            name: 'limit',
+            schema: { default: 100, maximum: 50000, minimum: 1, type: 'integer' },
+            required: false,
+          },
+        }),
+      sort: z
+        .string()
+        .default('sip_timestamp.desc')
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "A comma separated list of sort columns. For each column, append '.asc' or '.desc' to specify the sort direction. The sort column defaults to 'sip_timestamp' if not specified. The sort order defaults to 'desc' if not specified.",
+            in: 'query',
+            name: 'sort',
+            schema: { default: 'sip_timestamp.desc', type: 'string' },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'A list of results.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              next_url: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description: 'If present, this value can be used to fetch the next page.',
+                }),
+              request_id: z
+                .string()
+                .openapi({ description: 'A request id assigned by the server.' }),
+              results: z
+                .array(
+                  z
+                    .object({
+                      conditions: z
+                        .array(z.int32())
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'A list of condition codes. See [Options Condition Codes](https://massive.com/docs/rest/options/market-operations/condition-codes) for what each code means.',
+                        }),
+                      exchange: z
+                        .int32()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'The exchange ID. See <a href="https://massive.com/docs/rest/options/market-operations/exchanges" alt="Exchanges">Exchanges</a> for Massive\'s mapping of exchange IDs.',
+                        }),
+                      flags: z
+                        .array(z.string())
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'The unusual-activity cases the trade meets, as a list. Values: block_premium (notional premium of $100,000 or more), block_size (1,000 contracts or more), iso (intermarket sweep, condition 219). A trade that meets several cases carries every matching flag.',
+                        }),
+                      price: z
+                        .float64()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'The price of the trade. This is the actual dollar value per whole contract of this trade.',
+                        }),
+                      root: z
+                        .string()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'The OCC root symbol of the contract (e.g., SPXW). Differs from the underlying for weekly roots and for contracts adjusted after a corporate action (e.g., AMCR1).',
+                        }),
+                      sequence_number: z
+                        .preprocess(
+                          (val) =>
+                            typeof val === 'number' && Number.isSafeInteger(val)
+                              ? BigInt(val)
+                              : typeof val === 'string' && /^-?\d+$/.test(val)
+                                ? BigInt(val)
+                                : val,
+                          z.int64(),
+                        )
+                        .openapi({
+                          type: 'integer',
+                          format: 'int64',
+                          description:
+                            'The sequence number represents the sequence in which trade events happened. These are increasing and unique per ticker symbol, but will not always be sequential. Values reset after each trading session/day.',
+                        }),
+                      sip_timestamp: z
+                        .preprocess(
+                          (val) =>
+                            typeof val === 'number' && Number.isSafeInteger(val)
+                              ? BigInt(val)
+                              : typeof val === 'string' && /^-?\d+$/.test(val)
+                                ? BigInt(val)
+                                : val,
+                          z.int64(),
+                        )
+                        .openapi({
+                          type: 'integer',
+                          format: 'int64',
+                          description:
+                            'The nanosecond accuracy SIP Unix Timestamp. This is the timestamp of when the SIP received this trade from the exchange which produced it.',
+                        }),
+                      size: z
+                        .preprocess(
+                          (val) =>
+                            typeof val === 'number' && Number.isSafeInteger(val)
+                              ? BigInt(val)
+                              : typeof val === 'string' && /^-?\d+$/.test(val)
+                                ? BigInt(val)
+                                : val,
+                          z.int64(),
+                        )
+                        .exactOptional()
+                        .openapi({
+                          type: 'integer',
+                          format: 'int64',
+                          description: 'The size of a trade (also known as volume), in contracts.',
+                        }),
+                      ticker: z
+                        .string()
+                        .openapi({
+                          description: 'The options ticker symbol (e.g., O:SPY260123C00687000).',
+                        }),
+                      underlying_ticker: z
+                        .string()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            "The ticker of the contract's underlying (e.g., SPX). Weekly and adjusted roots are folded in, so SPXW contracts report SPX and AMCR1 contracts report AMCR; see root to tell them apart.",
+                        }),
+                    })
+                    .openapi({ required: ['ticker', 'sip_timestamp', 'sequence_number'] }),
+                )
+                .openapi({ description: 'The results for this request.' }),
+              status: z
+                .literal('OK')
+                .openapi({ description: "The status of this request's response." }),
+            })
+            .openapi({ required: ['status', 'request_id', 'results'] }),
+          example: {
+            count: 2,
+            next_url: 'https://api.massive.com/options/v1/unusual-trades?cursor=eyJsaW1pd...',
+            request_id: 'a3f8b2c1d4e5f6a7',
+            results: [
+              {
+                conditions: [227],
+                exchange: 316,
+                flags: ['block_premium'],
+                price: 15.25,
+                root: 'SPY',
+                sequence_number: 112233,
+                sip_timestamp: 1761751432123456800,
+                size: 120,
+                ticker: 'O:SPY260123C00687000',
+                underlying_ticker: 'SPY',
+              },
+              {
+                conditions: [219],
+                exchange: 304,
+                flags: ['block_premium', 'iso'],
+                price: 42.1,
+                root: 'SPXW',
+                sequence_number: 98765,
+                sip_timestamp: 1761751431987654400,
+                size: 25,
+                ticker: 'O:SPXW261218C06000000',
+                underlying_ticker: 'SPX',
+              },
+            ],
+            status: 'OK',
+          },
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
         },
       },
     },
@@ -21263,6 +23108,14 @@ export const getOptionsV3QuotesTickerRoute = createRoute({
             })
             .openapi({ required: ['status', 'request_id', 'results'] }),
         },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
       },
     },
     400: {
@@ -21527,6 +23380,511 @@ export const getOptionsV3TradesTickerRoute = createRoute({
                 .openapi({ description: "The status of this request's response." }),
             })
             .openapi({ required: ['status', 'request_id', 'results'] }),
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
+      },
+    },
+    400: {
+      description: 'An error message.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              error: z
+                .string()
+                .openapi({ description: 'A message describing the source of the error.' }),
+              request_id: z
+                .string()
+                .openapi({ description: 'A request id assigned by the server.' }),
+              status: z
+                .literal('ERROR')
+                .openapi({ description: "The status of this request's response." }),
+            })
+            .openapi({ required: ['status', 'request_id', 'error'] }),
+        },
+      },
+    },
+  },
+})
+
+export const getOptionsVXOpenInterestUnderlyingRoute = createRoute({
+  method: 'get',
+  path: '/options/vX/open-interest/underlying',
+  tags: ['us_options'],
+  description:
+    "Daily open interest for US options rolled up across each underlying's whole chain, as reported by OPRA, with the call and put split.",
+  operationId: 'get_options_vX_open-interest_underlying',
+  request: {
+    query: z.object({
+      underlying_ticker: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'The ticker of the underlying (e.g., SPX). Totals cover every root on the underlying, so weekly roots (SPXW) and roots adjusted after a corporate action (AMCR1) are included.',
+            in: 'query',
+            name: 'underlying_ticker',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'underlying_ticker.any_of': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Filter equal to any of the values. Multiple values can be specified by using a comma separated list.',
+            in: 'query',
+            name: 'underlying_ticker.any_of',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'underlying_ticker.gt': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'Filter greater than the value.',
+            in: 'query',
+            name: 'underlying_ticker.gt',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'underlying_ticker.gte': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'Filter greater than or equal to the value.',
+            in: 'query',
+            name: 'underlying_ticker.gte',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'underlying_ticker.lt': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'Filter less than the value.',
+            in: 'query',
+            name: 'underlying_ticker.lt',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'underlying_ticker.lte': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'Filter less than or equal to the value.',
+            in: 'query',
+            name: 'underlying_ticker.lte',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      date: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "The trading date the open interest applies to (formatted as YYYY-MM-DD). Value must be formatted 'yyyy-mm-dd'.",
+            in: 'query',
+            name: 'date',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'date.gt': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description: "Filter greater than the value. Value must be formatted 'yyyy-mm-dd'.",
+            in: 'query',
+            name: 'date.gt',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'date.gte': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "Filter greater than or equal to the value. Value must be formatted 'yyyy-mm-dd'.",
+            in: 'query',
+            name: 'date.gte',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'date.lt': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description: "Filter less than the value. Value must be formatted 'yyyy-mm-dd'.",
+            in: 'query',
+            name: 'date.lt',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'date.lte': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "Filter less than or equal to the value. Value must be formatted 'yyyy-mm-dd'.",
+            in: 'query',
+            name: 'date.lte',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      open_interest: z
+        .preprocess((val) => {
+          if (typeof val !== 'string' || !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val))
+            return val
+          if (/^-?\d+$/.test(val)) return BigInt(val)
+          const num = Number(val)
+          return Number.isSafeInteger(num) ? BigInt(num) : val
+        }, z.int64())
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Total open interest across every contract on the underlying. Value must be an integer.',
+            in: 'query',
+            name: 'open_interest',
+            schema: { format: 'int64', type: 'integer' },
+            required: false,
+          },
+        }),
+      'open_interest.gt': z
+        .preprocess((val) => {
+          if (typeof val !== 'string' || !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val))
+            return val
+          if (/^-?\d+$/.test(val)) return BigInt(val)
+          const num = Number(val)
+          return Number.isSafeInteger(num) ? BigInt(num) : val
+        }, z.int64())
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'Filter greater than the value. Value must be an integer.',
+            in: 'query',
+            name: 'open_interest.gt',
+            schema: { format: 'int64', type: 'integer' },
+            required: false,
+          },
+        }),
+      'open_interest.gte': z
+        .preprocess((val) => {
+          if (typeof val !== 'string' || !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val))
+            return val
+          if (/^-?\d+$/.test(val)) return BigInt(val)
+          const num = Number(val)
+          return Number.isSafeInteger(num) ? BigInt(num) : val
+        }, z.int64())
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'Filter greater than or equal to the value. Value must be an integer.',
+            in: 'query',
+            name: 'open_interest.gte',
+            schema: { format: 'int64', type: 'integer' },
+            required: false,
+          },
+        }),
+      'open_interest.lt': z
+        .preprocess((val) => {
+          if (typeof val !== 'string' || !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val))
+            return val
+          if (/^-?\d+$/.test(val)) return BigInt(val)
+          const num = Number(val)
+          return Number.isSafeInteger(num) ? BigInt(num) : val
+        }, z.int64())
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'Filter less than the value. Value must be an integer.',
+            in: 'query',
+            name: 'open_interest.lt',
+            schema: { format: 'int64', type: 'integer' },
+            required: false,
+          },
+        }),
+      'open_interest.lte': z
+        .preprocess((val) => {
+          if (typeof val !== 'string' || !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val))
+            return val
+          if (/^-?\d+$/.test(val)) return BigInt(val)
+          const num = Number(val)
+          return Number.isSafeInteger(num) ? BigInt(num) : val
+        }, z.int64())
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'Filter less than or equal to the value. Value must be an integer.',
+            in: 'query',
+            name: 'open_interest.lte',
+            schema: { format: 'int64', type: 'integer' },
+            required: false,
+          },
+        }),
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(1).max(50000),
+        )
+        .default(100)
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "Limit the maximum number of results returned. Defaults to '100' if not specified. The maximum allowed limit is '50000'.",
+            in: 'query',
+            name: 'limit',
+            schema: { default: 100, maximum: 50000, minimum: 1, type: 'integer' },
+            required: false,
+          },
+        }),
+      sort: z
+        .string()
+        .default('date.desc')
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "A comma separated list of sort columns. For each column, append '.asc' or '.desc' to specify the sort direction. The sort column defaults to 'date' if not specified. The sort order defaults to 'desc' if not specified.",
+            in: 'query',
+            name: 'sort',
+            schema: { default: 'date.desc', type: 'string' },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'A list of results.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              next_url: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description: 'If present, this value can be used to fetch the next page.',
+                }),
+              request_id: z
+                .string()
+                .openapi({ description: 'A request id assigned by the server.' }),
+              results: z
+                .array(
+                  z
+                    .object({
+                      date: z.iso
+                        .date()
+                        .openapi({
+                          description:
+                            'The trading date the open interest applies to (formatted as YYYY-MM-DD).',
+                        }),
+                      open_interest: z
+                        .preprocess(
+                          (val) =>
+                            typeof val === 'number' && Number.isSafeInteger(val)
+                              ? BigInt(val)
+                              : typeof val === 'string' && /^-?\d+$/.test(val)
+                                ? BigInt(val)
+                                : val,
+                          z.int64(),
+                        )
+                        .exactOptional()
+                        .openapi({
+                          type: 'integer',
+                          format: 'int64',
+                          description:
+                            'Total open interest across every contract on the underlying.',
+                        }),
+                      open_interest_calls: z
+                        .preprocess(
+                          (val) =>
+                            typeof val === 'number' && Number.isSafeInteger(val)
+                              ? BigInt(val)
+                              : typeof val === 'string' && /^-?\d+$/.test(val)
+                                ? BigInt(val)
+                                : val,
+                          z.int64(),
+                        )
+                        .openapi({
+                          type: 'integer',
+                          format: 'int64',
+                          description:
+                            "Total open interest across the underlying's call contracts.",
+                        }),
+                      open_interest_change: z
+                        .preprocess(
+                          (val) =>
+                            typeof val === 'number' && Number.isSafeInteger(val)
+                              ? BigInt(val)
+                              : typeof val === 'string' && /^-?\d+$/.test(val)
+                                ? BigInt(val)
+                                : val,
+                          z.int64(),
+                        )
+                        .exactOptional()
+                        .openapi({
+                          type: 'integer',
+                          format: 'int64',
+                          description:
+                            'The change in total open interest from the previous trading day (open_interest - previous_open_interest). Null when previous_open_interest is null.',
+                        }),
+                      open_interest_change_calls: z
+                        .preprocess(
+                          (val) =>
+                            typeof val === 'number' && Number.isSafeInteger(val)
+                              ? BigInt(val)
+                              : typeof val === 'string' && /^-?\d+$/.test(val)
+                                ? BigInt(val)
+                                : val,
+                          z.int64(),
+                        )
+                        .exactOptional()
+                        .openapi({
+                          type: 'integer',
+                          format: 'int64',
+                          description:
+                            'The change in call open interest from the previous trading day, including call contracts that have since expired. Null when previous_open_interest is null.',
+                        }),
+                      open_interest_change_puts: z
+                        .preprocess(
+                          (val) =>
+                            typeof val === 'number' && Number.isSafeInteger(val)
+                              ? BigInt(val)
+                              : typeof val === 'string' && /^-?\d+$/.test(val)
+                                ? BigInt(val)
+                                : val,
+                          z.int64(),
+                        )
+                        .exactOptional()
+                        .openapi({
+                          type: 'integer',
+                          format: 'int64',
+                          description:
+                            'The change in put open interest from the previous trading day, including put contracts that have since expired. Null when previous_open_interest is null.',
+                        }),
+                      open_interest_puts: z
+                        .preprocess(
+                          (val) =>
+                            typeof val === 'number' && Number.isSafeInteger(val)
+                              ? BigInt(val)
+                              : typeof val === 'string' && /^-?\d+$/.test(val)
+                                ? BigInt(val)
+                                : val,
+                          z.int64(),
+                        )
+                        .openapi({
+                          type: 'integer',
+                          format: 'int64',
+                          description: "Total open interest across the underlying's put contracts.",
+                        }),
+                      previous_open_interest: z
+                        .preprocess(
+                          (val) =>
+                            typeof val === 'number' && Number.isSafeInteger(val)
+                              ? BigInt(val)
+                              : typeof val === 'string' && /^-?\d+$/.test(val)
+                                ? BigInt(val)
+                                : val,
+                          z.int64(),
+                        )
+                        .exactOptional()
+                        .openapi({
+                          type: 'integer',
+                          format: 'int64',
+                          description:
+                            'Total open interest on the underlying on the previous trading day, including contracts that have since expired. Null if the underlying had no open interest reported that day.',
+                        }),
+                      underlying_ticker: z
+                        .string()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'The ticker of the underlying (e.g., SPX). Totals cover every root on the underlying, so weekly roots (SPXW) and roots adjusted after a corporate action (AMCR1) are included.',
+                        }),
+                    })
+                    .openapi({ required: ['date', 'open_interest_calls', 'open_interest_puts'] }),
+                )
+                .openapi({ description: 'The results for this request.' }),
+              status: z
+                .literal('OK')
+                .openapi({ description: "The status of this request's response." }),
+            })
+            .openapi({ required: ['status', 'request_id', 'results'] }),
+          example: {
+            next_url:
+              'https://api.massive.com/options/vX/open-interest/underlying?cursor=YXA9ZGF0ZT0yMDI2LTAxLTIyJnVuZGVybHlpbmdfdGlja2VyPVFRUSZsaW1pdD0yJnNvcnQ9ZGF0ZS5kZXNj',
+            request_id: '0a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d',
+            results: [
+              {
+                date: '2026-01-23',
+                open_interest: 20987654,
+                open_interest_calls: 8765432,
+                open_interest_change: 530865,
+                open_interest_change_calls: 210432,
+                open_interest_change_puts: 320433,
+                open_interest_puts: 12222222,
+                previous_open_interest: 20456789,
+                underlying_ticker: 'SPY',
+              },
+              {
+                date: '2026-01-23',
+                open_interest: 9876543,
+                open_interest_calls: 4321098,
+                open_interest_change: -35802,
+                open_interest_change_calls: 12345,
+                open_interest_change_puts: -48147,
+                open_interest_puts: 5555445,
+                previous_open_interest: 9912345,
+                underlying_ticker: 'QQQ',
+              },
+            ],
+            status: 'OK',
+          },
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
         },
       },
     },
@@ -21858,6 +24216,14 @@ export const getStocksDevTradesTickerRoute = createRoute({
                 .openapi({ description: "The status of this request's response." }),
             })
             .openapi({ required: ['status', 'request_id', 'results'] }),
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
         },
       },
     },
@@ -22329,6 +24695,14 @@ export const getStocksFilings10KVXSectionsRoute = createRoute({
             status: 'OK',
           },
         },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
       },
     },
     400: {
@@ -22799,6 +25173,14 @@ export const getStocksFilings10KVX0SectionsRoute = createRoute({
             status: 'OK',
           },
         },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
       },
     },
     400: {
@@ -23146,6 +25528,14 @@ export const getStocksFilings8KVXDisclosuresRoute = createRoute({
             ],
             status: 'OK',
           },
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
         },
       },
     },
@@ -23601,6 +25991,14 @@ export const getStocksFilings8KVXTextRoute = createRoute({
             status: 'OK',
           },
         },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
       },
     },
     400: {
@@ -24017,6 +26415,14 @@ export const getStocksFilingsVX13FRoute = createRoute({
             ],
             status: 'OK',
           },
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
         },
       },
     },
@@ -24528,6 +26934,14 @@ export const getStocksFilingsVXForm3Route = createRoute({
             ],
             status: 'OK',
           },
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
         },
       },
     },
@@ -25125,6 +27539,14 @@ export const getStocksFilingsVXForm4Route = createRoute({
             ],
             status: 'OK',
           },
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
         },
       },
     },
@@ -25752,6 +28174,14 @@ export const getStocksFilingsVXForm5Route = createRoute({
             status: 'OK',
           },
         },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
       },
     },
     400: {
@@ -26208,6 +28638,14 @@ export const getStocksFilingsVXIndexRoute = createRoute({
             status: 'OK',
           },
         },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
       },
     },
     400: {
@@ -26576,6 +29014,14 @@ export const getStocksFilingsVXRiskFactorsRoute = createRoute({
             ],
             status: 'OK',
           },
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
         },
       },
     },
@@ -27493,6 +29939,14 @@ export const getStocksFinancialsV1BalanceSheetsRoute = createRoute({
             status: 'OK',
           },
         },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
       },
     },
     400: {
@@ -28362,6 +30816,14 @@ export const getStocksFinancialsV1CashFlowStatementsRoute = createRoute({
             ],
             status: 'OK',
           },
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
         },
       },
     },
@@ -29244,6 +31706,14 @@ export const getStocksFinancialsV1IncomeStatementsRoute = createRoute({
             ],
             status: 'OK',
           },
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
         },
       },
     },
@@ -31741,6 +34211,14 @@ export const getStocksFinancialsV1RatiosRoute = createRoute({
             status: 'OK',
           },
         },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
       },
     },
     400: {
@@ -32129,6 +34607,14 @@ export const getStocksInsidersVXActivityRoute = createRoute({
             ],
             status: 'OK',
           },
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
         },
       },
     },
@@ -32537,6 +35023,14 @@ export const getStocksInsidersVXHoldingsRoute = createRoute({
             ],
             status: 'OK',
           },
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
         },
       },
     },
@@ -32978,6 +35472,14 @@ export const getStocksTaxonomiesVXDisclosuresRoute = createRoute({
             ],
             status: 'OK',
           },
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
         },
       },
     },
@@ -33449,6 +35951,14 @@ export const getStocksTaxonomiesVXRiskFactorsRoute = createRoute({
             status: 'OK',
           },
         },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
       },
     },
     400: {
@@ -33917,6 +36427,14 @@ export const getStocksV1DividendsRoute = createRoute({
             status: 'OK',
           },
         },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
       },
     },
     400: {
@@ -34087,6 +36605,14 @@ export const getStocksV1ExchangesRoute = createRoute({
             ],
             status: 'OK',
           },
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
         },
       },
     },
@@ -34621,6 +37147,14 @@ export const getStocksV1ShortInterestRoute = createRoute({
             ],
             status: 'OK',
           },
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
         },
       },
     },
@@ -35190,6 +37724,14 @@ export const getStocksV1ShortVolumeRoute = createRoute({
             status: 'OK',
           },
         },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
       },
     },
     400: {
@@ -35506,6 +38048,14 @@ export const getStocksV1SplitsRoute = createRoute({
             ],
             status: 'OK',
           },
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
         },
       },
     },
@@ -35830,6 +38380,14 @@ export const getStocksVXFloatRoute = createRoute({
             ],
             status: 'OK',
           },
+        },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
         },
       },
     },
@@ -36634,6 +39192,14 @@ export const getTmxV1CorporateEventsRoute = createRoute({
             status: 'OK',
           },
         },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
       },
     },
     400: {
@@ -36931,7 +39497,9 @@ export const getV1HistoricCryptoFromToDateRoute = createRoute({
                   day: z.iso
                     .date()
                     .openapi({ description: 'The date that was evaluated from the request.' }),
-                  map: z.object({}).openapi({ description: 'A map for shortened result keys.' }),
+                  map: z
+                    .looseObject({})
+                    .openapi({ description: 'A map for shortened result keys.' }),
                   msLatency: z
                     .int()
                     .openapi({ description: 'The milliseconds of latency for the query results.' }),
@@ -37112,7 +39680,9 @@ export const getV1HistoricForexFromToDateRoute = createRoute({
                   day: z.iso
                     .date()
                     .openapi({ description: 'The date that was evaluated from the request.' }),
-                  map: z.object({}).openapi({ description: 'A map for shortened result keys.' }),
+                  map: z
+                    .looseObject({})
+                    .openapi({ description: 'A map for shortened result keys.' }),
                   msLatency: z
                     .int()
                     .openapi({ description: 'The milliseconds of latency for the query results.' }),
@@ -46797,6 +49367,14 @@ export const getV1ReferenceIposRoute = createRoute({
             status: 'OK',
           },
         },
+        'application/vnd.apache.arrow.file': {
+          schema: z
+            .any()
+            .openapi({
+              description:
+                "An Apache Arrow IPC file. Its record batch columns match the fields of the entries in the JSON response's `results` array.",
+            }),
+        },
       },
     },
     400: {
@@ -47503,19 +50081,11 @@ export const getV1ReferenceSecFilingsFilingIdFilesRoute = createRoute({
             description: 'Query by file sequence number.',
             in: 'query',
             name: 'sequence',
-            schema: {
-              description: 'File Sequence Number',
-              format: 'int64',
-              max: 999,
-              min: 1,
-              type: 'integer',
-            },
+            schema: { description: 'File Sequence Number', format: 'int64', type: 'integer' },
             'x-polygon-filter-field': { range: true },
             required: false,
           },
           description: 'File Sequence Number',
-          max: 999,
-          min: 1,
         }),
       filename: z
         .string()
@@ -47545,18 +50115,10 @@ export const getV1ReferenceSecFilingsFilingIdFilesRoute = createRoute({
             description: 'Search by sequence.',
             in: 'query',
             name: 'sequence.gte',
-            schema: {
-              description: 'File Sequence Number',
-              format: 'int64',
-              max: 999,
-              min: 1,
-              type: 'integer',
-            },
+            schema: { description: 'File Sequence Number', format: 'int64', type: 'integer' },
             required: false,
           },
           description: 'File Sequence Number',
-          max: 999,
-          min: 1,
         }),
       'sequence.gt': z
         .preprocess((val) => {
@@ -47572,18 +50134,10 @@ export const getV1ReferenceSecFilingsFilingIdFilesRoute = createRoute({
             description: 'Search by sequence.',
             in: 'query',
             name: 'sequence.gt',
-            schema: {
-              description: 'File Sequence Number',
-              format: 'int64',
-              max: 999,
-              min: 1,
-              type: 'integer',
-            },
+            schema: { description: 'File Sequence Number', format: 'int64', type: 'integer' },
             required: false,
           },
           description: 'File Sequence Number',
-          max: 999,
-          min: 1,
         }),
       'sequence.lte': z
         .preprocess((val) => {
@@ -47599,18 +50153,10 @@ export const getV1ReferenceSecFilingsFilingIdFilesRoute = createRoute({
             description: 'Search by sequence.',
             in: 'query',
             name: 'sequence.lte',
-            schema: {
-              description: 'File Sequence Number',
-              format: 'int64',
-              max: 999,
-              min: 1,
-              type: 'integer',
-            },
+            schema: { description: 'File Sequence Number', format: 'int64', type: 'integer' },
             required: false,
           },
           description: 'File Sequence Number',
-          max: 999,
-          min: 1,
         }),
       'sequence.lt': z
         .preprocess((val) => {
@@ -47626,18 +50172,10 @@ export const getV1ReferenceSecFilingsFilingIdFilesRoute = createRoute({
             description: 'Search by sequence.',
             in: 'query',
             name: 'sequence.lt',
-            schema: {
-              description: 'File Sequence Number',
-              format: 'int64',
-              max: 999,
-              min: 1,
-              type: 'integer',
-            },
+            schema: { description: 'File Sequence Number', format: 'int64', type: 'integer' },
             required: false,
           },
           description: 'File Sequence Number',
-          max: 999,
-          min: 1,
         }),
       'filename.gte': z
         .string()
@@ -47787,8 +50325,6 @@ export const getV1ReferenceSecFilingsFilingIdFilesRoute = createRoute({
                         type: 'integer',
                         format: 'int64',
                         description: 'File Sequence Number',
-                        max: 999,
-                        min: 1,
                       }),
                     size_bytes: z
                       .preprocess(
@@ -47913,13 +50449,7 @@ export const getV1ReferenceSecFilingsFilingIdFilesFileIdRoute = createRoute({
                         : val,
                   z.int64(),
                 )
-                .openapi({
-                  type: 'integer',
-                  format: 'int64',
-                  description: 'File Sequence Number',
-                  max: 999,
-                  min: 1,
-                }),
+                .openapi({ type: 'integer', format: 'int64', description: 'File Sequence Number' }),
               size_bytes: z
                 .preprocess(
                   (val) =>
@@ -52415,7 +54945,7 @@ export const getV2SnapshotLocaleGlobalMarketsCryptoTickersTickerBookRoute = crea
                               .float64()
                               .openapi({ description: 'The price of this book level.' }),
                             x: z
-                              .object({})
+                              .looseObject({})
                               .openapi({
                                 description:
                                   'A map of the exchange ID to number of shares at this price level.\n<br />\n<br />\n**Example:**\n<br />\n`{\n  "p": 16302.94,\n  "x": {\n    "1": 0.02859424,\n    "6": 0.023455\n  }\n}`\n<br />\n<br />\nIn this example, exchange ID 1 has 0.02859424 shares available at $16,302.94,\nand exchange ID 6 has 0.023455 shares at the same price level.\n',
@@ -52433,7 +54963,7 @@ export const getV2SnapshotLocaleGlobalMarketsCryptoTickersTickerBookRoute = crea
                               .float64()
                               .openapi({ description: 'The price of this book level.' }),
                             x: z
-                              .object({})
+                              .looseObject({})
                               .openapi({
                                 description:
                                   'A map of the exchange ID to number of shares at this price level.\n<br />\n<br />\n**Example:**\n<br />\n`{\n  "p": 16302.94,\n  "x": {\n    "1": 0.02859424,\n    "6": 0.023455\n  }\n}`\n<br />\n<br />\nIn this example, exchange ID 1 has 0.02859424 shares available at $16,302.94,\nand exchange ID 6 has 0.023455 shares at the same price level.\n',
@@ -58371,6 +60901,13 @@ export const getV3ReferenceOptionsContractsRoute = createRoute({
                           description:
                             'The 6 letter CFI code of the contract (defined in <a rel="nofollow" target="_blank" href="https://en.wikipedia.org/wiki/ISO_10962">ISO 10962</a>)',
                         }),
+                      company_ticker: z
+                        .string()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'KPI binary options only. The ticker of the company the KPI belongs to, like NFLX.',
+                        }),
                       contract_type: z
                         .string()
                         .exactOptional()
@@ -58401,12 +60938,40 @@ export const getV3ReferenceOptionsContractsRoute = createRoute({
                             path: 'github.com/polygon-io/ptime',
                           },
                         }),
+                      metric: z
+                        .string()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'KPI binary options only. The KPI the contract settles on, like "Earnings Per Share ($/share)".',
+                        }),
                       primary_exchange: z
                         .string()
                         .exactOptional()
                         .openapi({
                           description:
                             'The MIC code of the primary exchange that this contract is listed on.',
+                        }),
+                      report_time: z
+                        .enum(['AM', 'PM'])
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'KPI binary options only. AM if the company reports before the market opens, PM if after it closes.',
+                        }),
+                      reporting_period: z
+                        .string()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'KPI binary options only. The fiscal period the KPI is for, like 2026Q3.',
+                        }),
+                      scale: z
+                        .int()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'KPI binary options only. The KPI value divided by scale gives the strike price, like 1000000000 for a KPI in billions. A negative scale means an inverted KPI, like Loss Per Share.',
                         }),
                       shares_per_contract: z
                         .number()
@@ -58422,11 +60987,25 @@ export const getV3ReferenceOptionsContractsRoute = createRoute({
                         .string()
                         .exactOptional()
                         .openapi({ description: 'The ticker for the option contract.' }),
+                      type: z
+                        .enum(['standard', 'binary'])
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'The type of option contract: standard or binary. It can be missing, for example on contracts listed before this field was added, so a missing type says nothing about the contract.',
+                        }),
                       underlying_ticker: z
                         .string()
                         .exactOptional()
                         .openapi({
                           description: 'The underlying ticker that the option contract relates to.',
+                        }),
+                      underlying_type: z
+                        .enum(['kpi', 'equity'])
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'What the contract is based on: kpi on Cboe KPI binary options, equity on NYSE American equity binary options (roots that start with B1). Missing on other contracts for now.',
                         }),
                     })
                     .openapi({
@@ -58585,6 +61164,13 @@ export const getV3ReferenceOptionsContractsOptionsTickerRoute = createRoute({
                       description:
                         'The 6 letter CFI code of the contract (defined in <a rel="nofollow" target="_blank" href="https://en.wikipedia.org/wiki/ISO_10962">ISO 10962</a>)',
                     }),
+                  company_ticker: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'KPI binary options only. The ticker of the company the KPI belongs to, like NFLX.',
+                    }),
                   contract_type: z
                     .string()
                     .exactOptional()
@@ -58613,12 +61199,40 @@ export const getV3ReferenceOptionsContractsOptionsTickerRoute = createRoute({
                         path: 'github.com/polygon-io/ptime',
                       },
                     }),
+                  metric: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'KPI binary options only. The KPI the contract settles on, like "Earnings Per Share ($/share)".',
+                    }),
                   primary_exchange: z
                     .string()
                     .exactOptional()
                     .openapi({
                       description:
                         'The MIC code of the primary exchange that this contract is listed on.',
+                    }),
+                  report_time: z
+                    .enum(['AM', 'PM'])
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'KPI binary options only. AM if the company reports before the market opens, PM if after it closes.',
+                    }),
+                  reporting_period: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'KPI binary options only. The fiscal period the KPI is for, like 2026Q3.',
+                    }),
+                  scale: z
+                    .int()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'KPI binary options only. The KPI value divided by scale gives the strike price, like 1000000000 for a KPI in billions. A negative scale means an inverted KPI, like Loss Per Share.',
                     }),
                   shares_per_contract: z
                     .number()
@@ -58634,11 +61248,25 @@ export const getV3ReferenceOptionsContractsOptionsTickerRoute = createRoute({
                     .string()
                     .exactOptional()
                     .openapi({ description: 'The ticker for the option contract.' }),
+                  type: z
+                    .enum(['standard', 'binary'])
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'The type of option contract: standard or binary. It can be missing, for example on contracts listed before this field was added, so a missing type says nothing about the contract.',
+                    }),
                   underlying_ticker: z
                     .string()
                     .exactOptional()
                     .openapi({
                       description: 'The underlying ticker that the option contract relates to.',
+                    }),
+                  underlying_type: z
+                    .enum(['kpi', 'equity'])
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'What the contract is based on: kpi on Cboe KPI binary options, equity on NYSE American equity binary options (roots that start with B1). Missing on other contracts for now.',
                     }),
                 })
                 .exactOptional()
@@ -60530,7 +63158,7 @@ export const getV3SnapshotRoute = createRoute({
                         .exactOptional()
                         .openapi({
                           description:
-                            'The market status for the market that trades this ticker. Possible values for stocks, options, crypto, and forex snapshots are open, closed, early_trading, or late_trading.\nPossible values for indices snapshots are regular_trading, closed, early_trading, and late_trading.',
+                            'The market status for the market that trades this ticker.\n\nPossible values for Stocks are overnight_trading, open, closed, early_trading, and late_trading. Note that the overnight_trading session is new as of 2026-12-07 for SIP 23/5 extended hours.\n\nPossible values for options, crypto, and forex snapshots are open, closed, early_trading, or late_trading.\n\nPossible values for indices snapshots are regular_trading, closed, early_trading, and late_trading.',
                         }),
                       message: z
                         .string()
@@ -60583,13 +63211,14 @@ export const getV3SnapshotRoute = createRoute({
                             .exactOptional()
                             .openapi({
                               description:
-                                "Today's early trading change amount, difference between price and previous close if in early trading hours, otherwise difference between last price during early trading and previous close.",
+                                "Today's early trading change amount, difference between price and previous close if in early trading hours, otherwise difference between last price during early trading and previous close. For options, this is the price of the contract's last early trading trade today (7:30 to 9:30 AM ET, with the EXHT condition) minus `previous_close`.",
                             }),
                           early_trading_change_percent: z
                             .float64()
                             .exactOptional()
                             .openapi({
-                              description: "Today's early trading change as a percentage.",
+                              description:
+                                "Today's early trading change as a percentage of `previous_close`.",
                             }),
                           high: z
                             .float64()
@@ -60597,18 +63226,40 @@ export const getV3SnapshotRoute = createRoute({
                             .openapi({
                               description: 'The highest price of the asset for the day.',
                             }),
+                          last_updated: z
+                            .preprocess(
+                              (val) =>
+                                typeof val === 'number' && Number.isSafeInteger(val)
+                                  ? BigInt(val)
+                                  : typeof val === 'string' && /^-?\d+$/.test(val)
+                                    ? BigInt(val)
+                                    : val,
+                              z.int64(),
+                            )
+                            .exactOptional()
+                            .openapi({
+                              type: 'integer',
+                              format: 'int64',
+                              description:
+                                "The nanosecond timestamp of the last update to the session data. For stocks, it's set when the session resets at the start of each trading session and then advances with each trade; quotes don't update it. Returned for stocks, crypto, and forex snapshots, though it may be absent for inactive tickers.",
+                              'x-polygon-go-type': {
+                                name: 'INanoseconds',
+                                path: 'github.com/polygon-io/ptime',
+                              },
+                            }),
                           late_trading_change: z
                             .float64()
                             .exactOptional()
                             .openapi({
                               description:
-                                "Today's late trading change amount, difference between price and today's close if in late trading hours, otherwise difference between last price during late trading and today's close.",
+                                "Today's late trading change amount, difference between price and today's close if in late trading hours, otherwise difference between last price during late trading and today's close. For options, this is the price of the contract's last late trading trade today (after the regular session and before 5:00 PM ET, with the EXHT condition) minus today's `close`.",
                             }),
                           late_trading_change_percent: z
                             .float64()
                             .exactOptional()
                             .openapi({
-                              description: "Today's late trading change as a percentage.",
+                              description:
+                                "Today's late trading change as a percentage of today's `close`.",
                             }),
                           low: z
                             .float64()
@@ -60637,13 +63288,14 @@ export const getV3SnapshotRoute = createRoute({
                             .exactOptional()
                             .openapi({
                               description:
-                                "Today's change in regular trading hours, difference between current price and previous trading day's close, otherwise difference between today's close and previous day's close.",
+                                "Today's change in regular trading hours, difference between current price and previous trading day's close, otherwise difference between today's close and previous day's close. For options, while `market_status` is `open` this is the price of the contract's last regular session trade today minus `previous_close`. During late trading and after the close, it is today's `close` minus `previous_close`. It is omitted during early trading.",
                             }),
                           regular_trading_change_percent: z
                             .float64()
                             .exactOptional()
                             .openapi({
-                              description: "Today's regular trading change as a percentage.",
+                              description:
+                                "Today's regular trading change as a percentage of `previous_close`.",
                             }),
                           volume: z
                             .float64()
@@ -60652,11 +63304,18 @@ export const getV3SnapshotRoute = createRoute({
                               description:
                                 'The trading volume for the asset for the day. A value of 0 means no trades have occurred yet in the current session.',
                             }),
+                          vwap: z
+                            .float64()
+                            .exactOptional()
+                            .openapi({
+                              description:
+                                "The volume weighted average price of the asset for the day. Only returned for stocks, crypto, and forex snapshots, and omitted when there's no day bar yet, such as for stocks before the regular market open or for tickers that haven't traded today.",
+                            }),
                         })
                         .exactOptional()
                         .openapi({
                           description:
-                            'Comprehensive trading session metrics, detailing price changes, trading volume, and key price points (open, close, high, low) for the asset within the current trading day. Includes specific changes during early, regular, and late trading periods to enable detailed performance analysis and trend tracking.\n\nValues describe the current trading session only; nothing carries over from the previous session apart from `previous_close`. For stocks snapshots, an asset that has not traded yet this session reports `volume: 0` with the price and change fields omitted rather than reported as 0.\n\nDuring early trading on stocks snapshots, `volume` and `price` track the session as it happens, but `open`, `high`, `low`, `close` and `vwap` are omitted until the regular session opens, as those report official session prices. They appear from the open and remain through late trading.',
+                            "Comprehensive trading session metrics, detailing price changes, trading volume, and key price points (open, close, high, low) for the asset within the current trading day. Includes specific changes during early, regular, and late trading periods to enable detailed performance analysis and trend tracking.\n\nValues describe the current trading session only; nothing carries over from the previous session apart from `previous_close`. For stocks snapshots, an asset that has not traded yet this session reports `volume: 0` with the price and change fields omitted rather than reported as 0.\n\nDuring early trading on stocks snapshots, `volume` and `price` track the session as it happens, but `open`, `high`, `low`, `close` and `vwap` are omitted until the regular session opens, as those report official session prices. They appear from the open and remain through late trading.\n\nFor options snapshots, the early, regular and late trading changes use these sessions: early trading from 7:30 to 9:30 AM ET, the regular session from 9:30 AM to 4:00 PM ET (4:15 PM ET for some products, such as SPY and SPX options), and late trading from the end of the regular session to 5:00 PM ET. Only trades marked with the extended hours condition (EXHT, 248) count as early or late trading. Cboe's extended trading hours program covers selected equity options, so other contracts do not get an early or late trading change. Index options, such as SPX, SPXW and XSP, get the regular trading change only. A change field is omitted when the contract has no trade in that session on the current trading day, or when the price it is measured against is missing. A change of 0 is returned as 0.",
                           'x-polygon-go-type': { name: 'Session' },
                           required: [],
                         }),
@@ -60784,20 +63443,20 @@ export const getV3SnapshotRoute = createRoute({
                 name: 'NCLH $5 Call',
                 open_interest: 8921,
                 session: {
-                  change: -0.05,
-                  change_percent: -1.07,
+                  change: -0.06,
+                  change_percent: -0.894,
                   close: 6.65,
                   decimal_volume: '67.0',
                   early_trading_change: -0.01,
-                  early_trading_change_percent: -0.03,
+                  early_trading_change_percent: -0.149,
                   high: 7.01,
-                  late_trading_change: -0.4,
-                  late_trading_change_percent: -0.02,
+                  late_trading_change: 0.05,
+                  late_trading_change_percent: 0.752,
                   low: 5.42,
                   open: 6.7,
                   previous_close: 6.71,
-                  regular_trading_change: -0.6,
-                  regular_trading_change_percent: -0.5,
+                  regular_trading_change: -0.06,
+                  regular_trading_change_percent: -0.894,
                   volume: 67,
                 },
                 ticker: 'O:NCLH221014C00005000',

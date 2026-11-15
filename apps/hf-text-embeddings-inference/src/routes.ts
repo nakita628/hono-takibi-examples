@@ -45,7 +45,7 @@ const EmbedAllRequestSchema = z
         example: 'null',
       }),
     truncate: z.boolean().nullable().default(false).exactOptional().openapi({ example: 'false' }),
-    truncation_direction: TruncationDirectionSchema.default('right').exactOptional(),
+    truncation_direction: TruncationDirectionSchema.exactOptional().openapi({ default: 'right' }),
   })
   .openapi({ required: ['inputs'] })
   .openapi('EmbedAllRequest')
@@ -81,7 +81,7 @@ const EmbedRequestSchema = z
         example: 'null',
       }),
     truncate: z.boolean().nullable().default(false).exactOptional().openapi({ example: 'false' }),
-    truncation_direction: TruncationDirectionSchema.default('right').exactOptional(),
+    truncation_direction: TruncationDirectionSchema.exactOptional().openapi({ default: 'right' }),
   })
   .openapi({ required: ['inputs'] })
   .openapi('EmbedRequest')
@@ -105,7 +105,7 @@ const EmbedSparseRequestSchema = z
         example: 'null',
       }),
     truncate: z.boolean().nullable().default(false).exactOptional().openapi({ example: 'false' }),
-    truncation_direction: TruncationDirectionSchema.default('right').exactOptional(),
+    truncation_direction: TruncationDirectionSchema.exactOptional().openapi({ default: 'right' }),
   })
   .openapi({ required: ['inputs'] })
   .openapi('EmbedSparseRequest')
@@ -263,7 +263,7 @@ const PredictRequestSchema = z
     inputs: PredictInputSchema,
     raw_scores: z.boolean().default(false).exactOptional().openapi({ example: 'false' }),
     truncate: z.boolean().nullable().default(false).exactOptional().openapi({ example: 'false' }),
-    truncation_direction: TruncationDirectionSchema.default('right').exactOptional(),
+    truncation_direction: TruncationDirectionSchema.exactOptional().openapi({ default: 'right' }),
   })
   .openapi({ required: ['inputs'] })
   .openapi('PredictRequest')
@@ -301,7 +301,7 @@ const RerankRequestSchema = z
     return_text: z.boolean().default(false).exactOptional().openapi({ example: 'false' }),
     texts: z.array(z.string()).openapi({ example: ['Deep Learning is ...'] }),
     truncate: z.boolean().nullable().default(false).exactOptional().openapi({ example: 'false' }),
-    truncation_direction: TruncationDirectionSchema.default('right').exactOptional(),
+    truncation_direction: TruncationDirectionSchema.exactOptional().openapi({ default: 'right' }),
   })
   .openapi({ required: ['query', 'texts'] })
   .openapi('RerankRequest')
@@ -340,7 +340,7 @@ const SimilarityParametersSchema = z
         example: 'null',
       }),
     truncate: z.boolean().nullable().default(false).exactOptional().openapi({ example: 'false' }),
-    truncation_direction: TruncationDirectionSchema.default('right').exactOptional(),
+    truncation_direction: TruncationDirectionSchema.exactOptional().openapi({ default: 'right' }),
   })
   .openapi({ required: [] })
   .openapi('SimilarityParameters')
@@ -348,7 +348,7 @@ const SimilarityParametersSchema = z
 const SimilarityRequestSchema = z
   .object({
     inputs: SimilarityInputSchema,
-    parameters: SimilarityParametersSchema.nullable().default('null').exactOptional(),
+    parameters: SimilarityParametersSchema.nullable().exactOptional().openapi({ default: 'null' }),
   })
   .openapi({ required: ['inputs'] })
   .openapi('SimilarityRequest')

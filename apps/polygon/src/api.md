@@ -7534,6 +7534,282 @@ apiKey
 
 <h1 id="massive-api-usoptions">us_options</h1>
 
+## get_options_v1_admin-messages
+
+<a id="opIdget_options_v1_admin-messages"></a>
+
+> Code samples
+
+```bash
+curl "https://api.polygon.io/options/v1/admin-messages?apiKey=${API_KEY}" \
+  -H 'Accept: application/json'
+```
+
+`GET /options/v1/admin-messages`
+
+OPRA administrative messages: the free-text channel of the OPRA feed, carrying FLEX option prints and quotes, operational notices, and other messages that don't fit a fixed format. One record per OPRA Category C message, written once and never modified.
+
+<h3 id="getoptionsv1admin-messages-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|timestamp.gt|query|string|false|Filter greater than the value. Value must be an integer timestamp in nanoseconds, formatted 'yyyy-mm-dd', or ISO 8601/RFC 3339 (e.g. '2024-05-28T20:27:41Z').|
+|timestamp.gte|query|string|false|Filter greater than or equal to the value. Value must be an integer timestamp in nanoseconds, formatted 'yyyy-mm-dd', or ISO 8601/RFC 3339 (e.g. '2024-05-28T20:27:41Z').|
+|timestamp.lt|query|string|false|Filter less than the value. Value must be an integer timestamp in nanoseconds, formatted 'yyyy-mm-dd', or ISO 8601/RFC 3339 (e.g. '2024-05-28T20:27:41Z').|
+|timestamp.lte|query|string|false|Filter less than or equal to the value. Value must be an integer timestamp in nanoseconds, formatted 'yyyy-mm-dd', or ISO 8601/RFC 3339 (e.g. '2024-05-28T20:27:41Z').|
+|exchange|query|integer(int64)|false|The exchange ID. See Exchanges mapping for details. Value must be an integer.|
+|limit|query|integer|false|Limit the maximum number of results returned. Defaults to '1000' if not specified. The maximum allowed limit is '50000'.|
+|sort|query|string|false|A comma separated list of sort columns. For each column, append '.asc' or '.desc' to specify the sort direction. The sort column defaults to 'timestamp' if not specified. The sort order defaults to 'asc' if not specified.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "next_url": "https://api.massive.com/options/v1/admin-messages?cursor=YXA9dGltZXN0YW1wPTE3OTM5MTE0NDI5MzA1NjgwNzkmbGltaXQ9MiZzb3J0PXRpbWVzdGFtcC5hc2M",
+  "request_id": "9b1c3f7a2e5d4b8c6f0a1d2e3b4c5d6e",
+  "results": [
+    {
+      "exchange": 302,
+      "id": "1793911442930568079-4043826282",
+      "message": "FLEX AAPL 20270115 C 00200000 PRINT 150 @ 12.35",
+      "sequence_number": 4043826282,
+      "timestamp": 1793911442930568200
+    },
+    {
+      "exchange": 300,
+      "id": "1793911460115302244-4043826283",
+      "message": "OPRA SYSTEM NORMAL",
+      "retransmission": true,
+      "sequence_number": 4043826283,
+      "timestamp": 1793911460115302100
+    }
+  ],
+  "status": "OK"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "error": "string",
+  "request_id": "string",
+  "status": "ERROR"
+}
+```
+
+<h3 id="getoptionsv1admin-messages-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|A list of results.|Inline|
+|400|Bad Request|An error message.|Inline|
+
+<h3 id="getoptionsv1admin-messages-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|next_url|string|false|none|If present, this value can be used to fetch the next page.|
+|request_id|string|true|none|A request id assigned by the server.|
+|results|[object]|true|none|The results for this request.|
+|» exchange|integer(int32)|true|none|The exchange ID. See Exchanges mapping for details.|
+|» id|string|true|none|The unique identifier for this admin message, composed of the SIP timestamp and the sequence number.|
+|» message|string|true|none|The administrative message text as distributed by OPRA.|
+|» retransmission|boolean|false|none|True if this record was retransmitted. Omitted when false.|
+|» sequence_number|integer(int64)|true|none|The sequence number represents the sequence in which admin events happened. These are increasing and unique, but will not always be sequential.|
+|» timestamp|integer(int64)|true|none|The SIP timestamp in Unix nanoseconds.|
+|status|string|true|none|The status of this request's response.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|OK|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|error|string|true|none|A message describing the source of the error.|
+|request_id|string|true|none|A request id assigned by the server.|
+|status|string|true|none|The status of this request's response.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|ERROR|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKey
+</aside>
+
+## get_options_v1_analytics
+
+<a id="opIdget_options_v1_analytics"></a>
+
+> Code samples
+
+```bash
+curl "https://api.polygon.io/options/v1/analytics?apiKey=${API_KEY}" \
+  -H 'Accept: application/json'
+```
+
+`GET /options/v1/analytics`
+
+Daily end-of-day greeks and implied volatility for every listed US options contract, with every input used to compute them.
+
+<h3 id="getoptionsv1analytics-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|ticker|query|string|false|Options contract ticker in Massive format (e.g. O:AMD261121C00220000)|
+|ticker.any_of|query|string|false|Filter equal to any of the values. Multiple values can be specified by using a comma separated list.|
+|underlying_ticker|query|string|false|Underlying symbol|
+|underlying_ticker.any_of|query|string|false|Filter equal to any of the values. Multiple values can be specified by using a comma separated list.|
+|expiration_date|query|string|false|Contract expiration date Value must be formatted 'yyyy-mm-dd'.|
+|contract_type|query|string|false|call or put|
+|contract_type.any_of|query|string|false|Filter equal to any of the values. Multiple values can be specified by using a comma separated list.|
+|date|query|string|false|The trading date the values reflect Value must be formatted 'yyyy-mm-dd'.|
+|date.gt|query|string|false|Filter greater than the value. Value must be formatted 'yyyy-mm-dd'.|
+|date.gte|query|string|false|Filter greater than or equal to the value. Value must be formatted 'yyyy-mm-dd'.|
+|date.lt|query|string|false|Filter less than the value. Value must be formatted 'yyyy-mm-dd'.|
+|date.lte|query|string|false|Filter less than or equal to the value. Value must be formatted 'yyyy-mm-dd'.|
+|limit|query|integer|false|Limit the maximum number of results returned. Defaults to '1000' if not specified. The maximum allowed limit is '50000'.|
+|sort|query|string|false|A comma separated list of sort columns. For each column, append '.asc' or '.desc' to specify the sort direction. The sort column defaults to 'date' if not specified. The sort order defaults to 'desc' if not specified.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|contract_type|call|
+|contract_type|put|
+|contract_type.any_of|call|
+|contract_type.any_of|put|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "request_id": "c1d4a9e07b2f4f6e9a3b5d8e2f1c0a7b",
+  "results": [
+    {
+      "ask": 9.5,
+      "bid": 9.35,
+      "contract_type": "call",
+      "date": "2026-10-29",
+      "delta": 0.5312,
+      "dividend_yield": 0,
+      "exercise_style": "american",
+      "expiration_date": "2026-11-21",
+      "gamma": 0.0218,
+      "implied_volatility": 0.5137,
+      "model": "binomial",
+      "open_interest": 14823,
+      "option_price": 9.425,
+      "quote_timestamp": 1793303099841234000,
+      "rho": 0.0689,
+      "risk_free_rate": 0.0431,
+      "root": "AMD",
+      "strike_price": 220,
+      "theta": -0.3861,
+      "ticker": "O:AMD261121C00220000",
+      "underlying_price": 221.35,
+      "underlying_ticker": "AMD",
+      "underlying_timestamp": 1793303099812004400,
+      "vega": 0.2204,
+      "volume": 6210
+    }
+  ],
+  "status": "OK"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "error": "string",
+  "request_id": "string",
+  "status": "ERROR"
+}
+```
+
+<h3 id="getoptionsv1analytics-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|A list of results.|Inline|
+|400|Bad Request|An error message.|Inline|
+
+<h3 id="getoptionsv1analytics-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|next_url|string|false|none|If present, this value can be used to fetch the next page.|
+|request_id|string|true|none|A request id assigned by the server.|
+|results|[object]|true|none|The results for this request.|
+|» ask|number(double)|false|none|NBBO ask 15 minutes before the close|
+|» bid|number(double)|false|none|NBBO bid 15 minutes before the close|
+|» contract_type|string|true|none|call or put|
+|» date|string(date)|true|none|The trading date the values reflect|
+|» delta|number(double)|false|none|Change in option price per $1 move in the underlying|
+|» dividend_yield|number(double)|true|none|The most recent regular dividend by ex-date times its yearly frequency, divided by underlying_price, as a decimal. 0 if none|
+|» exercise_style|string|true|none|american or european|
+|» expiration_date|string(date)|true|none|Contract expiration date|
+|» gamma|number(double)|false|none|Change in delta per $1 move in the underlying|
+|» implied_volatility|number(double)|false|none|Annualized implied volatility solved against option_price, as a decimal (0.48 means 48%). Null when the solver cannot produce a value|
+|» model|string|true|none|Pricing model: binomial|
+|» open_interest|integer(int64)|false|none|Open interest as published the morning of date, for the prior trading day's close|
+|» option_price|number(double)|false|none|The option price the solver used: the NBBO midpoint 15 minutes before the close|
+|» quote_timestamp|integer(int64)|false|none|Nanosecond timestamp of the NBBO used|
+|» rho|number(double)|false|none|Change in option price per 1 percentage point move in the risk-free rate|
+|» risk_free_rate|number(double)|false|none|Annualized Treasury yield at the option's maturity, interpolated on the curve published before date, as a decimal|
+|» root|string|false|none|Option root symbol|
+|» strike_price|number(double)|true|none|Contract strike price|
+|» theta|number(double)|false|none|Change in option price per calendar day|
+|» ticker|string|true|none|Options contract ticker in Massive format (e.g. O:AMD261121C00220000)|
+|» underlying_price|number(double)|false|none|Underlying price used by the solver: the last SIP trade, or the last published index value, at or before 15 minutes before the close|
+|» underlying_ticker|string|false|none|Underlying symbol|
+|» underlying_timestamp|integer(int64)|false|none|Nanosecond timestamp of the underlying price used|
+|» vega|number(double)|false|none|Change in option price per 1 point move in implied volatility|
+|» volume|integer(int64)|true|none|Contracts traded on date|
+|status|string|true|none|The status of this request's response.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|OK|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|error|string|true|none|A message describing the source of the error.|
+|request_id|string|true|none|A request id assigned by the server.|
+|status|string|true|none|The status of this request's response.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|ERROR|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKey
+</aside>
+
 ## get_options_v1_exchanges
 
 <a id="opIdget_options_v1_exchanges"></a>
@@ -7625,6 +7901,300 @@ Status Code **200**
 |» participant_id|string|false|none|Single-character participant identifier used in consolidator market data feeds and options trade reporting.|
 |» type|string|true|none|Type of venue: 'exchange' for options exchanges, 'SIP' for Securities Information Processors like OPRA (Options Price Reporting Authority).|
 |» url|string|false|none|Official website URL of the organization operating the options exchange.|
+|status|string|true|none|The status of this request's response.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|OK|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|error|string|true|none|A message describing the source of the error.|
+|request_id|string|true|none|A request id assigned by the server.|
+|status|string|true|none|The status of this request's response.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|ERROR|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKey
+</aside>
+
+## get_options_v1_open-interest
+
+<a id="opIdget_options_v1_open-interest"></a>
+
+> Code samples
+
+```bash
+curl "https://api.polygon.io/options/v1/open-interest?apiKey=${API_KEY}" \
+  -H 'Accept: application/json'
+```
+
+`GET /options/v1/open-interest`
+
+Daily open interest for every US options contract as reported by OPRA, one row per contract per trading day, with the contract's underlying, type, expiration and strike.
+
+<h3 id="getoptionsv1open-interest-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|ticker|query|string|false|The options ticker symbol (e.g., O:SPY260123C00687000).|
+|ticker.any_of|query|string|false|Filter equal to any of the values. Multiple values can be specified by using a comma separated list.|
+|ticker.gt|query|string|false|Filter greater than the value.|
+|ticker.gte|query|string|false|Filter greater than or equal to the value.|
+|ticker.lt|query|string|false|Filter less than the value.|
+|ticker.lte|query|string|false|Filter less than or equal to the value.|
+|root|query|string|false|The OCC root symbol of the contract (e.g., SPXW). Differs from the underlying for weekly roots and for contracts adjusted after a corporate action (e.g., AMCR1).|
+|root.any_of|query|string|false|Filter equal to any of the values. Multiple values can be specified by using a comma separated list.|
+|root.gt|query|string|false|Filter greater than the value.|
+|root.gte|query|string|false|Filter greater than or equal to the value.|
+|root.lt|query|string|false|Filter less than the value.|
+|root.lte|query|string|false|Filter less than or equal to the value.|
+|contract_type|query|string|false|The contract type. Possible values: call, put.|
+|contract_type.any_of|query|string|false|Filter equal to any of the values. Multiple values can be specified by using a comma separated list.|
+|expiration_date|query|string|false|The date the contract expires (formatted as YYYY-MM-DD). Value must be formatted 'yyyy-mm-dd'.|
+|expiration_date.gt|query|string|false|Filter greater than the value. Value must be formatted 'yyyy-mm-dd'.|
+|expiration_date.gte|query|string|false|Filter greater than or equal to the value. Value must be formatted 'yyyy-mm-dd'.|
+|expiration_date.lt|query|string|false|Filter less than the value. Value must be formatted 'yyyy-mm-dd'.|
+|expiration_date.lte|query|string|false|Filter less than or equal to the value. Value must be formatted 'yyyy-mm-dd'.|
+|date|query|string|false|The trading date the open interest applies to (formatted as YYYY-MM-DD). Value must be formatted 'yyyy-mm-dd'.|
+|date.gt|query|string|false|Filter greater than the value. Value must be formatted 'yyyy-mm-dd'.|
+|date.gte|query|string|false|Filter greater than or equal to the value. Value must be formatted 'yyyy-mm-dd'.|
+|date.lt|query|string|false|Filter less than the value. Value must be formatted 'yyyy-mm-dd'.|
+|date.lte|query|string|false|Filter less than or equal to the value. Value must be formatted 'yyyy-mm-dd'.|
+|limit|query|integer|false|Limit the maximum number of results returned. Defaults to '100' if not specified. The maximum allowed limit is '50000'.|
+|sort|query|string|false|A comma separated list of sort columns. For each column, append '.asc' or '.desc' to specify the sort direction. The sort column defaults to 'date' if not specified. The sort order defaults to 'desc' if not specified.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|contract_type|call|
+|contract_type|put|
+|contract_type.any_of|call|
+|contract_type.any_of|put|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "next_url": "https://api.massive.com/options/v1/open-interest?cursor=YXA9ZGF0ZT0yMDI2LTAxLTIyJnRpY2tlcj1POlNQWTI2MDEyM0MwMDY4NzAwMCZsaW1pdD0yJnNvcnQ9ZGF0ZS5kZXNj",
+  "request_id": "6f1d2c9a8b7e4d3c2b1a0f9e8d7c6b5a",
+  "results": [
+    {
+      "contract_type": "put",
+      "date": "2026-01-22",
+      "expiration_date": "2026-01-23",
+      "open_interest": 9871,
+      "root": "SPY",
+      "strike_price": 687,
+      "ticker": "O:SPY260123P00687000",
+      "underlying_ticker": "SPY"
+    },
+    {
+      "contract_type": "call",
+      "date": "2026-01-22",
+      "expiration_date": "2026-01-23",
+      "open_interest": 15234,
+      "root": "SPY",
+      "strike_price": 687,
+      "ticker": "O:SPY260123C00687000",
+      "underlying_ticker": "SPY"
+    }
+  ],
+  "status": "OK"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "error": "string",
+  "request_id": "string",
+  "status": "ERROR"
+}
+```
+
+<h3 id="getoptionsv1open-interest-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|A list of results.|Inline|
+|400|Bad Request|An error message.|Inline|
+
+<h3 id="getoptionsv1open-interest-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|next_url|string|false|none|If present, this value can be used to fetch the next page.|
+|request_id|string|true|none|A request id assigned by the server.|
+|results|[object]|true|none|The results for this request.|
+|» contract_type|string|false|none|The contract type. Possible values: call, put.|
+|» date|string(date)|true|none|The trading date the open interest applies to (formatted as YYYY-MM-DD).|
+|» expiration_date|string(date)|false|none|The date the contract expires (formatted as YYYY-MM-DD).|
+|» open_interest|integer(int64)|false|none|The number of outstanding contracts that have not been closed or exercised, as of the last open interest update of the day.|
+|» root|string|false|none|The OCC root symbol of the contract (e.g., SPXW). Differs from the underlying for weekly roots and for contracts adjusted after a corporate action (e.g., AMCR1).|
+|» strike_price|number(double)|false|none|The strike price of the contract.|
+|» ticker|string|true|none|The options ticker symbol (e.g., O:SPY260123C00687000).|
+|» underlying_ticker|string|false|none|The ticker of the contract's underlying (e.g., SPX). Weekly and adjusted roots are folded in, so SPXW contracts report SPX and AMCR1 contracts report AMCR; see root to tell them apart.|
+|status|string|true|none|The status of this request's response.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|OK|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|error|string|true|none|A message describing the source of the error.|
+|request_id|string|true|none|A request id assigned by the server.|
+|status|string|true|none|The status of this request's response.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|ERROR|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKey
+</aside>
+
+## get_options_v1_unusual-trades
+
+<a id="opIdget_options_v1_unusual-trades"></a>
+
+> Code samples
+
+```bash
+curl "https://api.polygon.io/options/v1/unusual-trades?apiKey=${API_KEY}" \
+  -H 'Accept: application/json'
+```
+
+`GET /options/v1/unusual-trades`
+
+Contains unusual trades for US options contracts, from real-time data for the most recent days and from historical trade records before that. A trade qualifies when its notional premium (price x size x 100) is $100,000 or more, when its size is 1,000 contracts or more, or when it is an intermarket sweep (condition 219). Cancels, late reports, and compression trades are excluded. The flags column lists every case the trade meets. Each record captures trade execution details including pricing, timing, and exchange information.
+
+<h3 id="getoptionsv1unusual-trades-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|ticker|query|string|false|The options ticker symbol (e.g., O:SPY260123C00687000).|
+|ticker.any_of|query|string|false|Filter equal to any of the values. Multiple values can be specified by using a comma separated list.|
+|ticker.gt|query|string|false|Filter greater than the value.|
+|ticker.gte|query|string|false|Filter greater than or equal to the value.|
+|ticker.lt|query|string|false|Filter less than the value.|
+|ticker.lte|query|string|false|Filter less than or equal to the value.|
+|sip_timestamp|query|string|false|The nanosecond accuracy SIP Unix Timestamp. This is the timestamp of when the SIP received this trade from the exchange which produced it. Value must be an integer timestamp in nanoseconds, formatted 'yyyy-mm-dd', or ISO 8601/RFC 3339 (e.g. '2024-05-28T20:27:41Z').|
+|sip_timestamp.gt|query|string|false|Filter greater than the value. Value must be an integer timestamp in nanoseconds, formatted 'yyyy-mm-dd', or ISO 8601/RFC 3339 (e.g. '2024-05-28T20:27:41Z').|
+|sip_timestamp.gte|query|string|false|Filter greater than or equal to the value. Value must be an integer timestamp in nanoseconds, formatted 'yyyy-mm-dd', or ISO 8601/RFC 3339 (e.g. '2024-05-28T20:27:41Z').|
+|sip_timestamp.lt|query|string|false|Filter less than the value. Value must be an integer timestamp in nanoseconds, formatted 'yyyy-mm-dd', or ISO 8601/RFC 3339 (e.g. '2024-05-28T20:27:41Z').|
+|sip_timestamp.lte|query|string|false|Filter less than or equal to the value. Value must be an integer timestamp in nanoseconds, formatted 'yyyy-mm-dd', or ISO 8601/RFC 3339 (e.g. '2024-05-28T20:27:41Z').|
+|limit|query|integer|false|Limit the maximum number of results returned. Defaults to '100' if not specified. The maximum allowed limit is '50000'.|
+|sort|query|string|false|A comma separated list of sort columns. For each column, append '.asc' or '.desc' to specify the sort direction. The sort column defaults to 'sip_timestamp' if not specified. The sort order defaults to 'desc' if not specified.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "count": 2,
+  "next_url": "https://api.massive.com/options/v1/unusual-trades?cursor=eyJsaW1pd...",
+  "request_id": "a3f8b2c1d4e5f6a7",
+  "results": [
+    {
+      "conditions": [
+        227
+      ],
+      "exchange": 316,
+      "flags": [
+        "block_premium"
+      ],
+      "price": 15.25,
+      "root": "SPY",
+      "sequence_number": 112233,
+      "sip_timestamp": 1761751432123456800,
+      "size": 120,
+      "ticker": "O:SPY260123C00687000",
+      "underlying_ticker": "SPY"
+    },
+    {
+      "conditions": [
+        219
+      ],
+      "exchange": 304,
+      "flags": [
+        "block_premium",
+        "iso"
+      ],
+      "price": 42.1,
+      "root": "SPXW",
+      "sequence_number": 98765,
+      "sip_timestamp": 1761751431987654400,
+      "size": 25,
+      "ticker": "O:SPXW261218C06000000",
+      "underlying_ticker": "SPX"
+    }
+  ],
+  "status": "OK"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "error": "string",
+  "request_id": "string",
+  "status": "ERROR"
+}
+```
+
+<h3 id="getoptionsv1unusual-trades-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|A list of results.|Inline|
+|400|Bad Request|An error message.|Inline|
+
+<h3 id="getoptionsv1unusual-trades-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|next_url|string|false|none|If present, this value can be used to fetch the next page.|
+|request_id|string|true|none|A request id assigned by the server.|
+|results|[object]|true|none|The results for this request.|
+|» conditions|[integer(int32)]|false|none|A list of condition codes. See [Options Condition Codes](https://massive.com/docs/rest/options/market-operations/condition-codes) for what each code means.|
+|» exchange|integer(int32)|false|none|The exchange ID. See <a href="https://massive.com/docs/rest/options/market-operations/exchanges" alt="Exchanges">Exchanges</a> for Massive's mapping of exchange IDs.|
+|» flags|[string]|false|none|The unusual-activity cases the trade meets, as a list. Values: block_premium (notional premium of $100,000 or more), block_size (1,000 contracts or more), iso (intermarket sweep, condition 219). A trade that meets several cases carries every matching flag.|
+|» price|number(double)|false|none|The price of the trade. This is the actual dollar value per whole contract of this trade.|
+|» root|string|false|none|The OCC root symbol of the contract (e.g., SPXW). Differs from the underlying for weekly roots and for contracts adjusted after a corporate action (e.g., AMCR1).|
+|» sequence_number|integer(int64)|true|none|The sequence number represents the sequence in which trade events happened. These are increasing and unique per ticker symbol, but will not always be sequential. Values reset after each trading session/day.|
+|» sip_timestamp|integer(int64)|true|none|The nanosecond accuracy SIP Unix Timestamp. This is the timestamp of when the SIP received this trade from the exchange which produced it.|
+|» size|integer(int64)|false|none|The size of a trade (also known as volume), in contracts.|
+|» ticker|string|true|none|The options ticker symbol (e.g., O:SPY260123C00687000).|
+|» underlying_ticker|string|false|none|The ticker of the contract's underlying (e.g., SPX). Weekly and adjusted roots are folded in, so SPXW contracts report SPX and AMCR1 contracts report AMCR; see root to tell them apart.|
 |status|string|true|none|The status of this request's response.|
 
 #### Enumerated Values
@@ -7855,6 +8425,142 @@ Status Code **200**
 |» sip_timestamp|integer(int64)|false|none|The nanosecond accuracy SIP Unix Timestamp. This is the timestamp of when the SIP received this trade from the exchange which produced it.|
 |» size|integer(int64)|true|none|The size of a trade (also known as volume).|
 |» ticker|string|true|none|The options ticker symbol (e.g., O:SPY260123C00687000).|
+|status|string|true|none|The status of this request's response.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|OK|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|error|string|true|none|A message describing the source of the error.|
+|request_id|string|true|none|A request id assigned by the server.|
+|status|string|true|none|The status of this request's response.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|ERROR|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKey
+</aside>
+
+## get_options_vX_open-interest_underlying
+
+<a id="opIdget_options_vX_open-interest_underlying"></a>
+
+> Code samples
+
+```bash
+curl "https://api.polygon.io/options/vX/open-interest/underlying?apiKey=${API_KEY}" \
+  -H 'Accept: application/json'
+```
+
+`GET /options/vX/open-interest/underlying`
+
+Daily open interest for US options rolled up across each underlying's whole chain, as reported by OPRA, with the call and put split.
+
+<h3 id="getoptionsvxopen-interestunderlying-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|underlying_ticker|query|string|false|The ticker of the underlying (e.g., SPX). Totals cover every root on the underlying, so weekly roots (SPXW) and roots adjusted after a corporate action (AMCR1) are included.|
+|underlying_ticker.any_of|query|string|false|Filter equal to any of the values. Multiple values can be specified by using a comma separated list.|
+|underlying_ticker.gt|query|string|false|Filter greater than the value.|
+|underlying_ticker.gte|query|string|false|Filter greater than or equal to the value.|
+|underlying_ticker.lt|query|string|false|Filter less than the value.|
+|underlying_ticker.lte|query|string|false|Filter less than or equal to the value.|
+|date|query|string|false|The trading date the open interest applies to (formatted as YYYY-MM-DD). Value must be formatted 'yyyy-mm-dd'.|
+|date.gt|query|string|false|Filter greater than the value. Value must be formatted 'yyyy-mm-dd'.|
+|date.gte|query|string|false|Filter greater than or equal to the value. Value must be formatted 'yyyy-mm-dd'.|
+|date.lt|query|string|false|Filter less than the value. Value must be formatted 'yyyy-mm-dd'.|
+|date.lte|query|string|false|Filter less than or equal to the value. Value must be formatted 'yyyy-mm-dd'.|
+|open_interest|query|integer(int64)|false|Total open interest across every contract on the underlying. Value must be an integer.|
+|open_interest.gt|query|integer(int64)|false|Filter greater than the value. Value must be an integer.|
+|open_interest.gte|query|integer(int64)|false|Filter greater than or equal to the value. Value must be an integer.|
+|open_interest.lt|query|integer(int64)|false|Filter less than the value. Value must be an integer.|
+|open_interest.lte|query|integer(int64)|false|Filter less than or equal to the value. Value must be an integer.|
+|limit|query|integer|false|Limit the maximum number of results returned. Defaults to '100' if not specified. The maximum allowed limit is '50000'.|
+|sort|query|string|false|A comma separated list of sort columns. For each column, append '.asc' or '.desc' to specify the sort direction. The sort column defaults to 'date' if not specified. The sort order defaults to 'desc' if not specified.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "next_url": "https://api.massive.com/options/vX/open-interest/underlying?cursor=YXA9ZGF0ZT0yMDI2LTAxLTIyJnVuZGVybHlpbmdfdGlja2VyPVFRUSZsaW1pdD0yJnNvcnQ9ZGF0ZS5kZXNj",
+  "request_id": "0a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d",
+  "results": [
+    {
+      "date": "2026-01-23",
+      "open_interest": 20987654,
+      "open_interest_calls": 8765432,
+      "open_interest_change": 530865,
+      "open_interest_change_calls": 210432,
+      "open_interest_change_puts": 320433,
+      "open_interest_puts": 12222222,
+      "previous_open_interest": 20456789,
+      "underlying_ticker": "SPY"
+    },
+    {
+      "date": "2026-01-23",
+      "open_interest": 9876543,
+      "open_interest_calls": 4321098,
+      "open_interest_change": -35802,
+      "open_interest_change_calls": 12345,
+      "open_interest_change_puts": -48147,
+      "open_interest_puts": 5555445,
+      "previous_open_interest": 9912345,
+      "underlying_ticker": "QQQ"
+    }
+  ],
+  "status": "OK"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "error": "string",
+  "request_id": "string",
+  "status": "ERROR"
+}
+```
+
+<h3 id="getoptionsvxopen-interestunderlying-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|A list of results.|Inline|
+|400|Bad Request|An error message.|Inline|
+
+<h3 id="getoptionsvxopen-interestunderlying-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|next_url|string|false|none|If present, this value can be used to fetch the next page.|
+|request_id|string|true|none|A request id assigned by the server.|
+|results|[object]|true|none|The results for this request.|
+|» date|string(date)|true|none|The trading date the open interest applies to (formatted as YYYY-MM-DD).|
+|» open_interest|integer(int64)|false|none|Total open interest across every contract on the underlying.|
+|» open_interest_calls|integer(int64)|true|none|Total open interest across the underlying's call contracts.|
+|» open_interest_change|integer(int64)|false|none|The change in total open interest from the previous trading day (open_interest - previous_open_interest). Null when previous_open_interest is null.|
+|» open_interest_change_calls|integer(int64)|false|none|The change in call open interest from the previous trading day, including call contracts that have since expired. Null when previous_open_interest is null.|
+|» open_interest_change_puts|integer(int64)|false|none|The change in put open interest from the previous trading day, including put contracts that have since expired. Null when previous_open_interest is null.|
+|» open_interest_puts|integer(int64)|true|none|Total open interest across the underlying's put contracts.|
+|» previous_open_interest|integer(int64)|false|none|Total open interest on the underlying on the previous trading day, including contracts that have since expired. Null if the underlying had no open interest reported that day.|
+|» underlying_ticker|string|false|none|The ticker of the underlying (e.g., SPX). Totals cover every root on the underlying, so weekly roots (SPXW) and roots adjusted after a corporate action (AMCR1) are included.|
 |status|string|true|none|The status of this request's response.|
 
 #### Enumerated Values
@@ -18047,15 +18753,22 @@ Status Code **200**
 |» » type|string|false|none|The type of the additional underlying asset, either equity or currency.|
 |» » underlying|string|false|none|The name of the additional underlying asset.|
 |» cfi|string|false|none|The 6 letter CFI code of the contract (defined in <a rel="nofollow" target="_blank" href="https://en.wikipedia.org/wiki/ISO_10962">ISO 10962</a>)|
+|» company_ticker|string|false|none|KPI binary options only. The ticker of the company the KPI belongs to, like NFLX.|
 |» contract_type|string|false|none|The type of contract. Can be "put", "call", or in some rare cases, "other".|
 |» correction|integer|false|none|The correction number for this option contract.|
 |» exercise_style|string|false|none|The exercise style of this contract. See <a rel="nofollow" target="_blank" href="https://en.wikipedia.org/wiki/Option_style">this link</a> for more details on exercise styles.|
 |» expiration_date|string|false|none|The contract's expiration date in YYYY-MM-DD format.|
+|» metric|string|false|none|KPI binary options only. The KPI the contract settles on, like "Earnings Per Share ($/share)".|
 |» primary_exchange|string|false|none|The MIC code of the primary exchange that this contract is listed on.|
+|» report_time|string|false|none|KPI binary options only. AM if the company reports before the market opens, PM if after it closes.|
+|» reporting_period|string|false|none|KPI binary options only. The fiscal period the KPI is for, like 2026Q3.|
+|» scale|integer|false|none|KPI binary options only. The KPI value divided by scale gives the strike price, like 1000000000 for a KPI in billions. A negative scale means an inverted KPI, like Loss Per Share.|
 |» shares_per_contract|number|false|none|The number of shares per contract for this contract.|
 |» strike_price|number|false|none|The strike price of the option contract.|
 |» ticker|string|false|none|The ticker for the option contract.|
+|» type|string|false|none|The type of option contract: standard or binary. It can be missing, for example on contracts listed before this field was added, so a missing type says nothing about the contract.|
 |» underlying_ticker|string|false|none|The underlying ticker that the option contract relates to.|
+|» underlying_type|string|false|none|What the contract is based on: kpi on Cboe KPI binary options, equity on NYSE American equity binary options (roots that start with B1). Missing on other contracts for now.|
 |status|string|false|none|The status of this request's response.|
 
 #### Enumerated Values
@@ -18065,6 +18778,12 @@ Status Code **200**
 |» exercise_style|american|
 |» exercise_style|european|
 |» exercise_style|bermudan|
+|» report_time|AM|
+|» report_time|PM|
+|» type|standard|
+|» type|binary|
+|» underlying_type|kpi|
+|» underlying_type|equity|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -18148,15 +18867,22 @@ Status Code **200**
 |» » type|string|false|none|The type of the additional underlying asset, either equity or currency.|
 |» » underlying|string|false|none|The name of the additional underlying asset.|
 |» cfi|string|false|none|The 6 letter CFI code of the contract (defined in <a rel="nofollow" target="_blank" href="https://en.wikipedia.org/wiki/ISO_10962">ISO 10962</a>)|
+|» company_ticker|string|false|none|KPI binary options only. The ticker of the company the KPI belongs to, like NFLX.|
 |» contract_type|string|false|none|The type of contract. Can be "put", "call", or in some rare cases, "other".|
 |» correction|integer|false|none|The correction number for this option contract.|
 |» exercise_style|string|false|none|The exercise style of this contract. See <a rel="nofollow" target="_blank" href="https://en.wikipedia.org/wiki/Option_style">this link</a> for more details on exercise styles.|
 |» expiration_date|string|false|none|The contract's expiration date in YYYY-MM-DD format.|
+|» metric|string|false|none|KPI binary options only. The KPI the contract settles on, like "Earnings Per Share ($/share)".|
 |» primary_exchange|string|false|none|The MIC code of the primary exchange that this contract is listed on.|
+|» report_time|string|false|none|KPI binary options only. AM if the company reports before the market opens, PM if after it closes.|
+|» reporting_period|string|false|none|KPI binary options only. The fiscal period the KPI is for, like 2026Q3.|
+|» scale|integer|false|none|KPI binary options only. The KPI value divided by scale gives the strike price, like 1000000000 for a KPI in billions. A negative scale means an inverted KPI, like Loss Per Share.|
 |» shares_per_contract|number|false|none|The number of shares per contract for this contract.|
 |» strike_price|number|false|none|The strike price of the option contract.|
 |» ticker|string|false|none|The ticker for the option contract.|
+|» type|string|false|none|The type of option contract: standard or binary. It can be missing, for example on contracts listed before this field was added, so a missing type says nothing about the contract.|
 |» underlying_ticker|string|false|none|The underlying ticker that the option contract relates to.|
+|» underlying_type|string|false|none|What the contract is based on: kpi on Cboe KPI binary options, equity on NYSE American equity binary options (roots that start with B1). Missing on other contracts for now.|
 |status|string|false|none|The status of this request's response.|
 
 #### Enumerated Values
@@ -18166,6 +18892,12 @@ Status Code **200**
 |» exercise_style|american|
 |» exercise_style|european|
 |» exercise_style|bermudan|
+|» report_time|AM|
+|» report_time|PM|
+|» type|standard|
+|» type|binary|
+|» underlying_type|kpi|
+|» underlying_type|equity|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -18890,20 +19622,20 @@ Get snapshots for assets of all types
       "name": "NCLH $5 Call",
       "open_interest": 8921,
       "session": {
-        "change": -0.05,
-        "change_percent": -1.07,
+        "change": -0.06,
+        "change_percent": -0.894,
         "close": 6.65,
         "decimal_volume": "67.0",
         "early_trading_change": -0.01,
-        "early_trading_change_percent": -0.03,
+        "early_trading_change_percent": -0.149,
         "high": 7.01,
-        "late_trading_change": -0.4,
-        "late_trading_change_percent": -0.02,
+        "late_trading_change": 0.05,
+        "late_trading_change_percent": 0.752,
         "low": 5.42,
         "open": 6.7,
         "previous_close": 6.71,
-        "regular_trading_change": -0.6,
-        "regular_trading_change_percent": -0.5,
+        "regular_trading_change": -0.06,
+        "regular_trading_change_percent": -0.894,
         "volume": 67
       },
       "ticker": "O:NCLH221014C00005000",
@@ -19043,27 +19775,29 @@ Status Code **200**
 |» » size|integer(int32)|true|none|The size of a trade (also known as volume).|
 |» » timeframe|string|false|none|The time relevance of the data.|
 |» last_updated|integer(int64)|false|none|The nanosecond timestamp of when this information was updated.|
-|» market_status|string|false|none|The market status for the market that trades this ticker. Possible values for stocks, options, crypto, and forex snapshots are open, closed, early_trading, or late_trading.<br>Possible values for indices snapshots are regular_trading, closed, early_trading, and late_trading.|
+|» market_status|string|false|none|The market status for the market that trades this ticker.<br><br>Possible values for Stocks are overnight_trading, open, closed, early_trading, and late_trading. Note that the overnight_trading session is new as of 2026-12-07 for SIP 23/5 extended hours.<br><br>Possible values for options, crypto, and forex snapshots are open, closed, early_trading, or late_trading.<br><br>Possible values for indices snapshots are regular_trading, closed, early_trading, and late_trading.|
 |» message|string|false|none|The error message while looking for this ticker.|
 |» name|string|false|none|The name of this contract.|
 |» open_interest|number(double)|false|none|The quantity of this contract held at the end of the last trading day.|
-|» session|object|false|none|Comprehensive trading session metrics, detailing price changes, trading volume, and key price points (open, close, high, low) for the asset within the current trading day. Includes specific changes during early, regular, and late trading periods to enable detailed performance analysis and trend tracking.<br><br>Values describe the current trading session only; nothing carries over from the previous session apart from `previous_close`. For stocks snapshots, an asset that has not traded yet this session reports `volume: 0` with the price and change fields omitted rather than reported as 0.<br><br>During early trading on stocks snapshots, `volume` and `price` track the session as it happens, but `open`, `high`, `low`, `close` and `vwap` are omitted until the regular session opens, as those report official session prices. They appear from the open and remain through late trading.|
+|» session|object|false|none|Comprehensive trading session metrics, detailing price changes, trading volume, and key price points (open, close, high, low) for the asset within the current trading day. Includes specific changes during early, regular, and late trading periods to enable detailed performance analysis and trend tracking.<br><br>Values describe the current trading session only; nothing carries over from the previous session apart from `previous_close`. For stocks snapshots, an asset that has not traded yet this session reports `volume: 0` with the price and change fields omitted rather than reported as 0.<br><br>During early trading on stocks snapshots, `volume` and `price` track the session as it happens, but `open`, `high`, `low`, `close` and `vwap` are omitted until the regular session opens, as those report official session prices. They appear from the open and remain through late trading.<br><br>For options snapshots, the early, regular and late trading changes use these sessions: early trading from 7:30 to 9:30 AM ET, the regular session from 9:30 AM to 4:00 PM ET (4:15 PM ET for some products, such as SPY and SPX options), and late trading from the end of the regular session to 5:00 PM ET. Only trades marked with the extended hours condition (EXHT, 248) count as early or late trading. Cboe's extended trading hours program covers selected equity options, so other contracts do not get an early or late trading change. Index options, such as SPX, SPXW and XSP, get the regular trading change only. A change field is omitted when the contract has no trade in that session on the current trading day, or when the price it is measured against is missing. A change of 0 is returned as 0.|
 |» » change|number(double)|false|none|The value of the price change for the asset from the previous trading day.|
 |» » change_percent|number(double)|false|none|The percent of the price change for the asset from the previous trading day.|
 |» » close|number(double)|false|none|The closing price of the asset for the day.|
 |» » decimal_volume|string|false|none|The trading volume for the asset for the day with decimal precision. This field provides support for fractional shares, representing volume as a decimal string. This field is only returned for stocks snapshots.|
-|» » early_trading_change|number(double)|false|none|Today's early trading change amount, difference between price and previous close if in early trading hours, otherwise difference between last price during early trading and previous close.|
-|» » early_trading_change_percent|number(double)|false|none|Today's early trading change as a percentage.|
+|» » early_trading_change|number(double)|false|none|Today's early trading change amount, difference between price and previous close if in early trading hours, otherwise difference between last price during early trading and previous close. For options, this is the price of the contract's last early trading trade today (7:30 to 9:30 AM ET, with the EXHT condition) minus `previous_close`.|
+|» » early_trading_change_percent|number(double)|false|none|Today's early trading change as a percentage of `previous_close`.|
 |» » high|number(double)|false|none|The highest price of the asset for the day.|
-|» » late_trading_change|number(double)|false|none|Today's late trading change amount, difference between price and today's close if in late trading hours, otherwise difference between last price during late trading and today's close.|
-|» » late_trading_change_percent|number(double)|false|none|Today's late trading change as a percentage.|
+|» » last_updated|integer(int64)|false|none|The nanosecond timestamp of the last update to the session data. For stocks, it's set when the session resets at the start of each trading session and then advances with each trade; quotes don't update it. Returned for stocks, crypto, and forex snapshots, though it may be absent for inactive tickers.|
+|» » late_trading_change|number(double)|false|none|Today's late trading change amount, difference between price and today's close if in late trading hours, otherwise difference between last price during late trading and today's close. For options, this is the price of the contract's last late trading trade today (after the regular session and before 5:00 PM ET, with the EXHT condition) minus today's `close`.|
+|» » late_trading_change_percent|number(double)|false|none|Today's late trading change as a percentage of today's `close`.|
 |» » low|number(double)|false|none|The lowest price of the asset for the day.|
 |» » open|number(double)|false|none|The open price of the asset for the day.|
 |» » previous_close|number(double)|false|none|The closing price of the asset for the previous trading day. This is the correct field for the prior session's reference price, and it is retained across the daily session rollover. It is absent only for an asset with no completed prior session, such as a newly listed ticker or option contract.|
 |» » price|number(double)|false|none|The price of the most recent trade or bid price for this asset.|
-|» » regular_trading_change|number(double)|false|none|Today's change in regular trading hours, difference between current price and previous trading day's close, otherwise difference between today's close and previous day's close.|
-|» » regular_trading_change_percent|number(double)|false|none|Today's regular trading change as a percentage.|
+|» » regular_trading_change|number(double)|false|none|Today's change in regular trading hours, difference between current price and previous trading day's close, otherwise difference between today's close and previous day's close. For options, while `market_status` is `open` this is the price of the contract's last regular session trade today minus `previous_close`. During late trading and after the close, it is today's `close` minus `previous_close`. It is omitted during early trading.|
+|» » regular_trading_change_percent|number(double)|false|none|Today's regular trading change as a percentage of `previous_close`.|
 |» » volume|number(double)|false|none|The trading volume for the asset for the day. A value of 0 means no trades have occurred yet in the current session.|
+|» » vwap|number(double)|false|none|The volume weighted average price of the asset for the day. Only returned for stocks, crypto, and forex snapshots, and omitted when there's no day bar yet, such as for stocks before the regular market open or for tickers that haven't traded today.|
 |» ticker|string|true|none|The ticker symbol for the asset.|
 |» timeframe|string|false|none|The time relevance of the data.|
 |» type|string|false|none|The asset class for this ticker.|

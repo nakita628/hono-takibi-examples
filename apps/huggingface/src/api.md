@@ -2919,6 +2919,7 @@ Status Code **200**
 |» » » tokensPerSecond|number|false|none|none|
 |» » » pricingOutput|number|false|none|none|
 |» » » freeUntil|string(date-time)|false|none|none|
+|» » openRouterProviders|[string]|false|none|none|
 |» » isLikedByUser|boolean|true|none|none|
 |» » lastModified|string(date-time)|true|none|none|
 |» » likes|number|true|none|none|
@@ -18836,7 +18837,7 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
       "_id": "string",
       "id": "string",
       "private": true,
-      "trendingWeight": 0
+      "authorType": "user"
     }
   ],
   "datasetsCount": 0,
@@ -18845,7 +18846,7 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
       "_id": "string",
       "id": "string",
       "private": true,
-      "trendingWeight": 0
+      "authorType": "user"
     }
   ],
   "modelsCount": 0,
@@ -18863,8 +18864,8 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
       "_id": "string",
       "id": "string",
       "private": true,
-      "emoji": "string",
-      "trendingWeight": 0
+      "authorType": "user",
+      "emoji": "string"
     }
   ],
   "spacesCount": 0,
@@ -18896,7 +18897,8 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
     {
       "_id": "string",
       "id": "string",
-      "private": true
+      "private": true,
+      "authorType": "user"
     }
   ],
   "bucketsCount": 0,
@@ -18904,7 +18906,8 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
     {
       "_id": "string",
       "id": "string",
-      "private": true
+      "private": true,
+      "authorType": "user"
     }
   ],
   "containersCount": 0,
@@ -18944,13 +18947,13 @@ Status Code **200**
 |» _id|string|true|none|none|
 |» id|string|true|none|none|
 |» private|boolean|false|none|none|
-|» trendingWeight|number|true|none|none|
+|» authorType|string|false|none|Whether the repo is owned by a user or an organization|
 |datasetsCount|number|true|none|none|
 |models|[object]|true|none|none|
 |» _id|string|true|none|none|
 |» id|string|true|none|none|
 |» private|boolean|false|none|none|
-|» trendingWeight|number|true|none|none|
+|» authorType|string|false|none|Whether the repo is owned by a user or an organization|
 |modelsCount|number|true|none|none|
 |orgs|[object]|true|none|none|
 |» _id|string|true|none|none|
@@ -18962,8 +18965,8 @@ Status Code **200**
 |» _id|string|true|none|none|
 |» id|string|true|none|none|
 |» private|boolean|false|none|none|
+|» authorType|string|false|none|Whether the repo is owned by a user or an organization|
 |» emoji|string|true|none|none|
-|» trendingWeight|number|true|none|none|
 |spacesCount|number|true|none|none|
 |users|[object]|true|none|none|
 |» _id|string|true|none|none|
@@ -18984,11 +18987,13 @@ Status Code **200**
 |» _id|string|true|none|none|
 |» id|string|true|none|none|
 |» private|boolean|false|none|none|
+|» authorType|string|false|none|Whether the repo is owned by a user or an organization|
 |bucketsCount|number|true|none|none|
 |containers|[object]|true|none|none|
 |» _id|string|true|none|none|
 |» id|string|true|none|none|
 |» private|boolean|false|none|none|
+|» authorType|string|false|none|Whether the repo is owned by a user or an organization|
 |containersCount|number|true|none|none|
 |kernels|[object]|true|none|none|
 |» _id|string|true|none|none|
@@ -19001,6 +19006,21 @@ Status Code **200**
 |» title|string|true|none|none|
 |» private|boolean|true|none|none|
 |blogsCount|number|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» authorType|user|
+|» authorType|org|
+|» authorType|user|
+|» authorType|org|
+|» authorType|user|
+|» authorType|org|
+|» authorType|user|
+|» authorType|org|
+|» authorType|user|
+|» authorType|org|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -19331,6 +19351,7 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
 |» » *anyOf*|aadya-neural|
 |» » *anyOf*|acestep|
 |» » *anyOf*|adapter-transformers|
+|» » *anyOf*|alkove|
 |» » *anyOf*|allennlp|
 |» » *anyOf*|aneforge|
 |» » *anyOf*|anemoi|
@@ -19341,6 +19362,7 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
 |» » *anyOf*|audiocraft|
 |» » *anyOf*|audioseal|
 |» » *anyOf*|bagel-mot|
+|» » *anyOf*|basedecision|
 |» » *anyOf*|bboxmaskpose|
 |» » *anyOf*|ben2|
 |» » *anyOf*|bertopic|
@@ -19361,6 +19383,7 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
 |» » *anyOf*|chat_tts|
 |» » *anyOf*|chexmix|
 |» » *anyOf*|chronos-forecasting|
+|» » *anyOf*|circuit-tracer|
 |» » *anyOf*|clara|
 |» » *anyOf*|clipscope|
 |» » *anyOf*|cloud-agents|
@@ -19378,6 +19401,7 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
 |» » *anyOf*|depth-pro|
 |» » *anyOf*|derm-foundation|
 |» » *anyOf*|describe-anything|
+|» » *anyOf*|dewml|
 |» » *anyOf*|dia-tts|
 |» » *anyOf*|dia2|
 |» » *anyOf*|diff-interpretation-tuning|
@@ -19394,6 +19418,7 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
 |» » *anyOf*|ensomi|
 |» » *anyOf*|espnet|
 |» » *anyOf*|eupe|
+|» » *anyOf*|fahr-face|
 |» » *anyOf*|fairseq|
 |» » *anyOf*|fastai|
 |» » *anyOf*|fastprint|
@@ -19403,6 +19428,7 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
 |» » *anyOf*|flexray|
 |» » *anyOf*|flextab|
 |» » *anyOf*|fme|
+|» » *anyOf*|fse|
 |» » *anyOf*|gaussianformer|
 |» » *anyOf*|gemma.cpp|
 |» » *anyOf*|geometry-crafter|
@@ -19410,6 +19436,7 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
 |» » *anyOf*|gliner|
 |» » *anyOf*|gliner2|
 |» » *anyOf*|glm-tts|
+|» » *anyOf*|glyd|
 |» » *anyOf*|glyph-byt5|
 |» » *anyOf*|granite-library|
 |» » *anyOf*|grok|
@@ -19441,6 +19468,7 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
 |» » *anyOf*|kernels|
 |» » *anyOf*|kimi-audio|
 |» » *anyOf*|kittentts|
+|» » *anyOf*|konfai|
 |» » *anyOf*|kronos|
 |» » *anyOf*|k2|
 |» » *anyOf*|lyra-2.0|
@@ -19451,9 +19479,13 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
 |» » *anyOf*|litert|
 |» » *anyOf*|litert-lm|
 |» » *anyOf*|lerobot|
+|» » *anyOf*|libreyolo|
 |» » *anyOf*|lightglue|
+|» » *anyOf*|limx-dynamics|
+|» » *anyOf*|lingbot-map|
 |» » *anyOf*|liveportrait|
 |» » *anyOf*|longcat-video-avatar-1.5|
+|» » *anyOf*|linnet-tts|
 |» » *anyOf*|llama-cpp-python|
 |» » *anyOf*|mini-omni2|
 |» » *anyOf*|mindspore|
@@ -19470,7 +19502,9 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
 |» » *anyOf*|medvae|
 |» » *anyOf*|mflux|
 |» » *anyOf*|microduck|
+|» » *anyOf*|minicpm-ocr|
 |» » *anyOf*|mitie|
+|» » *anyOf*|mjlab|
 |» » *anyOf*|ml-agents|
 |» » *anyOf*|ml-sharp|
 |» » *anyOf*|mlx|
@@ -19490,6 +19524,7 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
 |» » *anyOf*|open_clip|
 |» » *anyOf*|openasr|
 |» » *anyOf*|opendde|
+|» » *anyOf*|opendecision|
 |» » *anyOf*|openpeerllm|
 |» » *anyOf*|open-sora|
 |» » *anyOf*|outetts|
@@ -19498,8 +19533,12 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
 |» » *anyOf*|peft|
 |» » *anyOf*|perception-encoder|
 |» » *anyOf*|phantom-wan|
+|» » *anyOf*|pika-h3-flex|
 |» » *anyOf*|piper|
+|» » *anyOf*|pixeldense|
 |» » *anyOf*|pocket-tts|
+|» » *anyOf*|pqgan|
+|» » *anyOf*|protomotions|
 |» » *anyOf*|pruna-ai|
 |» » *anyOf*|pxia|
 |» » *anyOf*|pyannote-audio|
@@ -19525,6 +19564,7 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
 |» » *anyOf*|sam-3d-objects|
 |» » *anyOf*|same|
 |» » *anyOf*|sample-factory|
+|» » *anyOf*|sap-case|
 |» » *anyOf*|sap-rpt-1-oss|
 |» » *anyOf*|sapiens|
 |» » *anyOf*|sapiens2|
@@ -19549,6 +19589,7 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
 |» » *anyOf*|stable-baselines3|
 |» » *anyOf*|stanza|
 |» » *anyOf*|supertonic|
+|» » *anyOf*|svdtrunc|
 |» » *anyOf*|swarmformer|
 |» » *anyOf*|synthefy-migas|
 |» » *anyOf*|f5-tts|
@@ -19565,6 +19606,7 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
 |» » *anyOf*|tirex|
 |» » *anyOf*|tirex-2|
 |» » *anyOf*|torchgeo|
+|» » *anyOf*|torch-pointcloud|
 |» » *anyOf*|transformers|
 |» » *anyOf*|transformers.js|
 |» » *anyOf*|trellis|
@@ -19588,8 +19630,10 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
 |» » *anyOf*|wan2.2|
 |» » *anyOf*|wham|
 |» » *anyOf*|whisperkit|
+|» » *anyOf*|wilddet3d|
 |» » *anyOf*|yolov10|
 |» » *anyOf*|yolov26|
+|» » *anyOf*|zipsplat|
 |» » *anyOf*|zonos|
 |» » *anyOf*|3dtopia-xl|
 |» » *anyOf*|model|
@@ -19685,7 +19729,7 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
       "_id": "string",
       "id": "string",
       "private": true,
-      "trendingWeight": 0
+      "authorType": "user"
     }
   ],
   "datasetsCount": 0,
@@ -19694,7 +19738,7 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
       "_id": "string",
       "id": "string",
       "private": true,
-      "trendingWeight": 0
+      "authorType": "user"
     }
   ],
   "modelsCount": 0,
@@ -19712,8 +19756,8 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
       "_id": "string",
       "id": "string",
       "private": true,
-      "emoji": "string",
-      "trendingWeight": 0
+      "authorType": "user",
+      "emoji": "string"
     }
   ],
   "spacesCount": 0,
@@ -19745,7 +19789,8 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
     {
       "_id": "string",
       "id": "string",
-      "private": true
+      "private": true,
+      "authorType": "user"
     }
   ],
   "bucketsCount": 0,
@@ -19753,7 +19798,8 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
     {
       "_id": "string",
       "id": "string",
-      "private": true
+      "private": true,
+      "authorType": "user"
     }
   ],
   "containersCount": 0,
@@ -19793,13 +19839,13 @@ Status Code **200**
 |» _id|string|true|none|none|
 |» id|string|true|none|none|
 |» private|boolean|false|none|none|
-|» trendingWeight|number|true|none|none|
+|» authorType|string|false|none|Whether the repo is owned by a user or an organization|
 |datasetsCount|number|true|none|none|
 |models|[object]|true|none|none|
 |» _id|string|true|none|none|
 |» id|string|true|none|none|
 |» private|boolean|false|none|none|
-|» trendingWeight|number|true|none|none|
+|» authorType|string|false|none|Whether the repo is owned by a user or an organization|
 |modelsCount|number|true|none|none|
 |orgs|[object]|true|none|none|
 |» _id|string|true|none|none|
@@ -19811,8 +19857,8 @@ Status Code **200**
 |» _id|string|true|none|none|
 |» id|string|true|none|none|
 |» private|boolean|false|none|none|
+|» authorType|string|false|none|Whether the repo is owned by a user or an organization|
 |» emoji|string|true|none|none|
-|» trendingWeight|number|true|none|none|
 |spacesCount|number|true|none|none|
 |users|[object]|true|none|none|
 |» _id|string|true|none|none|
@@ -19833,11 +19879,13 @@ Status Code **200**
 |» _id|string|true|none|none|
 |» id|string|true|none|none|
 |» private|boolean|false|none|none|
+|» authorType|string|false|none|Whether the repo is owned by a user or an organization|
 |bucketsCount|number|true|none|none|
 |containers|[object]|true|none|none|
 |» _id|string|true|none|none|
 |» id|string|true|none|none|
 |» private|boolean|false|none|none|
+|» authorType|string|false|none|Whether the repo is owned by a user or an organization|
 |containersCount|number|true|none|none|
 |kernels|[object]|true|none|none|
 |» _id|string|true|none|none|
@@ -19850,6 +19898,21 @@ Status Code **200**
 |» title|string|true|none|none|
 |» private|boolean|true|none|none|
 |blogsCount|number|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» authorType|user|
+|» authorType|org|
+|» authorType|user|
+|» authorType|org|
+|» authorType|user|
+|» authorType|org|
+|» authorType|user|
+|» authorType|org|
+|» authorType|user|
+|» authorType|org|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -19885,6 +19948,428 @@ bearerAuth
 <h1 id="hub-api-endpoints-repos">repos</h1>
 
 The following endpoints manage repository settings like creating and deleting a repository.
+
+## Repo trusted publishers
+
+> Code samples
+
+```bash
+curl https://huggingface.co/api/models/string/string/settings/trusted-publishers \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /api/{repoType}/{namespace}/{repo}/settings/trusted-publishers`
+
+List the [trusted publishers](https://huggingface.co/docs/hub/trusted-publishers) of a repo.
+
+<h3 id="repo-trusted-publishers-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|repoType|path|string|true|none|
+|namespace|path|string|true|none|
+|repo|path|string|true|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|repoType|models|
+|repoType|spaces|
+|repoType|datasets|
+|repoType|kernels|
+|repoType|buckets|
+|repoType|containers|
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "_id": "stringstringstringstring",
+    "issuerUrl": "string",
+    "claims": {
+      "property1": {
+        "kind": "eq",
+        "value": "string"
+      },
+      "property2": {
+        "kind": "eq",
+        "value": "string"
+      }
+    },
+    "configuredBy": {
+      "_id": "stringstringstringstring",
+      "avatarUrl": "string",
+      "fullname": "string",
+      "name": "string",
+      "isHf": true,
+      "isHfAdmin": true,
+      "isMod": true,
+      "followerCount": 0,
+      "type": "org",
+      "plan": "team",
+      "isUserFollowing": true
+    },
+    "createdAt": "1970-01-01T00:00:00Z",
+    "lastUsedAt": "1970-01-01T00:00:00Z",
+    "capabilities": [
+      "inference-api"
+    ],
+    "permissions": [
+      "repo.content.read"
+    ]
+  }
+]
+```
+
+<h3 id="repo-trusted-publishers-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Trusted publishers|Inline|
+
+<h3 id="repo-trusted-publishers-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[object]|false|none|none|
+|» _id|string|true|none|A hex string of 24 characters representing an ObjectId.|
+|» issuerUrl|string|true|none|none|
+|» claims|object|true|none|none|
+|» » **additionalProperties**|object|false|none|The claim must equal `value` (`eq`) or start with it (`prefix`).|
+|» » » *anyOf*|object|false|none|none|
+|» » » kind|string|true|none|none|
+|» » » value|string|true|none|none|
+|» » » *anyOf*|object|false|none|none|
+|» » » kind|string|true|none|none|
+|» » » value|string|true|none|none|
+|» configuredBy|object|false|none|none|
+|» » *oneOf*|object|false|none|none|
+|» » _id|string|true|none|A hex string of 24 characters representing an ObjectId.|
+|» » avatarUrl|string|true|none|none|
+|» » fullname|string|true|none|none|
+|» » name|string|true|none|none|
+|» » isHf|boolean|true|none|none|
+|» » isHfAdmin|boolean|true|none|none|
+|» » isMod|boolean|true|none|none|
+|» » followerCount|number|false|none|none|
+|» » type|string|true|none|none|
+|» » plan|string|false|none|none|
+|» » isUserFollowing|boolean|false|none|none|
+|» » *oneOf*|object|false|none|none|
+|» » _id|string|true|none|A hex string of 24 characters representing an ObjectId.|
+|» » avatarUrl|string|true|none|none|
+|» » fullname|string|true|none|none|
+|» » name|string|true|none|none|
+|» » isHf|boolean|true|none|none|
+|» » isHfAdmin|boolean|true|none|none|
+|» » isMod|boolean|true|none|none|
+|» » followerCount|number|false|none|none|
+|» » type|string|true|none|none|
+|» » isPro|boolean|true|none|none|
+|» » isUserFollowing|boolean|false|none|none|
+|» » primaryOrg|object|false|none|none|
+|» » » avatarUrl|string|true|none|none|
+|» » » fullname|string|true|none|none|
+|» » » name|string|true|none|none|
+|» » » type|string|true|none|none|
+|» » » isHf|boolean|true|none|none|
+|» » » isFollowing|boolean|false|none|none|
+|» » » plan|string|false|none|none|
+|» » » details|string|false|none|none|
+|» » » hasPrivateMembersList|boolean|false|none|none|
+|» » » userRole|string|false|none|none|
+|» » » numUsers|number|false|none|none|
+|» createdAt|string(date-time)|true|none|none|
+|» lastUsedAt|string(date-time)|false|none|none|
+|» capabilities|[string]|false|none|none|
+|» permissions|[string]|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» » plan|team|
+|» » plan|enterprise|
+|» » plan|plus|
+|» » plan|academia|
+|» » » plan|team|
+|» » » plan|enterprise|
+|» » » plan|plus|
+|» » » plan|academia|
+|» » » userRole|admin|
+|» » » userRole|write|
+|» » » userRole|contributor|
+|» » » userRole|read|
+|» » » userRole|no_access|
+|» capabilities|inference-api|
+|» permissions|repo.content.read|
+|» permissions|repo.content.write|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
+</aside>
+
+## Repo trusted publisher
+
+> Code samples
+
+```bash
+curl https://huggingface.co/api/models/string/string/settings/trusted-publishers \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "issuerUrl": "http://example.com",
+    "claims": {
+      "property1": {
+        "kind": "eq",
+        "value": "string"
+      },
+      "property2": {
+        "kind": "eq",
+        "value": "string"
+      }
+    },
+    "permissions": [
+      "repo.content.read"
+    ]
+  }'
+```
+
+`POST /api/{repoType}/{namespace}/{repo}/settings/trusted-publishers`
+
+Let OIDC tokens matching the issuer and claims exchange for a short-lived token on the repo. Requires write access to the repo.
+
+> Body parameter
+
+```json
+{
+  "issuerUrl": "http://example.com",
+  "claims": {
+    "property1": {
+      "kind": "eq",
+      "value": "string"
+    },
+    "property2": {
+      "kind": "eq",
+      "value": "string"
+    }
+  },
+  "permissions": [
+    "repo.content.read"
+  ]
+}
+```
+
+<h3 id="repo-trusted-publisher-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|repoType|path|string|true|none|
+|namespace|path|string|true|none|
+|repo|path|string|true|none|
+|body|body|object|false|none|
+|» issuerUrl|body|string(uri)|true|URL of the OIDC issuer, e.g. `https://token.actions.githubusercontent.com`.|
+|» claims|body|object|true|Claims the OIDC token must match, by claim name. At least one is required.|
+|» » **additionalProperties**|body|object|false|The claim must equal `value` (`eq`) or start with it (`prefix`).|
+|» » » *anyOf*|body|object|false|none|
+|» » » kind|body|string|true|none|
+|» » » value|body|string|true|none|
+|» » » *anyOf*|body|object|false|none|
+|» » » kind|body|string|true|none|
+|» » » value|body|string|true|none|
+|» permissions|body|[string]|false|Permissions granted on the repo to matching tokens. Defaults to `["repo.content.write"]`.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|repoType|models|
+|repoType|spaces|
+|repoType|datasets|
+|repoType|kernels|
+|repoType|buckets|
+|repoType|containers|
+|» permissions|repo.content.read|
+|» permissions|repo.content.write|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "_id": "stringstringstringstring",
+  "issuerUrl": "string",
+  "claims": {
+    "property1": {
+      "kind": "eq",
+      "value": "string"
+    },
+    "property2": {
+      "kind": "eq",
+      "value": "string"
+    }
+  },
+  "configuredBy": {
+    "_id": "stringstringstringstring",
+    "avatarUrl": "string",
+    "fullname": "string",
+    "name": "string",
+    "isHf": true,
+    "isHfAdmin": true,
+    "isMod": true,
+    "followerCount": 0,
+    "type": "org",
+    "plan": "team",
+    "isUserFollowing": true
+  },
+  "createdAt": "1970-01-01T00:00:00Z",
+  "lastUsedAt": "1970-01-01T00:00:00Z",
+  "capabilities": [
+    "inference-api"
+  ],
+  "permissions": [
+    "repo.content.read"
+  ]
+}
+```
+
+<h3 id="repo-trusted-publisher-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Trusted publisher|Inline|
+
+<h3 id="repo-trusted-publisher-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|_id|string|true|none|A hex string of 24 characters representing an ObjectId.|
+|issuerUrl|string|true|none|none|
+|claims|object|true|none|none|
+|» **additionalProperties**|object|false|none|The claim must equal `value` (`eq`) or start with it (`prefix`).|
+|» » *anyOf*|object|false|none|none|
+|» » kind|string|true|none|none|
+|» » value|string|true|none|none|
+|» » *anyOf*|object|false|none|none|
+|» » kind|string|true|none|none|
+|» » value|string|true|none|none|
+|configuredBy|object|false|none|none|
+|» *oneOf*|object|false|none|none|
+|» _id|string|true|none|A hex string of 24 characters representing an ObjectId.|
+|» avatarUrl|string|true|none|none|
+|» fullname|string|true|none|none|
+|» name|string|true|none|none|
+|» isHf|boolean|true|none|none|
+|» isHfAdmin|boolean|true|none|none|
+|» isMod|boolean|true|none|none|
+|» followerCount|number|false|none|none|
+|» type|string|true|none|none|
+|» plan|string|false|none|none|
+|» isUserFollowing|boolean|false|none|none|
+|» *oneOf*|object|false|none|none|
+|» _id|string|true|none|A hex string of 24 characters representing an ObjectId.|
+|» avatarUrl|string|true|none|none|
+|» fullname|string|true|none|none|
+|» name|string|true|none|none|
+|» isHf|boolean|true|none|none|
+|» isHfAdmin|boolean|true|none|none|
+|» isMod|boolean|true|none|none|
+|» followerCount|number|false|none|none|
+|» type|string|true|none|none|
+|» isPro|boolean|true|none|none|
+|» isUserFollowing|boolean|false|none|none|
+|» primaryOrg|object|false|none|none|
+|» » avatarUrl|string|true|none|none|
+|» » fullname|string|true|none|none|
+|» » name|string|true|none|none|
+|» » type|string|true|none|none|
+|» » isHf|boolean|true|none|none|
+|» » isFollowing|boolean|false|none|none|
+|» » plan|string|false|none|none|
+|» » details|string|false|none|none|
+|» » hasPrivateMembersList|boolean|false|none|none|
+|» » userRole|string|false|none|none|
+|» » numUsers|number|false|none|none|
+|createdAt|string(date-time)|true|none|none|
+|lastUsedAt|string(date-time)|false|none|none|
+|capabilities|[string]|false|none|none|
+|permissions|[string]|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» plan|team|
+|» plan|enterprise|
+|» plan|plus|
+|» plan|academia|
+|» » plan|team|
+|» » plan|enterprise|
+|» » plan|plus|
+|» » plan|academia|
+|» » userRole|admin|
+|» » userRole|write|
+|» » userRole|contributor|
+|» » userRole|read|
+|» » userRole|no_access|
+|capabilities|inference-api|
+|permissions|repo.content.read|
+|permissions|repo.content.write|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
+</aside>
+
+## Repo trusted publisher
+
+> Code samples
+
+```bash
+curl https://huggingface.co/api/models/string/string/settings/trusted-publishers/string \
+  -X DELETE \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /api/{repoType}/{namespace}/{repo}/settings/trusted-publishers/{publisherId}`
+
+<h3 id="repo-trusted-publisher-1-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|repoType|path|string|true|none|
+|namespace|path|string|true|none|
+|repo|path|string|true|none|
+|publisherId|path|string|true|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|repoType|models|
+|repoType|spaces|
+|repoType|datasets|
+|repoType|kernels|
+|repoType|buckets|
+|repoType|containers|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
+</aside>
 
 ## Duplicate a repository
 
@@ -22424,6 +22909,8 @@ Status Code **200**
 |» type|org.rotate_token|
 |» type|org.sso_login|
 |» type|org.sso_join|
+|» type|org.sso_credential.authorize|
+|» type|org.sso_credential.deauthorize|
 |» type|org.update_join_settings|
 |» type|org.update_settings|
 |» type|org.settings.regions|
@@ -22508,6 +22995,7 @@ Status Code **200**
 |» type|org.service_account.delete|
 |» type|org.service_account.token.create|
 |» type|org.service_account.token.delete|
+|» type|org.service_account.token.invalidate|
 |» type|org.service_account.token.rotate|
 |» type|org.service_account.token.update|
 |» type|org.service_account.token.s3_credential.create|
@@ -23673,11 +24161,15 @@ Retrieve a single service account and its access token metadata. Token secrets a
       "repoPermissions": [
         "repo.content.read"
       ],
+      "userPermissions": [
+        "user.gated-repos-requests.write"
+      ],
       "endpointPatterns": [
         "string"
       ],
       "last4": "string",
       "skipNetworkSecurity": true,
+      "canReadGatedRepos": true,
       "s3AccessKey": "string"
     }
   ]
@@ -23712,9 +24204,11 @@ Status Code **200**
 |» permissions|[string]|true|none|none|
 |» repoIds|[string]|true|none|none|
 |» repoPermissions|[string]|true|none|none|
+|» userPermissions|[string]|true|none|none|
 |» endpointPatterns|[string]|true|none|none|
 |» last4|string|false|none|none|
 |» skipNetworkSecurity|boolean|false|none|none|
+|» canReadGatedRepos|boolean|false|none|none|
 |» s3AccessKey|string|false|none|none|
 
 #### Enumerated Values
@@ -23741,6 +24235,7 @@ Status Code **200**
 |» permissions|org.auditLog.write|
 |» repoPermissions|repo.content.read|
 |» repoPermissions|repo.write|
+|» userPermissions|user.gated-repos-requests.write|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -23805,8 +24300,10 @@ curl https://huggingface.co/api/organizations/string/service-accounts/string/tok
       "stringstringstringstring"
     ],
     "repoPermissions": [],
+    "userPermissions": [],
     "endpointPatterns": [],
-    "skipNetworkSecurity": false
+    "skipNetworkSecurity": false,
+    "canReadGatedRepos": false
   }'
 ```
 
@@ -23824,8 +24321,10 @@ Create a new access token for a service account. Store the token securely - it c
     "stringstringstringstring"
   ],
   "repoPermissions": [],
+  "userPermissions": [],
   "endpointPatterns": [],
-  "skipNetworkSecurity": false
+  "skipNetworkSecurity": false,
+  "canReadGatedRepos": false
 }
 ```
 
@@ -23840,8 +24339,10 @@ Create a new access token for a service account. Store the token securely - it c
 |» permissions|body|[string]|false|Org-wide permissions for this token|
 |» repoIds|body|[string]|false|Repositories to grant `repoPermissions` on. Can be repositories owned by the organization or any public repository. These override the org-wide permissions.|
 |» repoPermissions|body|[string]|false|Permissions granted on the selected `repoIds`.|
+|» userPermissions|body|[string]|false|Permissions on the service account itself.|
 |» endpointPatterns|body|[string]|false|Inference endpoint name patterns (wildcards allowed, e.g. `gpt2-*`) restricting the token's org-wide Inference Endpoint permissions to matching endpoints. Empty means all endpoints.|
 |» skipNetworkSecurity|body|boolean|false|Exempt this token from the org's Network Security enforcement (IP allowlist and content access policy). Enterprise Plus only, and requires the `org.networkSecurity.write` permission.|
+|» canReadGatedRepos|body|boolean|false|Read contents of gated repos the service account has access to.|
 
 #### Enumerated Values
 
@@ -23864,6 +24365,7 @@ Create a new access token for a service account. Store the token securely - it c
 |» permissions|org.auditLog.write|
 |» repoPermissions|repo.content.read|
 |» repoPermissions|repo.write|
+|» userPermissions|user.gated-repos-requests.write|
 
 > Example responses
 
@@ -23885,10 +24387,14 @@ Create a new access token for a service account. Store the token securely - it c
     "repoPermissions": [
       "string"
     ],
+    "userPermissions": [
+      "string"
+    ],
     "endpointPatterns": [
       "string"
     ],
-    "skipNetworkSecurity": true
+    "skipNetworkSecurity": true,
+    "canReadGatedRepos": true
   }
 }
 ```
@@ -23913,8 +24419,10 @@ Status Code **201**
 |» permissions|[string]|false|none|none|
 |» repoIds|[string]|true|none|none|
 |» repoPermissions|[string]|true|none|none|
+|» userPermissions|[string]|true|none|none|
 |» endpointPatterns|[string]|true|none|none|
 |» skipNetworkSecurity|boolean|true|none|none|
+|» canReadGatedRepos|boolean|true|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -23984,10 +24492,14 @@ curl https://huggingface.co/api/organizations/string/service-accounts/string/tok
     "repoPermissions": [
       "repo.content.read"
     ],
+    "userPermissions": [
+      "user.gated-repos-requests.write"
+    ],
     "endpointPatterns": [
       "string"
     ],
-    "skipNetworkSecurity": true
+    "skipNetworkSecurity": true,
+    "canReadGatedRepos": true
   }'
 ```
 
@@ -24009,10 +24521,14 @@ Update the name and/or permissions of an existing service account token.
   "repoPermissions": [
     "repo.content.read"
   ],
+  "userPermissions": [
+    "user.gated-repos-requests.write"
+  ],
   "endpointPatterns": [
     "string"
   ],
-  "skipNetworkSecurity": true
+  "skipNetworkSecurity": true,
+  "canReadGatedRepos": true
 }
 ```
 
@@ -24028,8 +24544,10 @@ Update the name and/or permissions of an existing service account token.
 |» permissions|body|[string]|false|Org-wide permissions for this token|
 |» repoIds|body|[string]|false|Repositories to grant `repoPermissions` on. Can be repositories owned by the organization or any public repository. These override the org-wide permissions.|
 |» repoPermissions|body|[string]|false|Permissions granted on the selected `repoIds`.|
+|» userPermissions|body|[string]|false|Permissions on the service account itself.|
 |» endpointPatterns|body|[string]|false|Inference endpoint name patterns (wildcards allowed, e.g. `gpt2-*`) restricting the token's org-wide Inference Endpoint permissions to matching endpoints. Empty means all endpoints.|
 |» skipNetworkSecurity|body|boolean|false|Exempt this token from the org's Network Security enforcement (IP allowlist and content access policy). Enterprise Plus only, and requires the `org.networkSecurity.write` permission.|
+|» canReadGatedRepos|body|boolean|false|Read contents of gated repos the service account has access to.|
 
 #### Enumerated Values
 
@@ -24052,6 +24570,7 @@ Update the name and/or permissions of an existing service account token.
 |» permissions|org.auditLog.write|
 |» repoPermissions|repo.content.read|
 |» repoPermissions|repo.write|
+|» userPermissions|user.gated-repos-requests.write|
 
 > Example responses
 
@@ -24070,10 +24589,14 @@ Update the name and/or permissions of an existing service account token.
   "repoPermissions": [
     "string"
   ],
+  "userPermissions": [
+    "string"
+  ],
   "endpointPatterns": [
     "string"
   ],
-  "skipNetworkSecurity": true
+  "skipNetworkSecurity": true,
+  "canReadGatedRepos": true
 }
 ```
 
@@ -24094,8 +24617,10 @@ Status Code **200**
 |permissions|[string]|true|none|none|
 |repoIds|[string]|true|none|none|
 |repoPermissions|[string]|true|none|none|
+|userPermissions|[string]|true|none|none|
 |endpointPatterns|[string]|true|none|none|
 |skipNetworkSecurity|boolean|true|none|none|
+|canReadGatedRepos|boolean|true|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -31832,6 +32357,9 @@ curl https://huggingface.co/api/papers/string \
           "freeUntil": "1970-01-01T00:00:00Z"
         }
       ],
+      "openRouterProviders": [
+        "string"
+      ],
       "isLikedByUser": true,
       "lastModified": "1970-01-01T00:00:00Z",
       "likes": 0,
@@ -32071,6 +32599,7 @@ Status Code **200**
 |» » tokensPerSecond|number|false|none|none|
 |» » pricingOutput|number|false|none|none|
 |» » freeUntil|string(date-time)|false|none|none|
+|» openRouterProviders|[string]|false|none|none|
 |» isLikedByUser|boolean|true|none|none|
 |» lastModified|string(date-time)|true|none|none|
 |» likes|number|true|none|none|
@@ -32856,6 +33385,7 @@ Status Code **200**
 |» » tokensPerSecond|number|false|none|none|
 |» » pricingOutput|number|false|none|none|
 |» » freeUntil|string(date-time)|false|none|none|
+|» openRouterProviders|[string]|false|none|none|
 |» isLikedByUser|boolean|true|none|none|
 |» lastModified|string(date-time)|true|none|none|
 |» likes|number|true|none|none|
@@ -33793,6 +34323,7 @@ Status Code **200**
 |» » » tokensPerSecond|number|false|none|none|
 |» » » pricingOutput|number|false|none|none|
 |» » » freeUntil|string(date-time)|false|none|none|
+|» » openRouterProviders|[string]|false|none|none|
 |» » isLikedByUser|boolean|true|none|none|
 |» » lastModified|string(date-time)|true|none|none|
 |» » likes|number|true|none|none|
@@ -34636,6 +35167,7 @@ Status Code **200**
 |» » tokensPerSecond|number|false|none|none|
 |» » pricingOutput|number|false|none|none|
 |» » freeUntil|string(date-time)|false|none|none|
+|» openRouterProviders|[string]|false|none|none|
 |» isLikedByUser|boolean|true|none|none|
 |» lastModified|string(date-time)|true|none|none|
 |» likes|number|true|none|none|
@@ -35571,6 +36103,7 @@ Status Code **200**
 |» » » tokensPerSecond|number|false|none|none|
 |» » » pricingOutput|number|false|none|none|
 |» » » freeUntil|string(date-time)|false|none|none|
+|» » openRouterProviders|[string]|false|none|none|
 |» » isLikedByUser|boolean|true|none|none|
 |» » lastModified|string(date-time)|true|none|none|
 |» » likes|number|true|none|none|
@@ -36454,6 +36987,7 @@ Status Code **200**
 |» » tokensPerSecond|number|false|none|none|
 |» » pricingOutput|number|false|none|none|
 |» » freeUntil|string(date-time)|false|none|none|
+|» openRouterProviders|[string]|false|none|none|
 |» isLikedByUser|boolean|true|none|none|
 |» lastModified|string(date-time)|true|none|none|
 |» likes|number|true|none|none|
@@ -37336,6 +37870,7 @@ Status Code **200**
 |» » tokensPerSecond|number|false|none|none|
 |» » pricingOutput|number|false|none|none|
 |» » freeUntil|string(date-time)|false|none|none|
+|» openRouterProviders|[string]|false|none|none|
 |» isLikedByUser|boolean|true|none|none|
 |» lastModified|string(date-time)|true|none|none|
 |» likes|number|true|none|none|
@@ -38493,6 +39028,7 @@ Status Code **200**
 |» » » tokensPerSecond|number|false|none|none|
 |» » » pricingOutput|number|false|none|none|
 |» » » freeUntil|string(date-time)|false|none|none|
+|» » openRouterProviders|[string]|false|none|none|
 |» » isLikedByUser|boolean|true|none|none|
 |» » lastModified|string(date-time)|true|none|none|
 |» » likes|number|true|none|none|
@@ -39409,6 +39945,7 @@ Status Code **200**
 |» » tokensPerSecond|number|false|none|none|
 |» » pricingOutput|number|false|none|none|
 |» » freeUntil|string(date-time)|false|none|none|
+|» openRouterProviders|[string]|false|none|none|
 |» isLikedByUser|boolean|true|none|none|
 |» lastModified|string(date-time)|true|none|none|
 |» likes|number|true|none|none|
@@ -41370,6 +41907,7 @@ curl https://huggingface.co/api/buckets/string/string/tree/string \
 |path|path|string|true|none|
 |limit|query|integer|false|none|
 |cursor|query|string|false|none|
+|startAfter|query|string|false|none|
 |recursive|query|string|false|none|
 |sort|query|string|false|none|
 |direction|query|string|false|none|
@@ -41773,6 +42311,142 @@ Status Code **200**
 |200|X-Xet-Cas-Url|string||none|
 |200|X-Xet-Token-Expiration|string||none|
 |200|X-Xet-Access-Token|string||none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
+</aside>
+
+## Get resource group
+
+> Code samples
+
+```bash
+curl https://huggingface.co/api/containers/string/string/resource-group \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /api/containers/{namespace}/{repo}/resource-group`
+
+<h3 id="get-resource-group-5-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|namespace|path|string|true|none|
+|repo|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "stringstringstringstring",
+  "name": "string",
+  "numUsers": 0
+}
+```
+
+<h3 id="get-resource-group-5-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The resource group of the repository|Inline|
+
+<h3 id="get-resource-group-5-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|A hex string of 24 characters representing an ObjectId.|
+|name|string|true|none|none|
+|numUsers|number|false|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
+</aside>
+
+## Add resource group
+
+> Code samples
+
+```bash
+curl https://huggingface.co/api/containers/string/string/resource-group \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "resourceGroupId": "stringstringstringstring"
+  }'
+```
+
+`POST /api/containers/{namespace}/{repo}/resource-group`
+
+Add the repository to a resource group
+
+> Body parameter
+
+```json
+{
+  "resourceGroupId": "stringstringstringstring"
+}
+```
+
+<h3 id="add-resource-group-4-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|namespace|path|string|true|none|
+|repo|path|string|true|none|
+|body|body|object|false|none|
+|» resourceGroupId|body|string \| null|true|The resource group to add the repository to, if null, the repository will be removed from the resource group|
+|» » *anyOf*|body|string|false|none|
+|» » *anyOf*|body|null|false|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "name": "string",
+  "type": "dataset",
+  "private": true,
+  "addedBy": "string"
+}
+```
+
+<h3 id="add-resource-group-4-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Minimal information about the repository|Inline|
+
+<h3 id="add-resource-group-4-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|none|
+|type|string|true|none|none|
+|private|boolean|true|none|none|
+|addedBy|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|dataset|
+|type|model|
+|type|space|
+|type|bucket|
+|type|kernel|
+|type|container|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -42500,6 +43174,7 @@ curl https://huggingface.co/api/containers/string/string/tree/string \
 |path|path|string|true|none|
 |limit|query|integer|false|none|
 |cursor|query|string|false|none|
+|startAfter|query|string|false|none|
 |recursive|query|string|false|none|
 |sort|query|string|false|none|
 |direction|query|string|false|none|
@@ -49435,21 +50110,29 @@ curl https://huggingface.co/api/credentials/revoke \
   -H 'Content-Type: application/json' \
   -d '{
     "credentials": [
-      "hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      "hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      {
+        "accessKeyId": "HFAKXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "secretAccessKey": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      }
     ]
   }'
 ```
 
 `POST /api/credentials/revoke`
 
-Publicly invalidate leaked Hugging Face access tokens. Possession of the raw token value is the only proof required: no authentication is needed, and no rights over the owning account or org are necessary. Each raw token is fully invalidated, the owning user is notified by email. Always returns 202, whether or not any of the provided tokens existed, so the response cannot be used to probe token validity.
+Publicly invalidate leaked Hugging Face access tokens or S3 credentials. Possession of the raw token value, or of the S3 access key ID and secret, is the only proof required: no authentication is needed, and no rights over the owning account or org are necessary. Each raw token is fully invalidated. A leaked S3 credential is deleted and its paired token invalidated. The owning user is notified by email. Always returns 202, whether or not any of the provided tokens existed, so the response cannot be used to probe token validity.
 
 > Body parameter
 
 ```json
 {
   "credentials": [
-    "hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    "hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    {
+      "accessKeyId": "HFAKXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      "secretAccessKey": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    }
   ]
 }
 ```
@@ -49459,7 +50142,11 @@ Publicly invalidate leaked Hugging Face access tokens. Possession of the raw tok
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|object|false|none|
-|» credentials|body|[string]|true|Raw access token values to invalidate, at most 1000.|
+|» credentials|body|[string \| object]|true|Raw access token values or S3 credentials (access key ID and secret) to invalidate, at most 1000.|
+|» » *anyOf*|body|string|false|none|
+|» » *anyOf*|body|object|false|none|
+|» » accessKeyId|body|string|true|none|
+|» » secretAccessKey|body|string|true|none|
 
 <aside class="success">
 This operation does not require authentication

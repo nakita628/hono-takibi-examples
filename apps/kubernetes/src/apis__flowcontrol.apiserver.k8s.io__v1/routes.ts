@@ -1,45 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const IoK8sApiFlowcontrolV1ExemptPriorityLevelConfigurationSchema = z
-  .object({
-    lendablePercent: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "lendablePercent prescribes the fraction of the level's NominalCL that can be borrowed by other priority levels.  This value of this field must be between 0 and 100, inclusive, and it defaults to 0. The number of seats that other levels can borrow from this level, known as this level's LendableConcurrencyLimit (LendableCL), is defined as follows.\n\nLendableCL(i) = round( NominalCL(i) * lendablePercent(i)/100.0 )",
-      }),
-    nominalConcurrencyShares: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "nominalConcurrencyShares (NCS) contributes to the computation of the NominalConcurrencyLimit (NominalCL) of this level. This is the number of execution seats nominally reserved for this priority level. This DOES NOT limit the dispatching from this priority level but affects the other priority levels through the borrowing mechanism. The server's concurrency limit (ServerCL) is divided among all the priority levels in proportion to their NCS values:\n\nNominalCL(i)  = ceil( ServerCL * NCS(i) / sum_ncs ) sum_ncs = sum[priority level k] NCS(k)\n\nBigger numbers mean a larger nominal concurrency limit, at the expense of every other priority level. This field has a default value of zero.",
-      }),
-  })
-  .openapi({
-    description:
-      'ExemptPriorityLevelConfiguration describes the configurable aspects of the handling of exempt requests. In the mandatory exempt configuration object the values in the fields here can be modified by authorized users, unlike the rest of the `spec`.',
-    required: [],
-  })
-  .openapi('IoK8sApiFlowcontrolV1ExemptPriorityLevelConfiguration')
-
-const IoK8sApiFlowcontrolV1FlowDistinguisherMethodSchema = z
-  .object({
-    type: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'type is the type of flow distinguisher method The supported types are "ByUser" and "ByNamespace". Required.',
-      }),
-  })
-  .openapi({
-    description: 'FlowDistinguisherMethod specifies the method of a flow distinguisher.',
-    required: ['type'],
-  })
-  .openapi('IoK8sApiFlowcontrolV1FlowDistinguisherMethod')
-
 const IoK8sApimachineryPkgApisMetaV1TimeSchema = z.iso
   .datetime({ offset: true })
   .openapi({
@@ -49,7 +9,7 @@ const IoK8sApimachineryPkgApisMetaV1TimeSchema = z.iso
   .openapi('IoK8sApimachineryPkgApisMetaV1Time')
 
 const IoK8sApimachineryPkgApisMetaV1FieldsV1Schema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       "FieldsV1 stores a set of fields in a data structure like a Trie, in JSON format.\n\nEach key is either a '.' representing the field itself, and will always map to an empty set, or a string representing a sub-field or item. The string will follow one of these four formats: 'f:<name>', where <name> is the name of a field in a struct, or key in a map 'v:<value>', where <value> is the exact json formatted value of a list item 'i:<index>', where <index> is position of a item in a list 'k:<keys>', where <keys> is a map of  a list item's key fields to their unique values If a key maps to an empty Fields value, the field that key represents is part of the set.\n\nThe exact format is defined in sigs.k8s.io/structured-merge-diff",
@@ -286,6 +246,22 @@ const IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema = z
   })
   .openapi('IoK8sApimachineryPkgApisMetaV1ObjectMeta')
 
+const IoK8sApiFlowcontrolV1FlowDistinguisherMethodSchema = z
+  .object({
+    type: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'type is the type of flow distinguisher method The supported types are "ByUser" and "ByNamespace". Required.',
+      }),
+  })
+  .openapi({
+    description: 'FlowDistinguisherMethod specifies the method of a flow distinguisher.',
+    required: ['type'],
+  })
+  .openapi('IoK8sApiFlowcontrolV1FlowDistinguisherMethod')
+
 const IoK8sApiFlowcontrolV1PriorityLevelConfigurationReferenceSchema = z
   .object({
     name: z
@@ -512,9 +488,10 @@ const IoK8sApiFlowcontrolV1FlowSchemaSpecSchema = z
           'matchingPrecedence is used to choose among the FlowSchemas that match a given request. The chosen FlowSchema is among those with the numerically lowest (which we take to be logically highest) MatchingPrecedence.  Each MatchingPrecedence value must be ranged in [1,10000]. Note that if the precedence is not specified, it will be set to 1000 as default.',
       }),
     priorityLevelConfiguration:
-      IoK8sApiFlowcontrolV1PriorityLevelConfigurationReferenceSchema.default({}).openapi({
+      IoK8sApiFlowcontrolV1PriorityLevelConfigurationReferenceSchema.openapi({
         description:
           'priorityLevelConfiguration should reference a PriorityLevelConfiguration in the cluster. If the reference cannot be resolved, the FlowSchema will be ignored and marked as invalid in its status. Required.',
+        default: {},
       }),
     rules: z
       .array(IoK8sApiFlowcontrolV1PolicyRulesWithSubjectsSchema)
@@ -607,9 +584,10 @@ const IoK8sApiFlowcontrolV1FlowSchemaSchema = z
         description:
           "metadata is the standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata",
       }),
-    spec: IoK8sApiFlowcontrolV1FlowSchemaSpecSchema.default({}).openapi({
+    spec: IoK8sApiFlowcontrolV1FlowSchemaSpecSchema.openapi({
       description:
         'spec is the specification of the desired behavior of a FlowSchema. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status',
+      default: {},
     }),
     status: IoK8sApiFlowcontrolV1FlowSchemaStatusSchema.default({})
       .exactOptional()
@@ -697,40 +675,72 @@ const IoK8sApimachineryPkgApisMetaV1ListMetaSchema = z
   })
   .openapi('IoK8sApimachineryPkgApisMetaV1ListMeta')
 
-const IoK8sApiFlowcontrolV1FlowSchemaListSchema = z
+type IoK8sApiFlowcontrolV1FlowSchemaListType = {
+  apiVersion?: string
+  items: z.infer<typeof IoK8sApiFlowcontrolV1FlowSchemaSchema>[]
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ListMetaSchema>
+}
+
+const IoK8sApiFlowcontrolV1ExemptPriorityLevelConfigurationSchema = z
   .object({
-    apiVersion: z
-      .string()
+    lendablePercent: z
+      .int32()
       .exactOptional()
       .openapi({
         description:
-          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+          "lendablePercent prescribes the fraction of the level's NominalCL that can be borrowed by other priority levels.  This value of this field must be between 0 and 100, inclusive, and it defaults to 0. The number of seats that other levels can borrow from this level, known as this level's LendableConcurrencyLimit (LendableCL), is defined as follows.\n\nLendableCL(i) = round( NominalCL(i) * lendablePercent(i)/100.0 )",
       }),
-    items: z
-      .array(IoK8sApiFlowcontrolV1FlowSchemaSchema)
-      .openapi({ description: '`items` is a list of FlowSchemas.' }),
-    kind: z
-      .string()
+    nominalConcurrencyShares: z
+      .int32()
       .exactOptional()
       .openapi({
         description:
-          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          '`metadata` is the standard list metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata',
+          "nominalConcurrencyShares (NCS) contributes to the computation of the NominalConcurrencyLimit (NominalCL) of this level. This is the number of execution seats nominally reserved for this priority level. This DOES NOT limit the dispatching from this priority level but affects the other priority levels through the borrowing mechanism. The server's concurrency limit (ServerCL) is divided among all the priority levels in proportion to their NCS values:\n\nNominalCL(i)  = ceil( ServerCL * NCS(i) / sum_ncs ) sum_ncs = sum[priority level k] NCS(k)\n\nBigger numbers mean a larger nominal concurrency limit, at the expense of every other priority level. This field has a default value of zero.",
       }),
   })
   .openapi({
-    description: 'FlowSchemaList is a list of FlowSchema objects.',
-    required: ['items'],
-    'x-kubernetes-group-version-kind': [
-      { group: 'flowcontrol.apiserver.k8s.io', kind: 'FlowSchemaList', version: 'v1' },
-    ],
+    description:
+      'ExemptPriorityLevelConfiguration describes the configurable aspects of the handling of exempt requests. In the mandatory exempt configuration object the values in the fields here can be modified by authorized users, unlike the rest of the `spec`.',
+    required: [],
   })
-  .openapi('IoK8sApiFlowcontrolV1FlowSchemaList')
+  .openapi('IoK8sApiFlowcontrolV1ExemptPriorityLevelConfiguration')
+
+const IoK8sApiFlowcontrolV1FlowSchemaListSchema: z.ZodType<IoK8sApiFlowcontrolV1FlowSchemaListType> =
+  z
+    .object({
+      apiVersion: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+        }),
+      items: z
+        .array(IoK8sApiFlowcontrolV1FlowSchemaSchema)
+        .openapi({ description: '`items` is a list of FlowSchemas.' }),
+      kind: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+        }),
+      metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
+        .exactOptional()
+        .openapi({
+          description:
+            '`metadata` is the standard list metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata',
+        }),
+    })
+    .openapi({
+      description: 'FlowSchemaList is a list of FlowSchema objects.',
+      required: ['items'],
+      'x-kubernetes-group-version-kind': [
+        { group: 'flowcontrol.apiserver.k8s.io', kind: 'FlowSchemaList', version: 'v1' },
+      ],
+    })
+    .openapi('IoK8sApiFlowcontrolV1FlowSchemaList')
 
 const IoK8sApiFlowcontrolV1QueuingConfigurationSchema = z
   .object({
@@ -804,9 +814,10 @@ const IoK8sApiFlowcontrolV1LimitedPriorityLevelConfigurationSchema = z
         description:
           "lendablePercent prescribes the fraction of the level's NominalCL that can be borrowed by other priority levels. The value of this field must be between 0 and 100, inclusive, and it defaults to 0. The number of seats that other levels can borrow from this level, known as this level's LendableConcurrencyLimit (LendableCL), is defined as follows.\n\nLendableCL(i) = round( NominalCL(i) * lendablePercent(i)/100.0 )",
       }),
-    limitResponse: IoK8sApiFlowcontrolV1LimitResponseSchema.default({}).openapi({
+    limitResponse: IoK8sApiFlowcontrolV1LimitResponseSchema.openapi({
       description:
         'limitResponse indicates what to do with requests that can not be executed right now',
+      default: {},
     }),
     nominalConcurrencyShares: z
       .int32()
@@ -930,9 +941,10 @@ const IoK8sApiFlowcontrolV1PriorityLevelConfigurationSchema = z
         description:
           "metadata is the standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata",
       }),
-    spec: IoK8sApiFlowcontrolV1PriorityLevelConfigurationSpecSchema.default({}).openapi({
+    spec: IoK8sApiFlowcontrolV1PriorityLevelConfigurationSpecSchema.openapi({
       description:
         'spec is the specification of the desired behavior of a "request-priority". More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status',
+      default: {},
     }),
     status: IoK8sApiFlowcontrolV1PriorityLevelConfigurationStatusSchema.default({})
       .exactOptional()
@@ -1192,7 +1204,7 @@ const IoK8sApimachineryPkgApisMetaV1DeleteOptionsSchema = z
   .openapi('IoK8sApimachineryPkgApisMetaV1DeleteOptions')
 
 const IoK8sApimachineryPkgApisMetaV1PatchSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Patch is provided to give a concrete name and type to the Kubernetes PATCH request body.',
@@ -1339,7 +1351,7 @@ const IoK8sApimachineryPkgApisMetaV1StatusSchema = z
   .openapi('IoK8sApimachineryPkgApisMetaV1Status')
 
 const IoK8sApimachineryPkgRuntimeRawExtensionSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'RawExtension is used to hold extensions in external versions.\n\nTo use this, make a field which has RawExtension as its type in your external, versioned struct, and Object in your internal struct. You also need to register your various plugin types.\n\n// Internal package:\n\n\ttype MyAPIObject struct {\n\t\truntime.TypeMeta `json:""`\n\t\tMyPlugin runtime.Object `json:"myPlugin"`\n\t}\n\n\ttype PluginA struct {\n\t\tAOption string `json:"aOption"`\n\t}\n\n// External package:\n\n\ttype MyAPIObject struct {\n\t\truntime.TypeMeta `json:""`\n\t\tMyPlugin runtime.RawExtension `json:"myPlugin"`\n\t}\n\n\ttype PluginA struct {\n\t\tAOption string `json:"aOption"`\n\t}\n\n// On the wire, the JSON will look something like this:\n\n\t{\n\t\t"kind":"MyAPIObject",\n\t\t"apiVersion":"v1",\n\t\t"myPlugin": {\n\t\t\t"kind":"PluginA",\n\t\t\t"aOption":"foo",\n\t\t},\n\t}\n\nSo what happens? Decode first uses json or yaml to unmarshal the serialized data into your external MyAPIObject. That causes the raw JSON to be stored, but not unpacked. The next step is to copy (using pkg/conversion) into the internal struct. The runtime package\'s DefaultScheme has conversion functions installed which will unpack the JSON stored in RawExtension, turning it into the correct object type, and storing it in the Object. (TODO: In the case where the object is of an unknown type, a runtime.Unknown object will be created and stored.)',

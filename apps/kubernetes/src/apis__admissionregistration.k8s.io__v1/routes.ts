@@ -1,259 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const IoK8sApiAdmissionregistrationV1ApplyConfigurationSchema = z
-  .object({
-    expression: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "expression will be evaluated by CEL to create an apply configuration. ref: https://github.com/google/cel-spec\n\nApply configurations are declared in CEL using object initialization. For example, this CEL expression returns an apply configuration to set a single field:\n\n\tObject{\n\t  spec: Object.spec{\n\t    serviceAccountName: \"example\"\n\t  }\n\t}\n\nApply configurations may not modify atomic structs, maps or arrays due to the risk of accidental deletion of values not included in the apply configuration.\n\nCEL expressions have access to the object types needed to create apply configurations:\n\n- 'Object' - CEL type of the resource object. - 'Object.<fieldName>' - CEL type of object field (such as 'Object.spec') - 'Object.<fieldName1>.<fieldName2>...<fieldNameN>` - CEL type of nested field (such as 'Object.spec.containers')\n\nCEL expressions have access to the contents of the API request, organized into CEL variables as well as some other useful variables:\n\n- 'object' - The object from the incoming request. The value is null for DELETE requests. - 'oldObject' - The existing object. The value is null for CREATE requests. - 'request' - Attributes of the API request([ref](/pkg/apis/admission/types.go#AdmissionRequest)). - 'params' - Parameter resource referred to by the policy binding being evaluated. Only populated if the policy has a ParamKind. - 'namespaceObject' - The namespace object that the incoming object belongs to. The value is null for cluster-scoped resources. - 'variables' - Map of composited variables, from its name to its lazily evaluated value.\n  For example, a variable named 'foo' can be accessed as 'variables.foo'.\n- 'authorizer' - A CEL Authorizer. May be used to perform authorization checks for the principal (user or service account) of the request.\n  See https://pkg.go.dev/k8s.io/apiserver/pkg/cel/library#Authz\n- 'authorizer.requestResource' - A CEL ResourceCheck constructed from the 'authorizer' and configured with the\n  request resource.\n\nThe `apiVersion`, `kind`, `metadata.name` and `metadata.generateName` are always accessible from the root of the object. No other metadata properties are accessible.\n\nOnly property names of the form `[a-zA-Z_.-/][a-zA-Z0-9_.-/]*` are accessible. Required.",
-      }),
-  })
-  .openapi({
-    description: 'ApplyConfiguration defines the desired configuration values of an object.',
-    required: [],
-  })
-  .openapi('IoK8sApiAdmissionregistrationV1ApplyConfiguration')
-
-const IoK8sApiAdmissionregistrationV1AuditAnnotationSchema = z
-  .object({
-    key: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'key specifies the audit annotation key. The audit annotation keys of a ValidatingAdmissionPolicy must be unique. The key must be a qualified name ([A-Za-z0-9][-A-Za-z0-9_.]*) no more than 63 bytes in length.\n\nThe key is combined with the resource name of the ValidatingAdmissionPolicy to construct an audit annotation key: "{ValidatingAdmissionPolicy name}/{key}".\n\nIf an admission webhook uses the same resource name as this ValidatingAdmissionPolicy and the same audit annotation key, the annotation key will be identical. In this case, the first annotation written with the key will be included in the audit event and all subsequent annotations with the same key will be discarded.\n\nRequired.',
-      }),
-    valueExpression: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'valueExpression represents the expression which is evaluated by CEL to produce an audit annotation value. The expression must evaluate to either a string or null value. If the expression evaluates to a string, the audit annotation is included with the string value. If the expression evaluates to null or empty string the audit annotation will be omitted. The valueExpression may be no longer than 5kb in length. If the result of the valueExpression is more than 10kb in length, it will be truncated to 10kb.\n\nIf multiple ValidatingAdmissionPolicyBinding resources match an API request, then the valueExpression will be evaluated for each binding. All unique values produced by the valueExpressions will be joined together in a comma-separated list.\n\nRequired.',
-      }),
-  })
-  .openapi({
-    description: 'AuditAnnotation describes how to produce an audit annotation for an API request.',
-    required: ['key', 'valueExpression'],
-  })
-  .openapi('IoK8sApiAdmissionregistrationV1AuditAnnotation')
-
-const IoK8sApiAdmissionregistrationV1ExpressionWarningSchema = z
-  .object({
-    fieldRef: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'fieldRef is the path to the field that refers to the expression. For example, the reference to the expression of the first item of validations is "spec.validations[0].expression"',
-      }),
-    warning: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'warning contains the content of type checking information in a human-readable form. Each line of the warning contains the type that the expression is checked against, followed by the type check error from the compiler.',
-      }),
-  })
-  .openapi({
-    description: 'ExpressionWarning is a warning information that targets a specific expression.',
-    required: ['fieldRef', 'warning'],
-  })
-  .openapi('IoK8sApiAdmissionregistrationV1ExpressionWarning')
-
-const IoK8sApiAdmissionregistrationV1JSONPatchSchema = z
-  .object({
-    expression: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "expression will be evaluated by CEL to create a [JSON patch](https://jsonpatch.com/). ref: https://github.com/google/cel-spec\n\nexpression must return an array of JSONPatch values.\n\nFor example, this CEL expression returns a JSON patch to conditionally modify a value:\n\n\t  [\n\t    JSONPatch{op: \"test\", path: \"/spec/example\", value: \"Red\"},\n\t    JSONPatch{op: \"replace\", path: \"/spec/example\", value: \"Green\"}\n\t  ]\n\nTo define an object for the patch value, use Object types. For example:\n\n\t  [\n\t    JSONPatch{\n\t      op: \"add\",\n\t      path: \"/spec/selector\",\n\t      value: Object.spec.selector{matchLabels: {\"environment\": \"test\"}}\n\t    }\n\t  ]\n\nTo use strings containing '/' and '~' as JSONPatch path keys, use \"jsonpatch.escapeKey\". For example:\n\n\t  [\n\t    JSONPatch{\n\t      op: \"add\",\n\t      path: \"/metadata/labels/\" + jsonpatch.escapeKey(\"example.com/environment\"),\n\t      value: \"test\"\n\t    },\n\t  ]\n\nCEL expressions have access to the types needed to create JSON patches and objects:\n\n- 'JSONPatch' - CEL type of JSON Patch operations. JSONPatch has the fields 'op', 'from', 'path' and 'value'.\n  See [JSON patch](https://jsonpatch.com/) for more details. The 'value' field may be set to any of: string,\n  integer, array, map or object.  If set, the 'path' and 'from' fields must be set to a\n  [JSON pointer](https://datatracker.ietf.org/doc/html/rfc6901/) string, where the 'jsonpatch.escapeKey()' CEL\n  function may be used to escape path keys containing '/' and '~'.\n- 'Object' - CEL type of the resource object. - 'Object.<fieldName>' - CEL type of object field (such as 'Object.spec') - 'Object.<fieldName1>.<fieldName2>...<fieldNameN>` - CEL type of nested field (such as 'Object.spec.containers')\n\nCEL expressions have access to the contents of the API request, organized into CEL variables as well as some other useful variables:\n\n- 'object' - The object from the incoming request. The value is null for DELETE requests. - 'oldObject' - The existing object. The value is null for CREATE requests. - 'request' - Attributes of the API request([ref](/pkg/apis/admission/types.go#AdmissionRequest)). - 'params' - Parameter resource referred to by the policy binding being evaluated. Only populated if the policy has a ParamKind. - 'namespaceObject' - The namespace object that the incoming object belongs to. The value is null for cluster-scoped resources. - 'variables' - Map of composited variables, from its name to its lazily evaluated value.\n  For example, a variable named 'foo' can be accessed as 'variables.foo'.\n- 'authorizer' - A CEL Authorizer. May be used to perform authorization checks for the principal (user or service account) of the request.\n  See https://pkg.go.dev/k8s.io/apiserver/pkg/cel/library#Authz\n- 'authorizer.requestResource' - A CEL ResourceCheck constructed from the 'authorizer' and configured with the\n  request resource.\n\nCEL expressions have access to [Kubernetes CEL function libraries](https://kubernetes.io/docs/reference/using-api/cel/#cel-options-language-features-and-libraries) as well as:\n\n- 'jsonpatch.escapeKey' - Performs JSONPatch key escaping. '~' and  '/' are escaped as '~0' and `~1' respectively).\n\nOnly property names of the form `[a-zA-Z_.-/][a-zA-Z0-9_.-/]*` are accessible. Required.",
-      }),
-  })
-  .openapi({ description: 'JSONPatch defines a JSON Patch.', required: [] })
-  .openapi('IoK8sApiAdmissionregistrationV1JSONPatch')
-
-const IoK8sApiAdmissionregistrationV1MatchConditionSchema = z
-  .object({
-    expression: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          "expression represents the expression which will be evaluated by CEL. Must evaluate to bool. CEL expressions have access to the contents of the AdmissionRequest and Authorizer, organized into CEL variables:\n\n'object' - The object from the incoming request. The value is null for DELETE requests. 'oldObject' - The existing object. The value is null for CREATE requests. 'request' - Attributes of the admission request(/pkg/apis/admission/types.go#AdmissionRequest). 'authorizer' - A CEL Authorizer. May be used to perform authorization checks for the principal (user or service account) of the request.\n  See https://pkg.go.dev/k8s.io/apiserver/pkg/cel/library#Authz\n'authorizer.requestResource' - A CEL ResourceCheck constructed from the 'authorizer' and configured with the\n  request resource.\nDocumentation on CEL: https://kubernetes.io/docs/reference/using-api/cel/\n\nRequired.",
-      }),
-    name: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          "name is an identifier for this match condition, used for strategic merging of MatchConditions, as well as providing an identifier for logging purposes. A good name should be descriptive of the associated expression. Name must be a qualified name consisting of alphanumeric characters, '-', '_' or '.', and must start and end with an alphanumeric character (e.g. 'MyName',  or 'my.name',  or '123-abc', regex used for validation is '([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]') with an optional DNS subdomain prefix and '/' (e.g. 'example.com/MyName')\n\nRequired.",
-      }),
-  })
-  .openapi({
-    description:
-      'MatchCondition represents a condition which must by fulfilled for a request to be sent to a webhook.',
-    required: ['name', 'expression'],
-  })
-  .openapi('IoK8sApiAdmissionregistrationV1MatchCondition')
-
-const IoK8sApiAdmissionregistrationV1NamedRuleWithOperationsSchema = z
-  .object({
-    apiGroups: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "apiGroups is the API groups the resources belong to. '*' is all groups. If '*' is present, the length of the slice must be one. Required.",
-        'x-kubernetes-list-type': 'atomic',
-      }),
-    apiVersions: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "apiVersions is the API versions the resources belong to. '*' is all versions. If '*' is present, the length of the slice must be one. Required.",
-        'x-kubernetes-list-type': 'atomic',
-      }),
-    operations: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "operations is the operations the admission hook cares about - CREATE, UPDATE, DELETE, CONNECT or * for all of those operations and any future admission operations that are added. If '*' is present, the length of the slice must be one. Required.",
-        'x-kubernetes-list-type': 'atomic',
-      }),
-    resourceNames: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'resourceNames is an optional white list of names that the rule applies to.  An empty set means that everything is allowed.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-    resources: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "resources is a list of resources this rule applies to.\n\nFor example: 'pods' means pods. 'pods/log' means the log subresource of pods. '*' means all resources, but not subresources. 'pods/*' means all subresources of pods. '*/scale' means all scale subresources. '*/*' means all resources and their subresources.\n\nIf wildcard is present, the validation rule will ensure resources do not overlap with each other.\n\nDepending on the enclosing object, subresources might not be allowed. Required.",
-        'x-kubernetes-list-type': 'atomic',
-      }),
-    scope: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'scope specifies the scope of this rule. Valid values are "Cluster", "Namespaced", and "*" "Cluster" means that only cluster-scoped resources will match this rule. Namespace API objects are cluster-scoped. "Namespaced" means that only namespaced resources will match this rule. "*" means that there are no scope restrictions. Subresources match the scope of their parent resource. Default is "*".',
-      }),
-  })
-  .openapi({
-    description:
-      'NamedRuleWithOperations is a tuple of Operations and Resources with ResourceNames.',
-    'x-kubernetes-map-type': 'atomic',
-    required: [],
-  })
-  .openapi('IoK8sApiAdmissionregistrationV1NamedRuleWithOperations')
-
-const IoK8sApimachineryPkgApisMetaV1LabelSelectorRequirementSchema = z
-  .object({
-    key: z
-      .string()
-      .default('')
-      .openapi({ description: 'key is the label key that the selector applies to.' }),
-    operator: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.",
-      }),
-    values: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-  })
-  .openapi({
-    description:
-      'A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.',
-    required: ['key', 'operator'],
-  })
-  .openapi('IoK8sApimachineryPkgApisMetaV1LabelSelectorRequirement')
-
-const IoK8sApimachineryPkgApisMetaV1LabelSelectorSchema = z
-  .object({
-    matchExpressions: z
-      .array(IoK8sApimachineryPkgApisMetaV1LabelSelectorRequirementSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'matchExpressions is a list of label selector requirements. The requirements are ANDed.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-    matchLabels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.',
-      }),
-  })
-  .openapi({
-    description:
-      'A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.',
-    'x-kubernetes-map-type': 'atomic',
-    required: [],
-  })
-  .openapi('IoK8sApimachineryPkgApisMetaV1LabelSelector')
-
-const IoK8sApiAdmissionregistrationV1MatchResourcesSchema = z
-  .object({
-    excludeResourceRules: z
-      .array(IoK8sApiAdmissionregistrationV1NamedRuleWithOperationsSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'excludeResourceRules describes what operations on what resources/subresources the ValidatingAdmissionPolicy should not care about. The exclude rules take precedence over include rules (if a resource matches both, it is excluded)',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-    matchPolicy: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'matchPolicy defines how the "MatchResources" list is used to match incoming requests. Allowed values are "Exact" or "Equivalent".\n\n- Exact: match a request only if it exactly matches a specified rule. For example, if deployments can be modified via apps/v1, apps/v1beta1, and extensions/v1beta1, but "rules" only included `apiGroups:["apps"], apiVersions:["v1"], resources: ["deployments"]`, a request to apps/v1beta1 or extensions/v1beta1 would not be sent to the ValidatingAdmissionPolicy.\n\n- Equivalent: match a request if modifies a resource listed in rules, even via another API group or version. For example, if deployments can be modified via apps/v1, apps/v1beta1, and extensions/v1beta1, and "rules" only included `apiGroups:["apps"], apiVersions:["v1"], resources: ["deployments"]`, a request to apps/v1beta1 or extensions/v1beta1 would be converted to apps/v1 and sent to the ValidatingAdmissionPolicy.\n\nDefaults to "Equivalent"',
-      }),
-    namespaceSelector: IoK8sApimachineryPkgApisMetaV1LabelSelectorSchema.exactOptional().openapi({
-      description:
-        'namespaceSelector decides whether to run the admission control policy on an object based on whether the namespace for that object matches the selector. If the object itself is a namespace, the matching is performed on object.metadata.labels. If the object is another cluster scoped resource, it never skips the policy.\n\nFor example, to run the webhook on any objects whose namespace is not associated with "runlevel" of "0" or "1";  you will set the selector as follows: "namespaceSelector": {\n  "matchExpressions": [\n    {\n      "key": "runlevel",\n      "operator": "NotIn",\n      "values": [\n        "0",\n        "1"\n      ]\n    }\n  ]\n}\n\nIf instead you want to only run the policy on any objects whose namespace is associated with the "environment" of "prod" or "staging"; you will set the selector as follows: "namespaceSelector": {\n  "matchExpressions": [\n    {\n      "key": "environment",\n      "operator": "In",\n      "values": [\n        "prod",\n        "staging"\n      ]\n    }\n  ]\n}\n\nSee https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/ for more examples of label selectors.\n\nDefault to the empty LabelSelector, which matches everything.',
-    }),
-    objectSelector: IoK8sApimachineryPkgApisMetaV1LabelSelectorSchema.exactOptional().openapi({
-      description:
-        'objectSelector decides whether to run the validation based on if the object has matching labels. objectSelector is evaluated against both the oldObject and newObject that would be sent to the cel validation, and is considered to match if either object matches the selector. A null object (oldObject in the case of create, or newObject in the case of delete) or an object that cannot have labels (like a DeploymentRollback or a PodProxyOptions object) is not considered to match. Use the object selector only if the webhook is opt-in, because end users may skip the admission webhook by setting the labels. Default to the empty LabelSelector, which matches everything.',
-    }),
-    resourceRules: z
-      .array(IoK8sApiAdmissionregistrationV1NamedRuleWithOperationsSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'resourceRules describes what operations on what resources/subresources the ValidatingAdmissionPolicy matches. The policy cares about an operation if it matches _any_ Rule.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-  })
-  .openapi({
-    description:
-      'MatchResources decides whether to run the admission control policy on an object based on whether it meets the match criteria. The exclude rules take precedence over include rules (if a resource matches both, it is excluded)',
-    'x-kubernetes-map-type': 'atomic',
-    required: [],
-  })
-  .openapi('IoK8sApiAdmissionregistrationV1MatchResources')
-
 const IoK8sApimachineryPkgApisMetaV1TimeSchema = z.iso
   .datetime({ offset: true })
   .openapi({
@@ -263,7 +9,7 @@ const IoK8sApimachineryPkgApisMetaV1TimeSchema = z.iso
   .openapi('IoK8sApimachineryPkgApisMetaV1Time')
 
 const IoK8sApimachineryPkgApisMetaV1FieldsV1Schema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       "FieldsV1 stores a set of fields in a data structure like a Trie, in JSON format.\n\nEach key is either a '.' representing the field itself, and will always map to an empty set, or a string representing a sub-field or item. The string will follow one of these four formats: 'f:<name>', where <name> is the name of a field in a struct, or key in a map 'v:<value>', where <value> is the exact json formatted value of a list item 'i:<index>', where <index> is position of a item in a list 'k:<keys>', where <keys> is a map of  a list item's key fields to their unique values If a key maps to an empty Fields value, the field that key represents is part of the set.\n\nThe exact format is defined in sigs.k8s.io/structured-merge-diff",
@@ -500,173 +246,160 @@ const IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema = z
   })
   .openapi('IoK8sApimachineryPkgApisMetaV1ObjectMeta')
 
-const IoK8sApiAdmissionregistrationV1MutationSchema = z
+const IoK8sApiAdmissionregistrationV1NamedRuleWithOperationsSchema = z
   .object({
-    applyConfiguration:
-      IoK8sApiAdmissionregistrationV1ApplyConfigurationSchema.exactOptional().openapi({
-        description:
-          'applyConfiguration defines the desired configuration values of an object. The configuration is applied to the admission object using [structured merge diff](https://github.com/kubernetes-sigs/structured-merge-diff). A CEL expression is used to create apply configuration.',
-      }),
-    jsonPatch: IoK8sApiAdmissionregistrationV1JSONPatchSchema.exactOptional().openapi({
-      description:
-        'jsonPatch defines a [JSON patch](https://jsonpatch.com/) operation to perform a mutation to the object. A CEL expression is used to create the JSON patch.',
-    }),
-    patchType: z
-      .string()
-      .default('')
+    apiGroups: z
+      .array(z.string())
+      .exactOptional()
       .openapi({
         description:
-          'patchType indicates the patch strategy used. Allowed values are "ApplyConfiguration" and "JSONPatch". Required.',
+          "apiGroups is the API groups the resources belong to. '*' is all groups. If '*' is present, the length of the slice must be one. Required.",
+        'x-kubernetes-list-type': 'atomic',
       }),
-  })
-  .openapi({
-    description: 'Mutation specifies the CEL expression which is used to apply the Mutation.',
-    required: ['patchType'],
-  })
-  .openapi('IoK8sApiAdmissionregistrationV1Mutation')
-
-const IoK8sApiAdmissionregistrationV1ParamKindSchema = z
-  .object({
-    apiVersion: z
+    apiVersions: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "apiVersions is the API versions the resources belong to. '*' is all versions. If '*' is present, the length of the slice must be one. Required.",
+        'x-kubernetes-list-type': 'atomic',
+      }),
+    operations: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "operations is the operations the admission hook cares about - CREATE, UPDATE, DELETE, CONNECT or * for all of those operations and any future admission operations that are added. If '*' is present, the length of the slice must be one. Required.",
+        'x-kubernetes-list-type': 'atomic',
+      }),
+    resourceNames: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'resourceNames is an optional white list of names that the rule applies to.  An empty set means that everything is allowed.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+    resources: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "resources is a list of resources this rule applies to.\n\nFor example: 'pods' means pods. 'pods/log' means the log subresource of pods. '*' means all resources, but not subresources. 'pods/*' means all subresources of pods. '*/scale' means all scale subresources. '*/*' means all resources and their subresources.\n\nIf wildcard is present, the validation rule will ensure resources do not overlap with each other.\n\nDepending on the enclosing object, subresources might not be allowed. Required.",
+        'x-kubernetes-list-type': 'atomic',
+      }),
+    scope: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'apiVersion is the API group version the resources belong to. In format of "group/version". Required.',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'kind is the API kind the resources belong to. Required.' }),
-  })
-  .openapi({
-    description: 'ParamKind is a tuple of Group Kind and Version.',
-    'x-kubernetes-map-type': 'atomic',
-    required: [],
-  })
-  .openapi('IoK8sApiAdmissionregistrationV1ParamKind')
-
-const IoK8sApiAdmissionregistrationV1VariableSchema = z
-  .object({
-    expression: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'expression is the expression that will be evaluated as the value of the variable. The CEL expression has access to the same identifiers as the CEL expressions in Validation.',
-      }),
-    name: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'name is the name of the variable. The name must be a valid CEL identifier and unique among all variables. The variable can be accessed in other expressions through `variables` For example, if name is "foo", the variable will be available as `variables.foo`',
+          'scope specifies the scope of this rule. Valid values are "Cluster", "Namespaced", and "*" "Cluster" means that only cluster-scoped resources will match this rule. Namespace API objects are cluster-scoped. "Namespaced" means that only namespaced resources will match this rule. "*" means that there are no scope restrictions. Subresources match the scope of their parent resource. Default is "*".',
       }),
   })
   .openapi({
     description:
-      'Variable is the definition of a variable that is used for composition. A variable is defined as a named expression.',
-    required: ['name', 'expression'],
+      'NamedRuleWithOperations is a tuple of Operations and Resources with ResourceNames.',
     'x-kubernetes-map-type': 'atomic',
+    required: [],
   })
-  .openapi('IoK8sApiAdmissionregistrationV1Variable')
+  .openapi('IoK8sApiAdmissionregistrationV1NamedRuleWithOperations')
 
-const IoK8sApiAdmissionregistrationV1MutatingAdmissionPolicySpecSchema = z
+const IoK8sApimachineryPkgApisMetaV1LabelSelectorRequirementSchema = z
   .object({
-    failurePolicy: z
+    key: z
       .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'failurePolicy defines how to handle failures for the admission policy. Failures can occur from CEL expression parse errors, type check errors, runtime errors and invalid or mis-configured policy definitions or bindings.\n\nA policy is invalid if paramKind refers to a non-existent Kind. A binding is invalid if paramRef.name refers to a non-existent resource.\n\nfailurePolicy does not define how validations that evaluate to false are handled.\n\nAllowed values are Ignore or Fail. Defaults to Fail.',
-      }),
-    matchConditions: z
-      .array(IoK8sApiAdmissionregistrationV1MatchConditionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'matchConditions is a list of conditions that must be met for a request to be validated. Match conditions filter requests that have already been matched by the matchConstraints. An empty list of matchConditions matches all requests. There are a maximum of 64 match conditions allowed.\n\nIf a parameter object is provided, it can be accessed via the `params` handle in the same manner as validation expressions.\n\nThe exact matching logic is (in order):\n  1. If ANY matchCondition evaluates to FALSE, the policy is skipped.\n  2. If ALL matchConditions evaluate to TRUE, the policy is evaluated.\n  3. If any matchCondition evaluates to an error (but none are FALSE):\n     - If failurePolicy=Fail, reject the request\n     - If failurePolicy=Ignore, the policy is skipped',
-        'x-kubernetes-list-map-keys': ['name'],
-        'x-kubernetes-list-type': 'map',
-        'x-kubernetes-patch-merge-key': 'name',
-        'x-kubernetes-patch-strategy': 'merge',
-      }),
-    matchConstraints: IoK8sApiAdmissionregistrationV1MatchResourcesSchema.exactOptional().openapi({
-      description:
-        "matchConstraints specifies what resources this policy is designed to validate. The MutatingAdmissionPolicy cares about a request if it matches _all_ Constraints. However, in order to prevent clusters from being put into an unstable state that cannot be recovered from via the API MutatingAdmissionPolicy cannot match MutatingAdmissionPolicy and MutatingAdmissionPolicyBinding. The CREATE, UPDATE and CONNECT operations are allowed.  The DELETE operation may not be matched. '*' matches CREATE, UPDATE and CONNECT. Required.",
-    }),
-    mutations: z
-      .array(IoK8sApiAdmissionregistrationV1MutationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'mutations contain operations to perform on matching objects. mutations may not be empty; a minimum of one mutation is required. mutations are evaluated in order, and are reinvoked according to the reinvocationPolicy. The mutations of a policy are invoked for each binding of this policy and reinvocation of mutations occurs on a per binding basis.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-    paramKind: IoK8sApiAdmissionregistrationV1ParamKindSchema.exactOptional().openapi({
-      description:
-        'paramKind specifies the kind of resources used to parameterize this policy. If absent, there are no parameters for this policy and the param CEL variable will not be provided to validation expressions. If paramKind refers to a non-existent kind, this policy definition is mis-configured and the FailurePolicy is applied. If paramKind is specified but paramRef is unset in MutatingAdmissionPolicyBinding, the params variable will be null.',
-    }),
-    reinvocationPolicy: z
+      .default('')
+      .openapi({ description: 'key is the label key that the selector applies to.' }),
+    operator: z
       .string()
-      .exactOptional()
+      .default('')
       .openapi({
         description:
-          'reinvocationPolicy indicates whether mutations may be called multiple times per MutatingAdmissionPolicyBinding as part of a single admission evaluation. Allowed values are "Never" and "IfNeeded".\n\nNever: These mutations will not be called more than once per binding in a single admission evaluation.\n\nIfNeeded: These mutations may be invoked more than once per binding for a single admission request and there is no guarantee of order with respect to other admission plugins, admission webhooks, bindings of this policy and admission policies.  Mutations are only reinvoked when mutations change the object after this mutation is invoked. Required.',
+          "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.",
       }),
-    variables: z
-      .array(IoK8sApiAdmissionregistrationV1VariableSchema)
+    values: z
+      .array(z.string())
       .exactOptional()
       .openapi({
         description:
-          'variables contain definitions of variables that can be used in composition of other expressions. Each variable is defined as a named CEL expression. The variables defined here will be available under `variables` in other expressions of the policy except matchConditions because matchConditions are evaluated before the rest of the policy.\n\nThe expression of a variable can refer to other variables defined earlier in the list but not those after. Thus, variables must be sorted by the order of first appearance and acyclic.',
+          'values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.',
         'x-kubernetes-list-type': 'atomic',
       }),
   })
   .openapi({
     description:
-      'MutatingAdmissionPolicySpec defines the desired behavior of the admission policy.',
-    required: [],
+      'A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.',
+    required: ['key', 'operator'],
   })
-  .openapi('IoK8sApiAdmissionregistrationV1MutatingAdmissionPolicySpec')
+  .openapi('IoK8sApimachineryPkgApisMetaV1LabelSelectorRequirement')
 
-const IoK8sApiAdmissionregistrationV1MutatingAdmissionPolicySchema = z
+const IoK8sApimachineryPkgApisMetaV1LabelSelectorSchema = z
   .object({
-    apiVersion: z
-      .string()
+    matchExpressions: z
+      .array(IoK8sApimachineryPkgApisMetaV1LabelSelectorRequirementSchema)
       .exactOptional()
       .openapi({
         description:
-          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+          'matchExpressions is a list of label selector requirements. The requirements are ANDed.',
+        'x-kubernetes-list-type': 'atomic',
       }),
-    kind: z
-      .string()
+    matchLabels: z
+      .record(z.string(), z.string())
       .exactOptional()
       .openapi({
         description:
-          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          'metadata is the standard object metadata; More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata.',
-      }),
-    spec: IoK8sApiAdmissionregistrationV1MutatingAdmissionPolicySpecSchema.default({})
-      .exactOptional()
-      .openapi({
-        description: 'spec defines the desired behavior of the MutatingAdmissionPolicy.',
+          'matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.',
       }),
   })
   .openapi({
     description:
-      'MutatingAdmissionPolicy describes the definition of an admission mutation policy that mutates the object coming into admission chain.',
-    'x-kubernetes-group-version-kind': [
-      { group: 'admissionregistration.k8s.io', kind: 'MutatingAdmissionPolicy', version: 'v1' },
-    ],
+      'A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.',
+    'x-kubernetes-map-type': 'atomic',
     required: [],
   })
-  .openapi('IoK8sApiAdmissionregistrationV1MutatingAdmissionPolicy')
+  .openapi('IoK8sApimachineryPkgApisMetaV1LabelSelector')
+
+const IoK8sApiAdmissionregistrationV1MatchResourcesSchema = z
+  .object({
+    excludeResourceRules: z
+      .array(IoK8sApiAdmissionregistrationV1NamedRuleWithOperationsSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'excludeResourceRules describes what operations on what resources/subresources the ValidatingAdmissionPolicy should not care about. The exclude rules take precedence over include rules (if a resource matches both, it is excluded)',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+    matchPolicy: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'matchPolicy defines how the "MatchResources" list is used to match incoming requests. Allowed values are "Exact" or "Equivalent".\n\n- Exact: match a request only if it exactly matches a specified rule. For example, if deployments can be modified via apps/v1, apps/v1beta1, and extensions/v1beta1, but "rules" only included `apiGroups:["apps"], apiVersions:["v1"], resources: ["deployments"]`, a request to apps/v1beta1 or extensions/v1beta1 would not be sent to the ValidatingAdmissionPolicy.\n\n- Equivalent: match a request if modifies a resource listed in rules, even via another API group or version. For example, if deployments can be modified via apps/v1, apps/v1beta1, and extensions/v1beta1, and "rules" only included `apiGroups:["apps"], apiVersions:["v1"], resources: ["deployments"]`, a request to apps/v1beta1 or extensions/v1beta1 would be converted to apps/v1 and sent to the ValidatingAdmissionPolicy.\n\nDefaults to "Equivalent"',
+      }),
+    namespaceSelector: IoK8sApimachineryPkgApisMetaV1LabelSelectorSchema.exactOptional().openapi({
+      description:
+        'namespaceSelector decides whether to run the admission control policy on an object based on whether the namespace for that object matches the selector. If the object itself is a namespace, the matching is performed on object.metadata.labels. If the object is another cluster scoped resource, it never skips the policy.\n\nFor example, to run the webhook on any objects whose namespace is not associated with "runlevel" of "0" or "1";  you will set the selector as follows: "namespaceSelector": {\n  "matchExpressions": [\n    {\n      "key": "runlevel",\n      "operator": "NotIn",\n      "values": [\n        "0",\n        "1"\n      ]\n    }\n  ]\n}\n\nIf instead you want to only run the policy on any objects whose namespace is associated with the "environment" of "prod" or "staging"; you will set the selector as follows: "namespaceSelector": {\n  "matchExpressions": [\n    {\n      "key": "environment",\n      "operator": "In",\n      "values": [\n        "prod",\n        "staging"\n      ]\n    }\n  ]\n}\n\nSee https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/ for more examples of label selectors.\n\nDefault to the empty LabelSelector, which matches everything.',
+    }),
+    objectSelector: IoK8sApimachineryPkgApisMetaV1LabelSelectorSchema.exactOptional().openapi({
+      description:
+        'objectSelector decides whether to run the validation based on if the object has matching labels. objectSelector is evaluated against both the oldObject and newObject that would be sent to the cel validation, and is considered to match if either object matches the selector. A null object (oldObject in the case of create, or newObject in the case of delete) or an object that cannot have labels (like a DeploymentRollback or a PodProxyOptions object) is not considered to match. Use the object selector only if the webhook is opt-in, because end users may skip the admission webhook by setting the labels. Default to the empty LabelSelector, which matches everything.',
+    }),
+    resourceRules: z
+      .array(IoK8sApiAdmissionregistrationV1NamedRuleWithOperationsSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'resourceRules describes what operations on what resources/subresources the ValidatingAdmissionPolicy matches. The policy cares about an operation if it matches _any_ Rule.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+  })
+  .openapi({
+    description:
+      'MatchResources decides whether to run the admission control policy on an object based on whether it meets the match criteria. The exclude rules take precedence over include rules (if a resource matches both, it is excluded)',
+    'x-kubernetes-map-type': 'atomic',
+    required: [],
+  })
+  .openapi('IoK8sApiAdmissionregistrationV1MatchResources')
 
 const IoK8sApiAdmissionregistrationV1ParamRefSchema = z
   .object({
@@ -839,46 +572,197 @@ const IoK8sApimachineryPkgApisMetaV1ListMetaSchema = z
   })
   .openapi('IoK8sApimachineryPkgApisMetaV1ListMeta')
 
-const IoK8sApiAdmissionregistrationV1MutatingAdmissionPolicyBindingListSchema = z
-  .object({
-    apiVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
-      }),
-    items: z
-      .array(IoK8sApiAdmissionregistrationV1MutatingAdmissionPolicyBindingSchema)
-      .openapi({ description: 'List of PolicyBinding.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          'metadata is the standard list metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-  })
-  .openapi({
-    description: 'MutatingAdmissionPolicyBindingList is a list of MutatingAdmissionPolicyBinding.',
-    required: ['items'],
-    'x-kubernetes-group-version-kind': [
-      {
-        group: 'admissionregistration.k8s.io',
-        kind: 'MutatingAdmissionPolicyBindingList',
-        version: 'v1',
-      },
-    ],
-  })
-  .openapi('IoK8sApiAdmissionregistrationV1MutatingAdmissionPolicyBindingList')
+type IoK8sApiAdmissionregistrationV1MutatingAdmissionPolicyBindingListType = {
+  apiVersion?: string
+  items: z.infer<typeof IoK8sApiAdmissionregistrationV1MutatingAdmissionPolicyBindingSchema>[]
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ListMetaSchema>
+}
 
-const IoK8sApiAdmissionregistrationV1MutatingAdmissionPolicyListSchema = z
+const IoK8sApiAdmissionregistrationV1MatchConditionSchema = z
+  .object({
+    expression: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          "expression represents the expression which will be evaluated by CEL. Must evaluate to bool. CEL expressions have access to the contents of the AdmissionRequest and Authorizer, organized into CEL variables:\n\n'object' - The object from the incoming request. The value is null for DELETE requests. 'oldObject' - The existing object. The value is null for CREATE requests. 'request' - Attributes of the admission request(/pkg/apis/admission/types.go#AdmissionRequest). 'authorizer' - A CEL Authorizer. May be used to perform authorization checks for the principal (user or service account) of the request.\n  See https://pkg.go.dev/k8s.io/apiserver/pkg/cel/library#Authz\n'authorizer.requestResource' - A CEL ResourceCheck constructed from the 'authorizer' and configured with the\n  request resource.\nDocumentation on CEL: https://kubernetes.io/docs/reference/using-api/cel/\n\nRequired.",
+      }),
+    name: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          "name is an identifier for this match condition, used for strategic merging of MatchConditions, as well as providing an identifier for logging purposes. A good name should be descriptive of the associated expression. Name must be a qualified name consisting of alphanumeric characters, '-', '_' or '.', and must start and end with an alphanumeric character (e.g. 'MyName',  or 'my.name',  or '123-abc', regex used for validation is '([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]') with an optional DNS subdomain prefix and '/' (e.g. 'example.com/MyName')\n\nRequired.",
+      }),
+  })
+  .openapi({
+    description:
+      'MatchCondition represents a condition which must by fulfilled for a request to be sent to a webhook.',
+    required: ['name', 'expression'],
+  })
+  .openapi('IoK8sApiAdmissionregistrationV1MatchCondition')
+
+const IoK8sApiAdmissionregistrationV1ApplyConfigurationSchema = z
+  .object({
+    expression: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "expression will be evaluated by CEL to create an apply configuration. ref: https://github.com/google/cel-spec\n\nApply configurations are declared in CEL using object initialization. For example, this CEL expression returns an apply configuration to set a single field:\n\n\tObject{\n\t  spec: Object.spec{\n\t    serviceAccountName: \"example\"\n\t  }\n\t}\n\nApply configurations may not modify atomic structs, maps or arrays due to the risk of accidental deletion of values not included in the apply configuration.\n\nCEL expressions have access to the object types needed to create apply configurations:\n\n- 'Object' - CEL type of the resource object. - 'Object.<fieldName>' - CEL type of object field (such as 'Object.spec') - 'Object.<fieldName1>.<fieldName2>...<fieldNameN>` - CEL type of nested field (such as 'Object.spec.containers')\n\nCEL expressions have access to the contents of the API request, organized into CEL variables as well as some other useful variables:\n\n- 'object' - The object from the incoming request. The value is null for DELETE requests. - 'oldObject' - The existing object. The value is null for CREATE requests. - 'request' - Attributes of the API request([ref](/pkg/apis/admission/types.go#AdmissionRequest)). - 'params' - Parameter resource referred to by the policy binding being evaluated. Only populated if the policy has a ParamKind. - 'namespaceObject' - The namespace object that the incoming object belongs to. The value is null for cluster-scoped resources. - 'variables' - Map of composited variables, from its name to its lazily evaluated value.\n  For example, a variable named 'foo' can be accessed as 'variables.foo'.\n- 'authorizer' - A CEL Authorizer. May be used to perform authorization checks for the principal (user or service account) of the request.\n  See https://pkg.go.dev/k8s.io/apiserver/pkg/cel/library#Authz\n- 'authorizer.requestResource' - A CEL ResourceCheck constructed from the 'authorizer' and configured with the\n  request resource.\n\nThe `apiVersion`, `kind`, `metadata.name` and `metadata.generateName` are always accessible from the root of the object. No other metadata properties are accessible.\n\nOnly property names of the form `[a-zA-Z_.-/][a-zA-Z0-9_.-/]*` are accessible. Required.",
+      }),
+  })
+  .openapi({
+    description: 'ApplyConfiguration defines the desired configuration values of an object.',
+    required: [],
+  })
+  .openapi('IoK8sApiAdmissionregistrationV1ApplyConfiguration')
+
+const IoK8sApiAdmissionregistrationV1JSONPatchSchema = z
+  .object({
+    expression: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "expression will be evaluated by CEL to create a [JSON patch](https://jsonpatch.com/). ref: https://github.com/google/cel-spec\n\nexpression must return an array of JSONPatch values.\n\nFor example, this CEL expression returns a JSON patch to conditionally modify a value:\n\n\t  [\n\t    JSONPatch{op: \"test\", path: \"/spec/example\", value: \"Red\"},\n\t    JSONPatch{op: \"replace\", path: \"/spec/example\", value: \"Green\"}\n\t  ]\n\nTo define an object for the patch value, use Object types. For example:\n\n\t  [\n\t    JSONPatch{\n\t      op: \"add\",\n\t      path: \"/spec/selector\",\n\t      value: Object.spec.selector{matchLabels: {\"environment\": \"test\"}}\n\t    }\n\t  ]\n\nTo use strings containing '/' and '~' as JSONPatch path keys, use \"jsonpatch.escapeKey\". For example:\n\n\t  [\n\t    JSONPatch{\n\t      op: \"add\",\n\t      path: \"/metadata/labels/\" + jsonpatch.escapeKey(\"example.com/environment\"),\n\t      value: \"test\"\n\t    },\n\t  ]\n\nCEL expressions have access to the types needed to create JSON patches and objects:\n\n- 'JSONPatch' - CEL type of JSON Patch operations. JSONPatch has the fields 'op', 'from', 'path' and 'value'.\n  See [JSON patch](https://jsonpatch.com/) for more details. The 'value' field may be set to any of: string,\n  integer, array, map or object.  If set, the 'path' and 'from' fields must be set to a\n  [JSON pointer](https://datatracker.ietf.org/doc/html/rfc6901/) string, where the 'jsonpatch.escapeKey()' CEL\n  function may be used to escape path keys containing '/' and '~'.\n- 'Object' - CEL type of the resource object. - 'Object.<fieldName>' - CEL type of object field (such as 'Object.spec') - 'Object.<fieldName1>.<fieldName2>...<fieldNameN>` - CEL type of nested field (such as 'Object.spec.containers')\n\nCEL expressions have access to the contents of the API request, organized into CEL variables as well as some other useful variables:\n\n- 'object' - The object from the incoming request. The value is null for DELETE requests. - 'oldObject' - The existing object. The value is null for CREATE requests. - 'request' - Attributes of the API request([ref](/pkg/apis/admission/types.go#AdmissionRequest)). - 'params' - Parameter resource referred to by the policy binding being evaluated. Only populated if the policy has a ParamKind. - 'namespaceObject' - The namespace object that the incoming object belongs to. The value is null for cluster-scoped resources. - 'variables' - Map of composited variables, from its name to its lazily evaluated value.\n  For example, a variable named 'foo' can be accessed as 'variables.foo'.\n- 'authorizer' - A CEL Authorizer. May be used to perform authorization checks for the principal (user or service account) of the request.\n  See https://pkg.go.dev/k8s.io/apiserver/pkg/cel/library#Authz\n- 'authorizer.requestResource' - A CEL ResourceCheck constructed from the 'authorizer' and configured with the\n  request resource.\n\nCEL expressions have access to [Kubernetes CEL function libraries](https://kubernetes.io/docs/reference/using-api/cel/#cel-options-language-features-and-libraries) as well as:\n\n- 'jsonpatch.escapeKey' - Performs JSONPatch key escaping. '~' and  '/' are escaped as '~0' and `~1' respectively).\n\nOnly property names of the form `[a-zA-Z_.-/][a-zA-Z0-9_.-/]*` are accessible. Required.",
+      }),
+  })
+  .openapi({ description: 'JSONPatch defines a JSON Patch.', required: [] })
+  .openapi('IoK8sApiAdmissionregistrationV1JSONPatch')
+
+const IoK8sApiAdmissionregistrationV1MutationSchema = z
+  .object({
+    applyConfiguration:
+      IoK8sApiAdmissionregistrationV1ApplyConfigurationSchema.exactOptional().openapi({
+        description:
+          'applyConfiguration defines the desired configuration values of an object. The configuration is applied to the admission object using [structured merge diff](https://github.com/kubernetes-sigs/structured-merge-diff). A CEL expression is used to create apply configuration.',
+      }),
+    jsonPatch: IoK8sApiAdmissionregistrationV1JSONPatchSchema.exactOptional().openapi({
+      description:
+        'jsonPatch defines a [JSON patch](https://jsonpatch.com/) operation to perform a mutation to the object. A CEL expression is used to create the JSON patch.',
+    }),
+    patchType: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'patchType indicates the patch strategy used. Allowed values are "ApplyConfiguration" and "JSONPatch". Required.',
+      }),
+  })
+  .openapi({
+    description: 'Mutation specifies the CEL expression which is used to apply the Mutation.',
+    required: ['patchType'],
+  })
+  .openapi('IoK8sApiAdmissionregistrationV1Mutation')
+
+const IoK8sApiAdmissionregistrationV1ParamKindSchema = z
+  .object({
+    apiVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'apiVersion is the API group version the resources belong to. In format of "group/version". Required.',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'kind is the API kind the resources belong to. Required.' }),
+  })
+  .openapi({
+    description: 'ParamKind is a tuple of Group Kind and Version.',
+    'x-kubernetes-map-type': 'atomic',
+    required: [],
+  })
+  .openapi('IoK8sApiAdmissionregistrationV1ParamKind')
+
+const IoK8sApiAdmissionregistrationV1VariableSchema = z
+  .object({
+    expression: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'expression is the expression that will be evaluated as the value of the variable. The CEL expression has access to the same identifiers as the CEL expressions in Validation.',
+      }),
+    name: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'name is the name of the variable. The name must be a valid CEL identifier and unique among all variables. The variable can be accessed in other expressions through `variables` For example, if name is "foo", the variable will be available as `variables.foo`',
+      }),
+  })
+  .openapi({
+    description:
+      'Variable is the definition of a variable that is used for composition. A variable is defined as a named expression.',
+    required: ['name', 'expression'],
+    'x-kubernetes-map-type': 'atomic',
+  })
+  .openapi('IoK8sApiAdmissionregistrationV1Variable')
+
+const IoK8sApiAdmissionregistrationV1MutatingAdmissionPolicySpecSchema = z
+  .object({
+    failurePolicy: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'failurePolicy defines how to handle failures for the admission policy. Failures can occur from CEL expression parse errors, type check errors, runtime errors and invalid or mis-configured policy definitions or bindings.\n\nA policy is invalid if paramKind refers to a non-existent Kind. A binding is invalid if paramRef.name refers to a non-existent resource.\n\nfailurePolicy does not define how validations that evaluate to false are handled.\n\nAllowed values are Ignore or Fail. Defaults to Fail.',
+      }),
+    matchConditions: z
+      .array(IoK8sApiAdmissionregistrationV1MatchConditionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'matchConditions is a list of conditions that must be met for a request to be validated. Match conditions filter requests that have already been matched by the matchConstraints. An empty list of matchConditions matches all requests. There are a maximum of 64 match conditions allowed.\n\nIf a parameter object is provided, it can be accessed via the `params` handle in the same manner as validation expressions.\n\nThe exact matching logic is (in order):\n  1. If ANY matchCondition evaluates to FALSE, the policy is skipped.\n  2. If ALL matchConditions evaluate to TRUE, the policy is evaluated.\n  3. If any matchCondition evaluates to an error (but none are FALSE):\n     - If failurePolicy=Fail, reject the request\n     - If failurePolicy=Ignore, the policy is skipped',
+        'x-kubernetes-list-map-keys': ['name'],
+        'x-kubernetes-list-type': 'map',
+        'x-kubernetes-patch-merge-key': 'name',
+        'x-kubernetes-patch-strategy': 'merge',
+      }),
+    matchConstraints: IoK8sApiAdmissionregistrationV1MatchResourcesSchema.exactOptional().openapi({
+      description:
+        "matchConstraints specifies what resources this policy is designed to validate. The MutatingAdmissionPolicy cares about a request if it matches _all_ Constraints. However, in order to prevent clusters from being put into an unstable state that cannot be recovered from via the API MutatingAdmissionPolicy cannot match MutatingAdmissionPolicy and MutatingAdmissionPolicyBinding. The CREATE, UPDATE and CONNECT operations are allowed.  The DELETE operation may not be matched. '*' matches CREATE, UPDATE and CONNECT. Required.",
+    }),
+    mutations: z
+      .array(IoK8sApiAdmissionregistrationV1MutationSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'mutations contain operations to perform on matching objects. mutations may not be empty; a minimum of one mutation is required. mutations are evaluated in order, and are reinvoked according to the reinvocationPolicy. The mutations of a policy are invoked for each binding of this policy and reinvocation of mutations occurs on a per binding basis.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+    paramKind: IoK8sApiAdmissionregistrationV1ParamKindSchema.exactOptional().openapi({
+      description:
+        'paramKind specifies the kind of resources used to parameterize this policy. If absent, there are no parameters for this policy and the param CEL variable will not be provided to validation expressions. If paramKind refers to a non-existent kind, this policy definition is mis-configured and the FailurePolicy is applied. If paramKind is specified but paramRef is unset in MutatingAdmissionPolicyBinding, the params variable will be null.',
+    }),
+    reinvocationPolicy: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'reinvocationPolicy indicates whether mutations may be called multiple times per MutatingAdmissionPolicyBinding as part of a single admission evaluation. Allowed values are "Never" and "IfNeeded".\n\nNever: These mutations will not be called more than once per binding in a single admission evaluation.\n\nIfNeeded: These mutations may be invoked more than once per binding for a single admission request and there is no guarantee of order with respect to other admission plugins, admission webhooks, bindings of this policy and admission policies.  Mutations are only reinvoked when mutations change the object after this mutation is invoked. Required.',
+      }),
+    variables: z
+      .array(IoK8sApiAdmissionregistrationV1VariableSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'variables contain definitions of variables that can be used in composition of other expressions. Each variable is defined as a named CEL expression. The variables defined here will be available under `variables` in other expressions of the policy except matchConditions because matchConditions are evaluated before the rest of the policy.\n\nThe expression of a variable can refer to other variables defined earlier in the list but not those after. Thus, variables must be sorted by the order of first appearance and acyclic.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+  })
+  .openapi({
+    description:
+      'MutatingAdmissionPolicySpec defines the desired behavior of the admission policy.',
+    required: [],
+  })
+  .openapi('IoK8sApiAdmissionregistrationV1MutatingAdmissionPolicySpec')
+
+const IoK8sApiAdmissionregistrationV1MutatingAdmissionPolicySchema = z
   .object({
     apiVersion: z
       .string()
@@ -887,9 +771,6 @@ const IoK8sApiAdmissionregistrationV1MutatingAdmissionPolicyListSchema = z
         description:
           'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
       }),
-    items: z
-      .array(IoK8sApiAdmissionregistrationV1MutatingAdmissionPolicySchema)
-      .openapi({ description: 'List of ValidatingAdmissionPolicy.' }),
     kind: z
       .string()
       .exactOptional()
@@ -897,21 +778,34 @@ const IoK8sApiAdmissionregistrationV1MutatingAdmissionPolicyListSchema = z
         description:
           'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
       }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
+    metadata: IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema.default({})
       .exactOptional()
       .openapi({
         description:
-          'metadata is the standard list metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+          'metadata is the standard object metadata; More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata.',
+      }),
+    spec: IoK8sApiAdmissionregistrationV1MutatingAdmissionPolicySpecSchema.default({})
+      .exactOptional()
+      .openapi({
+        description: 'spec defines the desired behavior of the MutatingAdmissionPolicy.',
       }),
   })
   .openapi({
-    description: 'MutatingAdmissionPolicyList is a list of MutatingAdmissionPolicy.',
-    required: ['items'],
+    description:
+      'MutatingAdmissionPolicy describes the definition of an admission mutation policy that mutates the object coming into admission chain.',
     'x-kubernetes-group-version-kind': [
-      { group: 'admissionregistration.k8s.io', kind: 'MutatingAdmissionPolicyList', version: 'v1' },
+      { group: 'admissionregistration.k8s.io', kind: 'MutatingAdmissionPolicy', version: 'v1' },
     ],
+    required: [],
   })
-  .openapi('IoK8sApiAdmissionregistrationV1MutatingAdmissionPolicyList')
+  .openapi('IoK8sApiAdmissionregistrationV1MutatingAdmissionPolicy')
+
+type IoK8sApiAdmissionregistrationV1MutatingAdmissionPolicyListType = {
+  apiVersion?: string
+  items: z.infer<typeof IoK8sApiAdmissionregistrationV1MutatingAdmissionPolicySchema>[]
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ListMetaSchema>
+}
 
 const IoK8sApiAdmissionregistrationV1ServiceReferenceSchema = z
   .object({
@@ -1156,7 +1050,45 @@ const IoK8sApiAdmissionregistrationV1MutatingWebhookConfigurationSchema = z
   })
   .openapi('IoK8sApiAdmissionregistrationV1MutatingWebhookConfiguration')
 
-const IoK8sApiAdmissionregistrationV1MutatingWebhookConfigurationListSchema = z
+type IoK8sApiAdmissionregistrationV1MutatingWebhookConfigurationListType = {
+  apiVersion?: string
+  items: z.infer<typeof IoK8sApiAdmissionregistrationV1MutatingWebhookConfigurationSchema>[]
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ListMetaSchema>
+}
+
+const IoK8sApiAdmissionregistrationV1ValidatingAdmissionPolicyBindingSpecSchema = z
+  .object({
+    matchResources: IoK8sApiAdmissionregistrationV1MatchResourcesSchema.exactOptional().openapi({
+      description:
+        "matchResources declares what resources match this binding and will be validated by it. Note that this is intersected with the policy's matchConstraints, so only requests that are matched by the policy can be selected by this. If this is unset, all resources matched by the policy are validated by this binding When resourceRules is unset, it does not constrain resource matching. If a resource is matched by the other fields of this object, it will be validated. Note that this is differs from ValidatingAdmissionPolicy matchConstraints, where resourceRules are required.",
+    }),
+    paramRef: IoK8sApiAdmissionregistrationV1ParamRefSchema.exactOptional().openapi({
+      description:
+        'paramRef specifies the parameter resource used to configure the admission control policy. It should point to a resource of the type specified in ParamKind of the bound ValidatingAdmissionPolicy. If the policy specifies a ParamKind and the resource referred to by ParamRef does not exist, this binding is considered mis-configured and the FailurePolicy of the ValidatingAdmissionPolicy applied. If the policy does not specify a ParamKind then this field is ignored, and the rules are evaluated without a param.',
+    }),
+    policyName: z
+      .string()
+      .openapi({
+        description:
+          'policyName references a ValidatingAdmissionPolicy name which the ValidatingAdmissionPolicyBinding binds to. If the referenced resource does not exist, this binding is considered invalid and will be ignored Required.',
+      }),
+    validationActions: z
+      .array(z.string())
+      .openapi({
+        description:
+          'validationActions declares how Validations of the referenced ValidatingAdmissionPolicy are enforced. If a validation evaluates to false it is always enforced according to these actions.\n\nFailures defined by the ValidatingAdmissionPolicy\'s FailurePolicy are enforced according to these actions only if the FailurePolicy is set to Fail, otherwise the failures are ignored. This includes compilation errors, runtime errors and misconfigurations of the policy.\n\nvalidationActions is declared as a set of action values. Order does not matter. validationActions may not contain duplicates of the same action.\n\nThe supported actions values are:\n\n"Deny" specifies that a validation failure results in a denied request.\n\n"Warn" specifies that a validation failure is reported to the request client in HTTP Warning headers, with a warning code of 299. Warnings can be sent both for allowed or denied admission responses.\n\n"Audit" specifies that a validation failure is included in the published audit event for the request. The audit event will contain a `validation.policy.admission.k8s.io/validation_failure` audit annotation with a value containing the details of the validation failures, formatted as a JSON list of objects, each with the following fields: - message: The validation failure message string - policy: The resource name of the ValidatingAdmissionPolicy - binding: The resource name of the ValidatingAdmissionPolicyBinding - expressionIndex: The index of the failed validations in the ValidatingAdmissionPolicy - validationActions: The enforcement actions enacted for the validation failure Example audit annotation: `"validation.policy.admission.k8s.io/validation_failure": "[{\\"message\\": \\"Invalid value\\", {\\"policy\\": \\"policy.example.com\\", {\\"binding\\": \\"policybinding.example.com\\", {\\"expressionIndex\\": \\"1\\", {\\"validationActions\\": [\\"Audit\\"]}]"`\n\nClients should expect to handle additional values by ignoring any values not recognized.\n\n"Deny" and "Warn" may not be used together since this combination needlessly duplicates the validation failure both in the API response body and the HTTP warning headers.\n\nRequired.',
+        'x-kubernetes-list-type': 'set',
+      }),
+  })
+  .openapi({
+    description:
+      'ValidatingAdmissionPolicyBindingSpec is the specification of the ValidatingAdmissionPolicyBinding.',
+    required: ['policyName', 'validationActions'],
+  })
+  .openapi('IoK8sApiAdmissionregistrationV1ValidatingAdmissionPolicyBindingSpec')
+
+const IoK8sApiAdmissionregistrationV1ValidatingAdmissionPolicyBindingSchema = z
   .object({
     apiVersion: z
       .string()
@@ -1165,9 +1097,6 @@ const IoK8sApiAdmissionregistrationV1MutatingWebhookConfigurationListSchema = z
         description:
           'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
       }),
-    items: z
-      .array(IoK8sApiAdmissionregistrationV1MutatingWebhookConfigurationSchema)
-      .openapi({ description: 'List of MutatingWebhookConfiguration.' }),
     kind: z
       .string()
       .exactOptional()
@@ -1175,42 +1104,60 @@ const IoK8sApiAdmissionregistrationV1MutatingWebhookConfigurationListSchema = z
         description:
           'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
       }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
+    metadata: IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema.default({})
       .exactOptional()
       .openapi({
         description:
-          'metadata is the standard list metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+          'metadata is the standard object metadata; More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata.',
       }),
+    spec: IoK8sApiAdmissionregistrationV1ValidatingAdmissionPolicyBindingSpecSchema.openapi({
+      description: 'spec defines the desired behavior of the ValidatingAdmissionPolicyBinding.',
+      default: {},
+    }),
   })
   .openapi({
-    description: 'MutatingWebhookConfigurationList is a list of MutatingWebhookConfiguration.',
-    required: ['items'],
+    description:
+      "ValidatingAdmissionPolicyBinding binds the ValidatingAdmissionPolicy with paramerized resources. ValidatingAdmissionPolicyBinding and parameter CRDs together define how cluster administrators configure policies for clusters.\n\nFor a given admission request, each binding will cause its policy to be evaluated N times, where N is 1 for policies/bindings that don't use params, otherwise N is the number of parameters selected by the binding.\n\nThe CEL expressions of a policy must have a computed CEL cost below the maximum CEL budget. Each evaluation of the policy is given an independent CEL cost budget. Adding/removing policies, bindings, or params can not affect whether a given (policy, binding, param) combination is within its own CEL budget.",
+    required: ['spec'],
     'x-kubernetes-group-version-kind': [
       {
         group: 'admissionregistration.k8s.io',
-        kind: 'MutatingWebhookConfigurationList',
+        kind: 'ValidatingAdmissionPolicyBinding',
         version: 'v1',
       },
     ],
   })
-  .openapi('IoK8sApiAdmissionregistrationV1MutatingWebhookConfigurationList')
+  .openapi('IoK8sApiAdmissionregistrationV1ValidatingAdmissionPolicyBinding')
 
-const IoK8sApiAdmissionregistrationV1TypeCheckingSchema = z
+type IoK8sApiAdmissionregistrationV1ValidatingAdmissionPolicyBindingListType = {
+  apiVersion?: string
+  items: z.infer<typeof IoK8sApiAdmissionregistrationV1ValidatingAdmissionPolicyBindingSchema>[]
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ListMetaSchema>
+}
+
+const IoK8sApiAdmissionregistrationV1AuditAnnotationSchema = z
   .object({
-    expressionWarnings: z
-      .array(IoK8sApiAdmissionregistrationV1ExpressionWarningSchema)
-      .exactOptional()
+    key: z
+      .string()
+      .default('')
       .openapi({
-        description: 'expressionWarnings contains the type checking warnings for each expression.',
-        'x-kubernetes-list-type': 'atomic',
+        description:
+          'key specifies the audit annotation key. The audit annotation keys of a ValidatingAdmissionPolicy must be unique. The key must be a qualified name ([A-Za-z0-9][-A-Za-z0-9_.]*) no more than 63 bytes in length.\n\nThe key is combined with the resource name of the ValidatingAdmissionPolicy to construct an audit annotation key: "{ValidatingAdmissionPolicy name}/{key}".\n\nIf an admission webhook uses the same resource name as this ValidatingAdmissionPolicy and the same audit annotation key, the annotation key will be identical. In this case, the first annotation written with the key will be included in the audit event and all subsequent annotations with the same key will be discarded.\n\nRequired.',
+      }),
+    valueExpression: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'valueExpression represents the expression which is evaluated by CEL to produce an audit annotation value. The expression must evaluate to either a string or null value. If the expression evaluates to a string, the audit annotation is included with the string value. If the expression evaluates to null or empty string the audit annotation will be omitted. The valueExpression may be no longer than 5kb in length. If the result of the valueExpression is more than 10kb in length, it will be truncated to 10kb.\n\nIf multiple ValidatingAdmissionPolicyBinding resources match an API request, then the valueExpression will be evaluated for each binding. All unique values produced by the valueExpressions will be joined together in a comma-separated list.\n\nRequired.',
       }),
   })
   .openapi({
-    description:
-      'TypeChecking contains results of type checking the expressions in the ValidatingAdmissionPolicy',
-    required: [],
+    description: 'AuditAnnotation describes how to produce an audit annotation for an API request.',
+    required: ['key', 'valueExpression'],
   })
-  .openapi('IoK8sApiAdmissionregistrationV1TypeChecking')
+  .openapi('IoK8sApiAdmissionregistrationV1AuditAnnotation')
 
 const IoK8sApiAdmissionregistrationV1ValidationSchema = z
   .object({
@@ -1366,6 +1313,46 @@ const IoK8sApimachineryPkgApisMetaV1ConditionSchema = z
   })
   .openapi('IoK8sApimachineryPkgApisMetaV1Condition')
 
+const IoK8sApiAdmissionregistrationV1ExpressionWarningSchema = z
+  .object({
+    fieldRef: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'fieldRef is the path to the field that refers to the expression. For example, the reference to the expression of the first item of validations is "spec.validations[0].expression"',
+      }),
+    warning: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'warning contains the content of type checking information in a human-readable form. Each line of the warning contains the type that the expression is checked against, followed by the type check error from the compiler.',
+      }),
+  })
+  .openapi({
+    description: 'ExpressionWarning is a warning information that targets a specific expression.',
+    required: ['fieldRef', 'warning'],
+  })
+  .openapi('IoK8sApiAdmissionregistrationV1ExpressionWarning')
+
+const IoK8sApiAdmissionregistrationV1TypeCheckingSchema = z
+  .object({
+    expressionWarnings: z
+      .array(IoK8sApiAdmissionregistrationV1ExpressionWarningSchema)
+      .exactOptional()
+      .openapi({
+        description: 'expressionWarnings contains the type checking warnings for each expression.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+  })
+  .openapi({
+    description:
+      'TypeChecking contains results of type checking the expressions in the ValidatingAdmissionPolicy',
+    required: [],
+  })
+  .openapi('IoK8sApiAdmissionregistrationV1TypeChecking')
+
 const IoK8sApiAdmissionregistrationV1ValidatingAdmissionPolicyStatusSchema = z
   .object({
     conditions: z
@@ -1449,157 +1436,12 @@ const IoK8sApiAdmissionregistrationV1ValidatingAdmissionPolicySchema = z
   })
   .openapi('IoK8sApiAdmissionregistrationV1ValidatingAdmissionPolicy')
 
-const IoK8sApiAdmissionregistrationV1ValidatingAdmissionPolicyBindingSpecSchema = z
-  .object({
-    matchResources: IoK8sApiAdmissionregistrationV1MatchResourcesSchema.exactOptional().openapi({
-      description:
-        "matchResources declares what resources match this binding and will be validated by it. Note that this is intersected with the policy's matchConstraints, so only requests that are matched by the policy can be selected by this. If this is unset, all resources matched by the policy are validated by this binding When resourceRules is unset, it does not constrain resource matching. If a resource is matched by the other fields of this object, it will be validated. Note that this is differs from ValidatingAdmissionPolicy matchConstraints, where resourceRules are required.",
-    }),
-    paramRef: IoK8sApiAdmissionregistrationV1ParamRefSchema.exactOptional().openapi({
-      description:
-        'paramRef specifies the parameter resource used to configure the admission control policy. It should point to a resource of the type specified in ParamKind of the bound ValidatingAdmissionPolicy. If the policy specifies a ParamKind and the resource referred to by ParamRef does not exist, this binding is considered mis-configured and the FailurePolicy of the ValidatingAdmissionPolicy applied. If the policy does not specify a ParamKind then this field is ignored, and the rules are evaluated without a param.',
-    }),
-    policyName: z
-      .string()
-      .openapi({
-        description:
-          'policyName references a ValidatingAdmissionPolicy name which the ValidatingAdmissionPolicyBinding binds to. If the referenced resource does not exist, this binding is considered invalid and will be ignored Required.',
-      }),
-    validationActions: z
-      .array(z.string())
-      .openapi({
-        description:
-          'validationActions declares how Validations of the referenced ValidatingAdmissionPolicy are enforced. If a validation evaluates to false it is always enforced according to these actions.\n\nFailures defined by the ValidatingAdmissionPolicy\'s FailurePolicy are enforced according to these actions only if the FailurePolicy is set to Fail, otherwise the failures are ignored. This includes compilation errors, runtime errors and misconfigurations of the policy.\n\nvalidationActions is declared as a set of action values. Order does not matter. validationActions may not contain duplicates of the same action.\n\nThe supported actions values are:\n\n"Deny" specifies that a validation failure results in a denied request.\n\n"Warn" specifies that a validation failure is reported to the request client in HTTP Warning headers, with a warning code of 299. Warnings can be sent both for allowed or denied admission responses.\n\n"Audit" specifies that a validation failure is included in the published audit event for the request. The audit event will contain a `validation.policy.admission.k8s.io/validation_failure` audit annotation with a value containing the details of the validation failures, formatted as a JSON list of objects, each with the following fields: - message: The validation failure message string - policy: The resource name of the ValidatingAdmissionPolicy - binding: The resource name of the ValidatingAdmissionPolicyBinding - expressionIndex: The index of the failed validations in the ValidatingAdmissionPolicy - validationActions: The enforcement actions enacted for the validation failure Example audit annotation: `"validation.policy.admission.k8s.io/validation_failure": "[{\\"message\\": \\"Invalid value\\", {\\"policy\\": \\"policy.example.com\\", {\\"binding\\": \\"policybinding.example.com\\", {\\"expressionIndex\\": \\"1\\", {\\"validationActions\\": [\\"Audit\\"]}]"`\n\nClients should expect to handle additional values by ignoring any values not recognized.\n\n"Deny" and "Warn" may not be used together since this combination needlessly duplicates the validation failure both in the API response body and the HTTP warning headers.\n\nRequired.',
-        'x-kubernetes-list-type': 'set',
-      }),
-  })
-  .openapi({
-    description:
-      'ValidatingAdmissionPolicyBindingSpec is the specification of the ValidatingAdmissionPolicyBinding.',
-    required: ['policyName', 'validationActions'],
-  })
-  .openapi('IoK8sApiAdmissionregistrationV1ValidatingAdmissionPolicyBindingSpec')
-
-const IoK8sApiAdmissionregistrationV1ValidatingAdmissionPolicyBindingSchema = z
-  .object({
-    apiVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          'metadata is the standard object metadata; More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata.',
-      }),
-    spec: IoK8sApiAdmissionregistrationV1ValidatingAdmissionPolicyBindingSpecSchema.default(
-      {},
-    ).openapi({
-      description: 'spec defines the desired behavior of the ValidatingAdmissionPolicyBinding.',
-    }),
-  })
-  .openapi({
-    description:
-      "ValidatingAdmissionPolicyBinding binds the ValidatingAdmissionPolicy with paramerized resources. ValidatingAdmissionPolicyBinding and parameter CRDs together define how cluster administrators configure policies for clusters.\n\nFor a given admission request, each binding will cause its policy to be evaluated N times, where N is 1 for policies/bindings that don't use params, otherwise N is the number of parameters selected by the binding.\n\nThe CEL expressions of a policy must have a computed CEL cost below the maximum CEL budget. Each evaluation of the policy is given an independent CEL cost budget. Adding/removing policies, bindings, or params can not affect whether a given (policy, binding, param) combination is within its own CEL budget.",
-    required: ['spec'],
-    'x-kubernetes-group-version-kind': [
-      {
-        group: 'admissionregistration.k8s.io',
-        kind: 'ValidatingAdmissionPolicyBinding',
-        version: 'v1',
-      },
-    ],
-  })
-  .openapi('IoK8sApiAdmissionregistrationV1ValidatingAdmissionPolicyBinding')
-
-const IoK8sApiAdmissionregistrationV1ValidatingAdmissionPolicyBindingListSchema = z
-  .object({
-    apiVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
-      }),
-    items: z
-      .array(IoK8sApiAdmissionregistrationV1ValidatingAdmissionPolicyBindingSchema)
-      .openapi({ description: 'List of PolicyBinding.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          'metadata is the standard list metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-  })
-  .openapi({
-    description:
-      'ValidatingAdmissionPolicyBindingList is a list of ValidatingAdmissionPolicyBinding.',
-    required: ['items'],
-    'x-kubernetes-group-version-kind': [
-      {
-        group: 'admissionregistration.k8s.io',
-        kind: 'ValidatingAdmissionPolicyBindingList',
-        version: 'v1',
-      },
-    ],
-  })
-  .openapi('IoK8sApiAdmissionregistrationV1ValidatingAdmissionPolicyBindingList')
-
-const IoK8sApiAdmissionregistrationV1ValidatingAdmissionPolicyListSchema = z
-  .object({
-    apiVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
-      }),
-    items: z
-      .array(IoK8sApiAdmissionregistrationV1ValidatingAdmissionPolicySchema)
-      .openapi({ description: 'List of ValidatingAdmissionPolicy.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          'metadata is the standard list metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-  })
-  .openapi({
-    description: 'ValidatingAdmissionPolicyList is a list of ValidatingAdmissionPolicy.',
-    required: ['items'],
-    'x-kubernetes-group-version-kind': [
-      {
-        group: 'admissionregistration.k8s.io',
-        kind: 'ValidatingAdmissionPolicyList',
-        version: 'v1',
-      },
-    ],
-  })
-  .openapi('IoK8sApiAdmissionregistrationV1ValidatingAdmissionPolicyList')
+type IoK8sApiAdmissionregistrationV1ValidatingAdmissionPolicyListType = {
+  apiVersion?: string
+  items: z.infer<typeof IoK8sApiAdmissionregistrationV1ValidatingAdmissionPolicySchema>[]
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ListMetaSchema>
+}
 
 const IoK8sApiAdmissionregistrationV1ValidatingWebhookSchema = z
   .object({
@@ -1729,44 +1571,255 @@ const IoK8sApiAdmissionregistrationV1ValidatingWebhookConfigurationSchema = z
   })
   .openapi('IoK8sApiAdmissionregistrationV1ValidatingWebhookConfiguration')
 
-const IoK8sApiAdmissionregistrationV1ValidatingWebhookConfigurationListSchema = z
-  .object({
-    apiVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
-      }),
-    items: z
-      .array(IoK8sApiAdmissionregistrationV1ValidatingWebhookConfigurationSchema)
-      .openapi({ description: 'List of ValidatingWebhookConfiguration.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          'metadata is the standard list metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-  })
-  .openapi({
-    description: 'ValidatingWebhookConfigurationList is a list of ValidatingWebhookConfiguration.',
-    required: ['items'],
-    'x-kubernetes-group-version-kind': [
-      {
-        group: 'admissionregistration.k8s.io',
-        kind: 'ValidatingWebhookConfigurationList',
-        version: 'v1',
-      },
-    ],
-  })
-  .openapi('IoK8sApiAdmissionregistrationV1ValidatingWebhookConfigurationList')
+type IoK8sApiAdmissionregistrationV1ValidatingWebhookConfigurationListType = {
+  apiVersion?: string
+  items: z.infer<typeof IoK8sApiAdmissionregistrationV1ValidatingWebhookConfigurationSchema>[]
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ListMetaSchema>
+}
+
+const IoK8sApiAdmissionregistrationV1MutatingAdmissionPolicyBindingListSchema: z.ZodType<IoK8sApiAdmissionregistrationV1MutatingAdmissionPolicyBindingListType> =
+  z
+    .object({
+      apiVersion: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+        }),
+      items: z
+        .array(IoK8sApiAdmissionregistrationV1MutatingAdmissionPolicyBindingSchema)
+        .openapi({ description: 'List of PolicyBinding.' }),
+      kind: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+        }),
+      metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
+        .exactOptional()
+        .openapi({
+          description:
+            'metadata is the standard list metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+        }),
+    })
+    .openapi({
+      description:
+        'MutatingAdmissionPolicyBindingList is a list of MutatingAdmissionPolicyBinding.',
+      required: ['items'],
+      'x-kubernetes-group-version-kind': [
+        {
+          group: 'admissionregistration.k8s.io',
+          kind: 'MutatingAdmissionPolicyBindingList',
+          version: 'v1',
+        },
+      ],
+    })
+    .openapi('IoK8sApiAdmissionregistrationV1MutatingAdmissionPolicyBindingList')
+
+const IoK8sApiAdmissionregistrationV1MutatingAdmissionPolicyListSchema: z.ZodType<IoK8sApiAdmissionregistrationV1MutatingAdmissionPolicyListType> =
+  z
+    .object({
+      apiVersion: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+        }),
+      items: z
+        .array(IoK8sApiAdmissionregistrationV1MutatingAdmissionPolicySchema)
+        .openapi({ description: 'List of ValidatingAdmissionPolicy.' }),
+      kind: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+        }),
+      metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
+        .exactOptional()
+        .openapi({
+          description:
+            'metadata is the standard list metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+        }),
+    })
+    .openapi({
+      description: 'MutatingAdmissionPolicyList is a list of MutatingAdmissionPolicy.',
+      required: ['items'],
+      'x-kubernetes-group-version-kind': [
+        {
+          group: 'admissionregistration.k8s.io',
+          kind: 'MutatingAdmissionPolicyList',
+          version: 'v1',
+        },
+      ],
+    })
+    .openapi('IoK8sApiAdmissionregistrationV1MutatingAdmissionPolicyList')
+
+const IoK8sApiAdmissionregistrationV1MutatingWebhookConfigurationListSchema: z.ZodType<IoK8sApiAdmissionregistrationV1MutatingWebhookConfigurationListType> =
+  z
+    .object({
+      apiVersion: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+        }),
+      items: z
+        .array(IoK8sApiAdmissionregistrationV1MutatingWebhookConfigurationSchema)
+        .openapi({ description: 'List of MutatingWebhookConfiguration.' }),
+      kind: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+        }),
+      metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
+        .exactOptional()
+        .openapi({
+          description:
+            'metadata is the standard list metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+        }),
+    })
+    .openapi({
+      description: 'MutatingWebhookConfigurationList is a list of MutatingWebhookConfiguration.',
+      required: ['items'],
+      'x-kubernetes-group-version-kind': [
+        {
+          group: 'admissionregistration.k8s.io',
+          kind: 'MutatingWebhookConfigurationList',
+          version: 'v1',
+        },
+      ],
+    })
+    .openapi('IoK8sApiAdmissionregistrationV1MutatingWebhookConfigurationList')
+
+const IoK8sApiAdmissionregistrationV1ValidatingAdmissionPolicyBindingListSchema: z.ZodType<IoK8sApiAdmissionregistrationV1ValidatingAdmissionPolicyBindingListType> =
+  z
+    .object({
+      apiVersion: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+        }),
+      items: z
+        .array(IoK8sApiAdmissionregistrationV1ValidatingAdmissionPolicyBindingSchema)
+        .openapi({ description: 'List of PolicyBinding.' }),
+      kind: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+        }),
+      metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
+        .exactOptional()
+        .openapi({
+          description:
+            'metadata is the standard list metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+        }),
+    })
+    .openapi({
+      description:
+        'ValidatingAdmissionPolicyBindingList is a list of ValidatingAdmissionPolicyBinding.',
+      required: ['items'],
+      'x-kubernetes-group-version-kind': [
+        {
+          group: 'admissionregistration.k8s.io',
+          kind: 'ValidatingAdmissionPolicyBindingList',
+          version: 'v1',
+        },
+      ],
+    })
+    .openapi('IoK8sApiAdmissionregistrationV1ValidatingAdmissionPolicyBindingList')
+
+const IoK8sApiAdmissionregistrationV1ValidatingAdmissionPolicyListSchema: z.ZodType<IoK8sApiAdmissionregistrationV1ValidatingAdmissionPolicyListType> =
+  z
+    .object({
+      apiVersion: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+        }),
+      items: z
+        .array(IoK8sApiAdmissionregistrationV1ValidatingAdmissionPolicySchema)
+        .openapi({ description: 'List of ValidatingAdmissionPolicy.' }),
+      kind: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+        }),
+      metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
+        .exactOptional()
+        .openapi({
+          description:
+            'metadata is the standard list metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+        }),
+    })
+    .openapi({
+      description: 'ValidatingAdmissionPolicyList is a list of ValidatingAdmissionPolicy.',
+      required: ['items'],
+      'x-kubernetes-group-version-kind': [
+        {
+          group: 'admissionregistration.k8s.io',
+          kind: 'ValidatingAdmissionPolicyList',
+          version: 'v1',
+        },
+      ],
+    })
+    .openapi('IoK8sApiAdmissionregistrationV1ValidatingAdmissionPolicyList')
+
+const IoK8sApiAdmissionregistrationV1ValidatingWebhookConfigurationListSchema: z.ZodType<IoK8sApiAdmissionregistrationV1ValidatingWebhookConfigurationListType> =
+  z
+    .object({
+      apiVersion: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+        }),
+      items: z
+        .array(IoK8sApiAdmissionregistrationV1ValidatingWebhookConfigurationSchema)
+        .openapi({ description: 'List of ValidatingWebhookConfiguration.' }),
+      kind: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+        }),
+      metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
+        .exactOptional()
+        .openapi({
+          description:
+            'metadata is the standard list metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+        }),
+    })
+    .openapi({
+      description:
+        'ValidatingWebhookConfigurationList is a list of ValidatingWebhookConfiguration.',
+      required: ['items'],
+      'x-kubernetes-group-version-kind': [
+        {
+          group: 'admissionregistration.k8s.io',
+          kind: 'ValidatingWebhookConfigurationList',
+          version: 'v1',
+        },
+      ],
+    })
+    .openapi('IoK8sApiAdmissionregistrationV1ValidatingWebhookConfigurationList')
 
 const IoK8sApimachineryPkgApisMetaV1APIResourceSchema = z
   .object({
@@ -1971,7 +2024,7 @@ const IoK8sApimachineryPkgApisMetaV1DeleteOptionsSchema = z
   .openapi('IoK8sApimachineryPkgApisMetaV1DeleteOptions')
 
 const IoK8sApimachineryPkgApisMetaV1PatchSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Patch is provided to give a concrete name and type to the Kubernetes PATCH request body.',
@@ -2118,7 +2171,7 @@ const IoK8sApimachineryPkgApisMetaV1StatusSchema = z
   .openapi('IoK8sApimachineryPkgApisMetaV1Status')
 
 const IoK8sApimachineryPkgRuntimeRawExtensionSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'RawExtension is used to hold extensions in external versions.\n\nTo use this, make a field which has RawExtension as its type in your external, versioned struct, and Object in your internal struct. You also need to register your various plugin types.\n\n// Internal package:\n\n\ttype MyAPIObject struct {\n\t\truntime.TypeMeta `json:""`\n\t\tMyPlugin runtime.Object `json:"myPlugin"`\n\t}\n\n\ttype PluginA struct {\n\t\tAOption string `json:"aOption"`\n\t}\n\n// External package:\n\n\ttype MyAPIObject struct {\n\t\truntime.TypeMeta `json:""`\n\t\tMyPlugin runtime.RawExtension `json:"myPlugin"`\n\t}\n\n\ttype PluginA struct {\n\t\tAOption string `json:"aOption"`\n\t}\n\n// On the wire, the JSON will look something like this:\n\n\t{\n\t\t"kind":"MyAPIObject",\n\t\t"apiVersion":"v1",\n\t\t"myPlugin": {\n\t\t\t"kind":"PluginA",\n\t\t\t"aOption":"foo",\n\t\t},\n\t}\n\nSo what happens? Decode first uses json or yaml to unmarshal the serialized data into your external MyAPIObject. That causes the raw JSON to be stored, but not unpacked. The next step is to copy (using pkg/conversion) into the internal struct. The runtime package\'s DefaultScheme has conversion functions installed which will unpack the JSON stored in RawExtension, turning it into the correct object type, and storing it in the Object. (TODO: In the case where the object is of an unknown type, a runtime.Unknown object will be created and stored.)',

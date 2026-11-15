@@ -179,11 +179,11 @@ const BookingSchema = z
 const WrapperCollectionSchema = z
   .object({
     data: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({ description: 'The wrapper for a collection is an array of objects.' }),
     links: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'A set of hypermedia links which serve as controls for the client.',
@@ -502,10 +502,7 @@ const RetryAfterHeaderSchema = z
   .openapi({
     description:
       'The Retry-After header indicates how long the user agent should wait before making a follow-up request.\nThe value is in seconds and can be an integer or a date in the future.\nIf the value is an integer, it indicates the number of seconds to wait.\nIf the value is a date, it indicates the time at which the user agent should make a follow-up request.\n',
-    examples: {
-      integer: { summary: 'Retry after 120 seconds', value: '120' },
-      date: { summary: 'Retry after the specified date', value: 'Fri, 31 Dec 2021 23:59:59 GMT' },
-    },
+    examples: ['120', 'Fri, 31 Dec 2021 23:59:59 GMT'],
     param: { required: false },
   })
 

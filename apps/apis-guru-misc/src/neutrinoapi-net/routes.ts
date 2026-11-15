@@ -1482,7 +1482,7 @@ export const getBinListDownloadRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.file().default('').openapi({ type: 'string', format: 'binary' }),
+          schema: z.file().openapi({ type: 'string', format: 'binary', default: '' }),
         },
       },
       headers: z.object({}),
@@ -2301,7 +2301,7 @@ export const postHtmlCleanRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.file().default('').openapi({ type: 'string', format: 'binary' }),
+          schema: z.file().openapi({ type: 'string', format: 'binary', default: '' }),
         },
       },
       headers: z.object({}),
@@ -2594,7 +2594,7 @@ export const postHtmlRenderRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.file().default('').openapi({ type: 'string', format: 'binary' }),
+          schema: z.file().openapi({ type: 'string', format: 'binary', default: '' }),
         },
       },
       headers: z.object({}),
@@ -2696,7 +2696,7 @@ export const postImageResizeRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.file().default('').openapi({ type: 'string', format: 'binary' }),
+          schema: z.file().openapi({ type: 'string', format: 'binary', default: '' }),
         },
       },
       headers: z.object({}),
@@ -2827,7 +2827,7 @@ export const postImageWatermarkRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.file().default('').openapi({ type: 'string', format: 'binary' }),
+          schema: z.file().openapi({ type: 'string', format: 'binary', default: '' }),
         },
       },
       headers: z.object({}),
@@ -2984,7 +2984,7 @@ export const getIpBlocklistDownloadRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.file().default('').openapi({ type: 'string', format: 'binary' }),
+          schema: z.file().openapi({ type: 'string', format: 'binary', default: '' }),
         },
       },
       headers: z.object({}),
@@ -3488,7 +3488,7 @@ export const postQrCodeRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.file().default('').openapi({ type: 'string', format: 'binary' }),
+          schema: z.file().openapi({ type: 'string', format: 'binary', default: '' }),
         },
       },
       headers: z.object({}),

@@ -1,4 +1,4 @@
-<h1 id="growthbook-rest-api">GrowthBook REST API v5.1.0</h1>
+<h1 id="growthbook-rest-api">GrowthBook REST API v5.2.0</h1>
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
@@ -739,7 +739,8 @@ curl https://api.growthbook.io/api/v1/environments \
       "projects": [
         "string"
       ],
-      "parent": "string"
+      "parent": "string",
+      "isProduction": true
     }
   ]
 }
@@ -784,7 +785,8 @@ curl https://api.growthbook.io/api/v1/environments \
     "projects": [
       "string"
     ],
-    "parent": "string"
+    "parent": "string",
+    "isProduction": true
   }'
 ```
 
@@ -801,7 +803,8 @@ curl https://api.growthbook.io/api/v1/environments \
   "projects": [
     "string"
   ],
-  "parent": "string"
+  "parent": "string",
+  "isProduction": true
 }
 ```
 
@@ -816,6 +819,7 @@ curl https://api.growthbook.io/api/v1/environments \
 |» defaultState|body|boolean|false|Default state for new features|
 |» projects|body|[string]|false|Limits which Projects can use this environment. Omit to allow all Projects.|
 |» parent|body|string|false|An environment that the new environment should inherit feature rules from. Requires an enterprise license|
+|» isProduction|body|boolean|false|Whether this is a production environment|
 
 > Example responses
 
@@ -831,7 +835,8 @@ curl https://api.growthbook.io/api/v1/environments \
     "projects": [
       "string"
     ],
-    "parent": "string"
+    "parent": "string",
+    "isProduction": true
   }
 }
 ```
@@ -909,7 +914,8 @@ curl https://api.growthbook.io/api/v1/environments/string \
     "defaultState": true,
     "projects": [
       "string"
-    ]
+    ],
+    "isProduction": true
   }'
 ```
 
@@ -924,7 +930,8 @@ curl https://api.growthbook.io/api/v1/environments/string \
   "defaultState": true,
   "projects": [
     "string"
-  ]
+  ],
+  "isProduction": true
 }
 ```
 
@@ -938,6 +945,7 @@ curl https://api.growthbook.io/api/v1/environments/string \
 |» toggleOnList|body|boolean|false|Show on feature list page|
 |» defaultState|body|boolean|false|Default state for new features|
 |» projects|body|[string]|false|Limits which Projects can use this environment. Omit to keep the current list; send `[]` to allow all Projects.|
+|» isProduction|body|boolean|false|Whether this is a production environment|
 
 > Example responses
 
@@ -953,7 +961,8 @@ curl https://api.growthbook.io/api/v1/environments/string \
     "projects": [
       "string"
     ],
-    "parent": "string"
+    "parent": "string",
+    "isProduction": true
   }
 }
 ```
@@ -41198,7 +41207,8 @@ curl https://api.growthbook.io/api/v1/data-sources \
             },
             "experimentNameColumn": "string",
             "variationNameColumn": "string"
-          }
+          },
+          "error": "string"
         }
       ],
       "identifierJoinQueries": [
@@ -41214,7 +41224,26 @@ curl https://api.growthbook.io/api/v1/data-sources \
         "experimentIdProperty": "string",
         "variationIdProperty": "string",
         "extraUserIdProperty": "string"
-      }
+      },
+      "pipelineSettings": {
+        "allowWriting": true,
+        "mode": "ephemeral",
+        "writeDatabase": "string",
+        "writeDataset": "string",
+        "unitsTableRetentionHours": 0.1,
+        "unitsTableDeletion": true,
+        "includedExperimentIds": [
+          "string"
+        ],
+        "excludedExperimentIds": [
+          "string"
+        ],
+        "incrementalOptInExperimentIds": [
+          "string"
+        ]
+      },
+      "maxConcurrentQueries": 0,
+      "queryCacheTTLMins": 0
     }
   ],
   "limit": 0,
@@ -41323,7 +41352,8 @@ curl https://api.growthbook.io/api/v1/data-sources/string \
           },
           "experimentNameColumn": "string",
           "variationNameColumn": "string"
-        }
+        },
+        "error": "string"
       }
     ],
     "identifierJoinQueries": [
@@ -41339,7 +41369,26 @@ curl https://api.growthbook.io/api/v1/data-sources/string \
       "experimentIdProperty": "string",
       "variationIdProperty": "string",
       "extraUserIdProperty": "string"
-    }
+    },
+    "pipelineSettings": {
+      "allowWriting": true,
+      "mode": "ephemeral",
+      "writeDatabase": "string",
+      "writeDataset": "string",
+      "unitsTableRetentionHours": 0.1,
+      "unitsTableDeletion": true,
+      "includedExperimentIds": [
+        "string"
+      ],
+      "excludedExperimentIds": [
+        "string"
+      ],
+      "incrementalOptInExperimentIds": [
+        "string"
+      ]
+    },
+    "maxConcurrentQueries": 0,
+    "queryCacheTTLMins": 0
   }
 }
 ```
@@ -41357,6 +41406,499 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |dataSource|[DataSource](#schemadatasource)|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Update a data source
+
+<a id="opIdupdateDataSource"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/data-sources/string \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "name": "string",
+    "description": "string",
+    "projectIds": [
+      "string"
+    ],
+    "eventTracker": "segment",
+    "identifierTypes": [
+      {
+        "id": "string",
+        "description": "string"
+      }
+    ],
+    "assignmentQueries": [
+      {
+        "id": "string",
+        "name": "string",
+        "description": "string",
+        "identifierTypes": [
+          "string"
+        ],
+        "identifierType": "string",
+        "sql": "string",
+        "includesNameColumns": true,
+        "dimensionColumns": [
+          "string"
+        ],
+        "projects": [
+          "string"
+        ],
+        "columnMapping": {
+          "experimentIdColumn": "string",
+          "variationIdColumn": "string",
+          "timestampColumn": "string",
+          "userIdColumns": {
+            "property1": "string",
+            "property2": "string"
+          },
+          "experimentNameColumn": "string",
+          "variationNameColumn": "string"
+        }
+      }
+    ],
+    "identifierJoinQueries": [
+      {
+        "identifierTypes": [
+          "string"
+        ],
+        "sql": "string"
+      }
+    ],
+    "mixpanelSettings": {
+      "viewedExperimentEventName": "string",
+      "experimentIdProperty": "string",
+      "variationIdProperty": "string",
+      "extraUserIdProperty": "string"
+    },
+    "pipelineSettings": {
+      "allowWriting": true,
+      "mode": "ephemeral",
+      "writeDatabase": "string",
+      "writeDataset": "string",
+      "unitsTableRetentionHours": 0.1,
+      "unitsTableDeletion": true,
+      "includedExperimentIds": [
+        "string"
+      ],
+      "excludedExperimentIds": [
+        "string"
+      ],
+      "incrementalOptInExperimentIds": [
+        "string"
+      ]
+    },
+    "maxConcurrentQueries": 0,
+    "queryCacheTTLMins": 0
+  }'
+```
+
+`POST /v1/data-sources/{id}`
+
+Fields left out keep their current values. To clear one, send an explicit empty value (`[]`, `""` or `false`). Connection settings are changed in the app.
+
+> Body parameter
+
+```json
+{
+  "name": "string",
+  "description": "string",
+  "projectIds": [
+    "string"
+  ],
+  "eventTracker": "segment",
+  "identifierTypes": [
+    {
+      "id": "string",
+      "description": "string"
+    }
+  ],
+  "assignmentQueries": [
+    {
+      "id": "string",
+      "name": "string",
+      "description": "string",
+      "identifierTypes": [
+        "string"
+      ],
+      "identifierType": "string",
+      "sql": "string",
+      "includesNameColumns": true,
+      "dimensionColumns": [
+        "string"
+      ],
+      "projects": [
+        "string"
+      ],
+      "columnMapping": {
+        "experimentIdColumn": "string",
+        "variationIdColumn": "string",
+        "timestampColumn": "string",
+        "userIdColumns": {
+          "property1": "string",
+          "property2": "string"
+        },
+        "experimentNameColumn": "string",
+        "variationNameColumn": "string"
+      }
+    }
+  ],
+  "identifierJoinQueries": [
+    {
+      "identifierTypes": [
+        "string"
+      ],
+      "sql": "string"
+    }
+  ],
+  "mixpanelSettings": {
+    "viewedExperimentEventName": "string",
+    "experimentIdProperty": "string",
+    "variationIdProperty": "string",
+    "extraUserIdProperty": "string"
+  },
+  "pipelineSettings": {
+    "allowWriting": true,
+    "mode": "ephemeral",
+    "writeDatabase": "string",
+    "writeDataset": "string",
+    "unitsTableRetentionHours": 0.1,
+    "unitsTableDeletion": true,
+    "includedExperimentIds": [
+      "string"
+    ],
+    "excludedExperimentIds": [
+      "string"
+    ],
+    "incrementalOptInExperimentIds": [
+      "string"
+    ]
+  },
+  "maxConcurrentQueries": 0,
+  "queryCacheTTLMins": 0
+}
+```
+
+<h3 id="update-a-data-source-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The id of the requested resource|
+|body|body|object|true|none|
+|» name|body|string|false|none|
+|» description|body|string|false|none|
+|» projectIds|body|[string]|false|none|
+|» eventTracker|body|string|false|`eventForwarder` is only accepted unchanged|
+|» identifierTypes|body|[object]|false|Replaces the list. An entry matching an existing id keeps its description if left out; send `""` to clear it.|
+|» » id|body|string|true|none|
+|» » description|body|string|false|none|
+|» assignmentQueries|body|[object]|false|Replaces the list. An entry with an existing `id` keeps `description`, `identifierTypes`, `includesNameColumns`, `dimensionColumns`, `projects` and `columnMapping` if left out; clear the others with `""`, `false` or `[]`. Each query is validated against the warehouse.|
+|» » id|body|string|false|Omit to create a new query|
+|» » name|body|string|true|none|
+|» » description|body|string|false|none|
+|» » identifierTypes|body|[string]|false|Required for a new query unless identifierType is set|
+|» » identifierType|body|string|false|**Deprecated.** Deprecated: use identifierTypes, which wins if both are set|
+|» » sql|body|string|true|none|
+|» » includesNameColumns|body|boolean|false|none|
+|» » dimensionColumns|body|[string]|false|none|
+|» » projects|body|[string]|false|Project IDs that can use this. An empty list means all Projects. Projects control access and availability, so don't use them as labels.|
+|» » columnMapping|body|object|false|Columns `sql` returns under a non-canonical name, by role. Replaces the stored mapping; send `{}` to clear it.|
+|» » » experimentIdColumn|body|string|false|none|
+|» » » variationIdColumn|body|string|false|none|
+|» » » timestampColumn|body|string|false|none|
+|» » » userIdColumns|body|object|false|Column for each identifier type, keyed by type|
+|» » » » **additionalProperties**|body|string|false|none|
+|» » » experimentNameColumn|body|string|false|none|
+|» » » variationNameColumn|body|string|false|none|
+|» identifierJoinQueries|body|[object]|false|Replaces the list|
+|» » identifierTypes|body|[string]|true|none|
+|» » sql|body|string|true|none|
+|» mixpanelSettings|body|object|false|none|
+|» » viewedExperimentEventName|body|string|false|none|
+|» » experimentIdProperty|body|string|false|none|
+|» » variationIdProperty|body|string|false|none|
+|» » extraUserIdProperty|body|string|false|none|
+|» pipelineSettings|body|object|false|Merged into the stored settings: fields left out keep their values, but any change must leave `allowWriting`, `mode`, `writeDataset` and `unitsTableRetentionHours` set, with a non-empty `writeDataset` when `allowWriting` is true. Send `[]` to clear `excludedExperimentIds` or `incrementalOptInExperimentIds`, and `includedExperimentIds: null` to apply the mode to every experiment again (`[]` applies it to none).|
+|» » allowWriting|body|boolean|false|Let GrowthBook write temporary tables to speed up analysis|
+|» » mode|body|string|false|none|
+|» » writeDatabase|body|string|false|none|
+|» » writeDataset|body|string|false|Schema (or dataset) to write tables to|
+|» » unitsTableRetentionHours|body|number|false|none|
+|» » unitsTableDeletion|body|boolean|false|none|
+|» » includedExperimentIds|body|[string] \| null|false|none|
+|» » » *anyOf*|body|[string]|false|none|
+|» » » *anyOf*|body|null|false|none|
+|» » excludedExperimentIds|body|[string]|false|none|
+|» » incrementalOptInExperimentIds|body|[string]|false|none|
+|» maxConcurrentQueries|body|integer|false|none|
+|» queryCacheTTLMins|body|integer|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» eventTracker|segment|
+|» eventTracker|snowplow|
+|» eventTracker|jitsu|
+|» eventTracker|freshpaint|
+|» eventTracker|ga4|
+|» eventTracker|fullstory|
+|» eventTracker|matomo|
+|» eventTracker|heap|
+|» eventTracker|rudderstack|
+|» eventTracker|amplitude|
+|» eventTracker|mparticle|
+|» eventTracker|mixpanel|
+|» eventTracker|firebase|
+|» eventTracker|keen|
+|» eventTracker|clevertap|
+|» eventTracker|langfuse|
+|» eventTracker|phoenix|
+|» eventTracker|eventForwarder|
+|» eventTracker|custom|
+|» » mode|ephemeral|
+|» » mode|incremental|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "dataSource": {
+    "id": "string",
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "dateUpdated": "1970-01-01T00:00:00Z",
+    "type": "string",
+    "name": "string",
+    "description": "string",
+    "projectIds": [
+      "string"
+    ],
+    "eventTracker": "string",
+    "identifierTypes": [
+      {
+        "id": "string",
+        "description": "string"
+      }
+    ],
+    "assignmentQueries": [
+      {
+        "id": "string",
+        "name": "string",
+        "description": "string",
+        "identifierTypes": [
+          "string"
+        ],
+        "identifierType": "string",
+        "sql": "string",
+        "includesNameColumns": true,
+        "dimensionColumns": [
+          "string"
+        ],
+        "projects": [
+          "string"
+        ],
+        "columnMapping": {
+          "experimentIdColumn": "string",
+          "variationIdColumn": "string",
+          "timestampColumn": "string",
+          "userIdColumns": {
+            "property1": "string",
+            "property2": "string"
+          },
+          "experimentNameColumn": "string",
+          "variationNameColumn": "string"
+        },
+        "error": "string"
+      }
+    ],
+    "identifierJoinQueries": [
+      {
+        "identifierTypes": [
+          "string"
+        ],
+        "sql": "string"
+      }
+    ],
+    "mixpanelSettings": {
+      "viewedExperimentEventName": "string",
+      "experimentIdProperty": "string",
+      "variationIdProperty": "string",
+      "extraUserIdProperty": "string"
+    },
+    "pipelineSettings": {
+      "allowWriting": true,
+      "mode": "ephemeral",
+      "writeDatabase": "string",
+      "writeDataset": "string",
+      "unitsTableRetentionHours": 0.1,
+      "unitsTableDeletion": true,
+      "includedExperimentIds": [
+        "string"
+      ],
+      "excludedExperimentIds": [
+        "string"
+      ],
+      "incrementalOptInExperimentIds": [
+        "string"
+      ]
+    },
+    "maxConcurrentQueries": 0,
+    "queryCacheTTLMins": 0
+  },
+  "eventForwarderWarning": "string"
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="update-a-data-source-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource created|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="update-a-data-source-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|dataSource|[DataSource](#schemadatasource)|true|none|none|
+|eventForwarderWarning|string|false|none|Set if the update saved but syncing the Event Forwarder failed|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Delete a data source
+
+<a id="opIddeleteDataSource"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/data-sources/string \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /v1/data-sources/{id}`
+
+Refused while it's the organization default, metrics, fact metrics, fact tables, segments or dimensions still use it, or it has an Event Forwarder.
+
+<h3 id="delete-a-data-source-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The id of the requested resource|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "deletedId": "string"
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="delete-a-data-source-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource deleted|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="delete-a-data-source-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|deletedId|string|true|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -41444,6 +41986,94 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |informationSchema|[InformationSchema](#schemainformationschema)|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Refresh a data source's information schema
+
+<a id="opIdpostDataSourceInformationSchemaRefresh"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/data-sources/string/information-schema/refresh \
+  -X POST \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`POST /v1/data-sources/{id}/information-schema/refresh`
+
+Queues a background job that re-reads the warehouse's tables, creating the schema if there isn't one yet. A table already read before is only re-read when its column count changed; refresh it on its own to pick up renamed or retyped columns.
+
+<h3 id="refresh-a-data-sources-information-schema-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The id of the requested resource|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "queued": true
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="refresh-a-data-sources-information-schema-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource created|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="refresh-a-data-sources-information-schema-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|queued|boolean|true|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -41888,7 +42518,7 @@ curl https://api.growthbook.io/api/v1/information-schema-tables/string \
 
 `GET /v1/information-schema-tables/{tableId}`
 
-Returns cached metadata for a specific table in the Data Source, including columns and their data types. Not all data source types support information schemas.
+Returns cached metadata for a specific table in the Data Source, including columns and their data types. The first request for a table listed in the information schema reads its columns from the warehouse, which needs permission to run queries. Not all data source types support information schemas.
 
 <h3 id="get-a-single-information-schema-table-by-id-parameters">Parameters</h3>
 
@@ -44372,6 +45002,34 @@ curl https://api.growthbook.io/api/v1/bulk-import/facts \
             "ordering": "sequential",
             "concurrencyWindowSeconds": 0
           },
+          "compoundSettings": {
+            "components": [
+              {
+                "factTableId": "string",
+                "rowFilters": [
+                  {
+                    "operator": "=",
+                    "values": [
+                      "string"
+                    ],
+                    "column": "string"
+                  }
+                ]
+              },
+              {
+                "factTableId": "string",
+                "rowFilters": [
+                  {
+                    "operator": "=",
+                    "values": [
+                      "string"
+                    ],
+                    "column": "string"
+                  }
+                ]
+              }
+            ]
+          },
           "cappingSettings": {
             "type": "none",
             "value": 0,
@@ -44630,6 +45288,34 @@ Creates or updates Fact Tables, Fact Table filters, and Fact Metrics. Resources 
           "ordering": "sequential",
           "concurrencyWindowSeconds": 0
         },
+        "compoundSettings": {
+          "components": [
+            {
+              "factTableId": "string",
+              "rowFilters": [
+                {
+                  "operator": "=",
+                  "values": [
+                    "string"
+                  ],
+                  "column": "string"
+                }
+              ]
+            },
+            {
+              "factTableId": "string",
+              "rowFilters": [
+                {
+                  "operator": "=",
+                  "values": [
+                    "string"
+                  ],
+                  "column": "string"
+                }
+              ]
+            }
+          ]
+        },
         "cappingSettings": {
           "type": "none",
           "value": 0,
@@ -44776,6 +45462,13 @@ Creates or updates Fact Tables, Fact Table filters, and Fact Metrics. Resources 
 |» » » » » » *anyOf*|body|null|false|none|
 |» » » » ordering|body|string|false|Step ordering mode. Only 'sequential' is supported in v1.|
 |» » » » concurrencyWindowSeconds|body|integer|false|Out-of-order tolerance between adjacent steps in seconds. Defaults to 0.|
+|» » » compoundSettings|body|object|false|Compound metric settings (required when metricType is "compound")|
+|» » » » components|body|[object]|true|A unit passes when it has at least one matching event for every component, in any order. Minimum 2 components required.|
+|» » » » » factTableId|body|string|true|The fact table this component draws events from|
+|» » » » » rowFilters|body|[object]|true|Filters that decide whether an event row counts for this component|
+|» » » » » » operator|body|string|true|none|
+|» » » » » » values|body|[string]|false|Not required for is_null, not_null, is_true, is_false operators. The between and not_between operators take at most two values, a lower and an upper bound in that order; leave a bound as an empty string for an open-ended range.|
+|» » » » » » column|body|string|false|Required for all operators except sql_expr and saved_filter.|
 |» » » cappingSettings|body|object|false|Upper cap. Omit on update to preserve it. Use type: none to disable it explicitly. Invalid values are rejected.|
 |» » » » type|body|string|true|none|
 |» » » » value|body|number|false|When type is absolute, this must be a finite number greater than zero. When type is percentile, this must be strictly between 0 and 1. Required when enabling capping or changing type; omitted values are preserved only for same-type updates.|
@@ -44835,6 +45528,7 @@ Creates or updates Fact Tables, Fact Table filters, and Fact Metrics. Resources 
 |» » » metricType|ratio|
 |» » » metricType|dailyParticipation|
 |» » » metricType|funnel|
+|» » » metricType|compound|
 |» » » » aggregation|sum|
 |» » » » aggregation|max|
 |» » » » aggregation|count distinct|
@@ -44918,6 +45612,28 @@ Creates or updates Fact Tables, Fact Table filters, and Fact Metrics. Resources 
 |» » » » » » unit|hours|
 |» » » » » » unit|minutes|
 |» » » » ordering|sequential|
+|» » » » » » operator|=|
+|» » » » » » operator|!=|
+|» » » » » » operator|>|
+|» » » » » » operator|<|
+|» » » » » » operator|>=|
+|» » » » » » operator|<=|
+|» » » » » » operator|between|
+|» » » » » » operator|not_between|
+|» » » » » » operator|in|
+|» » » » » » operator|not_in|
+|» » » » » » operator|is_null|
+|» » » » » » operator|not_null|
+|» » » » » » operator|is_true|
+|» » » » » » operator|is_false|
+|» » » » » » operator|contains|
+|» » » » » » operator|not_contains|
+|» » » » » » operator|matches_pattern|
+|» » » » » » operator|not_matches_pattern|
+|» » » » » » operator|starts_with|
+|» » » » » » operator|ends_with|
+|» » » » » » operator|sql_expr|
+|» » » » » » operator|saved_filter|
 |» » » » type|none|
 |» » » » type|absolute|
 |» » » » type|percentile|
@@ -45176,6 +45892,34 @@ curl https://api.growthbook.io/api/v1/fact-metrics \
         "ordering": "sequential",
         "concurrencyWindowSeconds": 0
       },
+      "compoundSettings": {
+        "components": [
+          {
+            "factTableId": "string",
+            "rowFilters": [
+              {
+                "operator": "=",
+                "values": [
+                  "string"
+                ],
+                "column": "string"
+              }
+            ]
+          },
+          {
+            "factTableId": "string",
+            "rowFilters": [
+              {
+                "operator": "=",
+                "values": [
+                  "string"
+                ],
+                "column": "string"
+              }
+            ]
+          }
+        ]
+      },
       "cappingSettings": {
         "type": "none",
         "value": 0,
@@ -45383,6 +46127,34 @@ curl https://api.growthbook.io/api/v1/fact-metrics \
       "ordering": "sequential",
       "concurrencyWindowSeconds": 0
     },
+    "compoundSettings": {
+      "components": [
+        {
+          "factTableId": "string",
+          "rowFilters": [
+            {
+              "operator": "=",
+              "values": [
+                "string"
+              ],
+              "column": "string"
+            }
+          ]
+        },
+        {
+          "factTableId": "string",
+          "rowFilters": [
+            {
+              "operator": "=",
+              "values": [
+                "string"
+              ],
+              "column": "string"
+            }
+          ]
+        }
+      ]
+    },
     "cappingSettings": {
       "type": "none",
       "value": 0,
@@ -45546,6 +46318,34 @@ curl https://api.growthbook.io/api/v1/fact-metrics \
     "ordering": "sequential",
     "concurrencyWindowSeconds": 0
   },
+  "compoundSettings": {
+    "components": [
+      {
+        "factTableId": "string",
+        "rowFilters": [
+          {
+            "operator": "=",
+            "values": [
+              "string"
+            ],
+            "column": "string"
+          }
+        ]
+      },
+      {
+        "factTableId": "string",
+        "rowFilters": [
+          {
+            "operator": "=",
+            "values": [
+              "string"
+            ],
+            "column": "string"
+          }
+        ]
+      }
+    ]
+  },
   "cappingSettings": {
     "type": "none",
     "value": 0,
@@ -45651,6 +46451,13 @@ curl https://api.growthbook.io/api/v1/fact-metrics \
 |» » » » *anyOf*|body|null|false|none|
 |» » ordering|body|string|false|Step ordering mode. Only 'sequential' is supported in v1.|
 |» » concurrencyWindowSeconds|body|integer|false|Out-of-order tolerance between adjacent steps in seconds. Defaults to 0.|
+|» compoundSettings|body|object|false|Compound metric settings (required when metricType is "compound")|
+|» » components|body|[object]|true|A unit passes when it has at least one matching event for every component, in any order. Minimum 2 components required.|
+|» » » factTableId|body|string|true|The fact table this component draws events from|
+|» » » rowFilters|body|[object]|true|Filters that decide whether an event row counts for this component|
+|» » » » operator|body|string|true|none|
+|» » » » values|body|[string]|false|Not required for is_null, not_null, is_true, is_false operators. The between and not_between operators take at most two values, a lower and an upper bound in that order; leave a bound as an empty string for an open-ended range.|
+|» » » » column|body|string|false|Required for all operators except sql_expr and saved_filter.|
 |» cappingSettings|body|object|false|Upper cap. Omit on update to preserve it. Use type: none to disable it explicitly. Invalid values are rejected.|
 |» » type|body|string|true|none|
 |» » value|body|number|false|When type is absolute, this must be a finite number greater than zero. When type is percentile, this must be strictly between 0 and 1. Required when enabling capping or changing type; omitted values are preserved only for same-type updates.|
@@ -45699,6 +46506,7 @@ curl https://api.growthbook.io/api/v1/fact-metrics \
 |» metricType|ratio|
 |» metricType|dailyParticipation|
 |» metricType|funnel|
+|» metricType|compound|
 |» » aggregation|sum|
 |» » aggregation|max|
 |» » aggregation|count distinct|
@@ -45782,6 +46590,28 @@ curl https://api.growthbook.io/api/v1/fact-metrics \
 |» » » » unit|hours|
 |» » » » unit|minutes|
 |» » ordering|sequential|
+|» » » » operator|=|
+|» » » » operator|!=|
+|» » » » operator|>|
+|» » » » operator|<|
+|» » » » operator|>=|
+|» » » » operator|<=|
+|» » » » operator|between|
+|» » » » operator|not_between|
+|» » » » operator|in|
+|» » » » operator|not_in|
+|» » » » operator|is_null|
+|» » » » operator|not_null|
+|» » » » operator|is_true|
+|» » » » operator|is_false|
+|» » » » operator|contains|
+|» » » » operator|not_contains|
+|» » » » operator|matches_pattern|
+|» » » » operator|not_matches_pattern|
+|» » » » operator|starts_with|
+|» » » » operator|ends_with|
+|» » » » operator|sql_expr|
+|» » » » operator|saved_filter|
 |» » type|none|
 |» » type|absolute|
 |» » type|percentile|
@@ -45923,6 +46753,34 @@ curl https://api.growthbook.io/api/v1/fact-metrics \
       ],
       "ordering": "sequential",
       "concurrencyWindowSeconds": 0
+    },
+    "compoundSettings": {
+      "components": [
+        {
+          "factTableId": "string",
+          "rowFilters": [
+            {
+              "operator": "=",
+              "values": [
+                "string"
+              ],
+              "column": "string"
+            }
+          ]
+        },
+        {
+          "factTableId": "string",
+          "rowFilters": [
+            {
+              "operator": "=",
+              "values": [
+                "string"
+              ],
+              "column": "string"
+            }
+          ]
+        }
+      ]
     },
     "cappingSettings": {
       "type": "none",
@@ -46168,6 +47026,34 @@ curl https://api.growthbook.io/api/v1/fact-metrics/string \
       "ordering": "sequential",
       "concurrencyWindowSeconds": 0
     },
+    "compoundSettings": {
+      "components": [
+        {
+          "factTableId": "string",
+          "rowFilters": [
+            {
+              "operator": "=",
+              "values": [
+                "string"
+              ],
+              "column": "string"
+            }
+          ]
+        },
+        {
+          "factTableId": "string",
+          "rowFilters": [
+            {
+              "operator": "=",
+              "values": [
+                "string"
+              ],
+              "column": "string"
+            }
+          ]
+        }
+      ]
+    },
     "cappingSettings": {
       "type": "none",
       "value": 0,
@@ -46360,6 +47246,34 @@ curl https://api.growthbook.io/api/v1/fact-metrics/string \
       "ordering": "sequential",
       "concurrencyWindowSeconds": 0
     },
+    "compoundSettings": {
+      "components": [
+        {
+          "factTableId": "string",
+          "rowFilters": [
+            {
+              "operator": "=",
+              "values": [
+                "string"
+              ],
+              "column": "string"
+            }
+          ]
+        },
+        {
+          "factTableId": "string",
+          "rowFilters": [
+            {
+              "operator": "=",
+              "values": [
+                "string"
+              ],
+              "column": "string"
+            }
+          ]
+        }
+      ]
+    },
     "cappingSettings": {
       "type": "none",
       "value": 0,
@@ -46524,6 +47438,34 @@ curl https://api.growthbook.io/api/v1/fact-metrics/string \
     "ordering": "sequential",
     "concurrencyWindowSeconds": 0
   },
+  "compoundSettings": {
+    "components": [
+      {
+        "factTableId": "string",
+        "rowFilters": [
+          {
+            "operator": "=",
+            "values": [
+              "string"
+            ],
+            "column": "string"
+          }
+        ]
+      },
+      {
+        "factTableId": "string",
+        "rowFilters": [
+          {
+            "operator": "=",
+            "values": [
+              "string"
+            ],
+            "column": "string"
+          }
+        ]
+      }
+    ]
+  },
   "cappingSettings": {
     "type": "none",
     "value": 0,
@@ -46631,6 +47573,13 @@ curl https://api.growthbook.io/api/v1/fact-metrics/string \
 |» » » » *anyOf*|body|null|false|none|
 |» » ordering|body|string|false|Step ordering mode. Only 'sequential' is supported in v1.|
 |» » concurrencyWindowSeconds|body|integer|false|Out-of-order tolerance between adjacent steps in seconds. Defaults to 0.|
+|» compoundSettings|body|object|false|Compound metric settings (required when metricType is "compound")|
+|» » components|body|[object]|true|A unit passes when it has at least one matching event for every component, in any order. Minimum 2 components required.|
+|» » » factTableId|body|string|true|The fact table this component draws events from|
+|» » » rowFilters|body|[object]|true|Filters that decide whether an event row counts for this component|
+|» » » » operator|body|string|true|none|
+|» » » » values|body|[string]|false|Not required for is_null, not_null, is_true, is_false operators. The between and not_between operators take at most two values, a lower and an upper bound in that order; leave a bound as an empty string for an open-ended range.|
+|» » » » column|body|string|false|Required for all operators except sql_expr and saved_filter.|
 |» cappingSettings|body|object|false|Upper cap. Omit on update to preserve it. Use type: none to disable it explicitly. Invalid values are rejected.|
 |» » type|body|string|true|none|
 |» » value|body|number|false|When type is absolute, this must be a finite number greater than zero. When type is percentile, this must be strictly between 0 and 1. Required when enabling capping or changing type; omitted values are preserved only for same-type updates.|
@@ -46680,6 +47629,7 @@ curl https://api.growthbook.io/api/v1/fact-metrics/string \
 |» metricType|ratio|
 |» metricType|dailyParticipation|
 |» metricType|funnel|
+|» metricType|compound|
 |» » aggregation|sum|
 |» » aggregation|max|
 |» » aggregation|count distinct|
@@ -46763,6 +47713,28 @@ curl https://api.growthbook.io/api/v1/fact-metrics/string \
 |» » » » unit|hours|
 |» » » » unit|minutes|
 |» » ordering|sequential|
+|» » » » operator|=|
+|» » » » operator|!=|
+|» » » » operator|>|
+|» » » » operator|<|
+|» » » » operator|>=|
+|» » » » operator|<=|
+|» » » » operator|between|
+|» » » » operator|not_between|
+|» » » » operator|in|
+|» » » » operator|not_in|
+|» » » » operator|is_null|
+|» » » » operator|not_null|
+|» » » » operator|is_true|
+|» » » » operator|is_false|
+|» » » » operator|contains|
+|» » » » operator|not_contains|
+|» » » » operator|matches_pattern|
+|» » » » operator|not_matches_pattern|
+|» » » » operator|starts_with|
+|» » » » operator|ends_with|
+|» » » » operator|sql_expr|
+|» » » » operator|saved_filter|
 |» » type|none|
 |» » type|absolute|
 |» » type|percentile|
@@ -46904,6 +47876,34 @@ curl https://api.growthbook.io/api/v1/fact-metrics/string \
       ],
       "ordering": "sequential",
       "concurrencyWindowSeconds": 0
+    },
+    "compoundSettings": {
+      "components": [
+        {
+          "factTableId": "string",
+          "rowFilters": [
+            {
+              "operator": "=",
+              "values": [
+                "string"
+              ],
+              "column": "string"
+            }
+          ]
+        },
+        {
+          "factTableId": "string",
+          "rowFilters": [
+            {
+              "operator": "=",
+              "values": [
+                "string"
+              ],
+              "column": "string"
+            }
+          ]
+        }
+      ]
     },
     "cappingSettings": {
       "type": "none",
@@ -48485,7 +49485,7 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|experimentResults|[[experimentResults](#schemaexperimentresults-1)]|true|none|none|
+|experimentResults|[[experimentResults2](#schemaexperimentresults2)]|true|none|none|
 |limit|integer|true|none|none|
 |offset|integer|true|none|none|
 |count|integer|true|none|none|
@@ -48656,6 +49656,8 @@ curl https://api.growthbook.io/api/v1/experiments \
           "identifierType": "string"
         },
         "assignmentQueryId": "string",
+        "isClusterExperiment": true,
+        "clusterSubUnitIdentifier": "string",
         "experimentId": "string",
         "segmentId": "string",
         "queryFilter": "string",
@@ -48887,6 +49889,8 @@ curl https://api.growthbook.io/api/v1/experiments \
       "identifierType": "string"
     },
     "assignmentQueryId": "string",
+    "isClusterExperiment": true,
+    "clusterSubUnitIdentifier": "string",
     "trackingKey": "string",
     "bypassDuplicateKeyCheck": true,
     "name": "string",
@@ -49112,6 +50116,8 @@ Keep `name` short; put reasoning in `hypothesis` and context in `description`. `
     "identifierType": "string"
   },
   "assignmentQueryId": "string",
+  "isClusterExperiment": true,
+  "clusterSubUnitIdentifier": "string",
   "trackingKey": "string",
   "bypassDuplicateKeyCheck": true,
   "name": "string",
@@ -49331,6 +50337,8 @@ Keep `name` short; put reasoning in `hypothesis` and context in `description`. `
 |» » » *anyOf*|body|string|false|none|
 |» » » *anyOf*|body|null|false|none|
 |» assignmentQueryId|body|string|false|**Deprecated.** Deprecated: use `assignmentQuery`. Rejected when selecting a different assignment query that declares several identifier types; set `assignmentQuery.identifierType` instead. Can only be set if a templateId is not provided.|
+|» isClusterExperiment|body|boolean|false|Run as a cluster-randomized experiment: randomize on the assignment query's identifier type (the cluster, e.g. region_id) while analyzing a nested sub-unit (clusterSubUnitIdentifier, e.g. user_id). The assignment query must declare both identifier types.|
+|» clusterSubUnitIdentifier|body|string|false|The nested sub-unit identifier type analyzed within each cluster (e.g. user_id). Required when isClusterExperiment is true; must be declared by the assignment query and differ from its cluster identifier type.|
 |» trackingKey|body|string|true|Key sent with exposure events. Keep it short, in kebab-case (usually the Feature Flag key). If your organization requires a tracking key format, a key that doesn't match is rejected with `invalid_tracking_key`. Changing it after launch splits exposures across two keys.|
 |» bypassDuplicateKeyCheck|body|boolean|false|If true, allow creating an experiment even if another experiment with the same tracking key already exists. This is ignored if the organization requires unique tracking keys as a rule. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
 |» name|body|string|true|Short display name (e.g. `Express checkout button`). Put reasoning in `hypothesis` and context in `description`.|
@@ -49591,6 +50599,8 @@ Keep `name` short; put reasoning in `hypothesis` and context in `description`. `
         "identifierType": "string"
       },
       "assignmentQueryId": "string",
+      "isClusterExperiment": true,
+      "clusterSubUnitIdentifier": "string",
       "experimentId": "string",
       "segmentId": "string",
       "queryFilter": "string",
@@ -49898,6 +50908,8 @@ Use the per-experiment `GET /experiments/{id}/results` endpoint to inspect speci
           "identifierType": "string"
         },
         "assignmentQueryId": "string",
+        "isClusterExperiment": true,
+        "clusterSubUnitIdentifier": "string",
         "experimentId": "string",
         "segmentId": "string",
         "queryFilter": "string",
@@ -50015,6 +51027,66 @@ Use the per-experiment `GET /experiments/{id}/results` endpoint to inspect speci
       "queryIds": [
         "string"
       ],
+      "health": {
+        "srm": {
+          "pValue": 0,
+          "status": "healthy",
+          "threshold": 0,
+          "totalUnits": 0,
+          "variationUnits": [
+            0
+          ]
+        },
+        "multipleExposures": {
+          "count": 0,
+          "totalUnits": 0,
+          "percent": 0,
+          "status": "healthy",
+          "threshold": 0
+        },
+        "unknownVariations": [
+          "string"
+        ],
+        "power": {
+          "isLowPowered": true,
+          "additionalDaysNeeded": 0
+        },
+        "covariateImbalance": {
+          "isImbalanced": true,
+          "numGoalMetricsImbalanced": 0,
+          "numGuardrailMetricsImbalanced": 0,
+          "numSecondaryMetricsImbalanced": 0
+        },
+        "cluster": {
+          "mixedAssignment": {
+            "totalClusters": 0,
+            "mixedClusters": 0,
+            "percent": 0,
+            "status": "healthy"
+          },
+          "unitsInMultipleClusters": {
+            "totalUnits": 0,
+            "multiClusterUnits": 0,
+            "percent": 0,
+            "status": "healthy"
+          },
+          "reliability": {
+            "status": "healthy",
+            "minClustersPerVariation": 0,
+            "maxClusterShare": 0,
+            "tooFewClusters": {
+              "variationIndex": 0,
+              "variationKey": "string",
+              "variationId": "string",
+              "clusters": 0
+            },
+            "oversizedCluster": {
+              "id": "string",
+              "percent": 0
+            }
+          }
+        }
+      },
       "results": [
         {
           "dimension": "string",
@@ -50205,6 +51277,8 @@ curl https://api.growthbook.io/api/v1/experiments/string \
         "identifierType": "string"
       },
       "assignmentQueryId": "string",
+      "isClusterExperiment": true,
+      "clusterSubUnitIdentifier": "string",
       "experimentId": "string",
       "segmentId": "string",
       "queryFilter": "string",
@@ -50381,7 +51455,26 @@ curl https://api.growthbook.io/api/v1/experiments/string \
     },
     "enhancedStatus": {
       "status": "Running",
-      "detailedStatus": "string"
+      "detailedStatus": "string",
+      "needsAttention": true,
+      "decision": {
+        "category": "ready-for-action",
+        "status": "ship-now",
+        "reason": "string",
+        "daysLeft": 0,
+        "variations": [
+          {
+            "variationId": "string",
+            "action": "ship"
+          }
+        ],
+        "healthIssues": [
+          "sample-ratio-mismatch"
+        ],
+        "erroredMetricIds": [
+          "string"
+        ]
+      }
     }
   }
 }
@@ -50425,6 +51518,8 @@ curl https://api.growthbook.io/api/v1/experiments/string \
       "identifierType": "string"
     },
     "assignmentQueryId": "string",
+    "isClusterExperiment": true,
+    "clusterSubUnitIdentifier": "string",
     "trackingKey": "string",
     "bypassDuplicateKeyCheck": true,
     "name": "string",
@@ -50651,6 +51746,8 @@ Setting `status` from draft to running starts the experiment as `POST /experimen
     "identifierType": "string"
   },
   "assignmentQueryId": "string",
+  "isClusterExperiment": true,
+  "clusterSubUnitIdentifier": "string",
   "trackingKey": "string",
   "bypassDuplicateKeyCheck": true,
   "name": "string",
@@ -50876,6 +51973,8 @@ Setting `status` from draft to running starts the experiment as `POST /experimen
 |» » » *anyOf*|body|string|false|none|
 |» » » *anyOf*|body|null|false|none|
 |» assignmentQueryId|body|string|false|**Deprecated.** Deprecated: use `assignmentQuery`. Rejected when selecting a different assignment query that declares several identifier types; set `assignmentQuery.identifierType` instead.|
+|» isClusterExperiment|body|boolean|false|Run as a cluster-randomized experiment: randomize on the assignment query's identifier type (the cluster, e.g. region_id) while analyzing a nested sub-unit (clusterSubUnitIdentifier, e.g. user_id). The assignment query must declare both identifier types.|
+|» clusterSubUnitIdentifier|body|string|false|The nested sub-unit identifier type analyzed within each cluster (e.g. user_id). Required when isClusterExperiment is true; must be declared by the assignment query and differ from its cluster identifier type.|
 |» trackingKey|body|string|false|Key sent with exposure events. Keep it short, in kebab-case (usually the Feature Flag key). If your organization requires a tracking key format, a key that doesn't match is rejected with `invalid_tracking_key`. Changing it after launch splits exposures across two keys.|
 |» bypassDuplicateKeyCheck|body|boolean|false|If true, allow updating the tracking key even if another experiment with the same tracking key already exist. This is ignored if the organization requires unique tracking keys as a rule. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
 |» name|body|string|false|Short display name (e.g. `Express checkout button`). Put reasoning in `hypothesis` and context in `description`.|
@@ -51149,6 +52248,8 @@ Setting `status` from draft to running starts the experiment as `POST /experimen
         "identifierType": "string"
       },
       "assignmentQueryId": "string",
+      "isClusterExperiment": true,
+      "clusterSubUnitIdentifier": "string",
       "experimentId": "string",
       "segmentId": "string",
       "queryFilter": "string",
@@ -51658,7 +52759,7 @@ curl https://api.growthbook.io/api/v1/experiments/string/results \
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|string|true|The id of the requested resource|
-|phase|query|string|false|none|
+|phase|query|string|false|Phase index, defaulting to the latest phase. `experiment.enhancedStatus` describes the latest phase, so it is omitted for any other phase.|
 |dimension|query|string|false|none|
 
 > Example responses
@@ -51754,522 +52855,8 @@ curl https://api.growthbook.io/api/v1/experiments/string/results \
         "identifierType": "string"
       },
       "assignmentQueryId": "string",
-      "experimentId": "string",
-      "segmentId": "string",
-      "queryFilter": "string",
-      "inProgressConversions": "include",
-      "attributionModel": "firstExposure",
-      "lookbackOverride": {
-        "type": "date",
-        "value": 0,
-        "valueUnit": "minutes"
-      },
-      "statsEngine": "bayesian",
-      "regressionAdjustmentEnabled": true,
-      "sequentialTestingEnabled": true,
-      "sequentialTestingTuningParameter": 0,
-      "postStratificationEnabled": true,
-      "decisionFrameworkSettings": {
-        "decisionCriteriaId": "string",
-        "decisionFrameworkMetricOverrides": [
-          {
-            "id": "string",
-            "targetMDE": 0.1
-          }
-        ]
-      },
-      "metricOverrides": [
-        {
-          "id": "string",
-          "windowType": "conversion",
-          "windowHours": 0,
-          "delayHours": 0,
-          "properPriorOverride": true,
-          "properPriorEnabled": true,
-          "properPriorMean": 0,
-          "properPriorStdDev": 0,
-          "regressionAdjustmentOverride": true,
-          "regressionAdjustmentEnabled": true,
-          "regressionAdjustmentDays": 0
-        }
-      ],
-      "goals": [
-        {
-          "metricId": "string",
-          "overrides": {
-            "delayHours": 0,
-            "windowHours": 0,
-            "window": "conversion",
-            "properPriorOverride": true,
-            "properPriorEnabled": true,
-            "properPriorMean": 0,
-            "properPriorStdDev": 0,
-            "regressionAdjustmentOverride": true,
-            "regressionAdjustmentEnabled": true,
-            "regressionAdjustmentDays": 0,
-            "winRiskThreshold": 0,
-            "loseRiskThreshold": 0
-          }
-        }
-      ],
-      "secondaryMetrics": [
-        {
-          "metricId": "string",
-          "overrides": {
-            "delayHours": 0,
-            "windowHours": 0,
-            "window": "conversion",
-            "properPriorOverride": true,
-            "properPriorEnabled": true,
-            "properPriorMean": 0,
-            "properPriorStdDev": 0,
-            "regressionAdjustmentOverride": true,
-            "regressionAdjustmentEnabled": true,
-            "regressionAdjustmentDays": 0,
-            "winRiskThreshold": 0,
-            "loseRiskThreshold": 0
-          }
-        }
-      ],
-      "guardrails": [
-        {
-          "metricId": "string",
-          "overrides": {
-            "delayHours": 0,
-            "windowHours": 0,
-            "window": "conversion",
-            "properPriorOverride": true,
-            "properPriorEnabled": true,
-            "properPriorMean": 0,
-            "properPriorStdDev": 0,
-            "regressionAdjustmentOverride": true,
-            "regressionAdjustmentEnabled": true,
-            "regressionAdjustmentDays": 0,
-            "winRiskThreshold": 0,
-            "loseRiskThreshold": 0
-          }
-        }
-      ],
-      "activationMetric": {
-        "metricId": "string",
-        "overrides": {
-          "delayHours": 0,
-          "windowHours": 0,
-          "window": "conversion",
-          "properPriorOverride": true,
-          "properPriorEnabled": true,
-          "properPriorMean": 0,
-          "properPriorStdDev": 0,
-          "regressionAdjustmentOverride": true,
-          "regressionAdjustmentEnabled": true,
-          "regressionAdjustmentDays": 0,
-          "winRiskThreshold": 0,
-          "loseRiskThreshold": 0
-        }
-      }
-    },
-    "resultSummary": {
-      "status": "string",
-      "winner": "string",
-      "conclusions": "string",
-      "releasedVariationId": "string",
-      "excludeFromPayload": true
-    },
-    "shareLevel": "public",
-    "publicUrl": "string",
-    "banditScheduleValue": 0,
-    "banditScheduleUnit": "days",
-    "banditBurnInValue": 0,
-    "banditBurnInUnit": "days",
-    "banditConversionWindowValue": 0,
-    "banditConversionWindowUnit": "days",
-    "linkedFeatures": [
-      "string"
-    ],
-    "attributeScopeAllProjects": true,
-    "hasVisualChangesets": true,
-    "hasURLRedirects": true,
-    "customFields": {
-      "property1": null,
-      "property2": null
-    },
-    "customMetricSlices": [
-      {
-        "slices": [
-          {
-            "column": "string",
-            "levels": [
-              "string"
-            ]
-          }
-        ]
-      }
-    ],
-    "precomputedUnitDimensionIds": [
-      "string"
-    ],
-    "defaultDashboardId": "string",
-    "templateId": "string",
-    "statusUpdateSchedule": {
-      "startAt": "1970-01-01T00:00:00Z",
-      "stopAt": "1970-01-01T00:00:00Z",
-      "stopAfter": {
-        "value": 1,
-        "unit": "hours"
-      },
-      "scheduledStopPlan": {
-        "mode": "notify",
-        "tiebreakerMetricId": "string",
-        "fallback": "notify",
-        "fallbackVariationId": "string"
-      }
-    },
-    "nextScheduledStatusUpdate": {
-      "type": "start",
-      "date": "1970-01-01T00:00:00Z"
-    }
-  },
-  "result": {
-    "id": "string",
-    "dateUpdated": "string",
-    "experimentId": "string",
-    "phase": "string",
-    "dateStart": "string",
-    "dateEnd": "string",
-    "dimension": {
-      "type": "string",
-      "id": "string",
-      "dimensions": [
-        {
-          "type": "string",
-          "id": "string"
-        }
-      ]
-    },
-    "settings": {
-      "datasourceId": "string",
-      "assignmentQuery": {
-        "id": "string",
-        "identifierType": "string"
-      },
-      "assignmentQueryId": "string",
-      "experimentId": "string",
-      "segmentId": "string",
-      "queryFilter": "string",
-      "inProgressConversions": "include",
-      "attributionModel": "firstExposure",
-      "lookbackOverride": {
-        "type": "date",
-        "value": 0,
-        "valueUnit": "minutes"
-      },
-      "statsEngine": "bayesian",
-      "regressionAdjustmentEnabled": true,
-      "sequentialTestingEnabled": true,
-      "sequentialTestingTuningParameter": 0,
-      "postStratificationEnabled": true,
-      "decisionFrameworkSettings": {
-        "decisionCriteriaId": "string",
-        "decisionFrameworkMetricOverrides": [
-          {
-            "id": "string",
-            "targetMDE": 0.1
-          }
-        ]
-      },
-      "metricOverrides": [
-        {
-          "id": "string",
-          "windowType": "conversion",
-          "windowHours": 0,
-          "delayHours": 0,
-          "properPriorOverride": true,
-          "properPriorEnabled": true,
-          "properPriorMean": 0,
-          "properPriorStdDev": 0,
-          "regressionAdjustmentOverride": true,
-          "regressionAdjustmentEnabled": true,
-          "regressionAdjustmentDays": 0
-        }
-      ],
-      "goals": [
-        {
-          "metricId": "string",
-          "overrides": {
-            "delayHours": 0,
-            "windowHours": 0,
-            "window": "conversion",
-            "properPriorOverride": true,
-            "properPriorEnabled": true,
-            "properPriorMean": 0,
-            "properPriorStdDev": 0,
-            "regressionAdjustmentOverride": true,
-            "regressionAdjustmentEnabled": true,
-            "regressionAdjustmentDays": 0,
-            "winRiskThreshold": 0,
-            "loseRiskThreshold": 0
-          }
-        }
-      ],
-      "secondaryMetrics": [
-        {
-          "metricId": "string",
-          "overrides": {
-            "delayHours": 0,
-            "windowHours": 0,
-            "window": "conversion",
-            "properPriorOverride": true,
-            "properPriorEnabled": true,
-            "properPriorMean": 0,
-            "properPriorStdDev": 0,
-            "regressionAdjustmentOverride": true,
-            "regressionAdjustmentEnabled": true,
-            "regressionAdjustmentDays": 0,
-            "winRiskThreshold": 0,
-            "loseRiskThreshold": 0
-          }
-        }
-      ],
-      "guardrails": [
-        {
-          "metricId": "string",
-          "overrides": {
-            "delayHours": 0,
-            "windowHours": 0,
-            "window": "conversion",
-            "properPriorOverride": true,
-            "properPriorEnabled": true,
-            "properPriorMean": 0,
-            "properPriorStdDev": 0,
-            "regressionAdjustmentOverride": true,
-            "regressionAdjustmentEnabled": true,
-            "regressionAdjustmentDays": 0,
-            "winRiskThreshold": 0,
-            "loseRiskThreshold": 0
-          }
-        }
-      ],
-      "activationMetric": {
-        "metricId": "string",
-        "overrides": {
-          "delayHours": 0,
-          "windowHours": 0,
-          "window": "conversion",
-          "properPriorOverride": true,
-          "properPriorEnabled": true,
-          "properPriorMean": 0,
-          "properPriorStdDev": 0,
-          "regressionAdjustmentOverride": true,
-          "regressionAdjustmentEnabled": true,
-          "regressionAdjustmentDays": 0,
-          "winRiskThreshold": 0,
-          "loseRiskThreshold": 0
-        }
-      }
-    },
-    "queryIds": [
-      "string"
-    ],
-    "results": [
-      {
-        "dimension": "string",
-        "totalUsers": 0,
-        "checks": {
-          "srm": 0
-        },
-        "metrics": [
-          {
-            "metricId": "string",
-            "metricName": "string",
-            "variations": [
-              {
-                "variationId": "string",
-                "variationName": "string",
-                "users": 0,
-                "analyses": [
-                  {
-                    "engine": "bayesian",
-                    "numerator": 0,
-                    "denominator": 0,
-                    "mean": 0,
-                    "stddev": 0,
-                    "percentChange": 0,
-                    "effectStandardError": 0,
-                    "ciLow": 0,
-                    "ciHigh": 0,
-                    "pValue": 0,
-                    "risk": 0,
-                    "chanceToBeatControl": 0,
-                    "errorMessage": "string"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-<h3 id="get-results-for-an-experiment-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Successful response|Inline|
-
-<h3 id="get-results-for-an-experiment-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|experiment|[Experiment](#schemaexperiment)|true|none|none|
-|result|[ExperimentResults](#schemaexperimentresults)|true|none|none|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth, basicAuth
-</aside>
-
-## Archive an experiment
-
-<a id="opIdpostExperimentArchive"></a>
-
-> Code samples
-
-```bash
-curl https://api.growthbook.io/api/v1/experiments/string/archive \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{
-    "linkedChanges": "materialize"
-  }'
-```
-
-`POST /v1/experiments/{id}/archive`
-
-An archived experiment leaves the SDK payload. Refused while a running experiment or a temporary rollout still serves through linked changes unless `linkedChanges` says what happens to them.
-
-> Body parameter
-
-```json
-{
-  "linkedChanges": "materialize"
-}
-```
-
-<h3 id="archive-an-experiment-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|id|path|string|true|The id of the requested resource|
-|body|body|object|true|none|
-|» linkedChanges|body|string|false|Required while the experiment still serves through linked changes. "materialize" keeps a stopped experiment's released variation as a permanent force rule on each linked Feature Flag; "remove" acknowledges that the linked changes stop serving.|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|» linkedChanges|materialize|
-|» linkedChanges|remove|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "experiment": {
-    "id": "string",
-    "trackingKey": "string",
-    "dateCreated": "1970-01-01T00:00:00Z",
-    "dateUpdated": "1970-01-01T00:00:00Z",
-    "name": "string",
-    "type": "standard",
-    "project": "string",
-    "hypothesis": "string",
-    "description": "string",
-    "tags": [
-      "string"
-    ],
-    "owner": "string",
-    "ownerEmail": "string",
-    "archived": true,
-    "status": "string",
-    "autoRefresh": true,
-    "hashAttribute": "string",
-    "fallbackAttribute": "string",
-    "hashVersion": 1,
-    "disableStickyBucketing": true,
-    "bucketVersion": 0,
-    "minBucketVersion": 0,
-    "variations": [
-      {
-        "variationId": "string",
-        "key": "string",
-        "name": "string",
-        "description": "string",
-        "screenshots": [
-          "string"
-        ]
-      }
-    ],
-    "phases": [
-      {
-        "name": "string",
-        "dateStarted": "string",
-        "dateEnded": "string",
-        "reasonForStopping": "string",
-        "seed": "string",
-        "coverage": 0,
-        "trafficSplit": [
-          {
-            "variationId": "string",
-            "weight": 0
-          }
-        ],
-        "namespace": {
-          "namespaceId": "string",
-          "enabled": true,
-          "range": [
-            0,
-            0
-          ],
-          "ranges": [
-            [
-              0,
-              0
-            ]
-          ]
-        },
-        "targetingCondition": "string",
-        "prerequisites": [
-          {
-            "id": "string",
-            "condition": "string"
-          }
-        ],
-        "savedGroupTargeting": [
-          {
-            "matchType": "all",
-            "savedGroups": [
-              "string"
-            ]
-          }
-        ]
-      }
-    ],
-    "settings": {
-      "datasourceId": "string",
-      "assignmentQuery": {
-        "id": "string",
-        "identifierType": "string"
-      },
-      "assignmentQueryId": "string",
+      "isClusterExperiment": true,
+      "clusterSubUnitIdentifier": "string",
       "experimentId": "string",
       "segmentId": "string",
       "queryFilter": "string",
@@ -52446,7 +53033,629 @@ An archived experiment leaves the SDK payload. Refused while a running experimen
     },
     "enhancedStatus": {
       "status": "Running",
-      "detailedStatus": "string"
+      "detailedStatus": "string",
+      "needsAttention": true,
+      "decision": {
+        "category": "ready-for-action",
+        "status": "ship-now",
+        "reason": "string",
+        "daysLeft": 0,
+        "variations": [
+          {
+            "variationId": "string",
+            "action": "ship"
+          }
+        ],
+        "healthIssues": [
+          "sample-ratio-mismatch"
+        ],
+        "erroredMetricIds": [
+          "string"
+        ]
+      }
+    }
+  },
+  "result": {
+    "id": "string",
+    "dateUpdated": "string",
+    "experimentId": "string",
+    "phase": "string",
+    "dateStart": "string",
+    "dateEnd": "string",
+    "dimension": {
+      "type": "string",
+      "id": "string",
+      "dimensions": [
+        {
+          "type": "string",
+          "id": "string"
+        }
+      ]
+    },
+    "settings": {
+      "datasourceId": "string",
+      "assignmentQuery": {
+        "id": "string",
+        "identifierType": "string"
+      },
+      "assignmentQueryId": "string",
+      "isClusterExperiment": true,
+      "clusterSubUnitIdentifier": "string",
+      "experimentId": "string",
+      "segmentId": "string",
+      "queryFilter": "string",
+      "inProgressConversions": "include",
+      "attributionModel": "firstExposure",
+      "lookbackOverride": {
+        "type": "date",
+        "value": 0,
+        "valueUnit": "minutes"
+      },
+      "statsEngine": "bayesian",
+      "regressionAdjustmentEnabled": true,
+      "sequentialTestingEnabled": true,
+      "sequentialTestingTuningParameter": 0,
+      "postStratificationEnabled": true,
+      "decisionFrameworkSettings": {
+        "decisionCriteriaId": "string",
+        "decisionFrameworkMetricOverrides": [
+          {
+            "id": "string",
+            "targetMDE": 0.1
+          }
+        ]
+      },
+      "metricOverrides": [
+        {
+          "id": "string",
+          "windowType": "conversion",
+          "windowHours": 0,
+          "delayHours": 0,
+          "properPriorOverride": true,
+          "properPriorEnabled": true,
+          "properPriorMean": 0,
+          "properPriorStdDev": 0,
+          "regressionAdjustmentOverride": true,
+          "regressionAdjustmentEnabled": true,
+          "regressionAdjustmentDays": 0
+        }
+      ],
+      "goals": [
+        {
+          "metricId": "string",
+          "overrides": {
+            "delayHours": 0,
+            "windowHours": 0,
+            "window": "conversion",
+            "properPriorOverride": true,
+            "properPriorEnabled": true,
+            "properPriorMean": 0,
+            "properPriorStdDev": 0,
+            "regressionAdjustmentOverride": true,
+            "regressionAdjustmentEnabled": true,
+            "regressionAdjustmentDays": 0,
+            "winRiskThreshold": 0,
+            "loseRiskThreshold": 0
+          }
+        }
+      ],
+      "secondaryMetrics": [
+        {
+          "metricId": "string",
+          "overrides": {
+            "delayHours": 0,
+            "windowHours": 0,
+            "window": "conversion",
+            "properPriorOverride": true,
+            "properPriorEnabled": true,
+            "properPriorMean": 0,
+            "properPriorStdDev": 0,
+            "regressionAdjustmentOverride": true,
+            "regressionAdjustmentEnabled": true,
+            "regressionAdjustmentDays": 0,
+            "winRiskThreshold": 0,
+            "loseRiskThreshold": 0
+          }
+        }
+      ],
+      "guardrails": [
+        {
+          "metricId": "string",
+          "overrides": {
+            "delayHours": 0,
+            "windowHours": 0,
+            "window": "conversion",
+            "properPriorOverride": true,
+            "properPriorEnabled": true,
+            "properPriorMean": 0,
+            "properPriorStdDev": 0,
+            "regressionAdjustmentOverride": true,
+            "regressionAdjustmentEnabled": true,
+            "regressionAdjustmentDays": 0,
+            "winRiskThreshold": 0,
+            "loseRiskThreshold": 0
+          }
+        }
+      ],
+      "activationMetric": {
+        "metricId": "string",
+        "overrides": {
+          "delayHours": 0,
+          "windowHours": 0,
+          "window": "conversion",
+          "properPriorOverride": true,
+          "properPriorEnabled": true,
+          "properPriorMean": 0,
+          "properPriorStdDev": 0,
+          "regressionAdjustmentOverride": true,
+          "regressionAdjustmentEnabled": true,
+          "regressionAdjustmentDays": 0,
+          "winRiskThreshold": 0,
+          "loseRiskThreshold": 0
+        }
+      }
+    },
+    "queryIds": [
+      "string"
+    ],
+    "health": {
+      "srm": {
+        "pValue": 0,
+        "status": "healthy",
+        "threshold": 0,
+        "totalUnits": 0,
+        "variationUnits": [
+          0
+        ]
+      },
+      "multipleExposures": {
+        "count": 0,
+        "totalUnits": 0,
+        "percent": 0,
+        "status": "healthy",
+        "threshold": 0
+      },
+      "unknownVariations": [
+        "string"
+      ],
+      "power": {
+        "isLowPowered": true,
+        "additionalDaysNeeded": 0
+      },
+      "covariateImbalance": {
+        "isImbalanced": true,
+        "numGoalMetricsImbalanced": 0,
+        "numGuardrailMetricsImbalanced": 0,
+        "numSecondaryMetricsImbalanced": 0
+      },
+      "cluster": {
+        "mixedAssignment": {
+          "totalClusters": 0,
+          "mixedClusters": 0,
+          "percent": 0,
+          "status": "healthy"
+        },
+        "unitsInMultipleClusters": {
+          "totalUnits": 0,
+          "multiClusterUnits": 0,
+          "percent": 0,
+          "status": "healthy"
+        },
+        "reliability": {
+          "status": "healthy",
+          "minClustersPerVariation": 0,
+          "maxClusterShare": 0,
+          "tooFewClusters": {
+            "variationIndex": 0,
+            "variationKey": "string",
+            "variationId": "string",
+            "clusters": 0
+          },
+          "oversizedCluster": {
+            "id": "string",
+            "percent": 0
+          }
+        }
+      }
+    },
+    "results": [
+      {
+        "dimension": "string",
+        "totalUsers": 0,
+        "checks": {
+          "srm": 0
+        },
+        "metrics": [
+          {
+            "metricId": "string",
+            "metricName": "string",
+            "variations": [
+              {
+                "variationId": "string",
+                "variationName": "string",
+                "users": 0,
+                "analyses": [
+                  {
+                    "engine": "bayesian",
+                    "numerator": 0,
+                    "denominator": 0,
+                    "mean": 0,
+                    "stddev": 0,
+                    "percentChange": 0,
+                    "effectStandardError": 0,
+                    "ciLow": 0,
+                    "ciHigh": 0,
+                    "pValue": 0,
+                    "risk": 0,
+                    "chanceToBeatControl": 0,
+                    "errorMessage": "string"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+<h3 id="get-results-for-an-experiment-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+
+<h3 id="get-results-for-an-experiment-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|experiment|[ExperimentWithEnhancedStatus](#schemaexperimentwithenhancedstatus)|true|none|none|
+|result|[ExperimentResults](#schemaexperimentresults)|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Archive an experiment
+
+<a id="opIdpostExperimentArchive"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/experiments/string/archive \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "linkedChanges": "materialize"
+  }'
+```
+
+`POST /v1/experiments/{id}/archive`
+
+An archived experiment leaves the SDK payload. Refused while a running experiment or a temporary rollout still serves through linked changes unless `linkedChanges` says what happens to them.
+
+> Body parameter
+
+```json
+{
+  "linkedChanges": "materialize"
+}
+```
+
+<h3 id="archive-an-experiment-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The id of the requested resource|
+|body|body|object|true|none|
+|» linkedChanges|body|string|false|Required while the experiment still serves through linked changes. "materialize" keeps a stopped experiment's released variation as a permanent force rule on each linked Feature Flag; "remove" acknowledges that the linked changes stop serving.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» linkedChanges|materialize|
+|» linkedChanges|remove|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "experiment": {
+    "id": "string",
+    "trackingKey": "string",
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "dateUpdated": "1970-01-01T00:00:00Z",
+    "name": "string",
+    "type": "standard",
+    "project": "string",
+    "hypothesis": "string",
+    "description": "string",
+    "tags": [
+      "string"
+    ],
+    "owner": "string",
+    "ownerEmail": "string",
+    "archived": true,
+    "status": "string",
+    "autoRefresh": true,
+    "hashAttribute": "string",
+    "fallbackAttribute": "string",
+    "hashVersion": 1,
+    "disableStickyBucketing": true,
+    "bucketVersion": 0,
+    "minBucketVersion": 0,
+    "variations": [
+      {
+        "variationId": "string",
+        "key": "string",
+        "name": "string",
+        "description": "string",
+        "screenshots": [
+          "string"
+        ]
+      }
+    ],
+    "phases": [
+      {
+        "name": "string",
+        "dateStarted": "string",
+        "dateEnded": "string",
+        "reasonForStopping": "string",
+        "seed": "string",
+        "coverage": 0,
+        "trafficSplit": [
+          {
+            "variationId": "string",
+            "weight": 0
+          }
+        ],
+        "namespace": {
+          "namespaceId": "string",
+          "enabled": true,
+          "range": [
+            0,
+            0
+          ],
+          "ranges": [
+            [
+              0,
+              0
+            ]
+          ]
+        },
+        "targetingCondition": "string",
+        "prerequisites": [
+          {
+            "id": "string",
+            "condition": "string"
+          }
+        ],
+        "savedGroupTargeting": [
+          {
+            "matchType": "all",
+            "savedGroups": [
+              "string"
+            ]
+          }
+        ]
+      }
+    ],
+    "settings": {
+      "datasourceId": "string",
+      "assignmentQuery": {
+        "id": "string",
+        "identifierType": "string"
+      },
+      "assignmentQueryId": "string",
+      "isClusterExperiment": true,
+      "clusterSubUnitIdentifier": "string",
+      "experimentId": "string",
+      "segmentId": "string",
+      "queryFilter": "string",
+      "inProgressConversions": "include",
+      "attributionModel": "firstExposure",
+      "lookbackOverride": {
+        "type": "date",
+        "value": 0,
+        "valueUnit": "minutes"
+      },
+      "statsEngine": "bayesian",
+      "regressionAdjustmentEnabled": true,
+      "sequentialTestingEnabled": true,
+      "sequentialTestingTuningParameter": 0,
+      "postStratificationEnabled": true,
+      "decisionFrameworkSettings": {
+        "decisionCriteriaId": "string",
+        "decisionFrameworkMetricOverrides": [
+          {
+            "id": "string",
+            "targetMDE": 0.1
+          }
+        ]
+      },
+      "metricOverrides": [
+        {
+          "id": "string",
+          "windowType": "conversion",
+          "windowHours": 0,
+          "delayHours": 0,
+          "properPriorOverride": true,
+          "properPriorEnabled": true,
+          "properPriorMean": 0,
+          "properPriorStdDev": 0,
+          "regressionAdjustmentOverride": true,
+          "regressionAdjustmentEnabled": true,
+          "regressionAdjustmentDays": 0
+        }
+      ],
+      "goals": [
+        {
+          "metricId": "string",
+          "overrides": {
+            "delayHours": 0,
+            "windowHours": 0,
+            "window": "conversion",
+            "properPriorOverride": true,
+            "properPriorEnabled": true,
+            "properPriorMean": 0,
+            "properPriorStdDev": 0,
+            "regressionAdjustmentOverride": true,
+            "regressionAdjustmentEnabled": true,
+            "regressionAdjustmentDays": 0,
+            "winRiskThreshold": 0,
+            "loseRiskThreshold": 0
+          }
+        }
+      ],
+      "secondaryMetrics": [
+        {
+          "metricId": "string",
+          "overrides": {
+            "delayHours": 0,
+            "windowHours": 0,
+            "window": "conversion",
+            "properPriorOverride": true,
+            "properPriorEnabled": true,
+            "properPriorMean": 0,
+            "properPriorStdDev": 0,
+            "regressionAdjustmentOverride": true,
+            "regressionAdjustmentEnabled": true,
+            "regressionAdjustmentDays": 0,
+            "winRiskThreshold": 0,
+            "loseRiskThreshold": 0
+          }
+        }
+      ],
+      "guardrails": [
+        {
+          "metricId": "string",
+          "overrides": {
+            "delayHours": 0,
+            "windowHours": 0,
+            "window": "conversion",
+            "properPriorOverride": true,
+            "properPriorEnabled": true,
+            "properPriorMean": 0,
+            "properPriorStdDev": 0,
+            "regressionAdjustmentOverride": true,
+            "regressionAdjustmentEnabled": true,
+            "regressionAdjustmentDays": 0,
+            "winRiskThreshold": 0,
+            "loseRiskThreshold": 0
+          }
+        }
+      ],
+      "activationMetric": {
+        "metricId": "string",
+        "overrides": {
+          "delayHours": 0,
+          "windowHours": 0,
+          "window": "conversion",
+          "properPriorOverride": true,
+          "properPriorEnabled": true,
+          "properPriorMean": 0,
+          "properPriorStdDev": 0,
+          "regressionAdjustmentOverride": true,
+          "regressionAdjustmentEnabled": true,
+          "regressionAdjustmentDays": 0,
+          "winRiskThreshold": 0,
+          "loseRiskThreshold": 0
+        }
+      }
+    },
+    "resultSummary": {
+      "status": "string",
+      "winner": "string",
+      "conclusions": "string",
+      "releasedVariationId": "string",
+      "excludeFromPayload": true
+    },
+    "shareLevel": "public",
+    "publicUrl": "string",
+    "banditScheduleValue": 0,
+    "banditScheduleUnit": "days",
+    "banditBurnInValue": 0,
+    "banditBurnInUnit": "days",
+    "banditConversionWindowValue": 0,
+    "banditConversionWindowUnit": "days",
+    "linkedFeatures": [
+      "string"
+    ],
+    "attributeScopeAllProjects": true,
+    "hasVisualChangesets": true,
+    "hasURLRedirects": true,
+    "customFields": {
+      "property1": null,
+      "property2": null
+    },
+    "customMetricSlices": [
+      {
+        "slices": [
+          {
+            "column": "string",
+            "levels": [
+              "string"
+            ]
+          }
+        ]
+      }
+    ],
+    "precomputedUnitDimensionIds": [
+      "string"
+    ],
+    "defaultDashboardId": "string",
+    "templateId": "string",
+    "statusUpdateSchedule": {
+      "startAt": "1970-01-01T00:00:00Z",
+      "stopAt": "1970-01-01T00:00:00Z",
+      "stopAfter": {
+        "value": 1,
+        "unit": "hours"
+      },
+      "scheduledStopPlan": {
+        "mode": "notify",
+        "tiebreakerMetricId": "string",
+        "fallback": "notify",
+        "fallbackVariationId": "string"
+      }
+    },
+    "nextScheduledStatusUpdate": {
+      "type": "start",
+      "date": "1970-01-01T00:00:00Z"
+    },
+    "enhancedStatus": {
+      "status": "Running",
+      "detailedStatus": "string",
+      "needsAttention": true,
+      "decision": {
+        "category": "ready-for-action",
+        "status": "ship-now",
+        "reason": "string",
+        "daysLeft": 0,
+        "variations": [
+          {
+            "variationId": "string",
+            "action": "ship"
+          }
+        ],
+        "healthIssues": [
+          "sample-ratio-mismatch"
+        ],
+        "erroredMetricIds": [
+          "string"
+        ]
+      }
     }
   }
 }
@@ -52630,6 +53839,8 @@ curl https://api.growthbook.io/api/v1/experiments/string/unarchive \
         "identifierType": "string"
       },
       "assignmentQueryId": "string",
+      "isClusterExperiment": true,
+      "clusterSubUnitIdentifier": "string",
       "experimentId": "string",
       "segmentId": "string",
       "queryFilter": "string",
@@ -52806,7 +54017,26 @@ curl https://api.growthbook.io/api/v1/experiments/string/unarchive \
     },
     "enhancedStatus": {
       "status": "Running",
-      "detailedStatus": "string"
+      "detailedStatus": "string",
+      "needsAttention": true,
+      "decision": {
+        "category": "ready-for-action",
+        "status": "ship-now",
+        "reason": "string",
+        "daysLeft": 0,
+        "variations": [
+          {
+            "variationId": "string",
+            "action": "ship"
+          }
+        ],
+        "healthIssues": [
+          "sample-ratio-mismatch"
+        ],
+        "erroredMetricIds": [
+          "string"
+        ]
+      }
     }
   }
 }
@@ -53003,6 +54233,8 @@ Starts an experiment or stages it for a future start if a `statusUpdateSchedule`
         "identifierType": "string"
       },
       "assignmentQueryId": "string",
+      "isClusterExperiment": true,
+      "clusterSubUnitIdentifier": "string",
       "experimentId": "string",
       "segmentId": "string",
       "queryFilter": "string",
@@ -53179,7 +54411,26 @@ Starts an experiment or stages it for a future start if a `statusUpdateSchedule`
     },
     "enhancedStatus": {
       "status": "Running",
-      "detailedStatus": "string"
+      "detailedStatus": "string",
+      "needsAttention": true,
+      "decision": {
+        "category": "ready-for-action",
+        "status": "ship-now",
+        "reason": "string",
+        "daysLeft": 0,
+        "variations": [
+          {
+            "variationId": "string",
+            "action": "ship"
+          }
+        ],
+        "healthIssues": [
+          "sample-ratio-mismatch"
+        ],
+        "erroredMetricIds": [
+          "string"
+        ]
+      }
     }
   },
   "message": "string",
@@ -53621,6 +54872,8 @@ curl https://api.growthbook.io/api/v1/experiments/string/stop \
         "identifierType": "string"
       },
       "assignmentQueryId": "string",
+      "isClusterExperiment": true,
+      "clusterSubUnitIdentifier": "string",
       "experimentId": "string",
       "segmentId": "string",
       "queryFilter": "string",
@@ -53797,7 +55050,26 @@ curl https://api.growthbook.io/api/v1/experiments/string/stop \
     },
     "enhancedStatus": {
       "status": "Running",
-      "detailedStatus": "string"
+      "detailedStatus": "string",
+      "needsAttention": true,
+      "decision": {
+        "category": "ready-for-action",
+        "status": "ship-now",
+        "reason": "string",
+        "daysLeft": 0,
+        "variations": [
+          {
+            "variationId": "string",
+            "action": "ship"
+          }
+        ],
+        "healthIssues": [
+          "sample-ratio-mismatch"
+        ],
+        "erroredMetricIds": [
+          "string"
+        ]
+      }
     }
   }
 }
@@ -54052,6 +55324,8 @@ Full-replace of the experiment's scheduled start/end and end-of-experiment shipp
         "identifierType": "string"
       },
       "assignmentQueryId": "string",
+      "isClusterExperiment": true,
+      "clusterSubUnitIdentifier": "string",
       "experimentId": "string",
       "segmentId": "string",
       "queryFilter": "string",
@@ -54228,7 +55502,26 @@ Full-replace of the experiment's scheduled start/end and end-of-experiment shipp
     },
     "enhancedStatus": {
       "status": "Running",
-      "detailedStatus": "string"
+      "detailedStatus": "string",
+      "needsAttention": true,
+      "decision": {
+        "category": "ready-for-action",
+        "status": "ship-now",
+        "reason": "string",
+        "daysLeft": 0,
+        "variations": [
+          {
+            "variationId": "string",
+            "action": "ship"
+          }
+        ],
+        "healthIssues": [
+          "sample-ratio-mismatch"
+        ],
+        "erroredMetricIds": [
+          "string"
+        ]
+      }
     }
   },
   "warnings": [
@@ -54457,6 +55750,8 @@ curl https://api.growthbook.io/api/v1/experiments/string/modify-temporary-rollou
         "identifierType": "string"
       },
       "assignmentQueryId": "string",
+      "isClusterExperiment": true,
+      "clusterSubUnitIdentifier": "string",
       "experimentId": "string",
       "segmentId": "string",
       "queryFilter": "string",
@@ -54633,7 +55928,26 @@ curl https://api.growthbook.io/api/v1/experiments/string/modify-temporary-rollou
     },
     "enhancedStatus": {
       "status": "Running",
-      "detailedStatus": "string"
+      "detailedStatus": "string",
+      "needsAttention": true,
+      "decision": {
+        "category": "ready-for-action",
+        "status": "ship-now",
+        "reason": "string",
+        "daysLeft": 0,
+        "variations": [
+          {
+            "variationId": "string",
+            "action": "ship"
+          }
+        ],
+        "healthIssues": [
+          "sample-ratio-mismatch"
+        ],
+        "erroredMetricIds": [
+          "string"
+        ]
+      }
     }
   }
 }
@@ -54739,7 +56053,8 @@ curl https://api.growthbook.io/api/v1/experiments/string/snapshot \
   -d '{
     "triggeredBy": "manual",
     "dimension": "string",
-    "phase": 0
+    "phase": 0,
+    "ignoreWarnings": true
   }'
 ```
 
@@ -54751,7 +56066,8 @@ curl https://api.growthbook.io/api/v1/experiments/string/snapshot \
 {
   "triggeredBy": "manual",
   "dimension": "string",
-  "phase": 0
+  "phase": 0,
+  "ignoreWarnings": true
 }
 ```
 
@@ -54764,6 +56080,7 @@ curl https://api.growthbook.io/api/v1/experiments/string/snapshot \
 |» triggeredBy|body|string|false|Set to "schedule" if you want this request to trigger notifications and other events as if it were a scheduled update. Defaults to manual.|
 |» dimension|body|string|false|Dimension to break results down by. For Unit Dimensions, use the dimension id (e.g. "dim_abc123"). For Experiment Dimensions, use "exp:<dimensionName>" (e.g. "exp:country"). Built-in pre-exposure dimensions include "pre:date" and, when configured, "pre:activation". Use "cutoff:<ISO datetime>" (e.g. "cutoff:2026-01-15T00:12:00.000Z") to split units by whether they were first exposed before or after the cutoff; it must fall within the phase dates. Use "combo:<dimA>::<dimB>" (e.g. "combo:exp:country::dim_abc123") to break down by the intersection of two dimensions, each an Experiment Dimension or Unit Dimension id; values beyond the top 20 combined slices are merged into "(other)". Omit this field to create a standard snapshot.|
 |» phase|body|integer|false|Zero-based phase index to snapshot, where 0 is the first experiment phase. Defaults to the latest phase.|
+|» ignoreWarnings|body|boolean|false|Set to true to acknowledge the warnings listed in a blocked response and continue. This covers experiment guards, locked dependents, and references affected by an archive. When the organization treats schema failures as warnings, it also covers schema and invariant warnings. It never bypasses a rejected Custom Hook. On revision publish endpoints, it can also force-publish an out-of-date draft when the caller has Bypass draft approvals access. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
 
 #### Enumerated Values
 
@@ -54786,6 +56103,34 @@ curl https://api.growthbook.io/api/v1/experiments/string/snapshot \
 }
 ```
 
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
 > 409 Response
 
 ```json
@@ -54803,6 +56148,7 @@ curl https://api.growthbook.io/api/v1/experiments/string/snapshot \
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Resource created|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
 |409|Conflict|Conflict|Inline|
 
 <h3 id="create-experiment-snapshot-responseschema">Response Schema</h3>
@@ -54832,6 +56178,13 @@ Status Code **409**
 |---|---|
 |code|requires_full_refresh|
 |code|dimension_already_up_to_date|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -55967,6 +57320,8 @@ curl https://api.growthbook.io/api/v1/dimensions \
       "name": "string",
       "description": "string",
       "query": "string",
+      "timing": "none",
+      "nullLabel": "string",
       "managedBy": ""
     }
   ],
@@ -56025,6 +57380,8 @@ curl https://api.growthbook.io/api/v1/dimensions \
     "datasourceId": "string",
     "identifierType": "string",
     "query": "string",
+    "timing": "none",
+    "nullLabel": "string",
     "managedBy": ""
   }'
 ```
@@ -56041,6 +57398,8 @@ curl https://api.growthbook.io/api/v1/dimensions \
   "datasourceId": "string",
   "identifierType": "string",
   "query": "string",
+  "timing": "none",
+  "nullLabel": "string",
   "managedBy": ""
 }
 ```
@@ -56056,12 +57415,17 @@ curl https://api.growthbook.io/api/v1/dimensions \
 |» datasourceId|body|string|true|ID of the datasource this dimension belongs to|
 |» identifierType|body|string|true|Type of identifier (user, anonymous, etc.)|
 |» query|body|string|true|SQL query or equivalent for the dimension|
+|» timing|body|string|false|What the query returns and how the value at a unit's first exposure is resolved. `none` (default): one value per unit, resolved with MAX(value). `rowTimestamp`: timestamped rows; the query also returns a `timestamp` column and the latest row at or before first exposure is used. `validityRange`: validity ranges; the query also returns `start_timestamp` and `end_timestamp` (NULL = still valid) columns and the row valid at first exposure is used. Only supported for SQL Data Sources.|
+|» nullLabel|body|string|false|Label used in experiment results for units with no dimension value. Leave empty to use the default null label.|
 |» managedBy|body|string|false|Where this dimension must be managed from. If not set (empty string), it can be managed from anywhere.|
 
 #### Enumerated Values
 
 |Parameter|Value|
 |---|---|
+|» timing|none|
+|» timing|rowTimestamp|
+|» timing|validityRange|
 |» managedBy|""|
 |» managedBy|api|
 
@@ -56082,6 +57446,8 @@ curl https://api.growthbook.io/api/v1/dimensions \
     "name": "string",
     "description": "string",
     "query": "string",
+    "timing": "none",
+    "nullLabel": "string",
     "managedBy": ""
   }
 }
@@ -56179,6 +57545,8 @@ curl https://api.growthbook.io/api/v1/dimensions/string \
     "name": "string",
     "description": "string",
     "query": "string",
+    "timing": "none",
+    "nullLabel": "string",
     "managedBy": ""
   }
 }
@@ -56222,6 +57590,8 @@ curl https://api.growthbook.io/api/v1/dimensions/string \
     "datasourceId": "string",
     "identifierType": "string",
     "query": "string",
+    "timing": "none",
+    "nullLabel": "string",
     "managedBy": ""
   }'
 ```
@@ -56238,6 +57608,8 @@ curl https://api.growthbook.io/api/v1/dimensions/string \
   "datasourceId": "string",
   "identifierType": "string",
   "query": "string",
+  "timing": "none",
+  "nullLabel": "string",
   "managedBy": ""
 }
 ```
@@ -56254,12 +57626,17 @@ curl https://api.growthbook.io/api/v1/dimensions/string \
 |» datasourceId|body|string|false|ID of the datasource this dimension belongs to|
 |» identifierType|body|string|false|Type of identifier (user, anonymous, etc.)|
 |» query|body|string|false|SQL query or equivalent for the dimension|
+|» timing|body|string|false|What the query returns and how the value at a unit's first exposure is resolved. `none` (default): one value per unit, resolved with MAX(value). `rowTimestamp`: timestamped rows; the query also returns a `timestamp` column and the latest row at or before first exposure is used. `validityRange`: validity ranges; the query also returns `start_timestamp` and `end_timestamp` (NULL = still valid) columns and the row valid at first exposure is used. Only supported for SQL Data Sources.|
+|» nullLabel|body|string|false|Label used in experiment results for units with no dimension value. Leave empty to use the default null label.|
 |» managedBy|body|string|false|Where this dimension must be managed from. If not set (empty string), it can be managed from anywhere.|
 
 #### Enumerated Values
 
 |Parameter|Value|
 |---|---|
+|» timing|none|
+|» timing|rowTimestamp|
+|» timing|validityRange|
 |» managedBy|""|
 |» managedBy|api|
 
@@ -56280,6 +57657,8 @@ curl https://api.growthbook.io/api/v1/dimensions/string \
     "name": "string",
     "description": "string",
     "query": "string",
+    "timing": "none",
+    "nullLabel": "string",
     "managedBy": ""
   }
 }
@@ -57160,6 +58539,8 @@ curl https://api.growthbook.io/api/v1/reports \
             "identifierType": "string"
           },
           "assignmentQueryId": "string",
+          "isClusterExperiment": true,
+          "clusterSubUnitIdentifier": "string",
           "experimentId": "string",
           "segmentId": "string",
           "queryFilter": "string",
@@ -57277,6 +58658,66 @@ curl https://api.growthbook.io/api/v1/reports \
         "queryIds": [
           "string"
         ],
+        "health": {
+          "srm": {
+            "pValue": 0,
+            "status": "healthy",
+            "threshold": 0,
+            "totalUnits": 0,
+            "variationUnits": [
+              0
+            ]
+          },
+          "multipleExposures": {
+            "count": 0,
+            "totalUnits": 0,
+            "percent": 0,
+            "status": "healthy",
+            "threshold": 0
+          },
+          "unknownVariations": [
+            "string"
+          ],
+          "power": {
+            "isLowPowered": true,
+            "additionalDaysNeeded": 0
+          },
+          "covariateImbalance": {
+            "isImbalanced": true,
+            "numGoalMetricsImbalanced": 0,
+            "numGuardrailMetricsImbalanced": 0,
+            "numSecondaryMetricsImbalanced": 0
+          },
+          "cluster": {
+            "mixedAssignment": {
+              "totalClusters": 0,
+              "mixedClusters": 0,
+              "percent": 0,
+              "status": "healthy"
+            },
+            "unitsInMultipleClusters": {
+              "totalUnits": 0,
+              "multiClusterUnits": 0,
+              "percent": 0,
+              "status": "healthy"
+            },
+            "reliability": {
+              "status": "healthy",
+              "minClustersPerVariation": 0,
+              "maxClusterShare": 0,
+              "tooFewClusters": {
+                "variationIndex": 0,
+                "variationKey": "string",
+                "variationId": "string",
+                "clusters": 0
+              },
+              "oversizedCluster": {
+                "id": "string",
+                "percent": 0
+              }
+            }
+          }
+        },
         "results": [
           {
             "dimension": "string",
@@ -57704,6 +59145,8 @@ curl https://api.growthbook.io/api/v1/reports \
           "identifierType": "string"
         },
         "assignmentQueryId": "string",
+        "isClusterExperiment": true,
+        "clusterSubUnitIdentifier": "string",
         "experimentId": "string",
         "segmentId": "string",
         "queryFilter": "string",
@@ -57821,6 +59264,66 @@ curl https://api.growthbook.io/api/v1/reports \
       "queryIds": [
         "string"
       ],
+      "health": {
+        "srm": {
+          "pValue": 0,
+          "status": "healthy",
+          "threshold": 0,
+          "totalUnits": 0,
+          "variationUnits": [
+            0
+          ]
+        },
+        "multipleExposures": {
+          "count": 0,
+          "totalUnits": 0,
+          "percent": 0,
+          "status": "healthy",
+          "threshold": 0
+        },
+        "unknownVariations": [
+          "string"
+        ],
+        "power": {
+          "isLowPowered": true,
+          "additionalDaysNeeded": 0
+        },
+        "covariateImbalance": {
+          "isImbalanced": true,
+          "numGoalMetricsImbalanced": 0,
+          "numGuardrailMetricsImbalanced": 0,
+          "numSecondaryMetricsImbalanced": 0
+        },
+        "cluster": {
+          "mixedAssignment": {
+            "totalClusters": 0,
+            "mixedClusters": 0,
+            "percent": 0,
+            "status": "healthy"
+          },
+          "unitsInMultipleClusters": {
+            "totalUnits": 0,
+            "multiClusterUnits": 0,
+            "percent": 0,
+            "status": "healthy"
+          },
+          "reliability": {
+            "status": "healthy",
+            "minClustersPerVariation": 0,
+            "maxClusterShare": 0,
+            "tooFewClusters": {
+              "variationIndex": 0,
+              "variationKey": "string",
+              "variationId": "string",
+              "clusters": 0
+            },
+            "oversizedCluster": {
+              "id": "string",
+              "percent": 0
+            }
+          }
+        }
+      },
       "results": [
         {
           "dimension": "string",
@@ -58068,6 +59571,8 @@ curl https://api.growthbook.io/api/v1/reports/string \
           "identifierType": "string"
         },
         "assignmentQueryId": "string",
+        "isClusterExperiment": true,
+        "clusterSubUnitIdentifier": "string",
         "experimentId": "string",
         "segmentId": "string",
         "queryFilter": "string",
@@ -58185,6 +59690,66 @@ curl https://api.growthbook.io/api/v1/reports/string \
       "queryIds": [
         "string"
       ],
+      "health": {
+        "srm": {
+          "pValue": 0,
+          "status": "healthy",
+          "threshold": 0,
+          "totalUnits": 0,
+          "variationUnits": [
+            0
+          ]
+        },
+        "multipleExposures": {
+          "count": 0,
+          "totalUnits": 0,
+          "percent": 0,
+          "status": "healthy",
+          "threshold": 0
+        },
+        "unknownVariations": [
+          "string"
+        ],
+        "power": {
+          "isLowPowered": true,
+          "additionalDaysNeeded": 0
+        },
+        "covariateImbalance": {
+          "isImbalanced": true,
+          "numGoalMetricsImbalanced": 0,
+          "numGuardrailMetricsImbalanced": 0,
+          "numSecondaryMetricsImbalanced": 0
+        },
+        "cluster": {
+          "mixedAssignment": {
+            "totalClusters": 0,
+            "mixedClusters": 0,
+            "percent": 0,
+            "status": "healthy"
+          },
+          "unitsInMultipleClusters": {
+            "totalUnits": 0,
+            "multiClusterUnits": 0,
+            "percent": 0,
+            "status": "healthy"
+          },
+          "reliability": {
+            "status": "healthy",
+            "minClustersPerVariation": 0,
+            "maxClusterShare": 0,
+            "tooFewClusters": {
+              "variationIndex": 0,
+              "variationKey": "string",
+              "variationId": "string",
+              "clusters": 0
+            },
+            "oversizedCluster": {
+              "id": "string",
+              "percent": 0
+            }
+          }
+        }
+      },
       "results": [
         {
           "dimension": "string",
@@ -58397,6 +59962,8 @@ curl https://api.growthbook.io/api/v1/reports/string/refresh \
           "identifierType": "string"
         },
         "assignmentQueryId": "string",
+        "isClusterExperiment": true,
+        "clusterSubUnitIdentifier": "string",
         "experimentId": "string",
         "segmentId": "string",
         "queryFilter": "string",
@@ -58514,6 +60081,66 @@ curl https://api.growthbook.io/api/v1/reports/string/refresh \
       "queryIds": [
         "string"
       ],
+      "health": {
+        "srm": {
+          "pValue": 0,
+          "status": "healthy",
+          "threshold": 0,
+          "totalUnits": 0,
+          "variationUnits": [
+            0
+          ]
+        },
+        "multipleExposures": {
+          "count": 0,
+          "totalUnits": 0,
+          "percent": 0,
+          "status": "healthy",
+          "threshold": 0
+        },
+        "unknownVariations": [
+          "string"
+        ],
+        "power": {
+          "isLowPowered": true,
+          "additionalDaysNeeded": 0
+        },
+        "covariateImbalance": {
+          "isImbalanced": true,
+          "numGoalMetricsImbalanced": 0,
+          "numGuardrailMetricsImbalanced": 0,
+          "numSecondaryMetricsImbalanced": 0
+        },
+        "cluster": {
+          "mixedAssignment": {
+            "totalClusters": 0,
+            "mixedClusters": 0,
+            "percent": 0,
+            "status": "healthy"
+          },
+          "unitsInMultipleClusters": {
+            "totalUnits": 0,
+            "multiClusterUnits": 0,
+            "percent": 0,
+            "status": "healthy"
+          },
+          "reliability": {
+            "status": "healthy",
+            "minClustersPerVariation": 0,
+            "maxClusterShare": 0,
+            "tooFewClusters": {
+              "variationIndex": 0,
+              "variationKey": "string",
+              "variationId": "string",
+              "clusters": 0
+            },
+            "oversizedCluster": {
+              "id": "string",
+              "percent": 0
+            }
+          }
+        }
+      },
       "results": [
         {
           "dimension": "string",
@@ -58764,6 +60391,8 @@ curl https://api.growthbook.io/api/v1/reports/string/metadata \
           "identifierType": "string"
         },
         "assignmentQueryId": "string",
+        "isClusterExperiment": true,
+        "clusterSubUnitIdentifier": "string",
         "experimentId": "string",
         "segmentId": "string",
         "queryFilter": "string",
@@ -58881,6 +60510,66 @@ curl https://api.growthbook.io/api/v1/reports/string/metadata \
       "queryIds": [
         "string"
       ],
+      "health": {
+        "srm": {
+          "pValue": 0,
+          "status": "healthy",
+          "threshold": 0,
+          "totalUnits": 0,
+          "variationUnits": [
+            0
+          ]
+        },
+        "multipleExposures": {
+          "count": 0,
+          "totalUnits": 0,
+          "percent": 0,
+          "status": "healthy",
+          "threshold": 0
+        },
+        "unknownVariations": [
+          "string"
+        ],
+        "power": {
+          "isLowPowered": true,
+          "additionalDaysNeeded": 0
+        },
+        "covariateImbalance": {
+          "isImbalanced": true,
+          "numGoalMetricsImbalanced": 0,
+          "numGuardrailMetricsImbalanced": 0,
+          "numSecondaryMetricsImbalanced": 0
+        },
+        "cluster": {
+          "mixedAssignment": {
+            "totalClusters": 0,
+            "mixedClusters": 0,
+            "percent": 0,
+            "status": "healthy"
+          },
+          "unitsInMultipleClusters": {
+            "totalUnits": 0,
+            "multiClusterUnits": 0,
+            "percent": 0,
+            "status": "healthy"
+          },
+          "reliability": {
+            "status": "healthy",
+            "minClustersPerVariation": 0,
+            "maxClusterShare": 0,
+            "tooFewClusters": {
+              "variationIndex": 0,
+              "variationKey": "string",
+              "variationId": "string",
+              "clusters": 0
+            },
+            "oversizedCluster": {
+              "id": "string",
+              "percent": 0
+            }
+          }
+        }
+      },
       "results": [
         {
           "dimension": "string",
@@ -59340,6 +61029,8 @@ Updates the analysis settings for an existing report. Changes are staged and do 
           "identifierType": "string"
         },
         "assignmentQueryId": "string",
+        "isClusterExperiment": true,
+        "clusterSubUnitIdentifier": "string",
         "experimentId": "string",
         "segmentId": "string",
         "queryFilter": "string",
@@ -59457,6 +61148,66 @@ Updates the analysis settings for an existing report. Changes are staged and do 
       "queryIds": [
         "string"
       ],
+      "health": {
+        "srm": {
+          "pValue": 0,
+          "status": "healthy",
+          "threshold": 0,
+          "totalUnits": 0,
+          "variationUnits": [
+            0
+          ]
+        },
+        "multipleExposures": {
+          "count": 0,
+          "totalUnits": 0,
+          "percent": 0,
+          "status": "healthy",
+          "threshold": 0
+        },
+        "unknownVariations": [
+          "string"
+        ],
+        "power": {
+          "isLowPowered": true,
+          "additionalDaysNeeded": 0
+        },
+        "covariateImbalance": {
+          "isImbalanced": true,
+          "numGoalMetricsImbalanced": 0,
+          "numGuardrailMetricsImbalanced": 0,
+          "numSecondaryMetricsImbalanced": 0
+        },
+        "cluster": {
+          "mixedAssignment": {
+            "totalClusters": 0,
+            "mixedClusters": 0,
+            "percent": 0,
+            "status": "healthy"
+          },
+          "unitsInMultipleClusters": {
+            "totalUnits": 0,
+            "multiClusterUnits": 0,
+            "percent": 0,
+            "status": "healthy"
+          },
+          "reliability": {
+            "status": "healthy",
+            "minClustersPerVariation": 0,
+            "maxClusterShare": 0,
+            "tooFewClusters": {
+              "variationIndex": 0,
+              "variationKey": "string",
+              "variationId": "string",
+              "clusters": 0
+            },
+            "oversizedCluster": {
+              "id": "string",
+              "percent": 0
+            }
+          }
+        }
+      },
       "results": [
         {
           "dimension": "string",
@@ -60780,6 +62531,8 @@ curl https://api.growthbook.io/api/v1/visual-changesets/string \
         "identifierType": "string"
       },
       "assignmentQueryId": "string",
+      "isClusterExperiment": true,
+      "clusterSubUnitIdentifier": "string",
       "experimentId": "string",
       "segmentId": "string",
       "queryFilter": "string",
@@ -87436,6 +89189,1077 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearerAuth, basicAuth
 </aside>
 
+<h1 id="growthbook-rest-api-event-webhooks">event-webhooks</h1>
+
+Send GrowthBook events (feature, experiment and other changes) to your own endpoint.
+
+## Get all event webhooks
+
+<a id="opIdlistEventWebhooks"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/event-webhooks \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v1/event-webhooks`
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "eventWebhooks": [
+    {
+      "id": "string",
+      "name": "string",
+      "url": "string",
+      "enabled": true,
+      "events": [
+        "string"
+      ],
+      "projects": [
+        "string"
+      ],
+      "tags": [
+        "string"
+      ],
+      "environments": [
+        "string"
+      ],
+      "payloadType": "raw",
+      "method": "POST",
+      "headers": {
+        "property1": "string",
+        "property2": "string"
+      },
+      "timeoutSeconds": 1,
+      "signingKey": "string",
+      "lastRunAt": "1970-01-01T00:00:00Z",
+      "lastState": "none",
+      "lastResponseBody": "string",
+      "dateCreated": "1970-01-01T00:00:00Z",
+      "dateUpdated": "1970-01-01T00:00:00Z"
+    }
+  ]
+}
+```
+
+<h3 id="get-all-event-webhooks-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+
+<h3 id="get-all-event-webhooks-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|eventWebhooks|[[EventWebhook](#schemaeventwebhook)]|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Create an event webhook
+
+<a id="opIdpostEventWebhook"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/event-webhooks \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "events": [
+      "string"
+    ],
+    "projects": [
+      "string"
+    ],
+    "tags": [
+      "string"
+    ],
+    "environments": [
+      "string"
+    ],
+    "url": "http://example.com",
+    "name": "string",
+    "enabled": true,
+    "payloadType": "raw",
+    "method": "POST",
+    "headers": {
+      "property1": "string",
+      "property2": "string"
+    },
+    "timeoutSeconds": 1
+  }'
+```
+
+`POST /v1/event-webhooks`
+
+The URL and header values can reference webhook secrets as `{{ KEY }}`, which are filled in at send time.
+
+> Body parameter
+
+```json
+{
+  "events": [
+    "string"
+  ],
+  "projects": [
+    "string"
+  ],
+  "tags": [
+    "string"
+  ],
+  "environments": [
+    "string"
+  ],
+  "url": "http://example.com",
+  "name": "string",
+  "enabled": true,
+  "payloadType": "raw",
+  "method": "POST",
+  "headers": {
+    "property1": "string",
+    "property2": "string"
+  },
+  "timeoutSeconds": 1
+}
+```
+
+<h3 id="create-an-event-webhook-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|object|true|none|
+|» events|body|[string]|true|none|
+|» projects|body|[string]|false|none|
+|» tags|body|[string]|false|none|
+|» environments|body|[string]|false|none|
+|» url|body|string(uri)|true|none|
+|» name|body|string|true|none|
+|» enabled|body|boolean|true|none|
+|» payloadType|body|string|true|none|
+|» method|body|string|false|none|
+|» headers|body|object|false|none|
+|» » **additionalProperties**|body|string|false|none|
+|» timeoutSeconds|body|integer \| null|false|Request timeout in seconds, up to the server maximum (120 unless configured). Null uses the default.|
+|» » *anyOf*|body|integer|false|none|
+|» » *anyOf*|body|null|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» payloadType|raw|
+|» payloadType|json|
+|» payloadType|slack|
+|» payloadType|discord|
+|» method|POST|
+|» method|PUT|
+|» method|PATCH|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "eventWebhook": {
+    "id": "string",
+    "name": "string",
+    "url": "string",
+    "enabled": true,
+    "events": [
+      "string"
+    ],
+    "projects": [
+      "string"
+    ],
+    "tags": [
+      "string"
+    ],
+    "environments": [
+      "string"
+    ],
+    "payloadType": "raw",
+    "method": "POST",
+    "headers": {
+      "property1": "string",
+      "property2": "string"
+    },
+    "timeoutSeconds": 1,
+    "signingKey": "string",
+    "lastRunAt": "1970-01-01T00:00:00Z",
+    "lastState": "none",
+    "lastResponseBody": "string",
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "dateUpdated": "1970-01-01T00:00:00Z"
+  }
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="create-an-event-webhook-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource created|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="create-an-event-webhook-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|eventWebhook|[EventWebhook](#schemaeventwebhook)|true|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Get a single event webhook
+
+<a id="opIdgetEventWebhook"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/event-webhooks/string \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v1/event-webhooks/{id}`
+
+<h3 id="get-a-single-event-webhook-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "eventWebhook": {
+    "id": "string",
+    "name": "string",
+    "url": "string",
+    "enabled": true,
+    "events": [
+      "string"
+    ],
+    "projects": [
+      "string"
+    ],
+    "tags": [
+      "string"
+    ],
+    "environments": [
+      "string"
+    ],
+    "payloadType": "raw",
+    "method": "POST",
+    "headers": {
+      "property1": "string",
+      "property2": "string"
+    },
+    "timeoutSeconds": 1,
+    "signingKey": "string",
+    "lastRunAt": "1970-01-01T00:00:00Z",
+    "lastState": "none",
+    "lastResponseBody": "string",
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "dateUpdated": "1970-01-01T00:00:00Z"
+  }
+}
+```
+
+<h3 id="get-a-single-event-webhook-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+
+<h3 id="get-a-single-event-webhook-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|eventWebhook|[EventWebhook](#schemaeventwebhook)|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Update an event webhook
+
+<a id="opIdputEventWebhook"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/event-webhooks/string \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "events": [
+      "string"
+    ],
+    "projects": [
+      "string"
+    ],
+    "tags": [
+      "string"
+    ],
+    "environments": [
+      "string"
+    ],
+    "url": "http://example.com",
+    "name": "string",
+    "enabled": true,
+    "payloadType": "raw",
+    "method": "POST",
+    "headers": {
+      "property1": "string",
+      "property2": "string"
+    },
+    "timeoutSeconds": 1
+  }'
+```
+
+`PUT /v1/event-webhooks/{id}`
+
+> Body parameter
+
+```json
+{
+  "events": [
+    "string"
+  ],
+  "projects": [
+    "string"
+  ],
+  "tags": [
+    "string"
+  ],
+  "environments": [
+    "string"
+  ],
+  "url": "http://example.com",
+  "name": "string",
+  "enabled": true,
+  "payloadType": "raw",
+  "method": "POST",
+  "headers": {
+    "property1": "string",
+    "property2": "string"
+  },
+  "timeoutSeconds": 1
+}
+```
+
+<h3 id="update-an-event-webhook-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|none|
+|body|body|object|true|none|
+|» events|body|[string]|false|none|
+|» projects|body|[string]|false|none|
+|» tags|body|[string]|false|none|
+|» environments|body|[string]|false|none|
+|» url|body|string(uri)|false|none|
+|» name|body|string|false|none|
+|» enabled|body|boolean|false|none|
+|» payloadType|body|string|false|none|
+|» method|body|string|false|none|
+|» headers|body|object|false|none|
+|» » **additionalProperties**|body|string|false|none|
+|» timeoutSeconds|body|integer \| null|false|Request timeout in seconds, up to the server maximum (120 unless configured). Null uses the default.|
+|» » *anyOf*|body|integer|false|none|
+|» » *anyOf*|body|null|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» payloadType|raw|
+|» payloadType|json|
+|» payloadType|slack|
+|» payloadType|discord|
+|» method|POST|
+|» method|PUT|
+|» method|PATCH|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "eventWebhook": {
+    "id": "string",
+    "name": "string",
+    "url": "string",
+    "enabled": true,
+    "events": [
+      "string"
+    ],
+    "projects": [
+      "string"
+    ],
+    "tags": [
+      "string"
+    ],
+    "environments": [
+      "string"
+    ],
+    "payloadType": "raw",
+    "method": "POST",
+    "headers": {
+      "property1": "string",
+      "property2": "string"
+    },
+    "timeoutSeconds": 1,
+    "signingKey": "string",
+    "lastRunAt": "1970-01-01T00:00:00Z",
+    "lastState": "none",
+    "lastResponseBody": "string",
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "dateUpdated": "1970-01-01T00:00:00Z"
+  }
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="update-an-event-webhook-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource updated|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="update-an-event-webhook-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|eventWebhook|[EventWebhook](#schemaeventwebhook)|true|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Delete an event webhook
+
+<a id="opIddeleteEventWebhook"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/event-webhooks/string \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /v1/event-webhooks/{id}`
+
+<h3 id="delete-an-event-webhook-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "deletedId": "string"
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="delete-an-event-webhook-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource deleted|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="delete-an-event-webhook-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|deletedId|string|true|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Get the 50 most recent deliveries for an event webhook
+
+<a id="opIdlistEventWebhookLogs"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/event-webhooks/string/logs \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v1/event-webhooks/{id}/logs`
+
+<h3 id="get-the-50-most-recent-deliveries-for-an-event-webhook-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "logs": [
+    {
+      "id": "string",
+      "event": "string",
+      "url": "string",
+      "method": "POST",
+      "result": "success",
+      "responseCode": 0,
+      "responseBody": "string",
+      "payload": {
+        "property1": null,
+        "property2": null
+      },
+      "dateCreated": "1970-01-01T00:00:00Z"
+    }
+  ]
+}
+```
+
+<h3 id="get-the-50-most-recent-deliveries-for-an-event-webhook-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+
+<h3 id="get-the-50-most-recent-deliveries-for-an-event-webhook-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|logs|[[EventWebhookLog](#schemaeventwebhooklog)]|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Send a test event to an event webhook
+
+<a id="opIdpostEventWebhookTest"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/event-webhooks/string/test \
+  -X POST \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`POST /v1/event-webhooks/{id}/test`
+
+Delivery is asynchronous; check the webhook's logs for the result.
+
+<h3 id="send-a-test-event-to-an-event-webhook-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "queued": true
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="send-a-test-event-to-an-event-webhook-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource created|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="send-a-test-event-to-an-event-webhook-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|queued|boolean|true|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+<h1 id="growthbook-rest-api-audits">audits</h1>
+
+Audit history of who changed what, and the event log that drives event webhooks. Requires permission to view audit logs.
+
+## Get audit history for an entity or entity type
+
+<a id="opIdlistAudits"></a>
+
+> Code samples
+
+```bash
+curl 'https://api.growthbook.io/api/v1/audits?entityType=agreement' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v1/audits`
+
+Includes changes to child entities (e.g. a feature's revisions). Newest first. Requires permission to view audit logs.
+
+<h3 id="get-audit-history-for-an-entity-or-entity-type-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|entityType|query|string|true|none|
+|entityId|query|string|false|Omit for every entity of this type|
+|limit|query|integer|false|Defaults to 50|
+|before|query|string|false|Only return entries older than this date-time. To page back, pass the previous page's `nextCursor` instead.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|entityType|agreement|
+|entityType|approvalFlow|
+|entityType|revision|
+|entityType|aiPrompt|
+|entityType|aiCredential|
+|entityType|attribute|
+|entityType|experiment|
+|entityType|project|
+|entityType|environment|
+|entityType|feature|
+|entityType|featureRevisionLog|
+|entityType|urlRedirect|
+|entityType|metric|
+|entityType|metricAnalysis|
+|entityType|metricGroup|
+|entityType|populationData|
+|entityType|population|
+|entityType|datasource|
+|entityType|comment|
+|entityType|sdk-connection|
+|entityType|user|
+|entityType|organization|
+|entityType|apiKey|
+|entityType|oauthAuthCode|
+|entityType|oauthGrant|
+|entityType|oauthRefreshToken|
+|entityType|installation|
+|entityType|savedGroup|
+|entityType|constant|
+|entityType|config|
+|entityType|segment|
+|entityType|archetype|
+|entityType|team|
+|entityType|vercelNativeIntegration|
+|entityType|factTable|
+|entityType|customField|
+|entityType|autoRun|
+|entityType|experimentTemplate|
+|entityType|safeRollout|
+|entityType|decisionCriteria|
+|entityType|execReport|
+|entityType|holdout|
+|entityType|savedQuery|
+|entityType|dashboard|
+|entityType|dashboardTemplate|
+|entityType|incrementalRefresh|
+|entityType|vector|
+|entityType|customHook|
+|entityType|ssoConnection|
+|entityType|sqlResultChunk|
+|entityType|rampSchedule|
+|entityType|rampScheduleTemplate|
+|entityType|learning|
+|entityType|contextualBandit|
+|entityType|interleaving|
+|entityType|eventForwarderConfig|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "audits": [
+    {
+      "id": "string",
+      "event": "string",
+      "entity": {
+        "object": "string",
+        "id": "string",
+        "name": "string"
+      },
+      "parent": {
+        "object": "string",
+        "id": "string"
+      },
+      "user": {
+        "id": "string",
+        "email": "string",
+        "name": "string",
+        "apiKey": "string",
+        "requestedBy": {
+          "id": "string",
+          "name": "string",
+          "email": "string"
+        },
+        "assumedRole": true,
+        "system": true
+      },
+      "reason": "string",
+      "details": "string",
+      "dateCreated": "1970-01-01T00:00:00Z"
+    }
+  ],
+  "nextCursor": "string"
+}
+```
+
+<h3 id="get-audit-history-for-an-entity-or-entity-type-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+
+<h3 id="get-audit-history-for-an-entity-or-entity-type-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|audits|[[Audit](#schemaaudit)]|true|none|none|
+|nextCursor|string \| null|true|none|Pass as `before` to get the next page. Null when there are no older entries|
+|» *anyOf*|string|false|none|none|
+|» *anyOf*|null|false|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Get the organization's event log
+
+<a id="opIdlistEvents"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/events \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v1/events`
+
+The events that drive event webhooks and notifications. Newest first. Requires permission to view audit logs.
+
+<h3 id="get-the-organizations-event-log-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|events|query|string|false|Comma-separated exact event names, e.g. "feature.updated". Wildcards like "feature.*" are not supported.|
+|after|query|string(date-time)|false|Only events at or after this time|
+|limit|query|integer|false|Defaults to 50|
+|before|query|string|false|Only return entries older than this date-time. To page back, pass the previous page's `nextCursor` instead.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "events": [
+    {
+      "id": "string",
+      "event": "string",
+      "version": 0,
+      "data": {
+        "property1": null,
+        "property2": null
+      },
+      "dateCreated": "1970-01-01T00:00:00Z"
+    }
+  ],
+  "nextCursor": "string"
+}
+```
+
+<h3 id="get-the-organizations-event-log-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+
+<h3 id="get-the-organizations-event-log-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|events|[[Event](#schemaevent)]|true|none|none|
+|nextCursor|string \| null|true|none|Pass as `before` to get the next page. Null when there are no older entries|
+|» *anyOf*|string|false|none|none|
+|» *anyOf*|null|false|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Get a single event
+
+<a id="opIdgetEvent"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/events/string \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v1/events/{id}`
+
+<h3 id="get-a-single-event-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "event": {
+    "id": "string",
+    "event": "string",
+    "version": 0,
+    "data": {
+      "property1": null,
+      "property2": null
+    },
+    "dateCreated": "1970-01-01T00:00:00Z"
+  }
+}
+```
+
+<h3 id="get-a-single-event-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+
+<h3 id="get-a-single-event-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|event|[Event](#schemaevent)|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
 <h1 id="growthbook-rest-api-code-references">code-references</h1>
 
 Intended for use with our code reference CI utility, [`gb-find-code-refs`](https://github.com/growthbook/gb-find-code-refs).
@@ -88281,7 +91105,9 @@ curl https://api.growthbook.io/api/v1/queries/string \
     "queryType": "string",
     "createdAt": "string",
     "startedAt": "string",
+    "finishedAt": "string",
     "status": "running",
+    "error": "string",
     "externalId": "string",
     "dependencies": [
       "string"
@@ -88304,6 +91130,179 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |query|[Query](#schemaquery)|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Get a data source's 50 most recent queries
+
+<a id="opIdlistDataSourceQueries"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/data-sources/string/queries \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v1/data-sources/{id}/queries`
+
+<h3 id="get-a-data-sources-50-most-recent-queries-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The data source id|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "queries": [
+    {
+      "id": "string",
+      "organization": "string",
+      "datasource": "string",
+      "language": "string",
+      "query": "string",
+      "queryType": "string",
+      "createdAt": "string",
+      "startedAt": "string",
+      "finishedAt": "string",
+      "status": "running",
+      "error": "string",
+      "externalId": "string",
+      "dependencies": [
+        "string"
+      ],
+      "runAtEnd": true
+    }
+  ]
+}
+```
+
+<h3 id="get-a-data-sources-50-most-recent-queries-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+
+<h3 id="get-a-data-sources-50-most-recent-queries-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|queries|[[Query](#schemaquery)]|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Cancel a running query
+
+<a id="opIdpostQueryCancel"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/queries/string/cancel \
+  -X POST \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`POST /v1/queries/{id}/cancel`
+
+Also asks the warehouse to stop it where the integration supports that. Needs permission to run queries on the data source.
+
+<h3 id="cancel-a-running-query-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The id of the requested resource|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "query": {
+    "id": "string",
+    "organization": "string",
+    "datasource": "string",
+    "language": "string",
+    "query": "string",
+    "queryType": "string",
+    "createdAt": "string",
+    "startedAt": "string",
+    "finishedAt": "string",
+    "status": "running",
+    "error": "string",
+    "externalId": "string",
+    "dependencies": [
+      "string"
+    ],
+    "runAtEnd": true
+  }
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="cancel-a-running-query-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource created|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="cancel-a-running-query-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|query|[Query](#schemaquery)|true|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -88443,6 +91442,7 @@ curl https://api.growthbook.io/api/v1/settings \
     "banditScheduleUnit": "hours",
     "banditBurnInValue": 0,
     "banditBurnInUnit": "hours",
+    "banditPeriodWeighting": true,
     "experimentMinLengthDays": 0,
     "experimentMaxLengthDays": 0,
     "preferredEnvironment": "string",
@@ -92815,6 +95815,112 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearerAuth, basicAuth
 </aside>
 
+<h1 id="growthbook-rest-api-information-schema-tables">information-schema-tables</h1>
+
+## Refresh one table's columns
+
+<a id="opIdpostInformationSchemaTableRefresh"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/information-schema-tables/string/refresh \
+  -X POST \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`POST /v1/information-schema-tables/{tableId}/refresh`
+
+Re-reads the table's columns from the warehouse and returns the updated table. A failed read returns an error and leaves the stored columns as they were.
+
+<h3 id="refresh-one-tables-columns-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|tableId|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "informationSchemaTable": {
+    "id": "string",
+    "datasourceId": "string",
+    "informationSchemaId": "string",
+    "tableName": "string",
+    "tableSchema": "string",
+    "databaseName": "string",
+    "columns": [
+      {
+        "columnName": "string",
+        "dataType": "string"
+      }
+    ],
+    "refreshMS": 0,
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "dateUpdated": "1970-01-01T00:00:00Z"
+  }
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="refresh-one-tables-columns-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource created|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="refresh-one-tables-columns-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|informationSchemaTable|[InformationSchemaTable](#schemainformationschematable)|true|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
 <h1 id="growthbook-rest-api-dashboards">Dashboards</h1>
 
 ## Get a single dashboard
@@ -93616,10 +96722,11 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » endDate|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
-|» » » showAs|body|string|false|none|
+|» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
 |» » » » valueAxisLabel|body|string|false|none|
+|» » » » anchorYAxisToZero|body|boolean|false|Line charts only: whether the y-axis starts at 0. Defaults to true.|
 |» » » type|body|string|true|none|
 |» » » dataset|body|object|true|none|
 |» » » » type|body|string|true|none|
@@ -93637,6 +96744,8 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » » denominatorUnit|body|string \| null|true|none|
 |» » » » » » *anyOf*|body|string|false|none|
 |» » » » » » *anyOf*|body|null|false|none|
+|» » » » » showAs|body|string|false|How a mean metric renders: `total` sums the numerator, `per_unit` divides it by the unit count. Ignored for other metric types. Omit to use the default (`per_unit` for `max` and `count distinct` aggregations, otherwise `total`).|
+|» » » » population|body|[ExplorationPopulation](#schemaexplorationpopulation)|false|**Beta** — this field is new and may change in backwards-incompatible ways. A population applied to every metric in the request. Only proportion metrics on the population's Fact Table are supported; the request is rejected if any metric is incompatible.|
 |» » explorerAnalysisId|body|string|false|The exploration run this block renders. Omit it to send `config` alone and have the query run when the dashboard is written.|
 |» » id|body|string|true|none|
 |» » uid|body|string|false|none|
@@ -93714,10 +96823,11 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » endDate|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
-|» » » showAs|body|string|false|none|
+|» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
 |» » » » valueAxisLabel|body|string|false|none|
+|» » » » anchorYAxisToZero|body|boolean|false|Line charts only: whether the y-axis starts at 0. Defaults to true.|
 |» » » type|body|string|true|none|
 |» » » dataset|body|object|true|none|
 |» » » » type|body|string|true|none|
@@ -93815,10 +96925,11 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » endDate|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
-|» » » showAs|body|string|false|none|
+|» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
 |» » » » valueAxisLabel|body|string|false|none|
+|» » » » anchorYAxisToZero|body|boolean|false|Line charts only: whether the y-axis starts at 0. Defaults to true.|
 |» » » type|body|string|true|none|
 |» » » dataset|body|object|true|none|
 |» » » » type|body|string|true|none|
@@ -93918,10 +97029,11 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » endDate|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
-|» » » showAs|body|string|false|none|
+|» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
 |» » » » valueAxisLabel|body|string|false|none|
+|» » » » anchorYAxisToZero|body|boolean|false|Line charts only: whether the y-axis starts at 0. Defaults to true.|
 |» » » type|body|string|true|none|
 |» » » dataset|body|object|true|none|
 |» » » » type|body|string|true|none|
@@ -94023,10 +97135,11 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » endDate|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
-|» » » showAs|body|string|false|none|
+|» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
 |» » » » valueAxisLabel|body|string|false|none|
+|» » » » anchorYAxisToZero|body|boolean|false|Line charts only: whether the y-axis starts at 0. Defaults to true.|
 |» » » type|body|string|true|none|
 |» » » dataset|body|object|true|none|
 |» » » » type|body|string|true|none|
@@ -94502,10 +97615,11 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » endDate|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
-|» » » showAs|body|string|false|none|
+|» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
 |» » » » valueAxisLabel|body|string|false|none|
+|» » » » anchorYAxisToZero|body|boolean|false|Line charts only: whether the y-axis starts at 0. Defaults to true.|
 |» » » type|body|string|true|none|
 |» » » dataset|body|object|true|none|
 |» » » » type|body|string|true|none|
@@ -94523,6 +97637,8 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » » denominatorUnit|body|string \| null|true|none|
 |» » » » » » *anyOf*|body|string|false|none|
 |» » » » » » *anyOf*|body|null|false|none|
+|» » » » » showAs|body|string|false|How a mean metric renders: `total` sums the numerator, `per_unit` divides it by the unit count. Ignored for other metric types. Omit to use the default (`per_unit` for `max` and `count distinct` aggregations, otherwise `total`).|
+|» » » » population|body|[ExplorationPopulation](#schemaexplorationpopulation)|false|**Beta** — this field is new and may change in backwards-incompatible ways. A population applied to every metric in the request. Only proportion metrics on the population's Fact Table are supported; the request is rejected if any metric is incompatible.|
 |» » explorerAnalysisId|body|string|false|The exploration run this block renders. Omit it to send `config` alone and have the query run when the dashboard is written.|
 |» » *anyOf*|body|object|false|none|
 |» » type|body|string|true|none|
@@ -94597,10 +97713,11 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » endDate|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
-|» » » showAs|body|string|false|none|
+|» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
 |» » » » valueAxisLabel|body|string|false|none|
+|» » » » anchorYAxisToZero|body|boolean|false|Line charts only: whether the y-axis starts at 0. Defaults to true.|
 |» » » type|body|string|true|none|
 |» » » dataset|body|object|true|none|
 |» » » » type|body|string|true|none|
@@ -94695,10 +97812,11 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » endDate|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
-|» » » showAs|body|string|false|none|
+|» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
 |» » » » valueAxisLabel|body|string|false|none|
+|» » » » anchorYAxisToZero|body|boolean|false|Line charts only: whether the y-axis starts at 0. Defaults to true.|
 |» » » type|body|string|true|none|
 |» » » dataset|body|object|true|none|
 |» » » » type|body|string|true|none|
@@ -94795,10 +97913,11 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » endDate|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
-|» » » showAs|body|string|false|none|
+|» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
 |» » » » valueAxisLabel|body|string|false|none|
+|» » » » anchorYAxisToZero|body|boolean|false|Line charts only: whether the y-axis starts at 0. Defaults to true.|
 |» » » type|body|string|true|none|
 |» » » dataset|body|object|true|none|
 |» » » » type|body|string|true|none|
@@ -94897,10 +98016,11 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » endDate|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
-|» » » showAs|body|string|false|none|
+|» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
 |» » » » valueAxisLabel|body|string|false|none|
+|» » » » anchorYAxisToZero|body|boolean|false|Line charts only: whether the y-axis starts at 0. Defaults to true.|
 |» » » type|body|string|true|none|
 |» » » dataset|body|object|true|none|
 |» » » » type|body|string|true|none|
@@ -95261,6 +98381,8 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » » » operator|is_false|
 |» » » » » » operator|sql_expr|
 |» » » » » » operator|saved_filter|
+|» » » » » showAs|total|
+|» » » » » showAs|per_unit|
 |» » » mode|previousPeriod|
 |» » » mode|previousPeriodMatchDayOfWeek|
 |» » » mode|previousYear|
@@ -95946,6 +99068,8 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » » » operator|is_false|
 |» » » » » » operator|sql_expr|
 |» » » » » » operator|saved_filter|
+|» » » » » showAs|total|
+|» » » » » showAs|per_unit|
 |» » » mode|previousPeriod|
 |» » » mode|previousPeriodMatchDayOfWeek|
 |» » » mode|previousYear|
@@ -97383,10 +100507,11 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » » endDate|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
-|» » » showAs|body|string|false|none|
+|» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
 |» » » » valueAxisLabel|body|string|false|none|
+|» » » » anchorYAxisToZero|body|boolean|false|Line charts only: whether the y-axis starts at 0. Defaults to true.|
 |» » » type|body|string|true|none|
 |» » » dataset|body|object|true|none|
 |» » » » type|body|string|true|none|
@@ -97404,6 +100529,8 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » » » denominatorUnit|body|string \| null|true|none|
 |» » » » » » *anyOf*|body|string|false|none|
 |» » » » » » *anyOf*|body|null|false|none|
+|» » » » » showAs|body|string|false|How a mean metric renders: `total` sums the numerator, `per_unit` divides it by the unit count. Ignored for other metric types. Omit to use the default (`per_unit` for `max` and `count distinct` aggregations, otherwise `total`).|
+|» » » » population|body|[ExplorationPopulation](#schemaexplorationpopulation)|false|**Beta** — this field is new and may change in backwards-incompatible ways. A population applied to every metric in the request. Only proportion metrics on the population's Fact Table are supported; the request is rejected if any metric is incompatible.|
 |» » explorerAnalysisId|body|string|false|The exploration run this block renders. Omit it to send `config` alone and have the query run when the dashboard is written.|
 |» » *anyOf*|body|object|false|none|
 |» » type|body|string|true|none|
@@ -97478,10 +100605,11 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » » endDate|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
-|» » » showAs|body|string|false|none|
+|» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
 |» » » » valueAxisLabel|body|string|false|none|
+|» » » » anchorYAxisToZero|body|boolean|false|Line charts only: whether the y-axis starts at 0. Defaults to true.|
 |» » » type|body|string|true|none|
 |» » » dataset|body|object|true|none|
 |» » » » type|body|string|true|none|
@@ -97576,10 +100704,11 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » » endDate|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
-|» » » showAs|body|string|false|none|
+|» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
 |» » » » valueAxisLabel|body|string|false|none|
+|» » » » anchorYAxisToZero|body|boolean|false|Line charts only: whether the y-axis starts at 0. Defaults to true.|
 |» » » type|body|string|true|none|
 |» » » dataset|body|object|true|none|
 |» » » » type|body|string|true|none|
@@ -97676,10 +100805,11 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » » endDate|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
-|» » » showAs|body|string|false|none|
+|» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
 |» » » » valueAxisLabel|body|string|false|none|
+|» » » » anchorYAxisToZero|body|boolean|false|Line charts only: whether the y-axis starts at 0. Defaults to true.|
 |» » » type|body|string|true|none|
 |» » » dataset|body|object|true|none|
 |» » » » type|body|string|true|none|
@@ -97778,10 +100908,11 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » » endDate|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
-|» » » showAs|body|string|false|none|
+|» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
 |» » » » valueAxisLabel|body|string|false|none|
+|» » » » anchorYAxisToZero|body|boolean|false|Line charts only: whether the y-axis starts at 0. Defaults to true.|
 |» » » type|body|string|true|none|
 |» » » dataset|body|object|true|none|
 |» » » » type|body|string|true|none|
@@ -98141,6 +101272,8 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » » » » operator|is_false|
 |» » » » » » operator|sql_expr|
 |» » » » » » operator|saved_filter|
+|» » » » » showAs|total|
+|» » » » » showAs|per_unit|
 |» » » mode|previousPeriod|
 |» » » mode|previousPeriodMatchDayOfWeek|
 |» » » mode|previousYear|
@@ -99339,10 +102472,11 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » » endDate|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
-|» » » showAs|body|string|false|none|
+|» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
 |» » » » valueAxisLabel|body|string|false|none|
+|» » » » anchorYAxisToZero|body|boolean|false|Line charts only: whether the y-axis starts at 0. Defaults to true.|
 |» » » type|body|string|true|none|
 |» » » dataset|body|object|true|none|
 |» » » » type|body|string|true|none|
@@ -99360,6 +102494,8 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » » » denominatorUnit|body|string \| null|true|none|
 |» » » » » » *anyOf*|body|string|false|none|
 |» » » » » » *anyOf*|body|null|false|none|
+|» » » » » showAs|body|string|false|How a mean metric renders: `total` sums the numerator, `per_unit` divides it by the unit count. Ignored for other metric types. Omit to use the default (`per_unit` for `max` and `count distinct` aggregations, otherwise `total`).|
+|» » » » population|body|[ExplorationPopulation](#schemaexplorationpopulation)|false|**Beta** — this field is new and may change in backwards-incompatible ways. A population applied to every metric in the request. Only proportion metrics on the population's Fact Table are supported; the request is rejected if any metric is incompatible.|
 |» » explorerAnalysisId|body|string|false|The exploration run this block renders. Omit it to send `config` alone and have the query run when the dashboard is written.|
 |» » *anyOf*|body|object|false|none|
 |» » type|body|string|true|none|
@@ -99434,10 +102570,11 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » » endDate|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
-|» » » showAs|body|string|false|none|
+|» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
 |» » » » valueAxisLabel|body|string|false|none|
+|» » » » anchorYAxisToZero|body|boolean|false|Line charts only: whether the y-axis starts at 0. Defaults to true.|
 |» » » type|body|string|true|none|
 |» » » dataset|body|object|true|none|
 |» » » » type|body|string|true|none|
@@ -99532,10 +102669,11 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » » endDate|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
-|» » » showAs|body|string|false|none|
+|» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
 |» » » » valueAxisLabel|body|string|false|none|
+|» » » » anchorYAxisToZero|body|boolean|false|Line charts only: whether the y-axis starts at 0. Defaults to true.|
 |» » » type|body|string|true|none|
 |» » » dataset|body|object|true|none|
 |» » » » type|body|string|true|none|
@@ -99632,10 +102770,11 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » » endDate|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
-|» » » showAs|body|string|false|none|
+|» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
 |» » » » valueAxisLabel|body|string|false|none|
+|» » » » anchorYAxisToZero|body|boolean|false|Line charts only: whether the y-axis starts at 0. Defaults to true.|
 |» » » type|body|string|true|none|
 |» » » dataset|body|object|true|none|
 |» » » » type|body|string|true|none|
@@ -99734,10 +102873,11 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » » endDate|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
-|» » » showAs|body|string|false|none|
+|» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
 |» » » » valueAxisLabel|body|string|false|none|
+|» » » » anchorYAxisToZero|body|boolean|false|Line charts only: whether the y-axis starts at 0. Defaults to true.|
 |» » » type|body|string|true|none|
 |» » » dataset|body|object|true|none|
 |» » » » type|body|string|true|none|
@@ -100098,6 +103238,8 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » » » » operator|is_false|
 |» » » » » » operator|sql_expr|
 |» » » » » » operator|saved_filter|
+|» » » » » showAs|total|
+|» » » » » showAs|per_unit|
 |» » » mode|previousPeriod|
 |» » » mode|previousPeriodMatchDayOfWeek|
 |» » » mode|previousYear|
@@ -101300,6 +104442,480 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearerAuth, basicAuth
 </aside>
 
+<h1 id="growthbook-rest-api-interleavingexposurequeries">InterleavingExposureQueries</h1>
+
+## Get a single interleavingExposureQuery
+
+<a id="opIdgetInterleavingExposureQuery"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/interleaving-exposure-queries/string \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v1/interleaving-exposure-queries/{id}`
+
+<h3 id="get-a-single-interleavingexposurequery-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "interleavingExposureQuery": {
+    "id": "string",
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "dateUpdated": "1970-01-01T00:00:00Z",
+    "owner": "string",
+    "ownerEmail": "string",
+    "datasourceId": "string",
+    "name": "string",
+    "description": "string",
+    "userIdTypes": [
+      "string"
+    ],
+    "query": "string"
+  }
+}
+```
+
+<h3 id="get-a-single-interleavingexposurequery-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+
+<h3 id="get-a-single-interleavingexposurequery-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|interleavingExposureQuery|[InterleavingExposureQuery](#schemainterleavingexposurequery)|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Update a single interleavingExposureQuery
+
+<a id="opIdupdateInterleavingExposureQuery"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/interleaving-exposure-queries/string \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "owner": "string",
+    "name": "string",
+    "description": "string",
+    "userIdTypes": [
+      "string"
+    ],
+    "query": "string"
+  }'
+```
+
+`PUT /v1/interleaving-exposure-queries/{id}`
+
+> Body parameter
+
+```json
+{
+  "owner": "string",
+  "name": "string",
+  "description": "string",
+  "userIdTypes": [
+    "string"
+  ],
+  "query": "string"
+}
+```
+
+<h3 id="update-a-single-interleavingexposurequery-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|none|
+|body|body|object|true|none|
+|» owner|body|string|false|The userId or email address of the owner. If an email address is provided, it will be used to look up the userId of the matching organization member. If an ID is provided, it will be validated as existing in the organization.|
+|» name|body|string|false|none|
+|» description|body|string|false|none|
+|» userIdTypes|body|[string]|false|none|
+|» query|body|string|false|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "interleavingExposureQuery": {
+    "id": "string",
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "dateUpdated": "1970-01-01T00:00:00Z",
+    "owner": "string",
+    "ownerEmail": "string",
+    "datasourceId": "string",
+    "name": "string",
+    "description": "string",
+    "userIdTypes": [
+      "string"
+    ],
+    "query": "string"
+  }
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="update-a-single-interleavingexposurequery-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource updated|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="update-a-single-interleavingexposurequery-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|interleavingExposureQuery|[InterleavingExposureQuery](#schemainterleavingexposurequery)|true|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Delete a single interleavingExposureQuery
+
+<a id="opIddeleteInterleavingExposureQuery"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/interleaving-exposure-queries/string \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /v1/interleaving-exposure-queries/{id}`
+
+<h3 id="delete-a-single-interleavingexposurequery-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "deletedId": "string"
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="delete-a-single-interleavingexposurequery-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource deleted|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="delete-a-single-interleavingexposurequery-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|deletedId|string|true|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Get all interleavingExposureQueries
+
+<a id="opIdlistInterleavingExposureQueries"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/interleaving-exposure-queries \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v1/interleaving-exposure-queries`
+
+<h3 id="get-all-interleavingexposurequeries-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|datasourceId|query|string|false|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "interleavingExposureQueries": [
+    {
+      "id": "string",
+      "dateCreated": "1970-01-01T00:00:00Z",
+      "dateUpdated": "1970-01-01T00:00:00Z",
+      "owner": "string",
+      "ownerEmail": "string",
+      "datasourceId": "string",
+      "name": "string",
+      "description": "string",
+      "userIdTypes": [
+        "string"
+      ],
+      "query": "string"
+    }
+  ]
+}
+```
+
+<h3 id="get-all-interleavingexposurequeries-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+
+<h3 id="get-all-interleavingexposurequeries-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|interleavingExposureQueries|[[InterleavingExposureQuery](#schemainterleavingexposurequery)]|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Create a single interleavingExposureQuery
+
+<a id="opIdcreateInterleavingExposureQuery"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/interleaving-exposure-queries \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "owner": "string",
+    "datasourceId": "string",
+    "name": "string",
+    "description": "string",
+    "userIdTypes": [
+      "string"
+    ],
+    "query": "string"
+  }'
+```
+
+`POST /v1/interleaving-exposure-queries`
+
+> Body parameter
+
+```json
+{
+  "owner": "string",
+  "datasourceId": "string",
+  "name": "string",
+  "description": "string",
+  "userIdTypes": [
+    "string"
+  ],
+  "query": "string"
+}
+```
+
+<h3 id="create-a-single-interleavingexposurequery-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|object|true|none|
+|» owner|body|string|false|The userId or email address of the owner. If an email address is provided, it will be used to look up the userId of the matching organization member. If an ID is provided, it will be validated as existing in the organization. When omitted, it defaults to the requesting member: a personal access token's owner, or the member an organization API key assumes. An organization API key acting as itself leaves it empty.|
+|» datasourceId|body|string|true|none|
+|» name|body|string|true|none|
+|» description|body|string|false|none|
+|» userIdTypes|body|[string]|true|none|
+|» query|body|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "interleavingExposureQuery": {
+    "id": "string",
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "dateUpdated": "1970-01-01T00:00:00Z",
+    "owner": "string",
+    "ownerEmail": "string",
+    "datasourceId": "string",
+    "name": "string",
+    "description": "string",
+    "userIdTypes": [
+      "string"
+    ],
+    "query": "string"
+  }
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="create-a-single-interleavingexposurequery-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource created|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="create-a-single-interleavingexposurequery-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|interleavingExposureQuery|[InterleavingExposureQuery](#schemainterleavingexposurequery)|true|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
 <h1 id="growthbook-rest-api-interleavings">Interleavings</h1>
 
 ## Get a single interleaving
@@ -101348,15 +104964,22 @@ curl https://api.growthbook.io/api/v1/interleavings/string \
     "trackingKey": "string",
     "hashAttribute": "string",
     "seed": "string",
-    "variations": [
-      {
+    "variations": {
+      "control": {
+        "id": "string",
+        "key": "string",
+        "name": "string",
+        "description": "string",
+        "config": "string"
+      },
+      "treatment": {
         "id": "string",
         "key": "string",
         "name": "string",
         "description": "string",
         "config": "string"
       }
-    ],
+    },
     "jsonSchema": {
       "schemaType": "schema",
       "schema": "string",
@@ -101390,8 +105013,8 @@ curl https://api.growthbook.io/api/v1/interleavings/string \
       "enabled": true,
       "date": "1970-01-01T00:00:00Z"
     },
-    "datasource": "string",
-    "interleavingQueryId": "string",
+    "datasourceId": "string",
+    "interleavingExposureQueryId": "string",
     "userIdType": "string",
     "metrics": [
       {
@@ -101426,7 +105049,9 @@ curl https://api.growthbook.io/api/v1/interleavings/string \
       "property2": {
         "enabled": true
       }
-    }
+    },
+    "autoSnapshots": true,
+    "nextSnapshotAttempt": "1970-01-01T00:00:00Z"
   }
 }
 ```
@@ -101474,20 +105099,20 @@ curl https://api.growthbook.io/api/v1/interleavings/string \
     "trackingKey": "string",
     "hashAttribute": "string",
     "seed": "string",
-    "variations": [
-      {
+    "variations": {
+      "control": {
         "key": "string",
         "name": "string",
         "description": "string",
         "config": "string"
       },
-      {
+      "treatment": {
         "key": "string",
         "name": "string",
         "description": "string",
         "config": "string"
       }
-    ],
+    },
     "jsonSchema": {
       "schemaType": "schema",
       "schema": "string",
@@ -101520,8 +105145,8 @@ curl https://api.growthbook.io/api/v1/interleavings/string \
       },
       "enabled": true
     },
-    "datasource": "string",
-    "interleavingQueryId": "string",
+    "datasourceId": "string",
+    "interleavingExposureQueryId": "string",
     "userIdType": "string",
     "metrics": [
       {
@@ -101579,20 +105204,20 @@ Archive an interleaving experiment by setting `archived`. Use the start and stop
   "trackingKey": "string",
   "hashAttribute": "string",
   "seed": "string",
-  "variations": [
-    {
+  "variations": {
+    "control": {
       "key": "string",
       "name": "string",
       "description": "string",
       "config": "string"
     },
-    {
+    "treatment": {
       "key": "string",
       "name": "string",
       "description": "string",
       "config": "string"
     }
-  ],
+  },
   "jsonSchema": {
     "schemaType": "schema",
     "schema": "string",
@@ -101625,8 +105250,8 @@ Archive an interleaving experiment by setting `archived`. Use the start and stop
     },
     "enabled": true
   },
-  "datasource": "string",
-  "interleavingQueryId": "string",
+  "datasourceId": "string",
+  "interleavingExposureQueryId": "string",
   "userIdType": "string",
   "metrics": [
     {
@@ -101676,11 +105301,21 @@ Archive an interleaving experiment by setting `archived`. Use the start and stop
 |» project|body|string|false|none|
 |» owner|body|string|false|The userId or email address of the owner. If an email address is provided, it will be used to look up the userId of the matching organization member. If an ID is provided, it will be validated as existing in the organization.|
 |» tags|body|[string]|false|none|
-|» archived|body|boolean|false|Stop a running interleaving experiment before archiving it.|
-|» trackingKey|body|string|false|none|
+|» archived|body|boolean|false|Archiving removes a running interleaving experiment from the SDK payload, so its rankers stop serving immediately.|
+|» trackingKey|body|string|false|The `experiment_id` recorded in exposures. Must be unique across the organization. Changing it on a running experiment means earlier exposures are no longer counted.|
 |» hashAttribute|body|string|false|none|
 |» seed|body|string|false|none|
-|» variations|body|[object, object]|false|Replaces both rankers. Each keeps its id by position, so the first entry updates the first ranker.|
+|» variations|body|object|false|Replaces both rankers. Each keeps its id.|
+|» » control|body|object|true|The default ranker. Users who are not exposed to interleaved rankings get its list.|
+|» » » key|body|string|true|none|
+|» » » name|body|string|true|none|
+|» » » description|body|string|false|none|
+|» » » config|body|string|true|The ranker's config, as a JSON string. Passed to `getList` in the SDK.|
+|» » treatment|body|object|true|The ranker being tested against control.|
+|» » » key|body|string|true|none|
+|» » » name|body|string|true|none|
+|» » » description|body|string|false|none|
+|» » » config|body|string|true|The ranker's config, as a JSON string. Passed to `getList` in the SDK.|
 |» jsonSchema|body|object \| null|false|none|
 |» » *anyOf*|body|object|false|Validation schema to stage on the draft. The server sets `date`, so don't send it.|
 |» » schemaType|body|string|true|none|
@@ -101705,8 +105340,8 @@ Archive an interleaving experiment by setting `archived`. Use the start and stop
 |» » » » message|body|string|true|none|
 |» » enabled|body|boolean|true|none|
 |» » *anyOf*|body|null|false|none|
-|» datasource|body|string|false|none|
-|» interleavingQueryId|body|string|false|none|
+|» datasourceId|body|string|false|none|
+|» interleavingExposureQueryId|body|string|false|none|
 |» userIdType|body|string|false|none|
 |» metrics|body|[object]|false|none|
 |» » id|body|string|true|none|
@@ -101743,7 +105378,6 @@ Archive an interleaving experiment by setting `archived`. Use the start and stop
 |» » » » type|string|
 |» » » » type|boolean|
 |» » » attribution|exposureCount|
-|» » » attribution|engagementSignal|
 |» » match|all|
 |» » match|none|
 |» » match|any|
@@ -101774,15 +105408,22 @@ Archive an interleaving experiment by setting `archived`. Use the start and stop
     "trackingKey": "string",
     "hashAttribute": "string",
     "seed": "string",
-    "variations": [
-      {
+    "variations": {
+      "control": {
+        "id": "string",
+        "key": "string",
+        "name": "string",
+        "description": "string",
+        "config": "string"
+      },
+      "treatment": {
         "id": "string",
         "key": "string",
         "name": "string",
         "description": "string",
         "config": "string"
       }
-    ],
+    },
     "jsonSchema": {
       "schemaType": "schema",
       "schema": "string",
@@ -101816,8 +105457,8 @@ Archive an interleaving experiment by setting `archived`. Use the start and stop
       "enabled": true,
       "date": "1970-01-01T00:00:00Z"
     },
-    "datasource": "string",
-    "interleavingQueryId": "string",
+    "datasourceId": "string",
+    "interleavingExposureQueryId": "string",
     "userIdType": "string",
     "metrics": [
       {
@@ -101852,7 +105493,9 @@ Archive an interleaving experiment by setting `archived`. Use the start and stop
       "property2": {
         "enabled": true
       }
-    }
+    },
+    "autoSnapshots": true,
+    "nextSnapshotAttempt": "1970-01-01T00:00:00Z"
   }
 }
 ```
@@ -101899,6 +105542,94 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |interleaving|[Interleaving](#schemainterleaving)|true|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Delete a single interleaving
+
+<a id="opIddeleteInterleaving"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/interleavings/string \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /v1/interleavings/{id}`
+
+Permanently deletes an interleaving experiment and its results snapshots. Archive instead to keep the results.
+
+<h3 id="delete-a-single-interleaving-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "deletedId": "string"
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="delete-a-single-interleaving-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource deleted|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="delete-a-single-interleaving-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|deletedId|string|true|none|none|
 
 ### Response Headers
 
@@ -101962,15 +105693,22 @@ curl https://api.growthbook.io/api/v1/interleavings \
       "trackingKey": "string",
       "hashAttribute": "string",
       "seed": "string",
-      "variations": [
-        {
+      "variations": {
+        "control": {
+          "id": "string",
+          "key": "string",
+          "name": "string",
+          "description": "string",
+          "config": "string"
+        },
+        "treatment": {
           "id": "string",
           "key": "string",
           "name": "string",
           "description": "string",
           "config": "string"
         }
-      ],
+      },
       "jsonSchema": {
         "schemaType": "schema",
         "schema": "string",
@@ -102004,8 +105742,8 @@ curl https://api.growthbook.io/api/v1/interleavings \
         "enabled": true,
         "date": "1970-01-01T00:00:00Z"
       },
-      "datasource": "string",
-      "interleavingQueryId": "string",
+      "datasourceId": "string",
+      "interleavingExposureQueryId": "string",
       "userIdType": "string",
       "metrics": [
         {
@@ -102040,7 +105778,9 @@ curl https://api.growthbook.io/api/v1/interleavings \
         "property2": {
           "enabled": true
         }
-      }
+      },
+      "autoSnapshots": true,
+      "nextSnapshotAttempt": "1970-01-01T00:00:00Z"
     }
   ]
 }
@@ -102088,20 +105828,20 @@ curl https://api.growthbook.io/api/v1/interleavings \
     "key": "string",
     "trackingKey": "string",
     "hashAttribute": "string",
-    "variations": [
-      {
+    "variations": {
+      "control": {
         "key": "string",
         "name": "string",
         "description": "string",
         "config": "string"
       },
-      {
+      "treatment": {
         "key": "string",
         "name": "string",
         "description": "string",
         "config": "string"
       }
-    ],
+    },
     "jsonSchema": {
       "schemaType": "schema",
       "schema": "string",
@@ -102134,8 +105874,8 @@ curl https://api.growthbook.io/api/v1/interleavings \
       },
       "enabled": true
     },
-    "datasource": "string",
-    "interleavingQueryId": "string",
+    "datasourceId": "string",
+    "interleavingExposureQueryId": "string",
     "userIdType": "string",
     "metrics": [
       {
@@ -102190,20 +105930,20 @@ curl https://api.growthbook.io/api/v1/interleavings \
   "key": "string",
   "trackingKey": "string",
   "hashAttribute": "string",
-  "variations": [
-    {
+  "variations": {
+    "control": {
       "key": "string",
       "name": "string",
       "description": "string",
       "config": "string"
     },
-    {
+    "treatment": {
       "key": "string",
       "name": "string",
       "description": "string",
       "config": "string"
     }
-  ],
+  },
   "jsonSchema": {
     "schemaType": "schema",
     "schema": "string",
@@ -102236,8 +105976,8 @@ curl https://api.growthbook.io/api/v1/interleavings \
     },
     "enabled": true
   },
-  "datasource": "string",
-  "interleavingQueryId": "string",
+  "datasourceId": "string",
+  "interleavingExposureQueryId": "string",
   "userIdType": "string",
   "metrics": [
     {
@@ -102286,10 +106026,20 @@ curl https://api.growthbook.io/api/v1/interleavings \
 |» project|body|string|false|none|
 |» owner|body|string|false|The userId or email address of the owner. If an email address is provided, it will be used to look up the userId of the matching organization member. If an ID is provided, it will be validated as existing in the organization.|
 |» tags|body|[string]|false|none|
-|» key|body|string|true|The key your code passes to `interleave()` as `key`. Can't be changed later. Several experiments may share a key so you can iterate without changing code, but only one of them can be running in a given environment, and each needs its own `trackingKey`.|
-|» trackingKey|body|string|false|The `experiment_id` recorded in exposures. Defaults to `key`.|
+|» key|body|string|true|The key your code passes to `interleave()` as `key`. Can't be changed later. Several experiments may share a key so you can iterate without changing code, but only one of them can be running in a given environment.|
+|» trackingKey|body|string|false|The `experiment_id` recorded in exposures. Leave this unset: it is generated from `key`, with a `_v1` style suffix when another experiment already uses it. Tracking keys must be unique across the organization, so supplying one that is taken is rejected.|
 |» hashAttribute|body|string|false|none|
-|» variations|body|[object, object]|true|Exactly two rankers. Users who are not exposed to interleaved rankings get the first ranker's list.|
+|» variations|body|object|true|Exactly two rankers, by role.|
+|» » control|body|object|true|The default ranker. Users who are not exposed to interleaved rankings get its list.|
+|» » » key|body|string|true|none|
+|» » » name|body|string|true|none|
+|» » » description|body|string|false|none|
+|» » » config|body|string|true|The ranker's config, as a JSON string. Passed to `getList` in the SDK.|
+|» » treatment|body|object|true|The ranker being tested against control.|
+|» » » key|body|string|true|none|
+|» » » name|body|string|true|none|
+|» » » description|body|string|false|none|
+|» » » config|body|string|true|The ranker's config, as a JSON string. Passed to `getList` in the SDK.|
 |» jsonSchema|body|object|false|Validation schema to stage on the draft. The server sets `date`, so don't send it.|
 |» » schemaType|body|string|true|none|
 |» » schema|body|string|true|none|
@@ -102312,9 +106062,9 @@ curl https://api.growthbook.io/api/v1/interleavings \
 |» » » » rule|body|string|true|none|
 |» » » » message|body|string|true|none|
 |» » enabled|body|boolean|true|none|
-|» datasource|body|string|true|none|
-|» interleavingQueryId|body|string|true|none|
-|» userIdType|body|string|true|none|
+|» datasourceId|body|string|false|none|
+|» interleavingExposureQueryId|body|string|false|none|
+|» userIdType|body|string|false|none|
 |» metrics|body|[object]|false|none|
 |» » id|body|string|true|none|
 |» » analyses|body|[object]|true|none|
@@ -102350,7 +106100,6 @@ curl https://api.growthbook.io/api/v1/interleavings \
 |» » » » type|string|
 |» » » » type|boolean|
 |» » » attribution|exposureCount|
-|» » » attribution|engagementSignal|
 |» » match|all|
 |» » match|none|
 |» » match|any|
@@ -102381,15 +106130,22 @@ curl https://api.growthbook.io/api/v1/interleavings \
     "trackingKey": "string",
     "hashAttribute": "string",
     "seed": "string",
-    "variations": [
-      {
+    "variations": {
+      "control": {
+        "id": "string",
+        "key": "string",
+        "name": "string",
+        "description": "string",
+        "config": "string"
+      },
+      "treatment": {
         "id": "string",
         "key": "string",
         "name": "string",
         "description": "string",
         "config": "string"
       }
-    ],
+    },
     "jsonSchema": {
       "schemaType": "schema",
       "schema": "string",
@@ -102423,8 +106179,8 @@ curl https://api.growthbook.io/api/v1/interleavings \
       "enabled": true,
       "date": "1970-01-01T00:00:00Z"
     },
-    "datasource": "string",
-    "interleavingQueryId": "string",
+    "datasourceId": "string",
+    "interleavingExposureQueryId": "string",
     "userIdType": "string",
     "metrics": [
       {
@@ -102459,7 +106215,9 @@ curl https://api.growthbook.io/api/v1/interleavings \
       "property2": {
         "enabled": true
       }
-    }
+    },
+    "autoSnapshots": true,
+    "nextSnapshotAttempt": "1970-01-01T00:00:00Z"
   }
 }
 ```
@@ -102568,15 +106326,22 @@ Starts serving the interleaving to SDKs in its enabled environments. A stopped i
     "trackingKey": "string",
     "hashAttribute": "string",
     "seed": "string",
-    "variations": [
-      {
+    "variations": {
+      "control": {
+        "id": "string",
+        "key": "string",
+        "name": "string",
+        "description": "string",
+        "config": "string"
+      },
+      "treatment": {
         "id": "string",
         "key": "string",
         "name": "string",
         "description": "string",
         "config": "string"
       }
-    ],
+    },
     "jsonSchema": {
       "schemaType": "schema",
       "schema": "string",
@@ -102610,8 +106375,8 @@ Starts serving the interleaving to SDKs in its enabled environments. A stopped i
       "enabled": true,
       "date": "1970-01-01T00:00:00Z"
     },
-    "datasource": "string",
-    "interleavingQueryId": "string",
+    "datasourceId": "string",
+    "interleavingExposureQueryId": "string",
     "userIdType": "string",
     "metrics": [
       {
@@ -102646,7 +106411,9 @@ Starts serving the interleaving to SDKs in its enabled environments. A stopped i
       "property2": {
         "enabled": true
       }
-    }
+    },
+    "autoSnapshots": true,
+    "nextSnapshotAttempt": "1970-01-01T00:00:00Z"
   }
 }
 ```
@@ -102755,15 +106522,22 @@ Removes the interleaving from SDK payloads, so `interleave()` falls back to `fal
     "trackingKey": "string",
     "hashAttribute": "string",
     "seed": "string",
-    "variations": [
-      {
+    "variations": {
+      "control": {
+        "id": "string",
+        "key": "string",
+        "name": "string",
+        "description": "string",
+        "config": "string"
+      },
+      "treatment": {
         "id": "string",
         "key": "string",
         "name": "string",
         "description": "string",
         "config": "string"
       }
-    ],
+    },
     "jsonSchema": {
       "schemaType": "schema",
       "schema": "string",
@@ -102797,8 +106571,8 @@ Removes the interleaving from SDK payloads, so `interleave()` falls back to `fal
       "enabled": true,
       "date": "1970-01-01T00:00:00Z"
     },
-    "datasource": "string",
-    "interleavingQueryId": "string",
+    "datasourceId": "string",
+    "interleavingExposureQueryId": "string",
     "userIdType": "string",
     "metrics": [
       {
@@ -102833,7 +106607,9 @@ Removes the interleaving from SDK payloads, so `interleave()` falls back to `fal
       "property2": {
         "enabled": true
       }
-    }
+    },
+    "autoSnapshots": true,
+    "nextSnapshotAttempt": "1970-01-01T00:00:00Z"
   }
 }
 ```
@@ -102887,6 +106663,570 @@ Status Code **200**
 |---|---|---|---|---|
 |202|Location|string||The confirmation to poll|
 |202|Retry-After|integer||Seconds to wait before polling|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Refresh interleaving experiment results
+
+<a id="opIdrefreshInterleaving"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/interleavings/string/refresh \
+  -X POST \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`POST /v1/interleavings/{id}/refresh`
+
+Creates a results snapshot and starts its metric queries against the Data Source. The experiment must have been started and have at least one metric. Queries run asynchronously; poll the snapshot until its `status` is `success` or `error`.
+
+<h3 id="refresh-interleaving-experiment-results-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The interleaving experiment id|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "snapshot": {
+    "id": "string",
+    "interleavingId": "string",
+    "status": "running",
+    "error": "string",
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "runStarted": "1970-01-01T00:00:00Z",
+    "settings": {
+      "trackingKey": "string",
+      "datasourceId": "string",
+      "interleavingExposureQueryId": "string",
+      "userIdType": "string",
+      "variations": {
+        "control": {
+          "id": "string",
+          "key": "string",
+          "name": "string"
+        },
+        "treatment": {
+          "id": "string",
+          "key": "string",
+          "name": "string"
+        }
+      },
+      "metrics": [
+        {
+          "id": "string",
+          "analyses": [
+            {
+              "type": "paired"
+            }
+          ]
+        }
+      ],
+      "pValueThreshold": 0,
+      "startDate": "1970-01-01T00:00:00Z",
+      "endDate": "1970-01-01T00:00:00Z"
+    },
+    "results": [
+      {
+        "metricId": "string",
+        "analysis": {
+          "type": "paired"
+        },
+        "users": 0,
+        "denominator": 0,
+        "control": {
+          "value": 0,
+          "cr": 0
+        },
+        "treatment": {
+          "value": 0,
+          "cr": 0
+        },
+        "test": {
+          "method": "paired_delta_t",
+          "expected": 0,
+          "ci": [
+            0,
+            0
+          ],
+          "pValue": 0,
+          "errorMessage": "string",
+          "pValueErrorMessage": "NUMERICAL_PVALUE_NOT_CONVERGED"
+        }
+      }
+    ],
+    "usersExposed": 0
+  }
+}
+```
+
+<h3 id="refresh-interleaving-experiment-results-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource created|Inline|
+
+<h3 id="refresh-interleaving-experiment-results-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|snapshot|[InterleavingSnapshot](#schemainterleavingsnapshot)|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Get the latest interleaving experiment results
+
+<a id="opIdgetInterleavingResults"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/interleavings/string/results \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v1/interleavings/{id}/results`
+
+Returns the most recent successful `snapshot` and the status-only `latest` run. Poll `latest` while a refresh is in progress; `snapshot` remains null until a run succeeds.
+
+<h3 id="get-the-latest-interleaving-experiment-results-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The interleaving experiment id|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "snapshot": {
+    "id": "string",
+    "interleavingId": "string",
+    "status": "running",
+    "error": "string",
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "runStarted": "1970-01-01T00:00:00Z",
+    "settings": {
+      "trackingKey": "string",
+      "datasourceId": "string",
+      "interleavingExposureQueryId": "string",
+      "userIdType": "string",
+      "variations": {
+        "control": {
+          "id": "string",
+          "key": "string",
+          "name": "string"
+        },
+        "treatment": {
+          "id": "string",
+          "key": "string",
+          "name": "string"
+        }
+      },
+      "metrics": [
+        {
+          "id": "string",
+          "analyses": [
+            {
+              "type": "paired"
+            }
+          ]
+        }
+      ],
+      "pValueThreshold": 0,
+      "startDate": "1970-01-01T00:00:00Z",
+      "endDate": "1970-01-01T00:00:00Z"
+    },
+    "results": [
+      {
+        "metricId": "string",
+        "analysis": {
+          "type": "paired"
+        },
+        "users": 0,
+        "denominator": 0,
+        "control": {
+          "value": 0,
+          "cr": 0
+        },
+        "treatment": {
+          "value": 0,
+          "cr": 0
+        },
+        "test": {
+          "method": "paired_delta_t",
+          "expected": 0,
+          "ci": [
+            0,
+            0
+          ],
+          "pValue": 0,
+          "errorMessage": "string",
+          "pValueErrorMessage": "NUMERICAL_PVALUE_NOT_CONVERGED"
+        }
+      }
+    ],
+    "usersExposed": 0
+  },
+  "latest": {
+    "id": "string",
+    "status": "running",
+    "error": "string",
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "runStarted": "1970-01-01T00:00:00Z",
+    "queries": [
+      {
+        "query": "string",
+        "status": "queued",
+        "name": "string"
+      }
+    ]
+  }
+}
+```
+
+<h3 id="get-the-latest-interleaving-experiment-results-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+
+<h3 id="get-the-latest-interleaving-experiment-results-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|snapshot|[InterleavingSnapshot](#schemainterleavingsnapshot) \| null|true|none|The most recent snapshot that succeeded, so results stay readable while a newer run is in flight. null until the first run succeeds.|
+|» *anyOf*|[InterleavingSnapshot](#schemainterleavingsnapshot)|false|none|none|
+|» *anyOf*|null|false|none|none|
+|latest|[InterleavingSnapshotStatus](#schemainterleavingsnapshotstatus) \| null|true|none|Status of the most recent snapshot in any state. Poll this to follow a run; it matches `snapshot` once that run succeeds. null until the first refresh.|
+|» *anyOf*|[InterleavingSnapshotStatus](#schemainterleavingsnapshotstatus)|false|none|none|
+|» *anyOf*|null|false|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Get interleaving experiment run status
+
+<a id="opIdgetInterleavingStatus"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/interleavings/string/status \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v1/interleavings/{id}/status`
+
+Just the status of the most recent results run (id, status, queries, timestamps). A lightweight alternative to the full results endpoint, intended for polling while a run is in progress.
+
+<h3 id="get-interleaving-experiment-run-status-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The interleaving experiment id|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "latest": {
+    "id": "string",
+    "status": "running",
+    "error": "string",
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "runStarted": "1970-01-01T00:00:00Z",
+    "queries": [
+      {
+        "query": "string",
+        "status": "queued",
+        "name": "string"
+      }
+    ]
+  }
+}
+```
+
+<h3 id="get-interleaving-experiment-run-status-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+
+<h3 id="get-interleaving-experiment-run-status-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|latest|[InterleavingSnapshotStatus](#schemainterleavingsnapshotstatus) \| null|true|none|null until the first refresh|
+|» *anyOf*|[InterleavingSnapshotStatus](#schemainterleavingsnapshotstatus)|false|none|none|
+|» *anyOf*|null|false|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## List interleaving experiment results snapshots
+
+<a id="opIdlistInterleavingSnapshots"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/interleavings/string/snapshots \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v1/interleavings/{id}/snapshots`
+
+Newest snapshot first, regardless of status.
+
+<h3 id="list-interleaving-experiment-results-snapshots-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The interleaving experiment id|
+|limit|query|integer|false|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "snapshots": [
+    {
+      "id": "string",
+      "interleavingId": "string",
+      "status": "running",
+      "error": "string",
+      "dateCreated": "1970-01-01T00:00:00Z",
+      "runStarted": "1970-01-01T00:00:00Z",
+      "settings": {
+        "trackingKey": "string",
+        "datasourceId": "string",
+        "interleavingExposureQueryId": "string",
+        "userIdType": "string",
+        "variations": {
+          "control": {
+            "id": "string",
+            "key": "string",
+            "name": "string"
+          },
+          "treatment": {
+            "id": "string",
+            "key": "string",
+            "name": "string"
+          }
+        },
+        "metrics": [
+          {
+            "id": "string",
+            "analyses": [
+              {
+                "type": "paired"
+              }
+            ]
+          }
+        ],
+        "pValueThreshold": 0,
+        "startDate": "1970-01-01T00:00:00Z",
+        "endDate": "1970-01-01T00:00:00Z"
+      },
+      "results": [
+        {
+          "metricId": "string",
+          "analysis": {
+            "type": "paired"
+          },
+          "users": 0,
+          "denominator": 0,
+          "control": {
+            "value": 0,
+            "cr": 0
+          },
+          "treatment": {
+            "value": 0,
+            "cr": 0
+          },
+          "test": {
+            "method": "paired_delta_t",
+            "expected": 0,
+            "ci": [
+              0,
+              0
+            ],
+            "pValue": 0,
+            "errorMessage": "string",
+            "pValueErrorMessage": "NUMERICAL_PVALUE_NOT_CONVERGED"
+          }
+        }
+      ],
+      "usersExposed": 0
+    }
+  ]
+}
+```
+
+<h3 id="list-interleaving-experiment-results-snapshots-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+
+<h3 id="list-interleaving-experiment-results-snapshots-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|snapshots|[[InterleavingSnapshot](#schemainterleavingsnapshot)]|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Get an interleaving experiment results snapshot
+
+<a id="opIdgetInterleavingSnapshot"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/interleavings/string/snapshots/string \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v1/interleavings/{id}/snapshots/{snapshotId}`
+
+<h3 id="get-an-interleaving-experiment-results-snapshot-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The interleaving experiment id|
+|snapshotId|path|string|true|The snapshot id|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "snapshot": {
+    "id": "string",
+    "interleavingId": "string",
+    "status": "running",
+    "error": "string",
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "runStarted": "1970-01-01T00:00:00Z",
+    "settings": {
+      "trackingKey": "string",
+      "datasourceId": "string",
+      "interleavingExposureQueryId": "string",
+      "userIdType": "string",
+      "variations": {
+        "control": {
+          "id": "string",
+          "key": "string",
+          "name": "string"
+        },
+        "treatment": {
+          "id": "string",
+          "key": "string",
+          "name": "string"
+        }
+      },
+      "metrics": [
+        {
+          "id": "string",
+          "analyses": [
+            {
+              "type": "paired"
+            }
+          ]
+        }
+      ],
+      "pValueThreshold": 0,
+      "startDate": "1970-01-01T00:00:00Z",
+      "endDate": "1970-01-01T00:00:00Z"
+    },
+    "results": [
+      {
+        "metricId": "string",
+        "analysis": {
+          "type": "paired"
+        },
+        "users": 0,
+        "denominator": 0,
+        "control": {
+          "value": 0,
+          "cr": 0
+        },
+        "treatment": {
+          "value": 0,
+          "cr": 0
+        },
+        "test": {
+          "method": "paired_delta_t",
+          "expected": 0,
+          "ci": [
+            0,
+            0
+          ],
+          "pValue": 0,
+          "errorMessage": "string",
+          "pValueErrorMessage": "NUMERICAL_PVALUE_NOT_CONVERGED"
+        }
+      }
+    ],
+    "usersExposed": 0
+  }
+}
+```
+
+<h3 id="get-an-interleaving-experiment-results-snapshot-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+
+<h3 id="get-an-interleaving-experiment-results-snapshot-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|snapshot|[InterleavingSnapshot](#schemainterleavingsnapshot)|true|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -104994,6 +109334,8 @@ curl https://api.growthbook.io/api/v1/experiment-templates/string \
       "identifierType": "string"
     },
     "exposureQueryId": "string",
+    "isClusterExperiment": true,
+    "clusterSubUnitIdentifier": "string",
     "hashAttribute": "string",
     "fallbackAttribute": "string",
     "disableStickyBucketing": true,
@@ -105097,6 +109439,8 @@ curl https://api.growthbook.io/api/v1/experiment-templates/string \
       "identifierType": "string"
     },
     "exposureQueryId": "string",
+    "isClusterExperiment": true,
+    "clusterSubUnitIdentifier": "string",
     "hashAttribute": "string",
     "fallbackAttribute": "string",
     "disableStickyBucketing": true,
@@ -105173,6 +109517,8 @@ curl https://api.growthbook.io/api/v1/experiment-templates/string \
     "identifierType": "string"
   },
   "exposureQueryId": "string",
+  "isClusterExperiment": true,
+  "clusterSubUnitIdentifier": "string",
   "hashAttribute": "string",
   "fallbackAttribute": "string",
   "disableStickyBucketing": true,
@@ -105245,6 +109591,8 @@ curl https://api.growthbook.io/api/v1/experiment-templates/string \
 |» » » *anyOf*|body|string|false|none|
 |» » » *anyOf*|body|null|false|none|
 |» exposureQueryId|body|string|false|**Deprecated.** Deprecated: use `exposureQuery`. Rejected when selecting a different assignment query that declares several identifier types; set `exposureQuery.identifierType` instead.|
+|» isClusterExperiment|body|boolean|false|none|
+|» clusterSubUnitIdentifier|body|string|false|none|
 |» hashAttribute|body|string|false|none|
 |» fallbackAttribute|body|string|false|none|
 |» disableStickyBucketing|body|boolean|false|none|
@@ -105313,6 +109661,8 @@ curl https://api.growthbook.io/api/v1/experiment-templates/string \
       "identifierType": "string"
     },
     "exposureQueryId": "string",
+    "isClusterExperiment": true,
+    "clusterSubUnitIdentifier": "string",
     "hashAttribute": "string",
     "fallbackAttribute": "string",
     "disableStickyBucketing": true,
@@ -105558,6 +109908,8 @@ curl https://api.growthbook.io/api/v1/experiment-templates \
         "identifierType": "string"
       },
       "exposureQueryId": "string",
+      "isClusterExperiment": true,
+      "clusterSubUnitIdentifier": "string",
       "hashAttribute": "string",
       "fallbackAttribute": "string",
       "disableStickyBucketing": true,
@@ -105662,6 +110014,8 @@ curl https://api.growthbook.io/api/v1/experiment-templates \
       "identifierType": "string"
     },
     "exposureQueryId": "string",
+    "isClusterExperiment": true,
+    "clusterSubUnitIdentifier": "string",
     "hashAttribute": "string",
     "fallbackAttribute": "string",
     "disableStickyBucketing": true,
@@ -105738,6 +110092,8 @@ curl https://api.growthbook.io/api/v1/experiment-templates \
     "identifierType": "string"
   },
   "exposureQueryId": "string",
+  "isClusterExperiment": true,
+  "clusterSubUnitIdentifier": "string",
   "hashAttribute": "string",
   "fallbackAttribute": "string",
   "disableStickyBucketing": true,
@@ -105809,6 +110165,8 @@ curl https://api.growthbook.io/api/v1/experiment-templates \
 |» » » *anyOf*|body|string|false|none|
 |» » » *anyOf*|body|null|false|none|
 |» exposureQueryId|body|string|false|**Deprecated.** Deprecated: use `exposureQuery`. Rejected when selecting a different assignment query that declares several identifier types; set `exposureQuery.identifierType` instead.|
+|» isClusterExperiment|body|boolean|false|none|
+|» clusterSubUnitIdentifier|body|string|false|none|
 |» hashAttribute|body|string|false|none|
 |» fallbackAttribute|body|string|false|none|
 |» disableStickyBucketing|body|boolean|false|none|
@@ -105877,6 +110235,8 @@ curl https://api.growthbook.io/api/v1/experiment-templates \
       "identifierType": "string"
     },
     "exposureQueryId": "string",
+    "isClusterExperiment": true,
+    "clusterSubUnitIdentifier": "string",
     "hashAttribute": "string",
     "fallbackAttribute": "string",
     "disableStickyBucketing": true,
@@ -106020,6 +110380,8 @@ curl https://api.growthbook.io/api/v1/experiment-templates/bulk-import \
             "identifierType": "string"
           },
           "exposureQueryId": "string",
+          "isClusterExperiment": true,
+          "clusterSubUnitIdentifier": "string",
           "hashAttribute": "string",
           "fallbackAttribute": "string",
           "disableStickyBucketing": true,
@@ -106103,6 +110465,8 @@ curl https://api.growthbook.io/api/v1/experiment-templates/bulk-import \
           "identifierType": "string"
         },
         "exposureQueryId": "string",
+        "isClusterExperiment": true,
+        "clusterSubUnitIdentifier": "string",
         "hashAttribute": "string",
         "fallbackAttribute": "string",
         "disableStickyBucketing": true,
@@ -106180,6 +110544,8 @@ curl https://api.growthbook.io/api/v1/experiment-templates/bulk-import \
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » exposureQueryId|body|string|false|**Deprecated.** Deprecated: use `exposureQuery`. Rejected when selecting a different assignment query that declares several identifier types; set `exposureQuery.identifierType` instead.|
+|» » » isClusterExperiment|body|boolean|false|none|
+|» » » clusterSubUnitIdentifier|body|string|false|none|
 |» » » hashAttribute|body|string|false|none|
 |» » » fallbackAttribute|body|string|false|none|
 |» » » disableStickyBucketing|body|boolean|false|none|
@@ -106316,7 +110682,8 @@ curl https://api.growthbook.io/api/v1/product-analytics/metric-exploration \
     "showAs": "total",
     "chartSettings": {
       "categoryAxisLabel": "string",
-      "valueAxisLabel": "string"
+      "valueAxisLabel": "string",
+      "anchorYAxisToZero": true
     },
     "type": "metric",
     "dataset": {
@@ -106336,9 +110703,20 @@ curl https://api.growthbook.io/api/v1/product-analytics/metric-exploration \
           "type": "metric",
           "metricId": "string",
           "unit": "string",
-          "denominatorUnit": "string"
+          "denominatorUnit": "string",
+          "showAs": "total"
         }
-      ]
+      ],
+      "population": {
+        "source": {
+          "type": "factTable",
+          "factTableId": "string"
+        },
+        "rowFilters": [],
+        "aggregateFilter": "string",
+        "aggregateFilterColumn": "string",
+        "unit": "string"
+      }
     }
   }'
 ```
@@ -106368,7 +110746,8 @@ curl https://api.growthbook.io/api/v1/product-analytics/metric-exploration \
   "showAs": "total",
   "chartSettings": {
     "categoryAxisLabel": "string",
-    "valueAxisLabel": "string"
+    "valueAxisLabel": "string",
+    "anchorYAxisToZero": true
   },
   "type": "metric",
   "dataset": {
@@ -106388,9 +110767,20 @@ curl https://api.growthbook.io/api/v1/product-analytics/metric-exploration \
         "type": "metric",
         "metricId": "string",
         "unit": "string",
-        "denominatorUnit": "string"
+        "denominatorUnit": "string",
+        "showAs": "total"
       }
-    ]
+    ],
+    "population": {
+      "source": {
+        "type": "factTable",
+        "factTableId": "string"
+      },
+      "rowFilters": [],
+      "aggregateFilter": "string",
+      "aggregateFilterColumn": "string",
+      "unit": "string"
+    }
   }
 }
 ```
@@ -106442,10 +110832,11 @@ curl https://api.growthbook.io/api/v1/product-analytics/metric-exploration \
 |» » endDate|body|string \| null|false|none|
 |» » » *anyOf*|body|string|false|none|
 |» » » *anyOf*|body|null|false|none|
-|» showAs|body|string|false|none|
+|» showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» chartSettings|body|object|false|none|
 |» » categoryAxisLabel|body|string|false|none|
 |» » valueAxisLabel|body|string|false|none|
+|» » anchorYAxisToZero|body|boolean|false|Line charts only: whether the y-axis starts at 0. Defaults to true.|
 |» type|body|string|true|none|
 |» dataset|body|object|true|none|
 |» » type|body|string|true|none|
@@ -106463,6 +110854,8 @@ curl https://api.growthbook.io/api/v1/product-analytics/metric-exploration \
 |» » » denominatorUnit|body|string \| null|true|none|
 |» » » » *anyOf*|body|string|false|none|
 |» » » » *anyOf*|body|null|false|none|
+|» » » showAs|body|string|false|How a mean metric renders: `total` sums the numerator, `per_unit` divides it by the unit count. Ignored for other metric types. Omit to use the default (`per_unit` for `max` and `count distinct` aggregations, otherwise `total`).|
+|» » population|body|[ExplorationPopulation](#schemaexplorationpopulation)|false|**Beta** — this field is new and may change in backwards-incompatible ways. A population applied to every metric in the request. Only proportion metrics on the population's Fact Table are supported; the request is rejected if any metric is incompatible.|
 
 #### Enumerated Values
 
@@ -106546,6 +110939,8 @@ curl https://api.growthbook.io/api/v1/product-analytics/metric-exploration \
 |» » » » operator|is_false|
 |» » » » operator|sql_expr|
 |» » » » operator|saved_filter|
+|» » » showAs|total|
+|» » » showAs|per_unit|
 
 > Example responses
 
@@ -106575,6 +110970,7 @@ curl https://api.growthbook.io/api/v1/product-analytics/metric-exploration \
               "denominator": 0
             }
           ],
+          "populationCount": 0,
           "steps": [
             {
               "count": 0,
@@ -106620,7 +111016,8 @@ curl https://api.growthbook.io/api/v1/product-analytics/metric-exploration \
       "showAs": "total",
       "chartSettings": {
         "categoryAxisLabel": "string",
-        "valueAxisLabel": "string"
+        "valueAxisLabel": "string",
+        "anchorYAxisToZero": true
       },
       "type": "metric",
       "dataset": {
@@ -106640,9 +111037,20 @@ curl https://api.growthbook.io/api/v1/product-analytics/metric-exploration \
             "type": "metric",
             "metricId": "string",
             "unit": "string",
-            "denominatorUnit": "string"
+            "denominatorUnit": "string",
+            "showAs": "total"
           }
-        ]
+        ],
+        "population": {
+          "source": {
+            "type": "factTable",
+            "factTableId": "string"
+          },
+          "rowFilters": [],
+          "aggregateFilter": "string",
+          "aggregateFilterColumn": "string",
+          "unit": "string"
+        }
       }
     }
   },
@@ -106655,7 +111063,9 @@ curl https://api.growthbook.io/api/v1/product-analytics/metric-exploration \
     "queryType": "string",
     "createdAt": "string",
     "startedAt": "string",
+    "finishedAt": "string",
     "status": "running",
+    "error": "string",
     "externalId": "string",
     "dependencies": [
       "string"
@@ -106704,6 +111114,7 @@ Status Code **200**
 |» » » » denominator|number \| null|true|none|none|
 |» » » » » *anyOf*|number|false|none|none|
 |» » » » » *anyOf*|null|false|none|none|
+|» » » populationCount|number|false|none|**Beta** — this field is new and may change in backwards-incompatible ways. Number of units in the dataset's population for this row. Only present when the request has a population; each value's numerator and denominator keep their usual meaning, limited to population members.|
 |» » » steps|[object]|false|none|none|
 |» » » » count|number|true|none|none|
 |» » » » timeFromPrevSumHrs|number \| null|true|none|none|
@@ -106769,10 +111180,11 @@ Status Code **200**
 |» » » endDate|string \| null|false|none|none|
 |» » » » *anyOf*|string|false|none|none|
 |» » » » *anyOf*|null|false|none|none|
-|» » showAs|string|false|none|none|
+|» » showAs|string|false|none|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » chartSettings|object|false|none|none|
 |» » » categoryAxisLabel|string|false|none|none|
 |» » » valueAxisLabel|string|false|none|none|
+|» » » anchorYAxisToZero|boolean|false|none|Line charts only: whether the y-axis starts at 0. Defaults to true.|
 |» » type|string|true|none|none|
 |» » dataset|object|true|none|none|
 |» » » type|string|true|none|none|
@@ -106790,6 +111202,8 @@ Status Code **200**
 |» » » » denominatorUnit|string \| null|true|none|none|
 |» » » » » *anyOf*|string|false|none|none|
 |» » » » » *anyOf*|null|false|none|none|
+|» » » » showAs|string|false|none|How a mean metric renders: `total` sums the numerator, `per_unit` divides it by the unit count. Ignored for other metric types. Omit to use the default (`per_unit` for `max` and `count distinct` aggregations, otherwise `total`).|
+|» » » population|[ExplorationPopulation](#schemaexplorationpopulation)|false|none|**Beta** — this field is new and may change in backwards-incompatible ways. A population applied to every metric in the request. Only proportion metrics on the population's Fact Table are supported; the request is rejected if any metric is incompatible.|
 |» *anyOf*|null|false|none|none|
 |query|[Query](#schemaquery) \| null|true|none|none|
 |» *anyOf*|[Query](#schemaquery)|false|none|none|
@@ -106883,6 +111297,8 @@ Status Code **200**
 |» » » » » operator|is_false|
 |» » » » » operator|sql_expr|
 |» » » » » operator|saved_filter|
+|» » » » showAs|total|
+|» » » » showAs|per_unit|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -106921,7 +111337,8 @@ curl https://api.growthbook.io/api/v1/product-analytics/fact-table-exploration \
     "showAs": "total",
     "chartSettings": {
       "categoryAxisLabel": "string",
-      "valueAxisLabel": "string"
+      "valueAxisLabel": "string",
+      "anchorYAxisToZero": true
     },
     "type": "fact_table",
     "dataset": {
@@ -106974,7 +111391,8 @@ curl https://api.growthbook.io/api/v1/product-analytics/fact-table-exploration \
   "showAs": "total",
   "chartSettings": {
     "categoryAxisLabel": "string",
-    "valueAxisLabel": "string"
+    "valueAxisLabel": "string",
+    "anchorYAxisToZero": true
   },
   "type": "fact_table",
   "dataset": {
@@ -107049,10 +111467,11 @@ curl https://api.growthbook.io/api/v1/product-analytics/fact-table-exploration \
 |» » endDate|body|string \| null|false|none|
 |» » » *anyOf*|body|string|false|none|
 |» » » *anyOf*|body|null|false|none|
-|» showAs|body|string|false|none|
+|» showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» chartSettings|body|object|false|none|
 |» » categoryAxisLabel|body|string|false|none|
 |» » valueAxisLabel|body|string|false|none|
+|» » anchorYAxisToZero|body|boolean|false|Line charts only: whether the y-axis starts at 0. Defaults to true.|
 |» type|body|string|true|none|
 |» dataset|body|object|true|none|
 |» » type|body|string|true|none|
@@ -107188,6 +111607,7 @@ curl https://api.growthbook.io/api/v1/product-analytics/fact-table-exploration \
               "denominator": 0
             }
           ],
+          "populationCount": 0,
           "steps": [
             {
               "count": 0,
@@ -107233,7 +111653,8 @@ curl https://api.growthbook.io/api/v1/product-analytics/fact-table-exploration \
       "showAs": "total",
       "chartSettings": {
         "categoryAxisLabel": "string",
-        "valueAxisLabel": "string"
+        "valueAxisLabel": "string",
+        "anchorYAxisToZero": true
       },
       "type": "fact_table",
       "dataset": {
@@ -107269,7 +111690,9 @@ curl https://api.growthbook.io/api/v1/product-analytics/fact-table-exploration \
     "queryType": "string",
     "createdAt": "string",
     "startedAt": "string",
+    "finishedAt": "string",
     "status": "running",
+    "error": "string",
     "externalId": "string",
     "dependencies": [
       "string"
@@ -107318,6 +111741,7 @@ Status Code **200**
 |» » » » denominator|number \| null|true|none|none|
 |» » » » » *anyOf*|number|false|none|none|
 |» » » » » *anyOf*|null|false|none|none|
+|» » » populationCount|number|false|none|**Beta** — this field is new and may change in backwards-incompatible ways. Number of units in the dataset's population for this row. Only present when the request has a population; each value's numerator and denominator keep their usual meaning, limited to population members.|
 |» » » steps|[object]|false|none|none|
 |» » » » count|number|true|none|none|
 |» » » » timeFromPrevSumHrs|number \| null|true|none|none|
@@ -107383,10 +111807,11 @@ Status Code **200**
 |» » » endDate|string \| null|false|none|none|
 |» » » » *anyOf*|string|false|none|none|
 |» » » » *anyOf*|null|false|none|none|
-|» » showAs|string|false|none|none|
+|» » showAs|string|false|none|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » chartSettings|object|false|none|none|
 |» » » categoryAxisLabel|string|false|none|none|
 |» » » valueAxisLabel|string|false|none|none|
+|» » » anchorYAxisToZero|boolean|false|none|Line charts only: whether the y-axis starts at 0. Defaults to true.|
 |» » type|string|true|none|none|
 |» » dataset|object|true|none|none|
 |» » » type|string|true|none|none|
@@ -107541,7 +111966,8 @@ curl https://api.growthbook.io/api/v1/product-analytics/data-source-exploration 
     "showAs": "total",
     "chartSettings": {
       "categoryAxisLabel": "string",
-      "valueAxisLabel": "string"
+      "valueAxisLabel": "string",
+      "anchorYAxisToZero": true
     },
     "type": "data_source",
     "dataset": {
@@ -107600,7 +112026,8 @@ curl https://api.growthbook.io/api/v1/product-analytics/data-source-exploration 
   "showAs": "total",
   "chartSettings": {
     "categoryAxisLabel": "string",
-    "valueAxisLabel": "string"
+    "valueAxisLabel": "string",
+    "anchorYAxisToZero": true
   },
   "type": "data_source",
   "dataset": {
@@ -107681,10 +112108,11 @@ curl https://api.growthbook.io/api/v1/product-analytics/data-source-exploration 
 |» » endDate|body|string \| null|false|none|
 |» » » *anyOf*|body|string|false|none|
 |» » » *anyOf*|body|null|false|none|
-|» showAs|body|string|false|none|
+|» showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» chartSettings|body|object|false|none|
 |» » categoryAxisLabel|body|string|false|none|
 |» » valueAxisLabel|body|string|false|none|
+|» » anchorYAxisToZero|body|boolean|false|Line charts only: whether the y-axis starts at 0. Defaults to true.|
 |» type|body|string|true|none|
 |» dataset|body|object|true|none|
 |» » type|body|string|true|none|
@@ -107827,6 +112255,7 @@ curl https://api.growthbook.io/api/v1/product-analytics/data-source-exploration 
               "denominator": 0
             }
           ],
+          "populationCount": 0,
           "steps": [
             {
               "count": 0,
@@ -107872,7 +112301,8 @@ curl https://api.growthbook.io/api/v1/product-analytics/data-source-exploration 
       "showAs": "total",
       "chartSettings": {
         "categoryAxisLabel": "string",
-        "valueAxisLabel": "string"
+        "valueAxisLabel": "string",
+        "anchorYAxisToZero": true
       },
       "type": "data_source",
       "dataset": {
@@ -107914,7 +112344,9 @@ curl https://api.growthbook.io/api/v1/product-analytics/data-source-exploration 
     "queryType": "string",
     "createdAt": "string",
     "startedAt": "string",
+    "finishedAt": "string",
     "status": "running",
+    "error": "string",
     "externalId": "string",
     "dependencies": [
       "string"
@@ -107963,6 +112395,7 @@ Status Code **200**
 |» » » » denominator|number \| null|true|none|none|
 |» » » » » *anyOf*|number|false|none|none|
 |» » » » » *anyOf*|null|false|none|none|
+|» » » populationCount|number|false|none|**Beta** — this field is new and may change in backwards-incompatible ways. Number of units in the dataset's population for this row. Only present when the request has a population; each value's numerator and denominator keep their usual meaning, limited to population members.|
 |» » » steps|[object]|false|none|none|
 |» » » » count|number|true|none|none|
 |» » » » timeFromPrevSumHrs|number \| null|true|none|none|
@@ -108028,10 +112461,11 @@ Status Code **200**
 |» » » endDate|string \| null|false|none|none|
 |» » » » *anyOf*|string|false|none|none|
 |» » » » *anyOf*|null|false|none|none|
-|» » showAs|string|false|none|none|
+|» » showAs|string|false|none|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » chartSettings|object|false|none|none|
 |» » » categoryAxisLabel|string|false|none|none|
 |» » » valueAxisLabel|string|false|none|none|
+|» » » anchorYAxisToZero|boolean|false|none|Line charts only: whether the y-axis starts at 0. Defaults to true.|
 |» » type|string|true|none|none|
 |» » dataset|object|true|none|none|
 |» » » type|string|true|none|none|
@@ -108193,7 +112627,8 @@ curl https://api.growthbook.io/api/v1/product-analytics/sql-exploration \
     "showAs": "total",
     "chartSettings": {
       "categoryAxisLabel": "string",
-      "valueAxisLabel": "string"
+      "valueAxisLabel": "string",
+      "anchorYAxisToZero": true
     },
     "type": "sql",
     "dataset": {
@@ -108254,7 +112689,8 @@ curl https://api.growthbook.io/api/v1/product-analytics/sql-exploration \
   "showAs": "total",
   "chartSettings": {
     "categoryAxisLabel": "string",
-    "valueAxisLabel": "string"
+    "valueAxisLabel": "string",
+    "anchorYAxisToZero": true
   },
   "type": "sql",
   "dataset": {
@@ -108337,10 +112773,11 @@ curl https://api.growthbook.io/api/v1/product-analytics/sql-exploration \
 |» » endDate|body|string \| null|false|none|
 |» » » *anyOf*|body|string|false|none|
 |» » » *anyOf*|body|null|false|none|
-|» showAs|body|string|false|none|
+|» showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» chartSettings|body|object|false|none|
 |» » categoryAxisLabel|body|string|false|none|
 |» » valueAxisLabel|body|string|false|none|
+|» » anchorYAxisToZero|body|boolean|false|Line charts only: whether the y-axis starts at 0. Defaults to true.|
 |» type|body|string|true|none|
 |» dataset|body|object|true|none|
 |» » type|body|string|true|none|
@@ -108485,6 +112922,7 @@ curl https://api.growthbook.io/api/v1/product-analytics/sql-exploration \
               "denominator": 0
             }
           ],
+          "populationCount": 0,
           "steps": [
             {
               "count": 0,
@@ -108530,7 +112968,8 @@ curl https://api.growthbook.io/api/v1/product-analytics/sql-exploration \
       "showAs": "total",
       "chartSettings": {
         "categoryAxisLabel": "string",
-        "valueAxisLabel": "string"
+        "valueAxisLabel": "string",
+        "anchorYAxisToZero": true
       },
       "type": "sql",
       "dataset": {
@@ -108574,7 +113013,9 @@ curl https://api.growthbook.io/api/v1/product-analytics/sql-exploration \
     "queryType": "string",
     "createdAt": "string",
     "startedAt": "string",
+    "finishedAt": "string",
     "status": "running",
+    "error": "string",
     "externalId": "string",
     "dependencies": [
       "string"
@@ -108623,6 +113064,7 @@ Status Code **200**
 |» » » » denominator|number \| null|true|none|none|
 |» » » » » *anyOf*|number|false|none|none|
 |» » » » » *anyOf*|null|false|none|none|
+|» » » populationCount|number|false|none|**Beta** — this field is new and may change in backwards-incompatible ways. Number of units in the dataset's population for this row. Only present when the request has a population; each value's numerator and denominator keep their usual meaning, limited to population members.|
 |» » » steps|[object]|false|none|none|
 |» » » » count|number|true|none|none|
 |» » » » timeFromPrevSumHrs|number \| null|true|none|none|
@@ -108688,10 +113130,11 @@ Status Code **200**
 |» » » endDate|string \| null|false|none|none|
 |» » » » *anyOf*|string|false|none|none|
 |» » » » *anyOf*|null|false|none|none|
-|» » showAs|string|false|none|none|
+|» » showAs|string|false|none|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » chartSettings|object|false|none|none|
 |» » » categoryAxisLabel|string|false|none|none|
 |» » » valueAxisLabel|string|false|none|none|
+|» » » anchorYAxisToZero|boolean|false|none|Line charts only: whether the y-axis starts at 0. Defaults to true.|
 |» » type|string|true|none|none|
 |» » dataset|object|true|none|none|
 |» » » type|string|true|none|none|
@@ -108855,7 +113298,8 @@ curl https://api.growthbook.io/api/v1/product-analytics/funnel-exploration \
     "showAs": "total",
     "chartSettings": {
       "categoryAxisLabel": "string",
-      "valueAxisLabel": "string"
+      "valueAxisLabel": "string",
+      "anchorYAxisToZero": true
     },
     "type": "funnel",
     "dataset": {
@@ -108912,7 +113356,8 @@ curl https://api.growthbook.io/api/v1/product-analytics/funnel-exploration \
   "showAs": "total",
   "chartSettings": {
     "categoryAxisLabel": "string",
-    "valueAxisLabel": "string"
+    "valueAxisLabel": "string",
+    "anchorYAxisToZero": true
   },
   "type": "funnel",
   "dataset": {
@@ -108991,10 +113436,11 @@ curl https://api.growthbook.io/api/v1/product-analytics/funnel-exploration \
 |» » endDate|body|string \| null|false|none|
 |» » » *anyOf*|body|string|false|none|
 |» » » *anyOf*|body|null|false|none|
-|» showAs|body|string|false|none|
+|» showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» chartSettings|body|object|false|none|
 |» » categoryAxisLabel|body|string|false|none|
 |» » valueAxisLabel|body|string|false|none|
+|» » anchorYAxisToZero|body|boolean|false|Line charts only: whether the y-axis starts at 0. Defaults to true.|
 |» type|body|string|true|none|
 |» dataset|body|object|true|none|
 |» » type|body|string|true|none|
@@ -109134,6 +113580,7 @@ curl https://api.growthbook.io/api/v1/product-analytics/funnel-exploration \
               "denominator": 0
             }
           ],
+          "populationCount": 0,
           "steps": [
             {
               "count": 0,
@@ -109179,7 +113626,8 @@ curl https://api.growthbook.io/api/v1/product-analytics/funnel-exploration \
       "showAs": "total",
       "chartSettings": {
         "categoryAxisLabel": "string",
-        "valueAxisLabel": "string"
+        "valueAxisLabel": "string",
+        "anchorYAxisToZero": true
       },
       "type": "funnel",
       "dataset": {
@@ -109219,7 +113667,9 @@ curl https://api.growthbook.io/api/v1/product-analytics/funnel-exploration \
     "queryType": "string",
     "createdAt": "string",
     "startedAt": "string",
+    "finishedAt": "string",
     "status": "running",
+    "error": "string",
     "externalId": "string",
     "dependencies": [
       "string"
@@ -109268,6 +113718,7 @@ Status Code **200**
 |» » » » denominator|number \| null|true|none|none|
 |» » » » » *anyOf*|number|false|none|none|
 |» » » » » *anyOf*|null|false|none|none|
+|» » » populationCount|number|false|none|**Beta** — this field is new and may change in backwards-incompatible ways. Number of units in the dataset's population for this row. Only present when the request has a population; each value's numerator and denominator keep their usual meaning, limited to population members.|
 |» » » steps|[object]|false|none|none|
 |» » » » count|number|true|none|none|
 |» » » » timeFromPrevSumHrs|number \| null|true|none|none|
@@ -109333,10 +113784,11 @@ Status Code **200**
 |» » » endDate|string \| null|false|none|none|
 |» » » » *anyOf*|string|false|none|none|
 |» » » » *anyOf*|null|false|none|none|
-|» » showAs|string|false|none|none|
+|» » showAs|string|false|none|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » chartSettings|object|false|none|none|
 |» » » categoryAxisLabel|string|false|none|none|
 |» » » valueAxisLabel|string|false|none|none|
+|» » » anchorYAxisToZero|boolean|false|none|Line charts only: whether the y-axis starts at 0. Defaults to true.|
 |» » type|string|true|none|none|
 |» » dataset|object|true|none|none|
 |» » » type|string|true|none|none|
@@ -109495,7 +113947,8 @@ curl https://api.growthbook.io/api/v1/product-analytics/journey-exploration \
     "showAs": "total",
     "chartSettings": {
       "categoryAxisLabel": "string",
-      "valueAxisLabel": "string"
+      "valueAxisLabel": "string",
+      "anchorYAxisToZero": true
     },
     "type": "journey",
     "dataset": {
@@ -109563,7 +114016,8 @@ curl https://api.growthbook.io/api/v1/product-analytics/journey-exploration \
   "showAs": "total",
   "chartSettings": {
     "categoryAxisLabel": "string",
-    "valueAxisLabel": "string"
+    "valueAxisLabel": "string",
+    "anchorYAxisToZero": true
   },
   "type": "journey",
   "dataset": {
@@ -109653,10 +114107,11 @@ curl https://api.growthbook.io/api/v1/product-analytics/journey-exploration \
 |» » endDate|body|string \| null|false|none|
 |» » » *anyOf*|body|string|false|none|
 |» » » *anyOf*|body|null|false|none|
-|» showAs|body|string|false|none|
+|» showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» chartSettings|body|object|false|none|
 |» » categoryAxisLabel|body|string|false|none|
 |» » valueAxisLabel|body|string|false|none|
+|» » anchorYAxisToZero|body|boolean|false|Line charts only: whether the y-axis starts at 0. Defaults to true.|
 |» type|body|string|true|none|
 |» dataset|body|object|true|none|
 |» » type|body|string|true|none|
@@ -109799,6 +114254,7 @@ curl https://api.growthbook.io/api/v1/product-analytics/journey-exploration \
               "denominator": 0
             }
           ],
+          "populationCount": 0,
           "steps": [
             {
               "count": 0,
@@ -109844,7 +114300,8 @@ curl https://api.growthbook.io/api/v1/product-analytics/journey-exploration \
       "showAs": "total",
       "chartSettings": {
         "categoryAxisLabel": "string",
-        "valueAxisLabel": "string"
+        "valueAxisLabel": "string",
+        "anchorYAxisToZero": true
       },
       "type": "journey",
       "dataset": {
@@ -109895,7 +114352,9 @@ curl https://api.growthbook.io/api/v1/product-analytics/journey-exploration \
     "queryType": "string",
     "createdAt": "string",
     "startedAt": "string",
+    "finishedAt": "string",
     "status": "running",
+    "error": "string",
     "externalId": "string",
     "dependencies": [
       "string"
@@ -109944,6 +114403,7 @@ Status Code **200**
 |» » » » denominator|number \| null|true|none|none|
 |» » » » » *anyOf*|number|false|none|none|
 |» » » » » *anyOf*|null|false|none|none|
+|» » » populationCount|number|false|none|**Beta** — this field is new and may change in backwards-incompatible ways. Number of units in the dataset's population for this row. Only present when the request has a population; each value's numerator and denominator keep their usual meaning, limited to population members.|
 |» » » steps|[object]|false|none|none|
 |» » » » count|number|true|none|none|
 |» » » » timeFromPrevSumHrs|number \| null|true|none|none|
@@ -110009,10 +114469,11 @@ Status Code **200**
 |» » » endDate|string \| null|false|none|none|
 |» » » » *anyOf*|string|false|none|none|
 |» » » » *anyOf*|null|false|none|none|
-|» » showAs|string|false|none|none|
+|» » showAs|string|false|none|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » chartSettings|object|false|none|none|
 |» » » categoryAxisLabel|string|false|none|none|
 |» » » valueAxisLabel|string|false|none|none|
+|» » » anchorYAxisToZero|boolean|false|none|Line charts only: whether the y-axis starts at 0. Defaults to true.|
 |» » type|string|true|none|none|
 |» » dataset|object|true|none|none|
 |» » » type|string|true|none|none|
@@ -110475,6 +114936,7 @@ curl https://api.growthbook.io/api/v1/product-analytics/explorations/string \
               "denominator": 0
             }
           ],
+          "populationCount": 0,
           "steps": [
             {
               "count": 0,
@@ -110520,7 +114982,8 @@ curl https://api.growthbook.io/api/v1/product-analytics/explorations/string \
       "showAs": "total",
       "chartSettings": {
         "categoryAxisLabel": "string",
-        "valueAxisLabel": "string"
+        "valueAxisLabel": "string",
+        "anchorYAxisToZero": true
       },
       "type": "metric",
       "dataset": {
@@ -110540,9 +115003,20 @@ curl https://api.growthbook.io/api/v1/product-analytics/explorations/string \
             "type": "metric",
             "metricId": "string",
             "unit": "string",
-            "denominatorUnit": "string"
+            "denominatorUnit": "string",
+            "showAs": "total"
           }
-        ]
+        ],
+        "population": {
+          "source": {
+            "type": "factTable",
+            "factTableId": "string"
+          },
+          "rowFilters": [],
+          "aggregateFilter": "string",
+          "aggregateFilterColumn": "string",
+          "unit": "string"
+        }
       }
     }
   },
@@ -110555,7 +115029,9 @@ curl https://api.growthbook.io/api/v1/product-analytics/explorations/string \
     "queryType": "string",
     "createdAt": "string",
     "startedAt": "string",
+    "finishedAt": "string",
     "status": "running",
+    "error": "string",
     "externalId": "string",
     "dependencies": [
       "string"
@@ -115541,6 +120017,801 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearerAuth, basicAuth
 </aside>
 
+<h1 id="growthbook-rest-api-webhooksecrets">WebhookSecrets</h1>
+
+Secrets substituted into webhook URLs and headers at send time. Values are set in the app and never returned.
+
+## Get a single webhookSecret
+
+<a id="opIdgetWebhookSecret"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/webhook-secrets/string \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v1/webhook-secrets/{id}`
+
+<h3 id="get-a-single-webhooksecret-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "webhookSecret": {
+    "id": "string",
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "dateUpdated": "1970-01-01T00:00:00Z",
+    "key": "string",
+    "description": "string",
+    "allowedOrigins": [
+      "string"
+    ]
+  }
+}
+```
+
+<h3 id="get-a-single-webhooksecret-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+
+<h3 id="get-a-single-webhooksecret-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|webhookSecret|[WebhookSecret](#schemawebhooksecret)|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Delete a single webhookSecret
+
+<a id="opIddeleteWebhookSecret"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/webhook-secrets/string \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /v1/webhook-secrets/{id}`
+
+<h3 id="delete-a-single-webhooksecret-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "deletedId": "string"
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="delete-a-single-webhooksecret-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource deleted|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="delete-a-single-webhooksecret-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|deletedId|string|true|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Get all webhookSecrets
+
+<a id="opIdlistWebhookSecrets"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/webhook-secrets \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v1/webhook-secrets`
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "webhookSecrets": [
+    {
+      "id": "string",
+      "dateCreated": "1970-01-01T00:00:00Z",
+      "dateUpdated": "1970-01-01T00:00:00Z",
+      "key": "string",
+      "description": "string",
+      "allowedOrigins": [
+        "string"
+      ]
+    }
+  ]
+}
+```
+
+<h3 id="get-all-webhooksecrets-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+
+<h3 id="get-all-webhooksecrets-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|webhookSecrets|[[WebhookSecret](#schemawebhooksecret)]|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+<h1 id="growthbook-rest-api-sdkwebhooks">SdkWebhooks</h1>
+
+Webhooks that fire when an SDK Connection's payload changes. Signing keys and headers are only returned by GET.
+
+## Get the webhooks for an SDK Connection
+
+<a id="opIdlistSdkConnectionWebhooks"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/sdk-connections/string/webhooks \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v1/sdk-connections/{id}/webhooks`
+
+<h3 id="get-the-webhooks-for-an-sdk-connection-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The SDK Connection id|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "sdkWebhooks": [
+    {
+      "id": "string",
+      "dateCreated": "1970-01-01T00:00:00Z",
+      "dateUpdated": "1970-01-01T00:00:00Z",
+      "name": "string",
+      "endpoint": "string",
+      "sdkConnections": [
+        "string"
+      ],
+      "httpMethod": "GET",
+      "payloadFormat": "standard",
+      "payloadKey": "string",
+      "headers": "string",
+      "signingKey": "string",
+      "lastSuccess": "1970-01-01T00:00:00Z",
+      "error": "string",
+      "consecutiveFailures": 0,
+      "disabled": true,
+      "timeoutSeconds": 1
+    }
+  ]
+}
+```
+
+<h3 id="get-the-webhooks-for-an-sdk-connection-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+
+<h3 id="get-the-webhooks-for-an-sdk-connection-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|sdkWebhooks|[[SdkWebhook](#schemasdkwebhook)]|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Add a webhook to an SDK Connection
+
+<a id="opIdpostSdkConnectionWebhook"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/sdk-connections/string/webhooks \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "name": "string",
+    "endpoint": "http://example.com",
+    "httpMethod": "GET",
+    "payloadFormat": "standard",
+    "payloadKey": "string",
+    "headers": "string",
+    "timeoutSeconds": 1
+  }'
+```
+
+`POST /v1/sdk-connections/{id}/webhooks`
+
+Called whenever the connection's payload changes. `httpMethod` defaults to POST. More than one webhook per organization requires a paid plan.
+
+> Body parameter
+
+```json
+{
+  "name": "string",
+  "endpoint": "http://example.com",
+  "httpMethod": "GET",
+  "payloadFormat": "standard",
+  "payloadKey": "string",
+  "headers": "string",
+  "timeoutSeconds": 1
+}
+```
+
+<h3 id="add-a-webhook-to-an-sdk-connection-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The SDK Connection id|
+|body|body|object|true|none|
+|» name|body|string|true|none|
+|» endpoint|body|string(uri)|true|none|
+|» httpMethod|body|string|false|none|
+|» payloadFormat|body|string|false|none|
+|» payloadKey|body|string|false|none|
+|» headers|body|string|false|JSON-encoded object, e.g. "{\"X-Token\": \"abc\"}"|
+|» timeoutSeconds|body|integer \| null|false|Request timeout in seconds, up to the server maximum (120 unless configured). Null uses the default.|
+|» » *anyOf*|body|integer|false|none|
+|» » *anyOf*|body|null|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» httpMethod|GET|
+|» httpMethod|POST|
+|» httpMethod|PUT|
+|» httpMethod|DELETE|
+|» httpMethod|PATCH|
+|» httpMethod|PURGE|
+|» payloadFormat|standard|
+|» payloadFormat|standard-no-payload|
+|» payloadFormat|sdkPayload|
+|» payloadFormat|edgeConfig|
+|» payloadFormat|edgeConfigUnescaped|
+|» payloadFormat|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "sdkWebhook": {
+    "id": "string",
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "dateUpdated": "1970-01-01T00:00:00Z",
+    "name": "string",
+    "endpoint": "string",
+    "sdkConnections": [
+      "string"
+    ],
+    "httpMethod": "GET",
+    "payloadFormat": "standard",
+    "payloadKey": "string",
+    "headers": "string",
+    "signingKey": "string",
+    "lastSuccess": "1970-01-01T00:00:00Z",
+    "error": "string",
+    "consecutiveFailures": 0,
+    "disabled": true,
+    "timeoutSeconds": 1
+  }
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="add-a-webhook-to-an-sdk-connection-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource created|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="add-a-webhook-to-an-sdk-connection-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|sdkWebhook|[SdkWebhook](#schemasdkwebhook)|true|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Update an SDK webhook
+
+<a id="opIdputSdkWebhook"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/sdk-webhooks/string \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "name": "string",
+    "endpoint": "http://example.com",
+    "httpMethod": "GET",
+    "payloadFormat": "standard",
+    "payloadKey": "string",
+    "headers": "string",
+    "timeoutSeconds": 1,
+    "sdkConnections": [
+      "string"
+    ]
+  }'
+```
+
+`PUT /v1/sdk-webhooks/{id}`
+
+The webhook fires once after an update. Webhooks managed by the Vercel integration can't be changed.
+
+> Body parameter
+
+```json
+{
+  "name": "string",
+  "endpoint": "http://example.com",
+  "httpMethod": "GET",
+  "payloadFormat": "standard",
+  "payloadKey": "string",
+  "headers": "string",
+  "timeoutSeconds": 1,
+  "sdkConnections": [
+    "string"
+  ]
+}
+```
+
+<h3 id="update-an-sdk-webhook-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|none|
+|body|body|object|true|none|
+|» name|body|string|false|none|
+|» endpoint|body|string(uri)|false|none|
+|» httpMethod|body|string|false|none|
+|» payloadFormat|body|string|false|`vercelNativeIntegration` is accepted only on webhooks that already use it|
+|» payloadKey|body|string|false|none|
+|» headers|body|string|false|JSON-encoded object, e.g. "{\"X-Token\": \"abc\"}"|
+|» timeoutSeconds|body|integer \| null|false|Request timeout in seconds, up to the server maximum (120 unless configured). Null uses the default.|
+|» » *anyOf*|body|integer|false|none|
+|» » *anyOf*|body|null|false|none|
+|» sdkConnections|body|[string]|false|Replaces the SDK Connections this webhook fires for|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» httpMethod|GET|
+|» httpMethod|POST|
+|» httpMethod|PUT|
+|» httpMethod|DELETE|
+|» httpMethod|PATCH|
+|» httpMethod|PURGE|
+|» payloadFormat|standard|
+|» payloadFormat|standard-no-payload|
+|» payloadFormat|sdkPayload|
+|» payloadFormat|edgeConfig|
+|» payloadFormat|edgeConfigUnescaped|
+|» payloadFormat|vercelNativeIntegration|
+|» payloadFormat|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "sdkWebhook": {
+    "id": "string",
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "dateUpdated": "1970-01-01T00:00:00Z",
+    "name": "string",
+    "endpoint": "string",
+    "sdkConnections": [
+      "string"
+    ],
+    "httpMethod": "GET",
+    "payloadFormat": "standard",
+    "payloadKey": "string",
+    "headers": "string",
+    "signingKey": "string",
+    "lastSuccess": "1970-01-01T00:00:00Z",
+    "error": "string",
+    "consecutiveFailures": 0,
+    "disabled": true,
+    "timeoutSeconds": 1
+  }
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="update-an-sdk-webhook-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource updated|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="update-an-sdk-webhook-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|sdkWebhook|[SdkWebhook](#schemasdkwebhook)|true|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Delete an SDK webhook
+
+<a id="opIddeleteSdkWebhook"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/sdk-webhooks/string \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /v1/sdk-webhooks/{id}`
+
+Webhooks managed by the Vercel integration can't be deleted here.
+
+<h3 id="delete-an-sdk-webhook-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "deletedId": "string"
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="delete-an-sdk-webhook-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource deleted|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="delete-an-sdk-webhook-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|deletedId|string|true|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Fire an SDK webhook now
+
+<a id="opIdpostSdkWebhookTest"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/sdk-webhooks/string/test \
+  -X POST \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`POST /v1/sdk-webhooks/{id}/test`
+
+Returns the webhook with the outcome in `error` / `lastSuccess`.
+
+<h3 id="fire-an-sdk-webhook-now-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "sdkWebhook": {
+    "id": "string",
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "dateUpdated": "1970-01-01T00:00:00Z",
+    "name": "string",
+    "endpoint": "string",
+    "sdkConnections": [
+      "string"
+    ],
+    "httpMethod": "GET",
+    "payloadFormat": "standard",
+    "payloadKey": "string",
+    "headers": "string",
+    "signingKey": "string",
+    "lastSuccess": "1970-01-01T00:00:00Z",
+    "error": "string",
+    "consecutiveFailures": 0,
+    "disabled": true,
+    "timeoutSeconds": 1
+  }
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="fire-an-sdk-webhook-now-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource created|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="fire-an-sdk-webhook-now-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|sdkWebhook|[SdkWebhook](#schemasdkwebhook)|true|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
 <h1 id="growthbook-rest-api-default">Default</h1>
 
 ## Get a SDK payload
@@ -119161,6 +124432,8 @@ A safe rollout rule with automated guardrail monitoring and optional auto-rollba
       "identifierType": "string"
     },
     "assignmentQueryId": "string",
+    "isClusterExperiment": true,
+    "clusterSubUnitIdentifier": "string",
     "experimentId": "string",
     "segmentId": "string",
     "queryFilter": "string",
@@ -119418,6 +124691,8 @@ A safe rollout rule with automated guardrail monitoring and optional auto-rollba
     "identifierType": "string"
   },
   "assignmentQueryId": "string",
+  "isClusterExperiment": true,
+  "clusterSubUnitIdentifier": "string",
   "experimentId": "string",
   "segmentId": "string",
   "queryFilter": "string",
@@ -119541,6 +124816,8 @@ A safe rollout rule with automated guardrail monitoring and optional auto-rollba
 |datasourceId|string|true|none|none|
 |assignmentQuery|object|true|none|The assignment query, grouping its ID with the identifier type analyzed on.|
 |assignmentQueryId|string|true|none|**Deprecated.** Deprecated: use `assignmentQuery`.|
+|isClusterExperiment|boolean|false|none|Whether this is a cluster-randomized experiment (randomized on the assignment query's identifier type, analyzed on clusterSubUnitIdentifier).|
+|clusterSubUnitIdentifier|string|false|none|For cluster experiments, the nested sub-unit identifier type analyzed within each cluster (e.g. user_id).|
 |experimentId|string|true|none|none|
 |segmentId|string|true|none|none|
 |queryFilter|string|true|none|none|
@@ -119788,6 +125065,8 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
       "identifierType": "string"
     },
     "assignmentQueryId": "string",
+    "isClusterExperiment": true,
+    "clusterSubUnitIdentifier": "string",
     "experimentId": "string",
     "segmentId": "string",
     "queryFilter": "string",
@@ -119905,6 +125184,66 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
   "queryIds": [
     "string"
   ],
+  "health": {
+    "srm": {
+      "pValue": 0,
+      "status": "healthy",
+      "threshold": 0,
+      "totalUnits": 0,
+      "variationUnits": [
+        0
+      ]
+    },
+    "multipleExposures": {
+      "count": 0,
+      "totalUnits": 0,
+      "percent": 0,
+      "status": "healthy",
+      "threshold": 0
+    },
+    "unknownVariations": [
+      "string"
+    ],
+    "power": {
+      "isLowPowered": true,
+      "additionalDaysNeeded": 0
+    },
+    "covariateImbalance": {
+      "isImbalanced": true,
+      "numGoalMetricsImbalanced": 0,
+      "numGuardrailMetricsImbalanced": 0,
+      "numSecondaryMetricsImbalanced": 0
+    },
+    "cluster": {
+      "mixedAssignment": {
+        "totalClusters": 0,
+        "mixedClusters": 0,
+        "percent": 0,
+        "status": "healthy"
+      },
+      "unitsInMultipleClusters": {
+        "totalUnits": 0,
+        "multiClusterUnits": 0,
+        "percent": 0,
+        "status": "healthy"
+      },
+      "reliability": {
+        "status": "healthy",
+        "minClustersPerVariation": 0,
+        "maxClusterShare": 0,
+        "tooFewClusters": {
+          "variationIndex": 0,
+          "variationKey": "string",
+          "variationId": "string",
+          "clusters": 0
+        },
+        "oversizedCluster": {
+          "id": "string",
+          "percent": 0
+        }
+      }
+    }
+  },
   "results": [
     {
       "dimension": "string",
@@ -119960,6 +125299,7 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |dimension|object|true|none|none|
 |settings|[ExperimentAnalysisSettings](#schemaexperimentanalysissettings)|true|none|none|
 |queryIds|[string]|true|none|none|
+|health|object|false|none|Health checks for the snapshot as a whole, with the same verdicts the app shows. They are not broken down by dimension value.|
 |results|[object]|true|none|none|
 
 <h2 id="tocS_ExperimentWithEnhancedStatus">ExperimentWithEnhancedStatus</h2>
@@ -120057,6 +125397,8 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
       "identifierType": "string"
     },
     "assignmentQueryId": "string",
+    "isClusterExperiment": true,
+    "clusterSubUnitIdentifier": "string",
     "experimentId": "string",
     "segmentId": "string",
     "queryFilter": "string",
@@ -120233,7 +125575,26 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
   },
   "enhancedStatus": {
     "status": "Running",
-    "detailedStatus": "string"
+    "detailedStatus": "string",
+    "needsAttention": true,
+    "decision": {
+      "category": "ready-for-action",
+      "status": "ship-now",
+      "reason": "string",
+      "daysLeft": 0,
+      "variations": [
+        {
+          "variationId": "string",
+          "action": "ship"
+        }
+      ],
+      "healthIssues": [
+        "sample-ratio-mismatch"
+      ],
+      "erroredMetricIds": [
+        "string"
+      ]
+    }
   }
 }
 ```
@@ -120602,6 +125963,8 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
   "name": "string",
   "description": "string",
   "query": "string",
+  "timing": "none",
+  "nullLabel": "string",
   "managedBy": ""
 }
 ```
@@ -120620,12 +125983,17 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |name|string|true|none|none|
 |description|string|false|none|none|
 |query|string|true|none|none|
+|timing|string|false|none|What the query returns and how the value at a unit's first exposure is resolved. `none` (default): one value per unit, resolved with MAX(value). `rowTimestamp`: timestamped rows; the query also returns a `timestamp` column and the latest row at or before first exposure is used. `validityRange`: validity ranges; the query also returns `start_timestamp` and `end_timestamp` (NULL = still valid) columns and the row valid at first exposure is used. Only supported for SQL Data Sources.|
+|nullLabel|string|false|none|Label used in experiment results for units with no dimension value. Leave empty to use the default null label.|
 |managedBy|string|false|none|Where this dimension must be managed from. If not set (empty string), it can be managed from anywhere.|
 
 #### Enumerated Values
 
 |Property|Value|
 |---|---|
+|timing|none|
+|timing|rowTimestamp|
+|timing|validityRange|
 |managedBy|""|
 |managedBy|api|
 |managedBy|config|
@@ -120689,7 +126057,8 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
   "projects": [
     "string"
   ],
-  "parent": "string"
+  "parent": "string",
+  "isProduction": true
 }
 ```
 
@@ -120703,6 +126072,7 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |defaultState|boolean|true|none|none|
 |projects|[string]|true|none|none|
 |parent|string|false|none|none|
+|isProduction|boolean|true|none|none|
 
 <h2 id="tocS_Attribute">Attribute</h2>
 <!-- backwards compatibility -->
@@ -120914,7 +126284,8 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
         },
         "experimentNameColumn": "string",
         "variationNameColumn": "string"
-      }
+      },
+      "error": "string"
     }
   ],
   "identifierJoinQueries": [
@@ -120930,7 +126301,26 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
     "experimentIdProperty": "string",
     "variationIdProperty": "string",
     "extraUserIdProperty": "string"
-  }
+  },
+  "pipelineSettings": {
+    "allowWriting": true,
+    "mode": "ephemeral",
+    "writeDatabase": "string",
+    "writeDataset": "string",
+    "unitsTableRetentionHours": 0.1,
+    "unitsTableDeletion": true,
+    "includedExperimentIds": [
+      "string"
+    ],
+    "excludedExperimentIds": [
+      "string"
+    ],
+    "incrementalOptInExperimentIds": [
+      "string"
+    ]
+  },
+  "maxConcurrentQueries": 0,
+  "queryCacheTTLMins": 0
 }
 ```
 
@@ -120950,6 +126340,9 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |assignmentQueries|[object]|true|none|none|
 |identifierJoinQueries|[object]|true|none|none|
 |mixpanelSettings|object|false|none|none|
+|pipelineSettings|object|false|none|none|
+|maxConcurrentQueries|integer|false|none|none|
+|queryCacheTTLMins|integer|false|none|none|
 
 <h2 id="tocS_InformationSchema">InformationSchema</h2>
 <!-- backwards compatibility -->
@@ -123412,6 +128805,34 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
     "ordering": "sequential",
     "concurrencyWindowSeconds": 0
   },
+  "compoundSettings": {
+    "components": [
+      {
+        "factTableId": "string",
+        "rowFilters": [
+          {
+            "operator": "=",
+            "values": [
+              "string"
+            ],
+            "column": "string"
+          }
+        ]
+      },
+      {
+        "factTableId": "string",
+        "rowFilters": [
+          {
+            "operator": "=",
+            "values": [
+              "string"
+            ],
+            "column": "string"
+          }
+        ]
+      }
+    ]
+  },
   "cappingSettings": {
     "type": "none",
     "value": 0,
@@ -123478,6 +128899,7 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |inverse|boolean|true|none|Set to true for things like Bounce Rate, where you want the metric to decrease|
 |quantileSettings|object|false|none|Controls the settings for quantile metrics (mandatory if metricType is "quantile")|
 |funnelSettings|object|false|none|Funnel metric settings (required when metricType is "funnel")|
+|compoundSettings|object|false|none|Compound metric settings (required when metricType is "compound")|
 |cappingSettings|object|true|none|Controls how outliers are handled|
 |lowerCappingSettings|object \| null|false|none|none|
 |windowSettings|object|true|none|Controls the conversion window for the metric|
@@ -123508,6 +128930,7 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |metricType|ratio|
 |metricType|dailyParticipation|
 |metricType|funnel|
+|metricType|compound|
 |managedBy|""|
 |managedBy|api|
 |managedBy|admin|
@@ -123706,7 +129129,9 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
   "queryType": "string",
   "createdAt": "string",
   "startedAt": "string",
+  "finishedAt": "string",
   "status": "running",
+  "error": "string",
   "externalId": "string",
   "dependencies": [
     "string"
@@ -123727,7 +129152,9 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |queryType|string|true|none|none|
 |createdAt|string|true|none|none|
 |startedAt|string|true|none|none|
+|finishedAt|string \| null|true|none|none|
 |status|string|true|none|none|
+|error|string \| null|true|none|Why the query failed|
 |externalId|string|true|none|none|
 |dependencies|[string]|true|none|none|
 |runAtEnd|boolean|true|none|none|
@@ -123859,6 +129286,7 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
   "banditScheduleUnit": "hours",
   "banditBurnInValue": 0,
   "banditBurnInUnit": "hours",
+  "banditPeriodWeighting": true,
   "experimentMinLengthDays": 0,
   "experimentMaxLengthDays": 0,
   "preferredEnvironment": "string",
@@ -123910,6 +129338,7 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |banditScheduleUnit|string|true|none|none|
 |banditBurnInValue|number|true|none|none|
 |banditBurnInUnit|string|true|none|none|
+|banditPeriodWeighting|boolean|false|none|none|
 |experimentMinLengthDays|number|true|none|none|
 |experimentMaxLengthDays|number \| null|false|none|none|
 |preferredEnvironment|string \| null|false|none|none|
@@ -124594,6 +130023,8 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
         "identifierType": "string"
       },
       "assignmentQueryId": "string",
+      "isClusterExperiment": true,
+      "clusterSubUnitIdentifier": "string",
       "experimentId": "string",
       "segmentId": "string",
       "queryFilter": "string",
@@ -124711,6 +130142,66 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
     "queryIds": [
       "string"
     ],
+    "health": {
+      "srm": {
+        "pValue": 0,
+        "status": "healthy",
+        "threshold": 0,
+        "totalUnits": 0,
+        "variationUnits": [
+          0
+        ]
+      },
+      "multipleExposures": {
+        "count": 0,
+        "totalUnits": 0,
+        "percent": 0,
+        "status": "healthy",
+        "threshold": 0
+      },
+      "unknownVariations": [
+        "string"
+      ],
+      "power": {
+        "isLowPowered": true,
+        "additionalDaysNeeded": 0
+      },
+      "covariateImbalance": {
+        "isImbalanced": true,
+        "numGoalMetricsImbalanced": 0,
+        "numGuardrailMetricsImbalanced": 0,
+        "numSecondaryMetricsImbalanced": 0
+      },
+      "cluster": {
+        "mixedAssignment": {
+          "totalClusters": 0,
+          "mixedClusters": 0,
+          "percent": 0,
+          "status": "healthy"
+        },
+        "unitsInMultipleClusters": {
+          "totalUnits": 0,
+          "multiClusterUnits": 0,
+          "percent": 0,
+          "status": "healthy"
+        },
+        "reliability": {
+          "status": "healthy",
+          "minClustersPerVariation": 0,
+          "maxClusterShare": 0,
+          "tooFewClusters": {
+            "variationIndex": 0,
+            "variationKey": "string",
+            "variationId": "string",
+            "clusters": 0
+          },
+          "oversizedCluster": {
+            "id": "string",
+            "percent": 0
+          }
+        }
+      }
+    },
     "results": [
       {
         "dimension": "string",
@@ -124872,6 +130363,215 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |status|running|
 |status|stopped|
 
+<h2 id="tocS_EventWebhook">EventWebhook</h2>
+<!-- backwards compatibility -->
+<a id="schemaeventwebhook"></a>
+<a id="schema_EventWebhook"></a>
+<a id="tocSeventwebhook"></a>
+<a id="tocseventwebhook"></a>
+
+```json
+{
+  "id": "string",
+  "name": "string",
+  "url": "string",
+  "enabled": true,
+  "events": [
+    "string"
+  ],
+  "projects": [
+    "string"
+  ],
+  "tags": [
+    "string"
+  ],
+  "environments": [
+    "string"
+  ],
+  "payloadType": "raw",
+  "method": "POST",
+  "headers": {
+    "property1": "string",
+    "property2": "string"
+  },
+  "timeoutSeconds": 1,
+  "signingKey": "string",
+  "lastRunAt": "1970-01-01T00:00:00Z",
+  "lastState": "none",
+  "lastResponseBody": "string",
+  "dateCreated": "1970-01-01T00:00:00Z",
+  "dateUpdated": "1970-01-01T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|none|
+|name|string|true|none|none|
+|url|string|true|none|none|
+|enabled|boolean|true|none|none|
+|events|[string]|true|none|Event names or wildcards such as "feature.*"|
+|projects|[string]|true|none|none|
+|tags|[string]|true|none|none|
+|environments|[string]|true|none|none|
+|payloadType|string|true|none|none|
+|method|string|true|none|none|
+|headers|object|false|none|Only returned by GET|
+|timeoutSeconds|integer \| null|true|none|Request timeout in seconds, up to the server maximum (120 unless configured). Null uses the default.|
+|signingKey|string|false|none|Used to verify the signature header on each request. Only returned by GET.|
+|lastRunAt|string(date-time) \| null|true|none|none|
+|lastState|string|true|none|none|
+|lastResponseBody|string \| null|true|none|none|
+|dateCreated|string(date-time)|true|none|none|
+|dateUpdated|string(date-time)|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|payloadType|raw|
+|payloadType|json|
+|payloadType|slack|
+|payloadType|discord|
+|method|POST|
+|method|PUT|
+|method|PATCH|
+|lastState|none|
+|lastState|success|
+|lastState|error|
+
+<h2 id="tocS_EventWebhookLog">EventWebhookLog</h2>
+<!-- backwards compatibility -->
+<a id="schemaeventwebhooklog"></a>
+<a id="schema_EventWebhookLog"></a>
+<a id="tocSeventwebhooklog"></a>
+<a id="tocseventwebhooklog"></a>
+
+```json
+{
+  "id": "string",
+  "event": "string",
+  "url": "string",
+  "method": "POST",
+  "result": "success",
+  "responseCode": 0,
+  "responseBody": "string",
+  "payload": {
+    "property1": null,
+    "property2": null
+  },
+  "dateCreated": "1970-01-01T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|none|
+|event|string|false|none|none|
+|url|string|false|none|none|
+|method|string|false|none|none|
+|result|string|true|none|none|
+|responseCode|number \| null|true|none|none|
+|responseBody|string \| null|true|none|none|
+|payload|object|true|none|none|
+|dateCreated|string(date-time)|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|method|POST|
+|method|PUT|
+|method|PATCH|
+|result|success|
+|result|error|
+
+<h2 id="tocS_Audit">Audit</h2>
+<!-- backwards compatibility -->
+<a id="schemaaudit"></a>
+<a id="schema_Audit"></a>
+<a id="tocSaudit"></a>
+<a id="tocsaudit"></a>
+
+```json
+{
+  "id": "string",
+  "event": "string",
+  "entity": {
+    "object": "string",
+    "id": "string",
+    "name": "string"
+  },
+  "parent": {
+    "object": "string",
+    "id": "string"
+  },
+  "user": {
+    "id": "string",
+    "email": "string",
+    "name": "string",
+    "apiKey": "string",
+    "requestedBy": {
+      "id": "string",
+      "name": "string",
+      "email": "string"
+    },
+    "assumedRole": true,
+    "system": true
+  },
+  "reason": "string",
+  "details": "string",
+  "dateCreated": "1970-01-01T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|none|
+|event|string|true|none|e.g. "feature.update"|
+|entity|object|true|none|none|
+|parent|object|false|none|none|
+|user|object|true|none|Who made the change: a member, an API key, or the system|
+|reason|string|false|none|none|
+|details|string|false|none|JSON-encoded, usually `pre`, `post` and `context`|
+|dateCreated|string(date-time)|true|none|none|
+
+<h2 id="tocS_Event">Event</h2>
+<!-- backwards compatibility -->
+<a id="schemaevent"></a>
+<a id="schema_Event"></a>
+<a id="tocSevent"></a>
+<a id="tocsevent"></a>
+
+```json
+{
+  "id": "string",
+  "event": "string",
+  "version": 0,
+  "data": {
+    "property1": null,
+    "property2": null
+  },
+  "dateCreated": "1970-01-01T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|none|
+|event|string|true|none|e.g. "feature.updated"|
+|version|number|false|none|Absent on legacy events|
+|data|object|true|none|The same payload event webhooks receive|
+|dateCreated|string(date-time)|true|none|none|
+
 <h2 id="tocS_Dashboard">Dashboard</h2>
 <!-- backwards compatibility -->
 <a id="schemadashboard"></a>
@@ -125021,6 +130721,36 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |editLevel|private|
 |shareLevel|published|
 |shareLevel|private|
+
+<h2 id="tocS_ExplorationPopulation">ExplorationPopulation</h2>
+<!-- backwards compatibility -->
+<a id="schemaexplorationpopulation"></a>
+<a id="schema_ExplorationPopulation"></a>
+<a id="tocSexplorationpopulation"></a>
+<a id="tocsexplorationpopulation"></a>
+
+```json
+{
+  "source": {
+    "type": "factTable",
+    "factTableId": "string"
+  },
+  "rowFilters": [],
+  "aggregateFilter": "string",
+  "aggregateFilterColumn": "string",
+  "unit": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|source|object|true|none|none|
+|rowFilters|[object]|true|none|none|
+|aggregateFilter|string|false|none|Conditions on each unit's total within the queried date range, such as ">=3" or ">=3,<10". Requires aggregateFilterColumn|
+|aggregateFilterColumn|string|false|none|Numeric column to total, or "$$count" to count rows. Requires aggregateFilter|
+|unit|string|true|none|Identifier type that defines population membership. Every metric's unit must match it.|
 
 <h2 id="tocS_ContextualBandit">ContextualBandit</h2>
 <!-- backwards compatibility -->
@@ -125238,6 +130968,45 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |query|string|true|none|none|
 |targetingAttributeColumns|[string]|true|none|none|
 
+<h2 id="tocS_InterleavingExposureQuery">InterleavingExposureQuery</h2>
+<!-- backwards compatibility -->
+<a id="schemainterleavingexposurequery"></a>
+<a id="schema_InterleavingExposureQuery"></a>
+<a id="tocSinterleavingexposurequery"></a>
+<a id="tocsinterleavingexposurequery"></a>
+
+```json
+{
+  "id": "string",
+  "dateCreated": "1970-01-01T00:00:00Z",
+  "dateUpdated": "1970-01-01T00:00:00Z",
+  "owner": "string",
+  "ownerEmail": "string",
+  "datasourceId": "string",
+  "name": "string",
+  "description": "string",
+  "userIdTypes": [
+    "string"
+  ],
+  "query": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|none|
+|dateCreated|string(date-time)|true|none|none|
+|dateUpdated|string(date-time)|true|none|none|
+|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records)|
+|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user.|
+|datasourceId|string|true|none|none|
+|name|string|true|none|none|
+|description|string|false|none|none|
+|userIdTypes|[string]|true|none|none|
+|query|string|true|none|none|
+
 <h2 id="tocS_Interleaving">Interleaving</h2>
 <!-- backwards compatibility -->
 <a id="schemainterleaving"></a>
@@ -125266,15 +131035,22 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
   "trackingKey": "string",
   "hashAttribute": "string",
   "seed": "string",
-  "variations": [
-    {
+  "variations": {
+    "control": {
+      "id": "string",
+      "key": "string",
+      "name": "string",
+      "description": "string",
+      "config": "string"
+    },
+    "treatment": {
       "id": "string",
       "key": "string",
       "name": "string",
       "description": "string",
       "config": "string"
     }
-  ],
+  },
   "jsonSchema": {
     "schemaType": "schema",
     "schema": "string",
@@ -125308,8 +131084,8 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
     "enabled": true,
     "date": "1970-01-01T00:00:00Z"
   },
-  "datasource": "string",
-  "interleavingQueryId": "string",
+  "datasourceId": "string",
+  "interleavingExposureQueryId": "string",
   "userIdType": "string",
   "metrics": [
     {
@@ -125344,7 +131120,9 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
     "property2": {
       "enabled": true
     }
-  }
+  },
+  "autoSnapshots": true,
+  "nextSnapshotAttempt": "1970-01-01T00:00:00Z"
 }
 ```
 
@@ -125369,10 +131147,10 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |trackingKey|string|true|none|The `experiment_id` recorded in exposures|
 |hashAttribute|string|true|none|none|
 |seed|string|true|none|none|
-|variations|[object]|true|none|none|
+|variations|object|true|none|Exactly two rankers, by role.|
 |jsonSchema|object \| null|true|none|none|
-|datasource|string|true|none|none|
-|interleavingQueryId|string|true|none|none|
+|datasourceId|string|true|none|none|
+|interleavingExposureQueryId|string|true|none|none|
 |userIdType|string|true|none|none|
 |metrics|[object]|true|none|none|
 |coverage|number|false|none|none|
@@ -125380,6 +131158,8 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |savedGroups|[object]|false|none|none|
 |prerequisites|[object]|false|none|none|
 |environmentSettings|object|true|none|none|
+|autoSnapshots|boolean|false|none|none|
+|nextSnapshotAttempt|string(date-time)|false|none|none|
 
 #### Enumerated Values
 
@@ -125388,6 +131168,150 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |status|draft|
 |status|running|
 |status|stopped|
+
+<h2 id="tocS_InterleavingSnapshot">InterleavingSnapshot</h2>
+<!-- backwards compatibility -->
+<a id="schemainterleavingsnapshot"></a>
+<a id="schema_InterleavingSnapshot"></a>
+<a id="tocSinterleavingsnapshot"></a>
+<a id="tocsinterleavingsnapshot"></a>
+
+```json
+{
+  "id": "string",
+  "interleavingId": "string",
+  "status": "running",
+  "error": "string",
+  "dateCreated": "1970-01-01T00:00:00Z",
+  "runStarted": "1970-01-01T00:00:00Z",
+  "settings": {
+    "trackingKey": "string",
+    "datasourceId": "string",
+    "interleavingExposureQueryId": "string",
+    "userIdType": "string",
+    "variations": {
+      "control": {
+        "id": "string",
+        "key": "string",
+        "name": "string"
+      },
+      "treatment": {
+        "id": "string",
+        "key": "string",
+        "name": "string"
+      }
+    },
+    "metrics": [
+      {
+        "id": "string",
+        "analyses": [
+          {
+            "type": "paired"
+          }
+        ]
+      }
+    ],
+    "pValueThreshold": 0,
+    "startDate": "1970-01-01T00:00:00Z",
+    "endDate": "1970-01-01T00:00:00Z"
+  },
+  "results": [
+    {
+      "metricId": "string",
+      "analysis": {
+        "type": "paired"
+      },
+      "users": 0,
+      "denominator": 0,
+      "control": {
+        "value": 0,
+        "cr": 0
+      },
+      "treatment": {
+        "value": 0,
+        "cr": 0
+      },
+      "test": {
+        "method": "paired_delta_t",
+        "expected": 0,
+        "ci": [
+          0,
+          0
+        ],
+        "pValue": 0,
+        "errorMessage": "string",
+        "pValueErrorMessage": "NUMERICAL_PVALUE_NOT_CONVERGED"
+      }
+    }
+  ],
+  "usersExposed": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|none|
+|interleavingId|string|true|none|none|
+|status|string|true|none|none|
+|error|string|false|none|none|
+|dateCreated|string(date-time)|true|none|none|
+|runStarted|string(date-time) \| null|true|none|none|
+|settings|object|true|none|none|
+|results|[object]|false|none|Present once status is success|
+|usersExposed|number|false|none|Distinct units in the exposure query. Absent on snapshots run before this was recorded.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|running|
+|status|success|
+|status|error|
+
+<h2 id="tocS_InterleavingSnapshotStatus">InterleavingSnapshotStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemainterleavingsnapshotstatus"></a>
+<a id="schema_InterleavingSnapshotStatus"></a>
+<a id="tocSinterleavingsnapshotstatus"></a>
+<a id="tocsinterleavingsnapshotstatus"></a>
+
+```json
+{
+  "id": "string",
+  "status": "running",
+  "error": "string",
+  "dateCreated": "1970-01-01T00:00:00Z",
+  "runStarted": "1970-01-01T00:00:00Z",
+  "queries": [
+    {
+      "query": "string",
+      "status": "queued",
+      "name": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|none|
+|status|string|true|none|none|
+|error|string|false|none|none|
+|dateCreated|string(date-time)|true|none|none|
+|runStarted|string(date-time) \| null|true|none|none|
+|queries|[object]|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|running|
+|status|success|
+|status|error|
 
 <h2 id="tocS_CustomField">CustomField</h2>
 <!-- backwards compatibility -->
@@ -125613,6 +131537,8 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
     "identifierType": "string"
   },
   "exposureQueryId": "string",
+  "isClusterExperiment": true,
+  "clusterSubUnitIdentifier": "string",
   "hashAttribute": "string",
   "fallbackAttribute": "string",
   "disableStickyBucketing": true,
@@ -125681,6 +131607,8 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |datasource|string|true|none|none|
 |exposureQuery|object|true|none|The assignment query, grouping its ID with the identifier type analyzed on.|
 |exposureQueryId|string|true|none|**Deprecated.** Deprecated: use `exposureQuery`.|
+|isClusterExperiment|boolean|false|none|none|
+|clusterSubUnitIdentifier|string|false|none|none|
 |hashAttribute|string|false|none|none|
 |fallbackAttribute|string|false|none|none|
 |disableStickyBucketing|boolean|false|none|none|
@@ -125732,6 +131660,7 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
             "denominator": 0
           }
         ],
+        "populationCount": 0,
         "steps": [
           {
             "count": 0,
@@ -125777,7 +131706,8 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
     "showAs": "total",
     "chartSettings": {
       "categoryAxisLabel": "string",
-      "valueAxisLabel": "string"
+      "valueAxisLabel": "string",
+      "anchorYAxisToZero": true
     },
     "type": "metric",
     "dataset": {
@@ -125797,9 +131727,20 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
           "type": "metric",
           "metricId": "string",
           "unit": "string",
-          "denominatorUnit": "string"
+          "denominatorUnit": "string",
+          "showAs": "total"
         }
-      ]
+      ],
+      "population": {
+        "source": {
+          "type": "factTable",
+          "factTableId": "string"
+        },
+        "rowFilters": [],
+        "aggregateFilter": "string",
+        "aggregateFilterColumn": "string",
+        "unit": "string"
+      }
     }
   }
 }
@@ -126286,6 +132227,106 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |datasource|string|true|none|none|
 |userIdTypes|[string]|true|none|none|
 |steps|[object]|true|none|none|
+
+<h2 id="tocS_WebhookSecret">WebhookSecret</h2>
+<!-- backwards compatibility -->
+<a id="schemawebhooksecret"></a>
+<a id="schema_WebhookSecret"></a>
+<a id="tocSwebhooksecret"></a>
+<a id="tocswebhooksecret"></a>
+
+```json
+{
+  "id": "string",
+  "dateCreated": "1970-01-01T00:00:00Z",
+  "dateUpdated": "1970-01-01T00:00:00Z",
+  "key": "string",
+  "description": "string",
+  "allowedOrigins": [
+    "string"
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|none|
+|dateCreated|string(date-time)|true|none|none|
+|dateUpdated|string(date-time)|true|none|none|
+|key|string|true|none|none|
+|description|string|false|none|none|
+|allowedOrigins|[string]|false|none|Origins the secret may be sent to. Empty allows any.|
+
+<h2 id="tocS_SdkWebhook">SdkWebhook</h2>
+<!-- backwards compatibility -->
+<a id="schemasdkwebhook"></a>
+<a id="schema_SdkWebhook"></a>
+<a id="tocSsdkwebhook"></a>
+<a id="tocssdkwebhook"></a>
+
+```json
+{
+  "id": "string",
+  "dateCreated": "1970-01-01T00:00:00Z",
+  "dateUpdated": "1970-01-01T00:00:00Z",
+  "name": "string",
+  "endpoint": "string",
+  "sdkConnections": [
+    "string"
+  ],
+  "httpMethod": "GET",
+  "payloadFormat": "standard",
+  "payloadKey": "string",
+  "headers": "string",
+  "signingKey": "string",
+  "lastSuccess": "1970-01-01T00:00:00Z",
+  "error": "string",
+  "consecutiveFailures": 0,
+  "disabled": true,
+  "timeoutSeconds": 1
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|none|
+|dateCreated|string(date-time)|true|none|none|
+|dateUpdated|string(date-time)|true|none|none|
+|name|string|true|none|none|
+|endpoint|string|true|none|none|
+|sdkConnections|[string]|true|none|none|
+|httpMethod|string|true|none|none|
+|payloadFormat|string|true|none|none|
+|payloadKey|string|false|none|none|
+|headers|string|false|none|JSON-encoded object of extra headers. Only returned by GET, to callers who can edit the webhook.|
+|signingKey|string|false|none|Used to verify the signature header. Only returned by GET, to callers who can edit the webhook.|
+|lastSuccess|string(date-time) \| null|true|none|none|
+|error|string|true|none|none|
+|consecutiveFailures|number|true|none|none|
+|disabled|boolean|true|none|Set after repeated failures; changing the endpoint clears it|
+|timeoutSeconds|integer \| null|true|none|Request timeout in seconds, up to the server maximum (120 unless configured). Null uses the default.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|httpMethod|GET|
+|httpMethod|PUT|
+|httpMethod|POST|
+|httpMethod|DELETE|
+|httpMethod|PURGE|
+|httpMethod|PATCH|
+|payloadFormat|standard|
+|payloadFormat|standard-no-payload|
+|payloadFormat|sdkPayload|
+|payloadFormat|edgeConfig|
+|payloadFormat|edgeConfigUnescaped|
+|payloadFormat|vercelNativeIntegration|
+|payloadFormat|none|
 
 <h2 id="tocS_ConfirmationHeld">ConfirmationHeld</h2>
 <!-- backwards compatibility -->
@@ -127496,12 +133537,12 @@ Map of feature ID to stale status. Only requested features that were found and r
 |degreesOfFreedom|integer|false|none|none|
 |dateCreated|string|true|none|none|
 
-<h2 id="tocS_experimentResults">experimentResults</h2>
+<h2 id="tocS_experimentResults2">experimentResults2</h2>
 <!-- backwards compatibility -->
-<a id="schemaexperimentresults-1"></a>
-<a id="schema_experimentResults"></a>
-<a id="tocSexperimentresults-1"></a>
-<a id="tocsexperimentresults-1"></a>
+<a id="schemaexperimentresults2"></a>
+<a id="schema_experimentResults2"></a>
+<a id="tocSexperimentresults2"></a>
+<a id="tocsexperimentresults2"></a>
 
 ```json
 {

@@ -1,5 +1,191 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const UrlSchema = z
+  .url()
+  .min(1)
+  .openapi({
+    description: 'A URL',
+    example: 'http://api.shipengine.com/v1/labels/se-28529731',
+    title: 'url',
+  })
+  .openapi('Url')
+
+const OptionalLinkSchema = z
+  .strictObject({
+    href: UrlSchema.exactOptional().openapi({
+      description: 'The URL of the linked resource, if any',
+    }),
+    type: z
+      .string()
+      .min(1)
+      .exactOptional()
+      .openapi({
+        description: 'The type of resource, or the type of relationship to the parent resource',
+      }),
+  })
+  .openapi({
+    description:
+      'A link to a related resource, or an empty object if there is no resource to link to',
+    title: 'optional_link',
+    required: [],
+  })
+  .openapi('OptionalLink')
+
+const LinkSchema = OptionalLinkSchema.openapi({
+  description: 'A link to a related resource',
+  required: ['href'],
+  title: 'link',
+}).openapi('Link')
+
+const PaginationLinkSchema = z
+  .strictObject({
+    first: LinkSchema.openapi({
+      description:
+        'The link to the first page of results.  This object will _always_ have an `href` field. If there are no results, then the first page will contain an empty array of items.\n',
+    }),
+    last: LinkSchema.openapi({
+      description:
+        'The link to the final page of results.  This object will _always_ have an `href` field. If there are no results, then the final page will contain an empty array of items.\n',
+    }),
+    next: OptionalLinkSchema.openapi({
+      description:
+        'The link to the next page of results.  The `href` field will only be set when the `page` is less than `pages`.\n',
+    }),
+    prev: OptionalLinkSchema.openapi({
+      description:
+        'The link to the previous page of results.  The `href` field will only be set when the `page` is 2 or greater.\n',
+    }),
+  })
+  .openapi({
+    description: 'Helpful links to other pages of results',
+    required: ['first', 'last', 'prev', 'next'],
+    title: 'pagination_link',
+  })
+  .openapi('PaginationLink')
+
+const PagedListResponseBodySchema = z
+  .looseObject({
+    links: PaginationLinkSchema,
+    page: z
+      .int()
+      .min(1)
+      .openapi({
+        description:
+          'The current page number of results.  For example, if there are 80 results, and the page size is 25, then `page` could be 1, 2, 3, or 4.  The first three pages would contain 25 items each, and the fourth page would contain the five remaining items.',
+        example: 1,
+      }),
+    pages: z
+      .int()
+      .min(0)
+      .openapi({
+        description:
+          'The total number of pages of results.  For example, if there are 80 results, and the page size is 25, then `pages` would be 4.  The first three pages would contain 25 items each, and the fourth page would contain the five remaining items.  If there are no results, then `pages` will be zero.',
+        example: 4,
+      }),
+    total: z
+      .int()
+      .min(0)
+      .openapi({
+        description: 'The total number of items across all pages of results',
+        example: 2750,
+      }),
+  })
+  .openapi({
+    description:
+      'Many ShipEngine endpoints return a paged list of items.  In addition to the returned items, these responses also include information about the total number of items, the number of pages of results, and URLs of other pages of results.\n',
+    required: ['total', 'page', 'pages', 'links'],
+    title: 'paged_list_response_body',
+  })
+  .openapi('PagedListResponseBody')
+
+type ListLabelsResponseBodyType = z.infer<typeof PagedListResponseBodySchema>
+
+const CurrencySchema = z
+  .string()
+  .openapi({
+    description:
+      'The currencies that are supported by ShipEngine are the ones that specified by ISO 4217: https://www.iso.org/iso-4217-currency-codes.html\n',
+    title: 'currency',
+  })
+  .openapi('Currency')
+
+const MonetaryValueSchema = z
+  .strictObject({
+    amount: z
+      .float64()
+      .min(0)
+      .openapi({ description: 'The monetary amount, in the specified currency.' }),
+    currency: CurrencySchema,
+  })
+  .openapi({
+    description:
+      'A monetary value, such as the price of a shipping label, the insured value of a package, or an account balance.\n',
+    required: ['currency', 'amount'],
+    title: 'monetary_value',
+  })
+  .openapi('MonetaryValue')
+
+const AddFundsToCarrierRequestBodySchema = MonetaryValueSchema.openapi({
+  description: 'An add funds to carrier request body',
+  title: 'add_funds_to_carrier_request_body',
+}).openapi('AddFundsToCarrierRequestBody')
+
+const AddFundsToCarrierResponseBodySchema = z
+  .strictObject({
+    balance: MonetaryValueSchema.openapi({
+      description: 'The current balance of the account',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    description: 'The current balance of the requested carrier account',
+    required: ['balance'],
+    title: 'add_funds_to_carrier_response_body',
+  })
+  .openapi('AddFundsToCarrierResponseBody')
+
+const AddFundsToInsuranceRequestBodySchema = MonetaryValueSchema.openapi({
+  description: 'An add funds to insurance request body',
+  title: 'add_funds_to_insurance_request_body',
+}).openapi('AddFundsToInsuranceRequestBody')
+
+const AddFundsToInsuranceResponseBodySchema = MonetaryValueSchema.openapi({
+  description: 'Add funds to insurance response body',
+  title: 'add_funds_to_insurance_response_body',
+}).openapi('AddFundsToInsuranceResponseBody')
+
+const SeIdSchema = z
+  .string()
+  .regex(/^se(-[a-z0-9]+)+$/)
+  .min(1)
+  .max(25)
+  .openapi({
+    description:
+      'A string that uniquely identifies a ShipEngine resource, such as a carrier, label, shipment, etc.',
+    example: 'se-28529731',
+    title: 'se_id',
+  })
+  .openapi('SeId')
+
+const ModifyBatchSchema = z
+  .strictObject({
+    rate_ids: z
+      .array(SeIdSchema.openapi({ description: 'The Rate ID to be modified on the batch' }))
+      .exactOptional()
+      .openapi({ description: 'Array of Rate IDs to be modifed on the batch' }),
+    shipment_ids: z
+      .array(SeIdSchema.openapi({ description: 'The Shipment ID to be modified on the batch' }))
+      .exactOptional()
+      .openapi({ description: 'The Shipment Ids to be modified on the batch' }),
+  })
+  .openapi({ description: 'A modify batch object', title: 'modify_batch', required: [] })
+  .openapi('ModifyBatch')
+
+const AddToBatchRequestBodySchema = ModifyBatchSchema.openapi({
+  description: 'An add to batch request body',
+  title: 'add_to_batch_request_body',
+}).openapi('AddToBatchRequestBody')
+
 const AddressResidentialIndicatorSchema = z
   .enum(['unknown', 'yes', 'no'])
   .openapi({
@@ -119,54 +305,42 @@ const PartialAddressSchema = z
   })
   .openapi('PartialAddress')
 
-type AddressType = z.infer<typeof PartialAddressSchema>
+const AddressSchema = PartialAddressSchema.openapi({
+  description:
+    'Any residential or business mailing address, anywhere in the world.\n\n> **Note:** Either `name` or `company_name` must be set. Both may be specified, if relevant.\n',
+  required: [
+    'name',
+    'phone',
+    'address_line1',
+    'city_locality',
+    'state_province',
+    'postal_code',
+    'country_code',
+    'address_residential_indicator',
+  ],
+  title: 'address',
+}).openapi('Address')
 
-const UrlSchema = z
-  .url()
-  .min(1)
-  .openapi({
-    description: 'A URL',
-    example: 'http://api.shipengine.com/v1/labels/se-28529731',
-    title: 'url',
-  })
-  .openapi('Url')
+const AddressToValidateSchema = PartialAddressSchema.openapi({
+  description: 'Any residential or business mailing address, anywhere in the world.\n',
+  required: ['address_line1', 'city_locality', 'state_province', 'country_code'],
+  title: 'address_to_validate',
+}).openapi('AddressToValidate')
 
-const OptionalLinkSchema = z
-  .strictObject({
-    href: UrlSchema.exactOptional().openapi({
-      description: 'The URL of the linked resource, if any',
-    }),
-    type: z
-      .string()
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description: 'The type of resource, or the type of relationship to the parent resource',
-      }),
-  })
-  .openapi({
-    description:
-      'A link to a related resource, or an empty object if there is no resource to link to',
-    title: 'optional_link',
-    required: [],
-  })
-  .openapi('OptionalLink')
+const ValidateAddressSchema = z
+  .enum(['no_validation', 'validate_only', 'validate_and_clean'])
+  .openapi({ description: 'The possible validate address values', title: 'validate_address' })
+  .openapi('ValidateAddress')
 
-type LinkType = z.infer<typeof OptionalLinkSchema>
+const ValidateShipmentFieldsSchema = z
+  .object({ validate_address: ValidateAddressSchema.default('no_validation').exactOptional() })
+  .openapi({ title: 'validate_shipment_fields', required: [] })
+  .openapi('ValidateShipmentFields')
 
 const BillToPartySchema = z
   .enum(['recipient', 'third_party'])
   .openapi({ description: 'The possible bill to party values', title: 'bill_to_party' })
   .openapi('BillToParty')
-
-const CurrencySchema = z
-  .string()
-  .openapi({
-    description:
-      'The currencies that are supported by ShipEngine are the ones that specified by ISO 4217: https://www.iso.org/iso-4217-currency-codes.html\n',
-    title: 'currency',
-  })
-  .openapi('Currency')
 
 const PaymentAmountSchema = z
   .object({ amount: z.float64().min(0).exactOptional(), currency: CurrencySchema.exactOptional() })
@@ -356,19 +530,6 @@ const AdvancedShipmentOptionsSchema = z
   })
   .openapi('AdvancedShipmentOptions')
 
-const SeIdSchema = z
-  .string()
-  .regex(/^se(-[a-z0-9]+)+$/)
-  .min(1)
-  .max(25)
-  .openapi({
-    description:
-      'A string that uniquely identifies a ShipEngine resource, such as a carrier, label, shipment, etc.',
-    example: 'se-28529731',
-    title: 'se_id',
-  })
-  .openapi('SeId')
-
 const DeliveryConfirmationSchema = z
   .enum([
     'none',
@@ -400,22 +561,6 @@ const PackageContentsSchema = z
   .enum(['merchandise', 'documents', 'gift', 'returned_goods', 'sample'])
   .openapi({ description: 'The possible package contents values', title: 'package_contents' })
   .openapi('PackageContents')
-
-const MonetaryValueSchema = z
-  .strictObject({
-    amount: z
-      .float64()
-      .min(0)
-      .openapi({ description: 'The monetary amount, in the specified currency.' }),
-    currency: CurrencySchema,
-  })
-  .openapi({
-    description:
-      'A monetary value, such as the price of a shipping label, the insured value of a package, or an account balance.\n',
-    required: ['currency', 'amount'],
-    title: 'monetary_value',
-  })
-  .openapi('MonetaryValue')
 
 const CustomsItemSchema = z
   .strictObject({
@@ -707,12 +852,11 @@ const PackageSchema = z
       description: 'The form download for any customs that are needed',
       readOnly: true,
     }),
-    insured_value: MonetaryValueSchema.default([{ amount: 0, currency: 'usd' }])
-      .exactOptional()
-      .openapi({
-        description:
-          'The insured value of the package.  Requires the `insurance_provider` field of the shipment to be set.\n',
-      }),
+    insured_value: MonetaryValueSchema.exactOptional().openapi({
+      description:
+        'The insured value of the package.  Requires the `insurance_provider` field of the shipment to be set.\n',
+      default: [{ amount: 0, currency: 'usd' }],
+    }),
     label_download: LabelDownloadSchema.exactOptional().openapi({
       description: 'The label download for the package',
       readOnly: true,
@@ -744,10 +888,26 @@ const PackageSchema = z
   })
   .openapi('Package')
 
-const ShippingAddressSchema: z.ZodType<ShippingAddressType> = z
-  .lazy(() =>
-    AddressSchema.and(PartialShippingAddressSchema).openapi({ title: 'shipping_address' }),
-  )
+const PartialShippingAddressSchema = z
+  .strictObject({
+    instructions: z
+      .string()
+      .min(1)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Additional text about how to handle the shipment at this address.\n',
+      }),
+  })
+  .openapi({
+    description: 'A complete or partial mailing address.',
+    title: 'partial_shipping_address',
+    required: [],
+  })
+  .openapi('PartialShippingAddress')
+
+const ShippingAddressSchema = AddressSchema.and(PartialShippingAddressSchema)
+  .openapi({ title: 'shipping_address' })
   .openapi('ShippingAddress')
 
 const ServiceCodeSchema = z
@@ -959,113 +1119,6 @@ const PartialShipmentSchema = z
     required: [],
   })
   .openapi('PartialShipment')
-
-type ShipmentType = z.infer<typeof PartialShipmentSchema>
-
-const AddressSchema: z.ZodType<AddressType> = z
-  .lazy(() =>
-    PartialAddressSchema.openapi({
-      description:
-        'Any residential or business mailing address, anywhere in the world.\n\n> **Note:** Either `name` or `company_name` must be set. Both may be specified, if relevant.\n',
-      required: [
-        'name',
-        'phone',
-        'address_line1',
-        'city_locality',
-        'state_province',
-        'postal_code',
-        'country_code',
-        'address_residential_indicator',
-      ],
-      title: 'address',
-    }),
-  )
-  .openapi('Address')
-
-const PartialShippingAddressSchema = z
-  .strictObject({
-    instructions: z
-      .string()
-      .min(1)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Additional text about how to handle the shipment at this address.\n',
-      }),
-  })
-  .openapi({
-    description: 'A complete or partial mailing address.',
-    title: 'partial_shipping_address',
-    required: [],
-  })
-  .openapi('PartialShippingAddress')
-
-type ShippingAddressType = z.infer<typeof AddressSchema> &
-  z.infer<typeof PartialShippingAddressSchema>
-
-const AddFundsToCarrierRequestBodySchema = MonetaryValueSchema.openapi({
-  description: 'An add funds to carrier request body',
-  title: 'add_funds_to_carrier_request_body',
-}).openapi('AddFundsToCarrierRequestBody')
-
-const AddFundsToCarrierResponseBodySchema = z
-  .strictObject({
-    balance: MonetaryValueSchema.openapi({
-      description: 'The current balance of the account',
-      readOnly: true,
-    }),
-  })
-  .openapi({
-    description: 'The current balance of the requested carrier account',
-    required: ['balance'],
-    title: 'add_funds_to_carrier_response_body',
-  })
-  .openapi('AddFundsToCarrierResponseBody')
-
-const AddFundsToInsuranceRequestBodySchema = MonetaryValueSchema.openapi({
-  description: 'An add funds to insurance request body',
-  title: 'add_funds_to_insurance_request_body',
-}).openapi('AddFundsToInsuranceRequestBody')
-
-const AddFundsToInsuranceResponseBodySchema = MonetaryValueSchema.openapi({
-  description: 'Add funds to insurance response body',
-  title: 'add_funds_to_insurance_response_body',
-}).openapi('AddFundsToInsuranceResponseBody')
-
-const ModifyBatchSchema = z
-  .strictObject({
-    rate_ids: z
-      .array(SeIdSchema.openapi({ description: 'The Rate ID to be modified on the batch' }))
-      .exactOptional()
-      .openapi({ description: 'Array of Rate IDs to be modifed on the batch' }),
-    shipment_ids: z
-      .array(SeIdSchema.openapi({ description: 'The Shipment ID to be modified on the batch' }))
-      .exactOptional()
-      .openapi({ description: 'The Shipment Ids to be modified on the batch' }),
-  })
-  .openapi({ description: 'A modify batch object', title: 'modify_batch', required: [] })
-  .openapi('ModifyBatch')
-
-const AddToBatchRequestBodySchema = ModifyBatchSchema.openapi({
-  description: 'An add to batch request body',
-  title: 'add_to_batch_request_body',
-}).openapi('AddToBatchRequestBody')
-
-const AddressToValidateSchema = PartialAddressSchema.openapi({
-  description: 'Any residential or business mailing address, anywhere in the world.\n',
-  required: ['address_line1', 'city_locality', 'state_province', 'country_code'],
-  title: 'address_to_validate',
-}).openapi('AddressToValidate')
-
-const ValidateAddressSchema = z
-  .enum(['no_validation', 'validate_only', 'validate_and_clean'])
-  .openapi({ description: 'The possible validate address values', title: 'validate_address' })
-  .openapi('ValidateAddress')
-
-const ValidateShipmentFieldsSchema = z
-  .object({ validate_address: ValidateAddressSchema.default('no_validation').exactOptional() })
-  .openapi({ title: 'validate_shipment_fields', required: [] })
-  .openapi('ValidateShipmentFields')
 
 const AddressValidatingShipmentSchema = ValidateShipmentFieldsSchema.and(PartialShipmentSchema)
   .openapi({
@@ -2712,7 +2765,7 @@ const ConnectInsurerRequestBodySchema = z
   .openapi('ConnectInsurerRequestBody')
 
 const ConnectInsurerResponseBodySchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'connect_insurer_response_body' })
   .openapi('ConnectInsurerResponseBody')
 
@@ -2840,16 +2893,6 @@ const LabelChargeEventSchema = z
   })
   .openapi('LabelChargeEvent')
 
-const LinkSchema: z.ZodType<LinkType> = z
-  .lazy(() =>
-    OptionalLinkSchema.openapi({
-      description: 'A link to a related resource',
-      required: ['href'],
-      title: 'link',
-    }),
-  )
-  .openapi('Link')
-
 const ImageIdSchema = z
   .string()
   .min(4)
@@ -2860,35 +2903,31 @@ const ImageIdSchema = z
   })
   .openapi('ImageId')
 
-const ShipmentSchema: z.ZodType<ShipmentType> = z
-  .lazy(() =>
-    PartialShipmentSchema.openapi({
-      description:
-        'The information necessary to ship a package, such as the origin, the destination, the carrier service, and the package dimensions and weight.\n\n> **Note:** Either `ship_from` or `warehouse_id` must be set.\n',
-      required: [
-        'shipment_id',
-        'carrier_id',
-        'service_code',
-        'ship_date',
-        'created_at',
-        'modified_at',
-        'shipment_status',
-        'ship_to',
-        'ship_from',
-        'warehouse_id',
-        'return_to',
-        'confirmation',
-        'customs',
-        'advanced_options',
-        'insurance_provider',
-        'tags',
-        'packages',
-        'total_weight',
-      ],
-      title: 'shipment',
-    }),
-  )
-  .openapi('Shipment')
+const ShipmentSchema = PartialShipmentSchema.openapi({
+  description:
+    'The information necessary to ship a package, such as the origin, the destination, the carrier service, and the package dimensions and weight.\n\n> **Note:** Either `ship_from` or `warehouse_id` must be set.\n',
+  required: [
+    'shipment_id',
+    'carrier_id',
+    'service_code',
+    'ship_date',
+    'created_at',
+    'modified_at',
+    'shipment_status',
+    'ship_to',
+    'ship_from',
+    'warehouse_id',
+    'return_to',
+    'confirmation',
+    'customs',
+    'advanced_options',
+    'insurance_provider',
+    'tags',
+    'packages',
+    'total_weight',
+  ],
+  title: 'shipment',
+}).openapi('Shipment')
 
 const LabelStatusSchema = z
   .enum(['processing', 'completed', 'error', 'voided'])
@@ -3762,7 +3801,7 @@ const DhlExpressSettingsResponseBodySchema = DhlExpressAccountSettingsSchema.ope
 }).openapi('DhlExpressSettingsResponseBody')
 
 const DisconnectInsurerResponseBodySchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'disconnect_insurer_response_body' })
   .openapi('DisconnectInsurerResponseBody')
 
@@ -4301,32 +4340,6 @@ const PickupResponseBodySchema = PickupSchema.openapi({
 const GetPickupByIdResponseBodySchema = PickupResponseBodySchema.and(ErrorResponseBodySchema)
   .openapi({ title: 'get_pickup_by_id_response_body' })
   .openapi('GetPickupByIdResponseBody')
-
-const PaginationLinkSchema = z
-  .strictObject({
-    first: LinkSchema.openapi({
-      description:
-        'The link to the first page of results.  This object will _always_ have an `href` field. If there are no results, then the first page will contain an empty array of items.\n',
-    }),
-    last: LinkSchema.openapi({
-      description:
-        'The link to the final page of results.  This object will _always_ have an `href` field. If there are no results, then the final page will contain an empty array of items.\n',
-    }),
-    next: OptionalLinkSchema.openapi({
-      description:
-        'The link to the next page of results.  The `href` field will only be set when the `page` is less than `pages`.\n',
-    }),
-    prev: OptionalLinkSchema.openapi({
-      description:
-        'The link to the previous page of results.  The `href` field will only be set when the `page` is 2 or greater.\n',
-    }),
-  })
-  .openapi({
-    description: 'Helpful links to other pages of results',
-    required: ['first', 'last', 'prev', 'next'],
-    title: 'pagination_link',
-  })
-  .openapi('PaginationLink')
 
 const ListPickupResponseBodySchema = z
   .strictObject({
@@ -4900,267 +4913,235 @@ const ListCarrierServicesResponseBodySchema = z
   })
   .openapi('ListCarrierServicesResponseBody')
 
-const PagedListResponseBodySchema = z
-  .looseObject({
-    links: PaginationLinkSchema,
-    page: z
-      .int()
-      .min(1)
-      .openapi({
-        description:
-          'The current page number of results.  For example, if there are 80 results, and the page size is 25, then `page` could be 1, 2, 3, or 4.  The first three pages would contain 25 items each, and the fourth page would contain the five remaining items.',
-        example: 1,
-      }),
-    pages: z
-      .int()
-      .min(0)
-      .openapi({
-        description:
-          'The total number of pages of results.  For example, if there are 80 results, and the page size is 25, then `pages` would be 4.  The first three pages would contain 25 items each, and the fourth page would contain the five remaining items.  If there are no results, then `pages` will be zero.',
-        example: 4,
-      }),
-    total: z
-      .int()
-      .min(0)
-      .openapi({
-        description: 'The total number of items across all pages of results',
-        example: 2750,
-      }),
-  })
-  .openapi({
-    description:
-      'Many ShipEngine endpoints return a paged list of items.  In addition to the returned items, these responses also include information about the total number of items, the number of pages of results, and URLs of other pages of results.\n',
-    required: ['total', 'page', 'pages', 'links'],
-    title: 'paged_list_response_body',
-  })
-  .openapi('PagedListResponseBody')
-
-const ListLabelsResponseBodySchema = PagedListResponseBodySchema.and(
-  z
-    .object({
-      labels: z
-        .array(
-          z
-            .strictObject({
-              alternative_identifiers: z
-                .array(AlternativeIdentifierSchema)
-                .nullable()
-                .exactOptional()
-                .openapi({
+const ListLabelsResponseBodySchema: z.ZodType<ListLabelsResponseBodyType> =
+  PagedListResponseBodySchema.and(
+    z
+      .object({
+        labels: z
+          .array(
+            z
+              .strictObject({
+                alternative_identifiers: z
+                  .array(AlternativeIdentifierSchema)
+                  .nullable()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'Additional information some carriers may provide by which to identify a given label in their system. \n',
+                    readOnly: true,
+                  }),
+                batch_id: SeIdSchema.exactOptional().openapi({
                   description:
-                    'Additional information some carriers may provide by which to identify a given label in their system. \n',
+                    'If this label was created as part of a [batch](https://www.shipengine.com/docs/labels/bulk/), then this is the unique ID of that batch.\n',
                   readOnly: true,
                 }),
-              batch_id: SeIdSchema.exactOptional().openapi({
-                description:
-                  'If this label was created as part of a [batch](https://www.shipengine.com/docs/labels/bulk/), then this is the unique ID of that batch.\n',
-                readOnly: true,
-              }),
-              carrier_code: CarrierCodeSchema.exactOptional().openapi({
-                description:
-                  'The [shipping carrier](https://www.shipengine.com/docs/carriers/setup/) who will ship the package, such as `fedex`, `dhl_express`, `stamps_com`, etc.\n',
-                readOnly: true,
-              }),
-              carrier_id: SeIdSchema.exactOptional().openapi({
-                description:
-                  'The unique ID of the [carrier account](https://www.shipengine.com/docs/carriers/setup/) that was used to create this label\n',
-                readOnly: true,
-              }),
-              charge_event: LabelChargeEventSchema.exactOptional().openapi({
-                description: 'The label charge event.\n',
-              }),
-              created_at: DateTimeSchema.exactOptional().openapi({
-                description: 'The date and time that the label was created in ShipEngine.',
-                readOnly: true,
-              }),
-              display_scheme: DisplaySchemeSchema.default('label')
-                .exactOptional()
-                .openapi({ description: 'The display format that the label should be shown in.' }),
-              form_download: LinkSchema.nullable()
-                .exactOptional()
-                .openapi({
+                carrier_code: CarrierCodeSchema.exactOptional().openapi({
                   description:
-                    'The link to download the customs form (a.k.a. commercial invoice) for this shipment, if any.  Forms are in PDF format. This field is null if the shipment does not require a customs form, or if the carrier does not support it.\n',
+                    'The [shipping carrier](https://www.shipengine.com/docs/carriers/setup/) who will ship the package, such as `fedex`, `dhl_express`, `stamps_com`, etc.\n',
                   readOnly: true,
                 }),
-              insurance_claim: LinkSchema.nullable()
-                .exactOptional()
-                .openapi({
+                carrier_id: SeIdSchema.exactOptional().openapi({
                   description:
-                    'The link to submit an insurance claim for the shipment.  This field is null if the shipment is not insured or if the insurance provider does not support online claim submission.\n',
+                    'The unique ID of the [carrier account](https://www.shipengine.com/docs/carriers/setup/) that was used to create this label\n',
                   readOnly: true,
                 }),
-              insurance_cost: MonetaryValueSchema.exactOptional().openapi({
-                description:
-                  'The insurance cost for this package.  Add this to the `shipment_cost` field to get the total cost.\n',
-                readOnly: true,
-              }),
-              is_international: z
-                .boolean()
-                .exactOptional()
-                .openapi({
-                  description:
-                    'Indicates whether this is an international shipment.  That is, the originating country and destination country are different.\n',
+                charge_event: LabelChargeEventSchema.exactOptional().openapi({
+                  description: 'The label charge event.\n',
+                }),
+                created_at: DateTimeSchema.exactOptional().openapi({
+                  description: 'The date and time that the label was created in ShipEngine.',
                   readOnly: true,
                 }),
-              is_return_label: z
-                .boolean()
-                .exactOptional()
-                .openapi({
+                display_scheme: DisplaySchemeSchema.default('label')
+                  .exactOptional()
+                  .openapi({
+                    description: 'The display format that the label should be shown in.',
+                  }),
+                form_download: LinkSchema.nullable()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'The link to download the customs form (a.k.a. commercial invoice) for this shipment, if any.  Forms are in PDF format. This field is null if the shipment does not require a customs form, or if the carrier does not support it.\n',
+                    readOnly: true,
+                  }),
+                insurance_claim: LinkSchema.nullable()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'The link to submit an insurance claim for the shipment.  This field is null if the shipment is not insured or if the insurance provider does not support online claim submission.\n',
+                    readOnly: true,
+                  }),
+                insurance_cost: MonetaryValueSchema.exactOptional().openapi({
                   description:
-                    'Indicates whether this is a return label.  You may also want to set the `rma_number` so you know what is being returned.\n',
-                }),
-              label_download: LabelDownloadSchema.exactOptional().openapi({ readOnly: true }),
-              label_download_type: LabelDownloadTypeSchema.default('url')
-                .exactOptional()
-                .openapi({ writeOnly: true }),
-              label_format: LabelFormatSchema.default('pdf')
-                .exactOptional()
-                .openapi({
-                  description:
-                    'The file format that you want the label to be in.  We recommend `pdf` format because it is supported by all carriers, whereas some carriers do not support the `png` or `zpl` formats.\n',
-                }),
-              label_id: SeIdSchema.exactOptional().openapi({
-                description:
-                  'A string that uniquely identifies the label. This ID is generated by ShipEngine when the label is created.\n',
-                readOnly: true,
-              }),
-              label_image_id: ImageIdSchema.nullable()
-                .exactOptional()
-                .openapi({
-                  description:
-                    'The label image resource that was used to create a custom label image.',
-                }),
-              label_layout: LabelLayoutSchema.default('4x6')
-                .exactOptional()
-                .openapi({
-                  description:
-                    'The layout (size) that you want the label to be in.  The `label_format` determines which sizes are allowed.  `4x6` is supported for all label formats, whereas `letter` (8.5" x 11") is only supported for `pdf` format.\n',
-                }),
-              outbound_label_id: SeIdSchema.exactOptional().openapi({
-                description:
-                  'The `label_id` of the original (outgoing) label that the return label is for. This associates the two labels together, which is\nrequired by some carriers.\n',
-                writeOnly: true,
-              }),
-              package_code: PackageCodeSchema.exactOptional().openapi({
-                description:
-                  'The [package type](https://www.shipengine.com/docs/reference/list-carrier-packages/), such as `thick_envelope`, `small_flat_rate_box`, `large_package`, etc.  The code `package` indicates a custom or unknown package type.\n',
-                readOnly: true,
-              }),
-              packages: z
-                .array(PackageSchema)
-                .exactOptional()
-                .openapi({
-                  description:
-                    "The label's package(s).\n\n> **Note:** Some carriers only allow one package per label.  If you attempt to create a multi-package label for a carrier that doesn't allow it, an error will be returned.\n",
+                    'The insurance cost for this package.  Add this to the `shipment_cost` field to get the total cost.\n',
                   readOnly: true,
                 }),
-              rma_number: z
-                .string()
-                .nullable()
-                .exactOptional()
-                .openapi({
+                is_international: z
+                  .boolean()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'Indicates whether this is an international shipment.  That is, the originating country and destination country are different.\n',
+                    readOnly: true,
+                  }),
+                is_return_label: z
+                  .boolean()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'Indicates whether this is a return label.  You may also want to set the `rma_number` so you know what is being returned.\n',
+                  }),
+                label_download: LabelDownloadSchema.exactOptional().openapi({ readOnly: true }),
+                label_download_type: LabelDownloadTypeSchema.default('url')
+                  .exactOptional()
+                  .openapi({ writeOnly: true }),
+                label_format: LabelFormatSchema.default('pdf')
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'The file format that you want the label to be in.  We recommend `pdf` format because it is supported by all carriers, whereas some carriers do not support the `png` or `zpl` formats.\n',
+                  }),
+                label_id: SeIdSchema.exactOptional().openapi({
                   description:
-                    'An optional Return Merchandise Authorization number.  This field is useful for return labels.  You can set it to any string value.\n',
+                    'A string that uniquely identifies the label. This ID is generated by ShipEngine when the label is created.\n',
+                  readOnly: true,
                 }),
-              service_code: ServiceCodeSchema.exactOptional().openapi({
-                description:
-                  'The [carrier service](https://www.shipengine.com/docs/shipping/use-a-carrier-service/) used to ship the package, such as `fedex_ground`, `usps_first_class_mail`, `flat_rate_envelope`, etc.\n',
-                readOnly: true,
-              }),
-              ship_date: DateSchema.exactOptional().openapi({
-                description:
-                  'The date that the package was (or will be) shippped.  ShipEngine will take the day of week into consideration. For example, if the carrier does not operate on Sundays, then a package that would have shipped on Sunday will ship on Monday instead.\n',
-                readOnly: true,
-              }),
-              shipment: ShipmentSchema.exactOptional().openapi({
-                description: 'The shipment information used to generate the label',
-                writeOnly: true,
-              }),
-              shipment_cost: MonetaryValueSchema.exactOptional().openapi({
-                description:
-                  'The cost of shipping, delivery confirmation, and other carrier charges.  This amount **does not** include insurance costs.\n',
-                readOnly: true,
-              }),
-              shipment_id: SeIdSchema.exactOptional().openapi({
-                description:
-                  'The shipment that this label is for.  ShipEngine can create a shipment for you automatically when you [create a label](https://www.shipengine.com/docs/labels/create-a-label/), or you can [create your own shipment](https://www.shipengine.com/docs/shipping/create-a-shipment/) and then [use it to print a label](https://www.shipengine.com/docs/labels/create-from-shipment/)\n',
-                readOnly: true,
-              }),
-              status: LabelStatusSchema.exactOptional().openapi({ readOnly: true }),
-              test_label: z
-                .boolean()
-                .default(false)
-                .exactOptional()
-                .openapi({
-                  deprecated: true,
+                label_image_id: ImageIdSchema.nullable()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'The label image resource that was used to create a custom label image.',
+                  }),
+                label_layout: LabelLayoutSchema.default('4x6')
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'The layout (size) that you want the label to be in.  The `label_format` determines which sizes are allowed.  `4x6` is supported for all label formats, whereas `letter` (8.5" x 11") is only supported for `pdf` format.\n',
+                  }),
+                outbound_label_id: SeIdSchema.exactOptional().openapi({
                   description:
-                    'Indicate if this label is being used only for testing purposes. If true, then no charge will be added to your account.',
+                    'The `label_id` of the original (outgoing) label that the return label is for. This associates the two labels together, which is\nrequired by some carriers.\n',
                   writeOnly: true,
                 }),
-              trackable: z
-                .boolean()
-                .exactOptional()
-                .openapi({
+                package_code: PackageCodeSchema.exactOptional().openapi({
                   description:
-                    'Indicates whether the shipment is trackable, in which case the `tracking_status` field will reflect the current status and each package will have a `tracking_number`.\n',
+                    'The [package type](https://www.shipengine.com/docs/reference/list-carrier-packages/), such as `thick_envelope`, `small_flat_rate_box`, `large_package`, etc.  The code `package` indicates a custom or unknown package type.\n',
                   readOnly: true,
                 }),
-              tracking_number: z
-                .string()
-                .min(1)
-                .exactOptional()
-                .openapi({
+                packages: z
+                  .array(PackageSchema)
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      "The label's package(s).\n\n> **Note:** Some carriers only allow one package per label.  If you attempt to create a multi-package label for a carrier that doesn't allow it, an error will be returned.\n",
+                    readOnly: true,
+                  }),
+                rma_number: z
+                  .string()
+                  .nullable()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'An optional Return Merchandise Authorization number.  This field is useful for return labels.  You can set it to any string value.\n',
+                  }),
+                service_code: ServiceCodeSchema.exactOptional().openapi({
                   description:
-                    'The tracking number for the package. Tracking number formats vary across carriers.',
-                  example: '782758401696',
+                    'The [carrier service](https://www.shipengine.com/docs/shipping/use-a-carrier-service/) used to ship the package, such as `fedex_ground`, `usps_first_class_mail`, `flat_rate_envelope`, etc.\n',
                   readOnly: true,
                 }),
-              tracking_status: TrackingStatusSchema.exactOptional().openapi({
+                ship_date: DateSchema.exactOptional().openapi({
+                  description:
+                    'The date that the package was (or will be) shippped.  ShipEngine will take the day of week into consideration. For example, if the carrier does not operate on Sundays, then a package that would have shipped on Sunday will ship on Monday instead.\n',
+                  readOnly: true,
+                }),
+                shipment: ShipmentSchema.exactOptional().openapi({
+                  description: 'The shipment information used to generate the label',
+                  writeOnly: true,
+                }),
+                shipment_cost: MonetaryValueSchema.exactOptional().openapi({
+                  description:
+                    'The cost of shipping, delivery confirmation, and other carrier charges.  This amount **does not** include insurance costs.\n',
+                  readOnly: true,
+                }),
+                shipment_id: SeIdSchema.exactOptional().openapi({
+                  description:
+                    'The shipment that this label is for.  ShipEngine can create a shipment for you automatically when you [create a label](https://www.shipengine.com/docs/labels/create-a-label/), or you can [create your own shipment](https://www.shipengine.com/docs/shipping/create-a-shipment/) and then [use it to print a label](https://www.shipengine.com/docs/labels/create-from-shipment/)\n',
+                  readOnly: true,
+                }),
+                status: LabelStatusSchema.exactOptional().openapi({ readOnly: true }),
+                test_label: z
+                  .boolean()
+                  .default(false)
+                  .exactOptional()
+                  .openapi({
+                    deprecated: true,
+                    description:
+                      'Indicate if this label is being used only for testing purposes. If true, then no charge will be added to your account.',
+                    writeOnly: true,
+                  }),
+                trackable: z
+                  .boolean()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'Indicates whether the shipment is trackable, in which case the `tracking_status` field will reflect the current status and each package will have a `tracking_number`.\n',
+                    readOnly: true,
+                  }),
+                tracking_number: z
+                  .string()
+                  .min(1)
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'The tracking number for the package. Tracking number formats vary across carriers.',
+                    example: '782758401696',
+                    readOnly: true,
+                  }),
+                tracking_status: TrackingStatusSchema.exactOptional().openapi({
+                  description:
+                    'The current status of the package, such as `in_transit` or `delivered`',
+                  readOnly: true,
+                }),
+                validate_address: ValidateAddressSchema.default('validate_and_clean')
+                  .exactOptional()
+                  .openapi({ writeOnly: true }),
+                voided: z
+                  .boolean()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'Indicates whether the label has been [voided](https://www.shipengine.com/docs/labels/voiding/)\n',
+                    readOnly: true,
+                  }),
+                voided_at: DateTimeSchema.nullable()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'The date and time that the label was [voided](https://www.shipengine.com/docs/labels/voiding/), or `null` if the label has not been voided\n',
+                    readOnly: true,
+                  }),
+              })
+              .openapi({
                 description:
-                  'The current status of the package, such as `in_transit` or `delivered`',
-                readOnly: true,
+                  'A label represents the physical sticker that you affix to a package to ship it.  ShipEngine makes it easy for you to [create labels](https://www.shipengine.com/docs/labels/create-a-label/) and then download them in PDF, PNG, or ZPL format so you can print them.\n',
+                title: 'label',
+                required: [],
               }),
-              validate_address: ValidateAddressSchema.default('validate_and_clean')
-                .exactOptional()
-                .openapi({ writeOnly: true }),
-              voided: z
-                .boolean()
-                .exactOptional()
-                .openapi({
-                  description:
-                    'Indicates whether the label has been [voided](https://www.shipengine.com/docs/labels/voiding/)\n',
-                  readOnly: true,
-                }),
-              voided_at: DateTimeSchema.nullable()
-                .exactOptional()
-                .openapi({
-                  description:
-                    'The date and time that the label was [voided](https://www.shipengine.com/docs/labels/voiding/), or `null` if the label has not been voided\n',
-                  readOnly: true,
-                }),
-            })
-            .openapi({
-              description:
-                'A label represents the physical sticker that you affix to a package to ship it.  ShipEngine makes it easy for you to [create labels](https://www.shipengine.com/docs/labels/create-a-label/) and then download them in PDF, PNG, or ZPL format so you can print them.\n',
-              title: 'label',
-              required: [],
-            }),
-        )
-        .min(0)
-        .openapi({
-          description:
-            'The labels that matched the query criteria.  If no matching labels were found, then this array is empty; otherwise, it contains one page of results.  The last page of results may have fewer labels than the `page_size`.\n',
-        }),
+          )
+          .min(0)
+          .openapi({
+            description:
+              'The labels that matched the query criteria.  If no matching labels were found, then this array is empty; otherwise, it contains one page of results.  The last page of results may have fewer labels than the `page_size`.\n',
+          }),
+      })
+      .openapi({ required: ['labels'] }),
+  )
+    .openapi({
+      description: 'A list label response body',
+      required: ['labels'],
+      title: 'list_labels_response_body',
     })
-    .openapi({ required: ['labels'] }),
-)
-  .openapi({
-    description: 'A list label response body',
-    required: ['labels'],
-    title: 'list_labels_response_body',
-  })
-  .openapi('ListLabelsResponseBody')
+    .openapi('ListLabelsResponseBody')
 
 const ListManifestsResponseBodySchema = z
   .strictObject({

@@ -866,7 +866,13 @@ const AuthUserLimitedSchema = z
 const EdgeConfigItemValueSchema: z.ZodType<EdgeConfigItemValueType> = z
   .lazy(() =>
     z
-      .xor([z.string(), z.number(), z.boolean(), z.object({}), z.array(EdgeConfigItemValueSchema)])
+      .xor([
+        z.string(),
+        z.number(),
+        z.boolean(),
+        z.looseObject({}),
+        z.array(EdgeConfigItemValueSchema),
+      ])
       .nullable(),
   )
   .openapi('EdgeConfigItemValue')
@@ -977,7 +983,7 @@ const PaginationSchema = z
   .openapi('Pagination')
 
 const TeamSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Data representing a Team.' })
   .openapi('Team')
 
@@ -1365,14 +1371,20 @@ export const postEdgeConfigRoute = createRoute({
                 .record(
                   z.string(),
                   z.xor([
-                    z.xor([z.string(), z.number(), z.boolean(), z.null().nullable(), z.object({})]),
+                    z.xor([
+                      z.string(),
+                      z.number(),
+                      z.boolean(),
+                      z.null().nullable(),
+                      z.looseObject({}),
+                    ]),
                     z.array(
                       z.xor([
                         z.string(),
                         z.number(),
                         z.boolean(),
                         z.null().nullable(),
-                        z.object({}),
+                        z.looseObject({}),
                       ]),
                     ),
                   ]),
@@ -1870,7 +1882,7 @@ export const patchEdgeConfigEdgeConfigIdItemsRoute = createRoute({
                           z.number(),
                           z.boolean(),
                           z.null().nullable(),
-                          z.object({}),
+                          z.looseObject({}),
                         ]),
                         z.array(
                           z.xor([
@@ -1878,7 +1890,7 @@ export const patchEdgeConfigEdgeConfigIdItemsRoute = createRoute({
                             z.number(),
                             z.boolean(),
                             z.null().nullable(),
-                            z.object({}),
+                            z.looseObject({}),
                           ]),
                         ),
                       ]),
@@ -3126,7 +3138,7 @@ export const postV1DeploymentsDeploymentIdChecksCheckIdRerequestRoute = createRo
     }),
   },
   responses: {
-    200: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
     400: { description: 'One of the provided values in the request query is invalid.' },
     403: { description: 'You do not have permission to access this resource.' },
     404: { description: 'The deployment was not found\nCheck was not found' },
@@ -7920,7 +7932,7 @@ export const postV13DeploymentsRoute = createRoute({
                   z
                     .strictObject({
                       config: z
-                        .object({})
+                        .looseObject({})
                         .exactOptional()
                         .openapi({
                           description:
@@ -9087,7 +9099,7 @@ export const postV13DeploymentsRoute = createRoute({
                 .openapi({ required: ['env'] }),
               buildErrorAt: z.number().exactOptional(),
               buildingAt: z.number(),
-              builds: z.array(z.object({})).exactOptional(),
+              builds: z.array(z.looseObject({})).exactOptional(),
               canceledAt: z.number().exactOptional(),
               checksConclusion: z
                 .enum(['succeeded', 'failed', 'skipped', 'canceled'])
@@ -9794,7 +9806,7 @@ export const getV13DeploymentsIdOrUrlRoute = createRoute({
                   .openapi({ required: ['env'] }),
                 buildErrorAt: z.number().exactOptional(),
                 buildingAt: z.number(),
-                builds: z.array(z.object({})).exactOptional(),
+                builds: z.array(z.looseObject({})).exactOptional(),
                 canceledAt: z.number().exactOptional(),
                 checksConclusion: z
                   .enum(['succeeded', 'failed', 'skipped', 'canceled'])
@@ -11406,7 +11418,7 @@ export const getV2DeploymentsIdOrUrlEventsRoute = createRoute({
               })
               .openapi({ required: ['type', 'created', 'payload'] }),
             z.xor([
-              z.object({}),
+              z.looseObject({}),
               z
                 .object({
                   created: z.number(),
@@ -12016,7 +12028,6 @@ export const postV2DomainsDomainRecordsRoute = createRoute({
                     .string()
                     .openapi({
                       description: 'A subdomain name or an empty string for the root domain.',
-                      name: 'subdomain',
                     }),
                   srv: z
                     .strictObject({
@@ -12069,7 +12080,6 @@ export const postV2DomainsDomainRecordsRoute = createRoute({
                     .string()
                     .openapi({
                       description: 'A subdomain name or an empty string for the root domain.',
-                      name: 'subdomain',
                     }),
                   ttl: z
                     .number()
@@ -12218,7 +12228,7 @@ export const deleteV2DomainsDomainRecordsRecordIdRoute = createRoute({
   responses: {
     200: {
       description: 'Successful response by removing the specified DNS record.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     400: { description: 'One of the provided values in the request query is invalid.' },
     401: { description: '' },
@@ -12355,7 +12365,7 @@ export const postV2FilesRoute = createRoute({
                   }),
               })
               .openapi({ required: ['urls'] }),
-            z.object({}),
+            z.looseObject({}),
           ]),
         },
       },
@@ -13249,10 +13259,7 @@ export const patchV2TeamsTeamIdRoute = createRoute({
               avatar: z
                 .string()
                 .exactOptional()
-                .openapi({
-                  description: 'The hash value of an uploaded image.',
-                  regex: '^[0-9a-f]{40}$',
-                }),
+                .openapi({ description: 'The hash value of an uploaded image.' }),
               description: z
                 .string()
                 .max(140)
@@ -13265,11 +13272,7 @@ export const patchV2TeamsTeamIdRoute = createRoute({
                 .string()
                 .nullable()
                 .exactOptional()
-                .openapi({
-                  examples: ['example.com'],
-                  regex:
-                    '\\\\b((?=[a-z0-9-]{1,63}\\\\.)(xn--)?[a-z0-9]+(-[a-z0-9]+)*\\\\.)+[a-z]{2,63}\\\\b',
-                }),
+                .openapi({ examples: ['example.com'] }),
               enablePreviewFeedback: z
                 .string()
                 .exactOptional()
@@ -17085,7 +17088,7 @@ export const deleteV7CertsIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
     400: { description: 'One of the provided values in the request query is invalid.' },
     403: { description: 'You do not have permission to access this resource.' },
     404: { description: '' },
@@ -21103,7 +21106,7 @@ export const deleteV9ProjectsIdOrNameDomainsDomainRoute = createRoute({
   responses: {
     200: {
       description: 'The domain was succesfully removed from the project',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     400: { description: 'One of the provided values in the request query is invalid.' },
     403: { description: 'You do not have permission to access this resource.' },

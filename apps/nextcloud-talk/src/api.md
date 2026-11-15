@@ -228,6 +228,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/room/string/avatar 
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -274,7 +275,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/room/string/avatar 
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -504,6 +506,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/room/string/avatar 
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -550,7 +553,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/room/string/avatar 
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -768,6 +772,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/room/string/avatar/
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -814,7 +819,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/room/string/avatar/
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -2793,6 +2799,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/breakout-rooms/stri
             "pinnedUntil": 0,
             "threadId": 0,
             "threadTitle": "string",
+            "actorRole": "owner",
             "replyToMessageId": 0,
             "replyToConversationToken": "string",
             "replyToConversationName": "string",
@@ -2839,7 +2846,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/breakout-rooms/stri
         "lastPinnedId": 0,
         "hiddenPinnedId": 0,
         "hasScheduledMessages": 0,
-        "attributes": 0
+        "attributes": 0,
+        "muteUntil": 0
       }
     ]
   }
@@ -3097,6 +3105,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/breakout-rooms/stri
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -3143,7 +3152,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/breakout-rooms/stri
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -3386,6 +3396,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/breakout-rooms/stri
             "pinnedUntil": 0,
             "threadId": 0,
             "threadTitle": "string",
+            "actorRole": "owner",
             "replyToMessageId": 0,
             "replyToConversationToken": "string",
             "replyToConversationName": "string",
@@ -3432,7 +3443,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/breakout-rooms/stri
         "lastPinnedId": 0,
         "hiddenPinnedId": 0,
         "hasScheduledMessages": 0,
-        "attributes": 0
+        "attributes": 0,
+        "muteUntil": 0
       }
     ]
   }
@@ -3734,6 +3746,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/breakout-rooms/stri
             "pinnedUntil": 0,
             "threadId": 0,
             "threadTitle": "string",
+            "actorRole": "owner",
             "replyToMessageId": 0,
             "replyToConversationToken": "string",
             "replyToConversationName": "string",
@@ -3780,7 +3793,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/breakout-rooms/stri
         "lastPinnedId": 0,
         "hiddenPinnedId": 0,
         "hasScheduledMessages": 0,
-        "attributes": 0
+        "attributes": 0,
+        "muteUntil": 0
       }
     ]
   }
@@ -4038,6 +4052,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/breakout-rooms/stri
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -4084,7 +4099,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/breakout-rooms/stri
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -4341,6 +4357,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/breakout-rooms/stri
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -4387,7 +4404,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/breakout-rooms/stri
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -4645,6 +4663,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/breakout-rooms/stri
             "pinnedUntil": 0,
             "threadId": 0,
             "threadTitle": "string",
+            "actorRole": "owner",
             "replyToMessageId": 0,
             "replyToConversationToken": "string",
             "replyToConversationName": "string",
@@ -4691,7 +4710,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/breakout-rooms/stri
         "lastPinnedId": 0,
         "hiddenPinnedId": 0,
         "hasScheduledMessages": 0,
-        "attributes": 0
+        "attributes": 0,
+        "muteUntil": 0
       }
     ]
   }
@@ -4950,6 +4970,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/breakout-rooms/stri
             "pinnedUntil": 0,
             "threadId": 0,
             "threadTitle": "string",
+            "actorRole": "owner",
             "replyToMessageId": 0,
             "replyToConversationToken": "string",
             "replyToConversationName": "string",
@@ -4996,7 +5017,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/breakout-rooms/stri
         "lastPinnedId": 0,
         "hiddenPinnedId": 0,
         "hasScheduledMessages": 0,
-        "attributes": 0
+        "attributes": 0,
+        "muteUntil": 0
       }
     ]
   }
@@ -5268,6 +5290,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/breakout-rooms/stri
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -5314,7 +5337,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/breakout-rooms/stri
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -7250,6 +7274,7 @@ The limit specifies the maximum number of messages that will be returned, althou
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -7358,6 +7383,7 @@ The limit specifies the maximum number of messages that will be returned, althou
             "pinnedUntil": 0,
             "threadId": 0,
             "threadTitle": "string",
+            "actorRole": "owner",
             "replyToMessageId": 0,
             "replyToConversationToken": "string",
             "replyToConversationName": "string",
@@ -7618,6 +7644,7 @@ The author and timestamp are automatically set to the current user/guest and tim
         "pinnedUntil": 0,
         "threadId": 0,
         "threadTitle": "string",
+        "actorRole": "owner",
         "replyToMessageId": 0,
         "replyToConversationToken": "string",
         "replyToConversationName": "string",
@@ -7726,6 +7753,7 @@ The author and timestamp are automatically set to the current user/guest and tim
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -8123,6 +8151,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/chat/string \
         "pinnedUntil": 0,
         "threadId": 0,
         "threadTitle": "string",
+        "actorRole": "owner",
         "replyToMessageId": 0,
         "replyToConversationToken": "string",
         "replyToConversationName": "string",
@@ -8248,6 +8277,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/chat/string \
         "pinnedUntil": 0,
         "threadId": 0,
         "threadTitle": "string",
+        "actorRole": "owner",
         "replyToMessageId": 0,
         "replyToConversationToken": "string",
         "replyToConversationName": "string",
@@ -8503,6 +8533,7 @@ Required capability: `scheduled-messages`
             "pinnedUntil": 0,
             "threadId": 0,
             "threadTitle": "string",
+            "actorRole": "owner",
             "replyToMessageId": 0,
             "replyToConversationToken": "string",
             "replyToConversationName": "string",
@@ -8788,6 +8819,7 @@ Required capability: `scheduled-messages`
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -9173,6 +9205,7 @@ Required capability: `scheduled-messages`
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -9631,6 +9664,7 @@ Federated conversations are supported with the `federated-shared-items` capabili
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -9740,6 +9774,7 @@ Federated conversations are supported with the `federated-shared-items` capabili
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -9956,6 +9991,7 @@ The author and timestamp are automatically set to the current user/guest and tim
         "pinnedUntil": 0,
         "threadId": 0,
         "threadTitle": "string",
+        "actorRole": "owner",
         "replyToMessageId": 0,
         "replyToConversationToken": "string",
         "replyToConversationName": "string",
@@ -10064,6 +10100,7 @@ The author and timestamp are automatically set to the current user/guest and tim
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -10506,6 +10543,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/chat/string/0/conte
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -10614,6 +10652,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/chat/string/0/conte
             "pinnedUntil": 0,
             "threadId": 0,
             "threadTitle": "string",
+            "actorRole": "owner",
             "replyToMessageId": 0,
             "replyToConversationToken": "string",
             "replyToConversationName": "string",
@@ -10852,6 +10891,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/chat/string/0 \
         "pinnedUntil": 0,
         "threadId": 0,
         "threadTitle": "string",
+        "actorRole": "owner",
         "replyToMessageId": 0,
         "replyToConversationToken": "string",
         "replyToConversationName": "string",
@@ -10960,6 +11000,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/chat/string/0 \
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -11086,6 +11127,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/chat/string/0 \
         "pinnedUntil": 0,
         "threadId": 0,
         "threadTitle": "string",
+        "actorRole": "owner",
         "replyToMessageId": 0,
         "replyToConversationToken": "string",
         "replyToConversationName": "string",
@@ -11194,6 +11236,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/chat/string/0 \
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -11564,6 +11607,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/chat/string/0 \
         "pinnedUntil": 0,
         "threadId": 0,
         "threadTitle": "string",
+        "actorRole": "owner",
         "replyToMessageId": 0,
         "replyToConversationToken": "string",
         "replyToConversationName": "string",
@@ -11672,6 +11716,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/chat/string/0 \
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -11798,6 +11843,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/chat/string/0 \
         "pinnedUntil": 0,
         "threadId": 0,
         "threadTitle": "string",
+        "actorRole": "owner",
         "replyToMessageId": 0,
         "replyToConversationToken": "string",
         "replyToConversationName": "string",
@@ -11906,6 +11952,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/chat/string/0 \
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -12865,6 +12912,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/chat/string/read \
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -12911,7 +12959,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/chat/string/read \
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -13119,6 +13168,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/chat/string/read \
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -13165,7 +13215,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/chat/string/read \
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -13348,6 +13399,7 @@ Federated conversations are supported with the `federated-shared-items` capabili
             "pinnedUntil": 0,
             "threadId": 0,
             "threadTitle": "string",
+            "actorRole": "owner",
             "replyToMessageId": 0,
             "replyToConversationToken": "string",
             "replyToConversationName": "string",
@@ -13459,6 +13511,7 @@ Federated conversations are supported with the `federated-shared-items` capabili
             "pinnedUntil": 0,
             "threadId": 0,
             "threadTitle": "string",
+            "actorRole": "owner",
             "replyToMessageId": 0,
             "replyToConversationToken": "string",
             "replyToConversationName": "string",
@@ -13657,6 +13710,7 @@ Required capability: `pinned-messages`
         "pinnedUntil": 0,
         "threadId": 0,
         "threadTitle": "string",
+        "actorRole": "owner",
         "replyToMessageId": 0,
         "replyToConversationToken": "string",
         "replyToConversationName": "string",
@@ -13765,6 +13819,7 @@ Required capability: `pinned-messages`
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -14065,6 +14120,7 @@ Required capability: `pinned-messages`
         "pinnedUntil": 0,
         "threadId": 0,
         "threadTitle": "string",
+        "actorRole": "owner",
         "replyToMessageId": 0,
         "replyToConversationToken": "string",
         "replyToConversationName": "string",
@@ -14173,6 +14229,7 @@ Required capability: `pinned-messages`
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -22930,6 +22987,148 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearer_auth, basic_auth
 </aside>
 
+## Retry a failed transcription or summary of a call recording
+
+<a id="opIdrecording-retry-task"></a>
+
+> Code samples
+
+```bash
+curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/recording/string/retry \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'OCS-APIRequest: true' \
+  -d '{
+    "taskId": 0,
+    "timestamp": 0
+  }'
+```
+
+`POST /ocs/v2.php/apps/spreed/api/{apiVersion}/recording/{token}/retry`
+
+> Body parameter
+
+```json
+{
+  "taskId": 0,
+  "timestamp": 0
+}
+```
+
+<h3 id="retry-a-failed-transcription-or-summary-of-a-call-recording-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|apiVersion|path|string|true|none|
+|token|path|string|true|none|
+|OCS-APIRequest|header|boolean|true|Required to be true for the API request to pass|
+|body|body|object|true|none|
+|» taskId|body|integer(int64)|true|ID of the failed task|
+|» timestamp|body|integer(int64)|true|Timestamp of the notification to be dismissed|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|apiVersion|v1|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "ocs": {
+    "meta": {
+      "status": "string",
+      "statuscode": 0,
+      "message": "string",
+      "totalitems": "string",
+      "itemsperpage": "string"
+    },
+    "data": null
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "ocs": {
+    "meta": {
+      "status": "string",
+      "statuscode": 0,
+      "message": "string",
+      "totalitems": "string",
+      "itemsperpage": "string"
+    },
+    "data": {
+      "error": "string"
+    }
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "ocs": {
+    "meta": {
+      "status": "string",
+      "statuscode": 0,
+      "message": "string",
+      "totalitems": "string",
+      "itemsperpage": "string"
+    },
+    "data": null
+  }
+}
+```
+
+<h3 id="retry-a-failed-transcription-or-summary-of-a-call-recording-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Task rescheduled successfully|Inline|
+|400|Bad Request|Retrying the task is not possible|Inline|
+|401|Unauthorized|Current user is not logged in|Inline|
+
+<h3 id="retry-a-failed-transcription-or-summary-of-a-call-recording-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ocs|object|true|none|none|
+|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
+|» data|object \| null|true|none|none|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ocs|object|true|none|none|
+|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
+|» data|object|true|none|none|
+|» » error|string|true|none|none|
+
+Status Code **401**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ocs|object|true|none|none|
+|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
+|» data|object|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearer_auth, basic_auth
+</aside>
+
 ## Share the recorded file to the chat
 
 <a id="opIdrecording-share-to-chat"></a>
@@ -23754,6 +23953,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room \
             "pinnedUntil": 0,
             "threadId": 0,
             "threadTitle": "string",
+            "actorRole": "owner",
             "replyToMessageId": 0,
             "replyToConversationToken": "string",
             "replyToConversationName": "string",
@@ -23800,7 +24000,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room \
         "lastPinnedId": 0,
         "hiddenPinnedId": 0,
         "hasScheduledMessages": 0,
-        "attributes": 0
+        "attributes": 0,
+        "muteUntil": 0
       }
     ]
   }
@@ -24169,6 +24370,7 @@ The endpoint can also be used unauthenticated by an external call service by sig
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -24215,7 +24417,8 @@ The endpoint can also be used unauthenticated by an external call service by sig
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -24364,6 +24567,7 @@ The endpoint can also be used unauthenticated by an external call service by sig
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -24410,7 +24614,8 @@ The endpoint can also be used unauthenticated by an external call service by sig
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -24559,6 +24764,7 @@ The endpoint can also be used unauthenticated by an external call service by sig
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -24606,6 +24812,7 @@ The endpoint can also be used unauthenticated by an external call service by sig
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
       "attributes": 0,
+      "muteUntil": 0,
       "invalidParticipants": {
         "users": [
           "string"
@@ -25051,6 +25258,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/listed-room \
             "pinnedUntil": 0,
             "threadId": 0,
             "threadTitle": "string",
+            "actorRole": "owner",
             "replyToMessageId": 0,
             "replyToConversationToken": "string",
             "replyToConversationName": "string",
@@ -25097,7 +25305,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/listed-room \
         "lastPinnedId": 0,
         "hiddenPinnedId": 0,
         "hasScheduledMessages": 0,
-        "attributes": 0
+        "attributes": 0,
+        "muteUntil": 0
       }
     ]
   }
@@ -25328,6 +25537,7 @@ All for moderators and in case of "free selection", or the assigned breakout roo
             "pinnedUntil": 0,
             "threadId": 0,
             "threadTitle": "string",
+            "actorRole": "owner",
             "replyToMessageId": 0,
             "replyToConversationToken": "string",
             "replyToConversationName": "string",
@@ -25374,7 +25584,8 @@ All for moderators and in case of "free selection", or the assigned breakout roo
         "lastPinnedId": 0,
         "hiddenPinnedId": 0,
         "hasScheduledMessages": 0,
-        "attributes": 0
+        "attributes": 0,
+        "muteUntil": 0
       }
     ]
   }
@@ -25633,6 +25844,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string \
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -25679,7 +25891,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string \
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -25952,6 +26165,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string \
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -25998,7 +26212,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string \
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -26495,6 +26710,7 @@ It will be automatically created when it is currently missing
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -26541,7 +26757,8 @@ It will be automatically created when it is currently missing
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -26597,6 +26814,1922 @@ Status Code **401**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
+bearer_auth, basic_auth
+</aside>
+
+## Add a room to the favorites
+
+<a id="opIdroom-add-to-favorites"></a>
+
+> Code samples
+
+```bash
+curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/favorite \
+  -X POST \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'OCS-APIRequest: true'
+```
+
+`POST /ocs/v2.php/apps/spreed/api/{apiVersion}/room/{token}/favorite`
+
+<h3 id="add-a-room-to-the-favorites-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|apiVersion|path|string|true|none|
+|token|path|string|true|none|
+|OCS-APIRequest|header|boolean|true|Required to be true for the API request to pass|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|apiVersion|v4|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "ocs": {
+    "meta": {
+      "status": "string",
+      "statuscode": 0,
+      "message": "string",
+      "totalitems": "string",
+      "itemsperpage": "string"
+    },
+    "data": {
+      "actorId": "string",
+      "invitedActorId": "string",
+      "actorType": "string",
+      "attendeeId": 0,
+      "attendeePermissions": 0,
+      "attendeePin": "string",
+      "avatarVersion": "string",
+      "breakoutRoomMode": 0,
+      "breakoutRoomStatus": 0,
+      "callFlag": 0,
+      "callPermissions": 0,
+      "callRecording": 0,
+      "callStartTime": 0,
+      "canDeleteConversation": true,
+      "canEnableSIP": true,
+      "canLeaveConversation": true,
+      "canStartCall": true,
+      "defaultPermissions": 0,
+      "description": "string",
+      "displayName": "string",
+      "hasCall": true,
+      "hasPassword": true,
+      "id": 0,
+      "isCustomAvatar": true,
+      "isFavorite": true,
+      "lastActivity": 0,
+      "lastCommonReadMessage": 0,
+      "lastMessage": {
+        "actorDisplayName": "string",
+        "actorId": "string",
+        "actorType": "string",
+        "expirationTimestamp": 0,
+        "message": "string",
+        "messageParameters": {
+          "property1": {
+            "type": "string",
+            "id": "string",
+            "name": "string",
+            "server": "string",
+            "link": "string",
+            "call-type": "one2one",
+            "icon-url": "string",
+            "message-id": "string",
+            "boardname": "string",
+            "stackname": "string",
+            "size": "string",
+            "path": "string",
+            "mimetype": "string",
+            "preview-available": "yes",
+            "hide-download": "yes",
+            "mtime": "string",
+            "latitude": "string",
+            "longitude": "string",
+            "description": "string",
+            "thumb": "string",
+            "website": "string",
+            "visibility": "0",
+            "assignable": "0",
+            "conversation": "string",
+            "etag": "string",
+            "permissions": "string",
+            "width": "string",
+            "height": "string",
+            "blurhash": "string"
+          },
+          "property2": {
+            "type": "string",
+            "id": "string",
+            "name": "string",
+            "server": "string",
+            "link": "string",
+            "call-type": "one2one",
+            "icon-url": "string",
+            "message-id": "string",
+            "boardname": "string",
+            "stackname": "string",
+            "size": "string",
+            "path": "string",
+            "mimetype": "string",
+            "preview-available": "yes",
+            "hide-download": "yes",
+            "mtime": "string",
+            "latitude": "string",
+            "longitude": "string",
+            "description": "string",
+            "thumb": "string",
+            "website": "string",
+            "visibility": "0",
+            "assignable": "0",
+            "conversation": "string",
+            "etag": "string",
+            "permissions": "string",
+            "width": "string",
+            "height": "string",
+            "blurhash": "string"
+          }
+        },
+        "messageType": "string",
+        "systemMessage": "string",
+        "deleted": true,
+        "id": 0,
+        "isReplyable": true,
+        "markdown": true,
+        "reactions": {
+          "property1": 0,
+          "property2": 0
+        },
+        "reactionsSelf": [
+          "string"
+        ],
+        "referenceId": "string",
+        "timestamp": 0,
+        "token": "string",
+        "lastEditActorDisplayName": "string",
+        "lastEditActorId": "string",
+        "lastEditActorType": "string",
+        "lastEditTimestamp": 0,
+        "silent": true,
+        "threadId": 0,
+        "isThread": true,
+        "threadTitle": "string",
+        "threadReplies": 0,
+        "metaData": {
+          "pinnedActorType": "string",
+          "pinnedActorId": "string",
+          "pinnedActorDisplayName": "string",
+          "pinnedAt": 0,
+          "pinnedUntil": 0,
+          "threadId": 0,
+          "threadTitle": "string",
+          "actorRole": "owner",
+          "replyToMessageId": 0,
+          "replyToConversationToken": "string",
+          "replyToConversationName": "string",
+          "replyToActorDisplayName": "string"
+        }
+      },
+      "lastPing": 0,
+      "lastReadMessage": 0,
+      "listable": 0,
+      "liveTranscriptionLanguageId": "string",
+      "lobbyState": 0,
+      "lobbyTimer": 0,
+      "mentionPermissions": 0,
+      "messageExpiration": 0,
+      "name": "string",
+      "notificationCalls": 0,
+      "notificationLevel": 0,
+      "objectId": "string",
+      "objectType": "string",
+      "participantFlags": 0,
+      "participantType": 0,
+      "permissions": 0,
+      "readOnly": 0,
+      "recordingConsent": 0,
+      "remoteServer": "string",
+      "remoteToken": "string",
+      "sessionId": "string",
+      "sipEnabled": 0,
+      "status": "string",
+      "statusClearAt": 0,
+      "statusIcon": "string",
+      "statusMessage": "string",
+      "token": "string",
+      "type": 0,
+      "unreadMention": true,
+      "unreadMentionDirect": true,
+      "unreadMessages": 0,
+      "isArchived": true,
+      "isImportant": true,
+      "isSensitive": true,
+      "tagIds": [
+        "string"
+      ],
+      "lastPinnedId": 0,
+      "hiddenPinnedId": 0,
+      "hasScheduledMessages": 0,
+      "attributes": 0,
+      "muteUntil": 0
+    }
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "ocs": {
+    "meta": {
+      "status": "string",
+      "statuscode": 0,
+      "message": "string",
+      "totalitems": "string",
+      "itemsperpage": "string"
+    },
+    "data": null
+  }
+}
+```
+
+<h3 id="add-a-room-to-the-favorites-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successfully added room to favorites|Inline|
+|401|Unauthorized|Current user is not logged in|Inline|
+
+<h3 id="add-a-room-to-the-favorites-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ocs|object|true|none|none|
+|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
+|» data|[Room](#schemaroom)|true|none|none|
+
+Status Code **401**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ocs|object|true|none|none|
+|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
+|» data|object|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearer_auth, basic_auth
+</aside>
+
+## Remove a room from the favorites
+
+<a id="opIdroom-remove-from-favorites"></a>
+
+> Code samples
+
+```bash
+curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/favorite \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'OCS-APIRequest: true'
+```
+
+`DELETE /ocs/v2.php/apps/spreed/api/{apiVersion}/room/{token}/favorite`
+
+<h3 id="remove-a-room-from-the-favorites-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|apiVersion|path|string|true|none|
+|token|path|string|true|none|
+|OCS-APIRequest|header|boolean|true|Required to be true for the API request to pass|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|apiVersion|v4|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "ocs": {
+    "meta": {
+      "status": "string",
+      "statuscode": 0,
+      "message": "string",
+      "totalitems": "string",
+      "itemsperpage": "string"
+    },
+    "data": {
+      "actorId": "string",
+      "invitedActorId": "string",
+      "actorType": "string",
+      "attendeeId": 0,
+      "attendeePermissions": 0,
+      "attendeePin": "string",
+      "avatarVersion": "string",
+      "breakoutRoomMode": 0,
+      "breakoutRoomStatus": 0,
+      "callFlag": 0,
+      "callPermissions": 0,
+      "callRecording": 0,
+      "callStartTime": 0,
+      "canDeleteConversation": true,
+      "canEnableSIP": true,
+      "canLeaveConversation": true,
+      "canStartCall": true,
+      "defaultPermissions": 0,
+      "description": "string",
+      "displayName": "string",
+      "hasCall": true,
+      "hasPassword": true,
+      "id": 0,
+      "isCustomAvatar": true,
+      "isFavorite": true,
+      "lastActivity": 0,
+      "lastCommonReadMessage": 0,
+      "lastMessage": {
+        "actorDisplayName": "string",
+        "actorId": "string",
+        "actorType": "string",
+        "expirationTimestamp": 0,
+        "message": "string",
+        "messageParameters": {
+          "property1": {
+            "type": "string",
+            "id": "string",
+            "name": "string",
+            "server": "string",
+            "link": "string",
+            "call-type": "one2one",
+            "icon-url": "string",
+            "message-id": "string",
+            "boardname": "string",
+            "stackname": "string",
+            "size": "string",
+            "path": "string",
+            "mimetype": "string",
+            "preview-available": "yes",
+            "hide-download": "yes",
+            "mtime": "string",
+            "latitude": "string",
+            "longitude": "string",
+            "description": "string",
+            "thumb": "string",
+            "website": "string",
+            "visibility": "0",
+            "assignable": "0",
+            "conversation": "string",
+            "etag": "string",
+            "permissions": "string",
+            "width": "string",
+            "height": "string",
+            "blurhash": "string"
+          },
+          "property2": {
+            "type": "string",
+            "id": "string",
+            "name": "string",
+            "server": "string",
+            "link": "string",
+            "call-type": "one2one",
+            "icon-url": "string",
+            "message-id": "string",
+            "boardname": "string",
+            "stackname": "string",
+            "size": "string",
+            "path": "string",
+            "mimetype": "string",
+            "preview-available": "yes",
+            "hide-download": "yes",
+            "mtime": "string",
+            "latitude": "string",
+            "longitude": "string",
+            "description": "string",
+            "thumb": "string",
+            "website": "string",
+            "visibility": "0",
+            "assignable": "0",
+            "conversation": "string",
+            "etag": "string",
+            "permissions": "string",
+            "width": "string",
+            "height": "string",
+            "blurhash": "string"
+          }
+        },
+        "messageType": "string",
+        "systemMessage": "string",
+        "deleted": true,
+        "id": 0,
+        "isReplyable": true,
+        "markdown": true,
+        "reactions": {
+          "property1": 0,
+          "property2": 0
+        },
+        "reactionsSelf": [
+          "string"
+        ],
+        "referenceId": "string",
+        "timestamp": 0,
+        "token": "string",
+        "lastEditActorDisplayName": "string",
+        "lastEditActorId": "string",
+        "lastEditActorType": "string",
+        "lastEditTimestamp": 0,
+        "silent": true,
+        "threadId": 0,
+        "isThread": true,
+        "threadTitle": "string",
+        "threadReplies": 0,
+        "metaData": {
+          "pinnedActorType": "string",
+          "pinnedActorId": "string",
+          "pinnedActorDisplayName": "string",
+          "pinnedAt": 0,
+          "pinnedUntil": 0,
+          "threadId": 0,
+          "threadTitle": "string",
+          "actorRole": "owner",
+          "replyToMessageId": 0,
+          "replyToConversationToken": "string",
+          "replyToConversationName": "string",
+          "replyToActorDisplayName": "string"
+        }
+      },
+      "lastPing": 0,
+      "lastReadMessage": 0,
+      "listable": 0,
+      "liveTranscriptionLanguageId": "string",
+      "lobbyState": 0,
+      "lobbyTimer": 0,
+      "mentionPermissions": 0,
+      "messageExpiration": 0,
+      "name": "string",
+      "notificationCalls": 0,
+      "notificationLevel": 0,
+      "objectId": "string",
+      "objectType": "string",
+      "participantFlags": 0,
+      "participantType": 0,
+      "permissions": 0,
+      "readOnly": 0,
+      "recordingConsent": 0,
+      "remoteServer": "string",
+      "remoteToken": "string",
+      "sessionId": "string",
+      "sipEnabled": 0,
+      "status": "string",
+      "statusClearAt": 0,
+      "statusIcon": "string",
+      "statusMessage": "string",
+      "token": "string",
+      "type": 0,
+      "unreadMention": true,
+      "unreadMentionDirect": true,
+      "unreadMessages": 0,
+      "isArchived": true,
+      "isImportant": true,
+      "isSensitive": true,
+      "tagIds": [
+        "string"
+      ],
+      "lastPinnedId": 0,
+      "hiddenPinnedId": 0,
+      "hasScheduledMessages": 0,
+      "attributes": 0,
+      "muteUntil": 0
+    }
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "ocs": {
+    "meta": {
+      "status": "string",
+      "statuscode": 0,
+      "message": "string",
+      "totalitems": "string",
+      "itemsperpage": "string"
+    },
+    "data": null
+  }
+}
+```
+
+<h3 id="remove-a-room-from-the-favorites-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successfully removed room from favorites|Inline|
+|401|Unauthorized|Current user is not logged in|Inline|
+
+<h3 id="remove-a-room-from-the-favorites-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ocs|object|true|none|none|
+|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
+|» data|[Room](#schemaroom)|true|none|none|
+
+Status Code **401**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ocs|object|true|none|none|
+|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
+|» data|object|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearer_auth, basic_auth
+</aside>
+
+## Update the notification level for a room
+
+<a id="opIdroom-set-notification-level"></a>
+
+> Code samples
+
+```bash
+curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/notify \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'OCS-APIRequest: true' \
+  -d '{
+    "level": 0
+  }'
+```
+
+`POST /ocs/v2.php/apps/spreed/api/{apiVersion}/room/{token}/notify`
+
+> Body parameter
+
+```json
+{
+  "level": 0
+}
+```
+
+<h3 id="update-the-notification-level-for-a-room-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|apiVersion|path|string|true|none|
+|token|path|string|true|none|
+|OCS-APIRequest|header|boolean|true|Required to be true for the API request to pass|
+|body|body|object|true|none|
+|» level|body|integer(int64)|true|New level|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|apiVersion|v4|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "ocs": {
+    "meta": {
+      "status": "string",
+      "statuscode": 0,
+      "message": "string",
+      "totalitems": "string",
+      "itemsperpage": "string"
+    },
+    "data": {
+      "actorId": "string",
+      "invitedActorId": "string",
+      "actorType": "string",
+      "attendeeId": 0,
+      "attendeePermissions": 0,
+      "attendeePin": "string",
+      "avatarVersion": "string",
+      "breakoutRoomMode": 0,
+      "breakoutRoomStatus": 0,
+      "callFlag": 0,
+      "callPermissions": 0,
+      "callRecording": 0,
+      "callStartTime": 0,
+      "canDeleteConversation": true,
+      "canEnableSIP": true,
+      "canLeaveConversation": true,
+      "canStartCall": true,
+      "defaultPermissions": 0,
+      "description": "string",
+      "displayName": "string",
+      "hasCall": true,
+      "hasPassword": true,
+      "id": 0,
+      "isCustomAvatar": true,
+      "isFavorite": true,
+      "lastActivity": 0,
+      "lastCommonReadMessage": 0,
+      "lastMessage": {
+        "actorDisplayName": "string",
+        "actorId": "string",
+        "actorType": "string",
+        "expirationTimestamp": 0,
+        "message": "string",
+        "messageParameters": {
+          "property1": {
+            "type": "string",
+            "id": "string",
+            "name": "string",
+            "server": "string",
+            "link": "string",
+            "call-type": "one2one",
+            "icon-url": "string",
+            "message-id": "string",
+            "boardname": "string",
+            "stackname": "string",
+            "size": "string",
+            "path": "string",
+            "mimetype": "string",
+            "preview-available": "yes",
+            "hide-download": "yes",
+            "mtime": "string",
+            "latitude": "string",
+            "longitude": "string",
+            "description": "string",
+            "thumb": "string",
+            "website": "string",
+            "visibility": "0",
+            "assignable": "0",
+            "conversation": "string",
+            "etag": "string",
+            "permissions": "string",
+            "width": "string",
+            "height": "string",
+            "blurhash": "string"
+          },
+          "property2": {
+            "type": "string",
+            "id": "string",
+            "name": "string",
+            "server": "string",
+            "link": "string",
+            "call-type": "one2one",
+            "icon-url": "string",
+            "message-id": "string",
+            "boardname": "string",
+            "stackname": "string",
+            "size": "string",
+            "path": "string",
+            "mimetype": "string",
+            "preview-available": "yes",
+            "hide-download": "yes",
+            "mtime": "string",
+            "latitude": "string",
+            "longitude": "string",
+            "description": "string",
+            "thumb": "string",
+            "website": "string",
+            "visibility": "0",
+            "assignable": "0",
+            "conversation": "string",
+            "etag": "string",
+            "permissions": "string",
+            "width": "string",
+            "height": "string",
+            "blurhash": "string"
+          }
+        },
+        "messageType": "string",
+        "systemMessage": "string",
+        "deleted": true,
+        "id": 0,
+        "isReplyable": true,
+        "markdown": true,
+        "reactions": {
+          "property1": 0,
+          "property2": 0
+        },
+        "reactionsSelf": [
+          "string"
+        ],
+        "referenceId": "string",
+        "timestamp": 0,
+        "token": "string",
+        "lastEditActorDisplayName": "string",
+        "lastEditActorId": "string",
+        "lastEditActorType": "string",
+        "lastEditTimestamp": 0,
+        "silent": true,
+        "threadId": 0,
+        "isThread": true,
+        "threadTitle": "string",
+        "threadReplies": 0,
+        "metaData": {
+          "pinnedActorType": "string",
+          "pinnedActorId": "string",
+          "pinnedActorDisplayName": "string",
+          "pinnedAt": 0,
+          "pinnedUntil": 0,
+          "threadId": 0,
+          "threadTitle": "string",
+          "actorRole": "owner",
+          "replyToMessageId": 0,
+          "replyToConversationToken": "string",
+          "replyToConversationName": "string",
+          "replyToActorDisplayName": "string"
+        }
+      },
+      "lastPing": 0,
+      "lastReadMessage": 0,
+      "listable": 0,
+      "liveTranscriptionLanguageId": "string",
+      "lobbyState": 0,
+      "lobbyTimer": 0,
+      "mentionPermissions": 0,
+      "messageExpiration": 0,
+      "name": "string",
+      "notificationCalls": 0,
+      "notificationLevel": 0,
+      "objectId": "string",
+      "objectType": "string",
+      "participantFlags": 0,
+      "participantType": 0,
+      "permissions": 0,
+      "readOnly": 0,
+      "recordingConsent": 0,
+      "remoteServer": "string",
+      "remoteToken": "string",
+      "sessionId": "string",
+      "sipEnabled": 0,
+      "status": "string",
+      "statusClearAt": 0,
+      "statusIcon": "string",
+      "statusMessage": "string",
+      "token": "string",
+      "type": 0,
+      "unreadMention": true,
+      "unreadMentionDirect": true,
+      "unreadMessages": 0,
+      "isArchived": true,
+      "isImportant": true,
+      "isSensitive": true,
+      "tagIds": [
+        "string"
+      ],
+      "lastPinnedId": 0,
+      "hiddenPinnedId": 0,
+      "hasScheduledMessages": 0,
+      "attributes": 0,
+      "muteUntil": 0
+    }
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "ocs": {
+    "meta": {
+      "status": "string",
+      "statuscode": 0,
+      "message": "string",
+      "totalitems": "string",
+      "itemsperpage": "string"
+    },
+    "data": {
+      "error": "level"
+    }
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "ocs": {
+    "meta": {
+      "status": "string",
+      "statuscode": 0,
+      "message": "string",
+      "totalitems": "string",
+      "itemsperpage": "string"
+    },
+    "data": null
+  }
+}
+```
+
+<h3 id="update-the-notification-level-for-a-room-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Notification level updated successfully|Inline|
+|400|Bad Request|Updating notification level is not possible|Inline|
+|401|Unauthorized|Current user is not logged in|Inline|
+
+<h3 id="update-the-notification-level-for-a-room-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ocs|object|true|none|none|
+|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
+|» data|[Room](#schemaroom)|true|none|none|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ocs|object|true|none|none|
+|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
+|» data|object|true|none|none|
+|» » error|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» » error|level|
+
+Status Code **401**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ocs|object|true|none|none|
+|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
+|» data|object|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearer_auth, basic_auth
+</aside>
+
+## Update call notifications
+
+<a id="opIdroom-set-notification-calls"></a>
+
+> Code samples
+
+```bash
+curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/notify-calls \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'OCS-APIRequest: true' \
+  -d '{
+    "level": 0
+  }'
+```
+
+`POST /ocs/v2.php/apps/spreed/api/{apiVersion}/room/{token}/notify-calls`
+
+> Body parameter
+
+```json
+{
+  "level": 0
+}
+```
+
+<h3 id="update-call-notifications-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|apiVersion|path|string|true|none|
+|token|path|string|true|none|
+|OCS-APIRequest|header|boolean|true|Required to be true for the API request to pass|
+|body|body|object|true|none|
+|» level|body|integer(int64)|true|New level|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|apiVersion|v4|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "ocs": {
+    "meta": {
+      "status": "string",
+      "statuscode": 0,
+      "message": "string",
+      "totalitems": "string",
+      "itemsperpage": "string"
+    },
+    "data": {
+      "actorId": "string",
+      "invitedActorId": "string",
+      "actorType": "string",
+      "attendeeId": 0,
+      "attendeePermissions": 0,
+      "attendeePin": "string",
+      "avatarVersion": "string",
+      "breakoutRoomMode": 0,
+      "breakoutRoomStatus": 0,
+      "callFlag": 0,
+      "callPermissions": 0,
+      "callRecording": 0,
+      "callStartTime": 0,
+      "canDeleteConversation": true,
+      "canEnableSIP": true,
+      "canLeaveConversation": true,
+      "canStartCall": true,
+      "defaultPermissions": 0,
+      "description": "string",
+      "displayName": "string",
+      "hasCall": true,
+      "hasPassword": true,
+      "id": 0,
+      "isCustomAvatar": true,
+      "isFavorite": true,
+      "lastActivity": 0,
+      "lastCommonReadMessage": 0,
+      "lastMessage": {
+        "actorDisplayName": "string",
+        "actorId": "string",
+        "actorType": "string",
+        "expirationTimestamp": 0,
+        "message": "string",
+        "messageParameters": {
+          "property1": {
+            "type": "string",
+            "id": "string",
+            "name": "string",
+            "server": "string",
+            "link": "string",
+            "call-type": "one2one",
+            "icon-url": "string",
+            "message-id": "string",
+            "boardname": "string",
+            "stackname": "string",
+            "size": "string",
+            "path": "string",
+            "mimetype": "string",
+            "preview-available": "yes",
+            "hide-download": "yes",
+            "mtime": "string",
+            "latitude": "string",
+            "longitude": "string",
+            "description": "string",
+            "thumb": "string",
+            "website": "string",
+            "visibility": "0",
+            "assignable": "0",
+            "conversation": "string",
+            "etag": "string",
+            "permissions": "string",
+            "width": "string",
+            "height": "string",
+            "blurhash": "string"
+          },
+          "property2": {
+            "type": "string",
+            "id": "string",
+            "name": "string",
+            "server": "string",
+            "link": "string",
+            "call-type": "one2one",
+            "icon-url": "string",
+            "message-id": "string",
+            "boardname": "string",
+            "stackname": "string",
+            "size": "string",
+            "path": "string",
+            "mimetype": "string",
+            "preview-available": "yes",
+            "hide-download": "yes",
+            "mtime": "string",
+            "latitude": "string",
+            "longitude": "string",
+            "description": "string",
+            "thumb": "string",
+            "website": "string",
+            "visibility": "0",
+            "assignable": "0",
+            "conversation": "string",
+            "etag": "string",
+            "permissions": "string",
+            "width": "string",
+            "height": "string",
+            "blurhash": "string"
+          }
+        },
+        "messageType": "string",
+        "systemMessage": "string",
+        "deleted": true,
+        "id": 0,
+        "isReplyable": true,
+        "markdown": true,
+        "reactions": {
+          "property1": 0,
+          "property2": 0
+        },
+        "reactionsSelf": [
+          "string"
+        ],
+        "referenceId": "string",
+        "timestamp": 0,
+        "token": "string",
+        "lastEditActorDisplayName": "string",
+        "lastEditActorId": "string",
+        "lastEditActorType": "string",
+        "lastEditTimestamp": 0,
+        "silent": true,
+        "threadId": 0,
+        "isThread": true,
+        "threadTitle": "string",
+        "threadReplies": 0,
+        "metaData": {
+          "pinnedActorType": "string",
+          "pinnedActorId": "string",
+          "pinnedActorDisplayName": "string",
+          "pinnedAt": 0,
+          "pinnedUntil": 0,
+          "threadId": 0,
+          "threadTitle": "string",
+          "actorRole": "owner",
+          "replyToMessageId": 0,
+          "replyToConversationToken": "string",
+          "replyToConversationName": "string",
+          "replyToActorDisplayName": "string"
+        }
+      },
+      "lastPing": 0,
+      "lastReadMessage": 0,
+      "listable": 0,
+      "liveTranscriptionLanguageId": "string",
+      "lobbyState": 0,
+      "lobbyTimer": 0,
+      "mentionPermissions": 0,
+      "messageExpiration": 0,
+      "name": "string",
+      "notificationCalls": 0,
+      "notificationLevel": 0,
+      "objectId": "string",
+      "objectType": "string",
+      "participantFlags": 0,
+      "participantType": 0,
+      "permissions": 0,
+      "readOnly": 0,
+      "recordingConsent": 0,
+      "remoteServer": "string",
+      "remoteToken": "string",
+      "sessionId": "string",
+      "sipEnabled": 0,
+      "status": "string",
+      "statusClearAt": 0,
+      "statusIcon": "string",
+      "statusMessage": "string",
+      "token": "string",
+      "type": 0,
+      "unreadMention": true,
+      "unreadMentionDirect": true,
+      "unreadMessages": 0,
+      "isArchived": true,
+      "isImportant": true,
+      "isSensitive": true,
+      "tagIds": [
+        "string"
+      ],
+      "lastPinnedId": 0,
+      "hiddenPinnedId": 0,
+      "hasScheduledMessages": 0,
+      "attributes": 0,
+      "muteUntil": 0
+    }
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "ocs": {
+    "meta": {
+      "status": "string",
+      "statuscode": 0,
+      "message": "string",
+      "totalitems": "string",
+      "itemsperpage": "string"
+    },
+    "data": {
+      "error": "level"
+    }
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "ocs": {
+    "meta": {
+      "status": "string",
+      "statuscode": 0,
+      "message": "string",
+      "totalitems": "string",
+      "itemsperpage": "string"
+    },
+    "data": null
+  }
+}
+```
+
+<h3 id="update-call-notifications-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Call notification level updated successfully|Inline|
+|400|Bad Request|Updating call notification level is not possible|Inline|
+|401|Unauthorized|Current user is not logged in|Inline|
+
+<h3 id="update-call-notifications-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ocs|object|true|none|none|
+|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
+|» data|[Room](#schemaroom)|true|none|none|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ocs|object|true|none|none|
+|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
+|» data|object|true|none|none|
+|» » error|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» » error|level|
+
+Status Code **401**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ocs|object|true|none|none|
+|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
+|» data|object|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearer_auth, basic_auth
+</aside>
+
+## Update the description of a room
+
+<a id="opIdroom-set-description"></a>
+
+> Code samples
+
+```bash
+curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/description \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H 'OCS-APIRequest: true' \
+  -d '{
+    "description": "string"
+  }'
+```
+
+`PUT /ocs/v2.php/apps/spreed/api/{apiVersion}/room/{token}/description`
+
+> Body parameter
+
+```json
+{
+  "description": "string"
+}
+```
+
+<h3 id="update-the-description-of-a-room-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|apiVersion|path|string|true|none|
+|token|path|string|true|none|
+|OCS-APIRequest|header|boolean|true|Required to be true for the API request to pass|
+|body|body|object|true|none|
+|» description|body|string|true|New description for the conversation (limited to 2.000 characters, was 500 before Talk 21)|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|apiVersion|v4|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "ocs": {
+    "meta": {
+      "status": "string",
+      "statuscode": 0,
+      "message": "string",
+      "totalitems": "string",
+      "itemsperpage": "string"
+    },
+    "data": {
+      "actorId": "string",
+      "invitedActorId": "string",
+      "actorType": "string",
+      "attendeeId": 0,
+      "attendeePermissions": 0,
+      "attendeePin": "string",
+      "avatarVersion": "string",
+      "breakoutRoomMode": 0,
+      "breakoutRoomStatus": 0,
+      "callFlag": 0,
+      "callPermissions": 0,
+      "callRecording": 0,
+      "callStartTime": 0,
+      "canDeleteConversation": true,
+      "canEnableSIP": true,
+      "canLeaveConversation": true,
+      "canStartCall": true,
+      "defaultPermissions": 0,
+      "description": "string",
+      "displayName": "string",
+      "hasCall": true,
+      "hasPassword": true,
+      "id": 0,
+      "isCustomAvatar": true,
+      "isFavorite": true,
+      "lastActivity": 0,
+      "lastCommonReadMessage": 0,
+      "lastMessage": {
+        "actorDisplayName": "string",
+        "actorId": "string",
+        "actorType": "string",
+        "expirationTimestamp": 0,
+        "message": "string",
+        "messageParameters": {
+          "property1": {
+            "type": "string",
+            "id": "string",
+            "name": "string",
+            "server": "string",
+            "link": "string",
+            "call-type": "one2one",
+            "icon-url": "string",
+            "message-id": "string",
+            "boardname": "string",
+            "stackname": "string",
+            "size": "string",
+            "path": "string",
+            "mimetype": "string",
+            "preview-available": "yes",
+            "hide-download": "yes",
+            "mtime": "string",
+            "latitude": "string",
+            "longitude": "string",
+            "description": "string",
+            "thumb": "string",
+            "website": "string",
+            "visibility": "0",
+            "assignable": "0",
+            "conversation": "string",
+            "etag": "string",
+            "permissions": "string",
+            "width": "string",
+            "height": "string",
+            "blurhash": "string"
+          },
+          "property2": {
+            "type": "string",
+            "id": "string",
+            "name": "string",
+            "server": "string",
+            "link": "string",
+            "call-type": "one2one",
+            "icon-url": "string",
+            "message-id": "string",
+            "boardname": "string",
+            "stackname": "string",
+            "size": "string",
+            "path": "string",
+            "mimetype": "string",
+            "preview-available": "yes",
+            "hide-download": "yes",
+            "mtime": "string",
+            "latitude": "string",
+            "longitude": "string",
+            "description": "string",
+            "thumb": "string",
+            "website": "string",
+            "visibility": "0",
+            "assignable": "0",
+            "conversation": "string",
+            "etag": "string",
+            "permissions": "string",
+            "width": "string",
+            "height": "string",
+            "blurhash": "string"
+          }
+        },
+        "messageType": "string",
+        "systemMessage": "string",
+        "deleted": true,
+        "id": 0,
+        "isReplyable": true,
+        "markdown": true,
+        "reactions": {
+          "property1": 0,
+          "property2": 0
+        },
+        "reactionsSelf": [
+          "string"
+        ],
+        "referenceId": "string",
+        "timestamp": 0,
+        "token": "string",
+        "lastEditActorDisplayName": "string",
+        "lastEditActorId": "string",
+        "lastEditActorType": "string",
+        "lastEditTimestamp": 0,
+        "silent": true,
+        "threadId": 0,
+        "isThread": true,
+        "threadTitle": "string",
+        "threadReplies": 0,
+        "metaData": {
+          "pinnedActorType": "string",
+          "pinnedActorId": "string",
+          "pinnedActorDisplayName": "string",
+          "pinnedAt": 0,
+          "pinnedUntil": 0,
+          "threadId": 0,
+          "threadTitle": "string",
+          "actorRole": "owner",
+          "replyToMessageId": 0,
+          "replyToConversationToken": "string",
+          "replyToConversationName": "string",
+          "replyToActorDisplayName": "string"
+        }
+      },
+      "lastPing": 0,
+      "lastReadMessage": 0,
+      "listable": 0,
+      "liveTranscriptionLanguageId": "string",
+      "lobbyState": 0,
+      "lobbyTimer": 0,
+      "mentionPermissions": 0,
+      "messageExpiration": 0,
+      "name": "string",
+      "notificationCalls": 0,
+      "notificationLevel": 0,
+      "objectId": "string",
+      "objectType": "string",
+      "participantFlags": 0,
+      "participantType": 0,
+      "permissions": 0,
+      "readOnly": 0,
+      "recordingConsent": 0,
+      "remoteServer": "string",
+      "remoteToken": "string",
+      "sessionId": "string",
+      "sipEnabled": 0,
+      "status": "string",
+      "statusClearAt": 0,
+      "statusIcon": "string",
+      "statusMessage": "string",
+      "token": "string",
+      "type": 0,
+      "unreadMention": true,
+      "unreadMentionDirect": true,
+      "unreadMessages": 0,
+      "isArchived": true,
+      "isImportant": true,
+      "isSensitive": true,
+      "tagIds": [
+        "string"
+      ],
+      "lastPinnedId": 0,
+      "hiddenPinnedId": 0,
+      "hasScheduledMessages": 0,
+      "attributes": 0,
+      "muteUntil": 0
+    }
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "ocs": {
+    "meta": {
+      "status": "string",
+      "statuscode": 0,
+      "message": "string",
+      "totalitems": "string",
+      "itemsperpage": "string"
+    },
+    "data": {
+      "error": "event"
+    }
+  }
+}
+```
+
+> 403 Response
+
+```json
+{
+  "ocs": {
+    "meta": {
+      "status": "string",
+      "statuscode": 0,
+      "message": "string",
+      "totalitems": "string",
+      "itemsperpage": "string"
+    },
+    "data": {
+      "error": "account"
+    }
+  }
+}
+```
+
+> 404 Response
+
+```json
+{
+  "ocs": {
+    "meta": {
+      "status": "string",
+      "statuscode": 0,
+      "message": "string",
+      "totalitems": "string",
+      "itemsperpage": "string"
+    },
+    "data": {
+      "error": "account"
+    }
+  }
+}
+```
+
+> 502 Response
+
+```json
+{
+  "ocs": {
+    "meta": {
+      "status": "string",
+      "statuscode": 0,
+      "message": "string",
+      "totalitems": "string",
+      "itemsperpage": "string"
+    },
+    "data": {
+      "error": "account"
+    }
+  }
+}
+```
+
+<h3 id="update-the-description-of-a-room-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Description updated successfully|Inline|
+|400|Bad Request|Updating description is not possible|Inline|
+|403|Forbidden|The Matrix account of the user can not change the topic of the Matrix room|Inline|
+|404|Not Found|The Matrix room or the linked Matrix account of the user was not found|Inline|
+|502|Bad Gateway|The Matrix homeserver rejected the change or could not be reached|Inline|
+
+<h3 id="update-the-description-of-a-room-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ocs|object|true|none|none|
+|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
+|» data|[Room](#schemaroom)|true|none|none|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anyOf*|object|false|none|none|
+|ocs|object|true|none|none|
+|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
+|» data|object|true|none|none|
+|» » error|string|true|none|none|
+|*anyOf*|object|false|none|none|
+|ocs|object|true|none|none|
+|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
+|» data|object|true|none|none|
+|» » error|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» » error|event|
+|» » error|type|
+|» » error|value|
+|» » error|account|
+|» » error|encrypted|
+|» » error|matrix|
+|» » error|message|
+|» » error|permission|
+
+Status Code **403**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ocs|object|true|none|none|
+|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
+|» data|object|true|none|none|
+|» » error|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» » error|account|
+|» » error|encrypted|
+|» » error|matrix|
+|» » error|message|
+|» » error|permission|
+
+Status Code **404**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ocs|object|true|none|none|
+|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
+|» data|object|true|none|none|
+|» » error|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» » error|account|
+|» » error|encrypted|
+|» » error|matrix|
+|» » error|message|
+|» » error|permission|
+
+Status Code **502**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ocs|object|true|none|none|
+|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
+|» data|object|true|none|none|
+|» » error|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» » error|account|
+|» » error|encrypted|
+|» » error|matrix|
+|» » error|message|
+|» » error|permission|
+
+<aside class="warning">
+Authentication is optional for this operation. To authenticate, use one of the following methods:
+bearer_auth, basic_auth
+</aside>
+
+## Unbind a room from its object to prevent automatic retention
+
+<a id="opIdroom-unbind-room-from-object"></a>
+
+> Code samples
+
+```bash
+curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/object \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H 'OCS-APIRequest: true'
+```
+
+`DELETE /ocs/v2.php/apps/spreed/api/{apiVersion}/room/{token}/object`
+
+Required capability: `unbind-conversation`
+
+<h3 id="unbind-a-room-from-its-object-to-prevent-automatic-retention-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|apiVersion|path|string|true|none|
+|token|path|string|true|none|
+|OCS-APIRequest|header|boolean|true|Required to be true for the API request to pass|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|apiVersion|v4|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "ocs": {
+    "meta": {
+      "status": "string",
+      "statuscode": 0,
+      "message": "string",
+      "totalitems": "string",
+      "itemsperpage": "string"
+    },
+    "data": {
+      "actorId": "string",
+      "invitedActorId": "string",
+      "actorType": "string",
+      "attendeeId": 0,
+      "attendeePermissions": 0,
+      "attendeePin": "string",
+      "avatarVersion": "string",
+      "breakoutRoomMode": 0,
+      "breakoutRoomStatus": 0,
+      "callFlag": 0,
+      "callPermissions": 0,
+      "callRecording": 0,
+      "callStartTime": 0,
+      "canDeleteConversation": true,
+      "canEnableSIP": true,
+      "canLeaveConversation": true,
+      "canStartCall": true,
+      "defaultPermissions": 0,
+      "description": "string",
+      "displayName": "string",
+      "hasCall": true,
+      "hasPassword": true,
+      "id": 0,
+      "isCustomAvatar": true,
+      "isFavorite": true,
+      "lastActivity": 0,
+      "lastCommonReadMessage": 0,
+      "lastMessage": {
+        "actorDisplayName": "string",
+        "actorId": "string",
+        "actorType": "string",
+        "expirationTimestamp": 0,
+        "message": "string",
+        "messageParameters": {
+          "property1": {
+            "type": "string",
+            "id": "string",
+            "name": "string",
+            "server": "string",
+            "link": "string",
+            "call-type": "one2one",
+            "icon-url": "string",
+            "message-id": "string",
+            "boardname": "string",
+            "stackname": "string",
+            "size": "string",
+            "path": "string",
+            "mimetype": "string",
+            "preview-available": "yes",
+            "hide-download": "yes",
+            "mtime": "string",
+            "latitude": "string",
+            "longitude": "string",
+            "description": "string",
+            "thumb": "string",
+            "website": "string",
+            "visibility": "0",
+            "assignable": "0",
+            "conversation": "string",
+            "etag": "string",
+            "permissions": "string",
+            "width": "string",
+            "height": "string",
+            "blurhash": "string"
+          },
+          "property2": {
+            "type": "string",
+            "id": "string",
+            "name": "string",
+            "server": "string",
+            "link": "string",
+            "call-type": "one2one",
+            "icon-url": "string",
+            "message-id": "string",
+            "boardname": "string",
+            "stackname": "string",
+            "size": "string",
+            "path": "string",
+            "mimetype": "string",
+            "preview-available": "yes",
+            "hide-download": "yes",
+            "mtime": "string",
+            "latitude": "string",
+            "longitude": "string",
+            "description": "string",
+            "thumb": "string",
+            "website": "string",
+            "visibility": "0",
+            "assignable": "0",
+            "conversation": "string",
+            "etag": "string",
+            "permissions": "string",
+            "width": "string",
+            "height": "string",
+            "blurhash": "string"
+          }
+        },
+        "messageType": "string",
+        "systemMessage": "string",
+        "deleted": true,
+        "id": 0,
+        "isReplyable": true,
+        "markdown": true,
+        "reactions": {
+          "property1": 0,
+          "property2": 0
+        },
+        "reactionsSelf": [
+          "string"
+        ],
+        "referenceId": "string",
+        "timestamp": 0,
+        "token": "string",
+        "lastEditActorDisplayName": "string",
+        "lastEditActorId": "string",
+        "lastEditActorType": "string",
+        "lastEditTimestamp": 0,
+        "silent": true,
+        "threadId": 0,
+        "isThread": true,
+        "threadTitle": "string",
+        "threadReplies": 0,
+        "metaData": {
+          "pinnedActorType": "string",
+          "pinnedActorId": "string",
+          "pinnedActorDisplayName": "string",
+          "pinnedAt": 0,
+          "pinnedUntil": 0,
+          "threadId": 0,
+          "threadTitle": "string",
+          "actorRole": "owner",
+          "replyToMessageId": 0,
+          "replyToConversationToken": "string",
+          "replyToConversationName": "string",
+          "replyToActorDisplayName": "string"
+        }
+      },
+      "lastPing": 0,
+      "lastReadMessage": 0,
+      "listable": 0,
+      "liveTranscriptionLanguageId": "string",
+      "lobbyState": 0,
+      "lobbyTimer": 0,
+      "mentionPermissions": 0,
+      "messageExpiration": 0,
+      "name": "string",
+      "notificationCalls": 0,
+      "notificationLevel": 0,
+      "objectId": "string",
+      "objectType": "string",
+      "participantFlags": 0,
+      "participantType": 0,
+      "permissions": 0,
+      "readOnly": 0,
+      "recordingConsent": 0,
+      "remoteServer": "string",
+      "remoteToken": "string",
+      "sessionId": "string",
+      "sipEnabled": 0,
+      "status": "string",
+      "statusClearAt": 0,
+      "statusIcon": "string",
+      "statusMessage": "string",
+      "token": "string",
+      "type": 0,
+      "unreadMention": true,
+      "unreadMentionDirect": true,
+      "unreadMessages": 0,
+      "isArchived": true,
+      "isImportant": true,
+      "isSensitive": true,
+      "tagIds": [
+        "string"
+      ],
+      "lastPinnedId": 0,
+      "hiddenPinnedId": 0,
+      "hasScheduledMessages": 0,
+      "attributes": 0,
+      "muteUntil": 0
+    }
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "ocs": {
+    "meta": {
+      "status": "string",
+      "statuscode": 0,
+      "message": "string",
+      "totalitems": "string",
+      "itemsperpage": "string"
+    },
+    "data": {
+      "error": "object-type"
+    }
+  }
+}
+```
+
+<h3 id="unbind-a-room-from-its-object-to-prevent-automatic-retention-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Room successfully unbound|Inline|
+|400|Bad Request|Unbinding room is not possible|Inline|
+
+<h3 id="unbind-a-room-from-its-object-to-prevent-automatic-retention-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ocs|object|true|none|none|
+|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
+|» data|[Room](#schemaroom)|true|none|none|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ocs|object|true|none|none|
+|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
+|» data|object|true|none|none|
+|» » error|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» » error|object-type|
+
+<aside class="warning">
+Authentication is optional for this operation. To authenticate, use one of the following methods:
 bearer_auth, basic_auth
 </aside>
 
@@ -26960,6 +29093,7 @@ Only available for the external call service. Participants missing from the list
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -27006,7 +29140,8 @@ Only available for the external call service. Participants missing from the list
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -27155,6 +29290,7 @@ Only available for the external call service. Participants missing from the list
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -27202,6 +29338,7 @@ Only available for the external call service. Participants missing from the list
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
       "attributes": 0,
+      "muteUntil": 0,
       "invalidParticipants": {
         "users": [
           "string"
@@ -27761,1910 +29898,6 @@ Status Code **502**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearer_auth, basic_auth
-</aside>
-
-## Add a room to the favorites
-
-<a id="opIdroom-add-to-favorites"></a>
-
-> Code samples
-
-```bash
-curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/favorite \
-  -X POST \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'OCS-APIRequest: true'
-```
-
-`POST /ocs/v2.php/apps/spreed/api/{apiVersion}/room/{token}/favorite`
-
-<h3 id="add-a-room-to-the-favorites-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|apiVersion|path|string|true|none|
-|token|path|string|true|none|
-|OCS-APIRequest|header|boolean|true|Required to be true for the API request to pass|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|apiVersion|v4|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "ocs": {
-    "meta": {
-      "status": "string",
-      "statuscode": 0,
-      "message": "string",
-      "totalitems": "string",
-      "itemsperpage": "string"
-    },
-    "data": {
-      "actorId": "string",
-      "invitedActorId": "string",
-      "actorType": "string",
-      "attendeeId": 0,
-      "attendeePermissions": 0,
-      "attendeePin": "string",
-      "avatarVersion": "string",
-      "breakoutRoomMode": 0,
-      "breakoutRoomStatus": 0,
-      "callFlag": 0,
-      "callPermissions": 0,
-      "callRecording": 0,
-      "callStartTime": 0,
-      "canDeleteConversation": true,
-      "canEnableSIP": true,
-      "canLeaveConversation": true,
-      "canStartCall": true,
-      "defaultPermissions": 0,
-      "description": "string",
-      "displayName": "string",
-      "hasCall": true,
-      "hasPassword": true,
-      "id": 0,
-      "isCustomAvatar": true,
-      "isFavorite": true,
-      "lastActivity": 0,
-      "lastCommonReadMessage": 0,
-      "lastMessage": {
-        "actorDisplayName": "string",
-        "actorId": "string",
-        "actorType": "string",
-        "expirationTimestamp": 0,
-        "message": "string",
-        "messageParameters": {
-          "property1": {
-            "type": "string",
-            "id": "string",
-            "name": "string",
-            "server": "string",
-            "link": "string",
-            "call-type": "one2one",
-            "icon-url": "string",
-            "message-id": "string",
-            "boardname": "string",
-            "stackname": "string",
-            "size": "string",
-            "path": "string",
-            "mimetype": "string",
-            "preview-available": "yes",
-            "hide-download": "yes",
-            "mtime": "string",
-            "latitude": "string",
-            "longitude": "string",
-            "description": "string",
-            "thumb": "string",
-            "website": "string",
-            "visibility": "0",
-            "assignable": "0",
-            "conversation": "string",
-            "etag": "string",
-            "permissions": "string",
-            "width": "string",
-            "height": "string",
-            "blurhash": "string"
-          },
-          "property2": {
-            "type": "string",
-            "id": "string",
-            "name": "string",
-            "server": "string",
-            "link": "string",
-            "call-type": "one2one",
-            "icon-url": "string",
-            "message-id": "string",
-            "boardname": "string",
-            "stackname": "string",
-            "size": "string",
-            "path": "string",
-            "mimetype": "string",
-            "preview-available": "yes",
-            "hide-download": "yes",
-            "mtime": "string",
-            "latitude": "string",
-            "longitude": "string",
-            "description": "string",
-            "thumb": "string",
-            "website": "string",
-            "visibility": "0",
-            "assignable": "0",
-            "conversation": "string",
-            "etag": "string",
-            "permissions": "string",
-            "width": "string",
-            "height": "string",
-            "blurhash": "string"
-          }
-        },
-        "messageType": "string",
-        "systemMessage": "string",
-        "deleted": true,
-        "id": 0,
-        "isReplyable": true,
-        "markdown": true,
-        "reactions": {
-          "property1": 0,
-          "property2": 0
-        },
-        "reactionsSelf": [
-          "string"
-        ],
-        "referenceId": "string",
-        "timestamp": 0,
-        "token": "string",
-        "lastEditActorDisplayName": "string",
-        "lastEditActorId": "string",
-        "lastEditActorType": "string",
-        "lastEditTimestamp": 0,
-        "silent": true,
-        "threadId": 0,
-        "isThread": true,
-        "threadTitle": "string",
-        "threadReplies": 0,
-        "metaData": {
-          "pinnedActorType": "string",
-          "pinnedActorId": "string",
-          "pinnedActorDisplayName": "string",
-          "pinnedAt": 0,
-          "pinnedUntil": 0,
-          "threadId": 0,
-          "threadTitle": "string",
-          "replyToMessageId": 0,
-          "replyToConversationToken": "string",
-          "replyToConversationName": "string",
-          "replyToActorDisplayName": "string"
-        }
-      },
-      "lastPing": 0,
-      "lastReadMessage": 0,
-      "listable": 0,
-      "liveTranscriptionLanguageId": "string",
-      "lobbyState": 0,
-      "lobbyTimer": 0,
-      "mentionPermissions": 0,
-      "messageExpiration": 0,
-      "name": "string",
-      "notificationCalls": 0,
-      "notificationLevel": 0,
-      "objectId": "string",
-      "objectType": "string",
-      "participantFlags": 0,
-      "participantType": 0,
-      "permissions": 0,
-      "readOnly": 0,
-      "recordingConsent": 0,
-      "remoteServer": "string",
-      "remoteToken": "string",
-      "sessionId": "string",
-      "sipEnabled": 0,
-      "status": "string",
-      "statusClearAt": 0,
-      "statusIcon": "string",
-      "statusMessage": "string",
-      "token": "string",
-      "type": 0,
-      "unreadMention": true,
-      "unreadMentionDirect": true,
-      "unreadMessages": 0,
-      "isArchived": true,
-      "isImportant": true,
-      "isSensitive": true,
-      "tagIds": [
-        "string"
-      ],
-      "lastPinnedId": 0,
-      "hiddenPinnedId": 0,
-      "hasScheduledMessages": 0,
-      "attributes": 0
-    }
-  }
-}
-```
-
-> 401 Response
-
-```json
-{
-  "ocs": {
-    "meta": {
-      "status": "string",
-      "statuscode": 0,
-      "message": "string",
-      "totalitems": "string",
-      "itemsperpage": "string"
-    },
-    "data": null
-  }
-}
-```
-
-<h3 id="add-a-room-to-the-favorites-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Successfully added room to favorites|Inline|
-|401|Unauthorized|Current user is not logged in|Inline|
-
-<h3 id="add-a-room-to-the-favorites-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|ocs|object|true|none|none|
-|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
-|» data|[Room](#schemaroom)|true|none|none|
-
-Status Code **401**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|ocs|object|true|none|none|
-|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
-|» data|object|true|none|none|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer_auth, basic_auth
-</aside>
-
-## Remove a room from the favorites
-
-<a id="opIdroom-remove-from-favorites"></a>
-
-> Code samples
-
-```bash
-curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/favorite \
-  -X DELETE \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'OCS-APIRequest: true'
-```
-
-`DELETE /ocs/v2.php/apps/spreed/api/{apiVersion}/room/{token}/favorite`
-
-<h3 id="remove-a-room-from-the-favorites-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|apiVersion|path|string|true|none|
-|token|path|string|true|none|
-|OCS-APIRequest|header|boolean|true|Required to be true for the API request to pass|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|apiVersion|v4|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "ocs": {
-    "meta": {
-      "status": "string",
-      "statuscode": 0,
-      "message": "string",
-      "totalitems": "string",
-      "itemsperpage": "string"
-    },
-    "data": {
-      "actorId": "string",
-      "invitedActorId": "string",
-      "actorType": "string",
-      "attendeeId": 0,
-      "attendeePermissions": 0,
-      "attendeePin": "string",
-      "avatarVersion": "string",
-      "breakoutRoomMode": 0,
-      "breakoutRoomStatus": 0,
-      "callFlag": 0,
-      "callPermissions": 0,
-      "callRecording": 0,
-      "callStartTime": 0,
-      "canDeleteConversation": true,
-      "canEnableSIP": true,
-      "canLeaveConversation": true,
-      "canStartCall": true,
-      "defaultPermissions": 0,
-      "description": "string",
-      "displayName": "string",
-      "hasCall": true,
-      "hasPassword": true,
-      "id": 0,
-      "isCustomAvatar": true,
-      "isFavorite": true,
-      "lastActivity": 0,
-      "lastCommonReadMessage": 0,
-      "lastMessage": {
-        "actorDisplayName": "string",
-        "actorId": "string",
-        "actorType": "string",
-        "expirationTimestamp": 0,
-        "message": "string",
-        "messageParameters": {
-          "property1": {
-            "type": "string",
-            "id": "string",
-            "name": "string",
-            "server": "string",
-            "link": "string",
-            "call-type": "one2one",
-            "icon-url": "string",
-            "message-id": "string",
-            "boardname": "string",
-            "stackname": "string",
-            "size": "string",
-            "path": "string",
-            "mimetype": "string",
-            "preview-available": "yes",
-            "hide-download": "yes",
-            "mtime": "string",
-            "latitude": "string",
-            "longitude": "string",
-            "description": "string",
-            "thumb": "string",
-            "website": "string",
-            "visibility": "0",
-            "assignable": "0",
-            "conversation": "string",
-            "etag": "string",
-            "permissions": "string",
-            "width": "string",
-            "height": "string",
-            "blurhash": "string"
-          },
-          "property2": {
-            "type": "string",
-            "id": "string",
-            "name": "string",
-            "server": "string",
-            "link": "string",
-            "call-type": "one2one",
-            "icon-url": "string",
-            "message-id": "string",
-            "boardname": "string",
-            "stackname": "string",
-            "size": "string",
-            "path": "string",
-            "mimetype": "string",
-            "preview-available": "yes",
-            "hide-download": "yes",
-            "mtime": "string",
-            "latitude": "string",
-            "longitude": "string",
-            "description": "string",
-            "thumb": "string",
-            "website": "string",
-            "visibility": "0",
-            "assignable": "0",
-            "conversation": "string",
-            "etag": "string",
-            "permissions": "string",
-            "width": "string",
-            "height": "string",
-            "blurhash": "string"
-          }
-        },
-        "messageType": "string",
-        "systemMessage": "string",
-        "deleted": true,
-        "id": 0,
-        "isReplyable": true,
-        "markdown": true,
-        "reactions": {
-          "property1": 0,
-          "property2": 0
-        },
-        "reactionsSelf": [
-          "string"
-        ],
-        "referenceId": "string",
-        "timestamp": 0,
-        "token": "string",
-        "lastEditActorDisplayName": "string",
-        "lastEditActorId": "string",
-        "lastEditActorType": "string",
-        "lastEditTimestamp": 0,
-        "silent": true,
-        "threadId": 0,
-        "isThread": true,
-        "threadTitle": "string",
-        "threadReplies": 0,
-        "metaData": {
-          "pinnedActorType": "string",
-          "pinnedActorId": "string",
-          "pinnedActorDisplayName": "string",
-          "pinnedAt": 0,
-          "pinnedUntil": 0,
-          "threadId": 0,
-          "threadTitle": "string",
-          "replyToMessageId": 0,
-          "replyToConversationToken": "string",
-          "replyToConversationName": "string",
-          "replyToActorDisplayName": "string"
-        }
-      },
-      "lastPing": 0,
-      "lastReadMessage": 0,
-      "listable": 0,
-      "liveTranscriptionLanguageId": "string",
-      "lobbyState": 0,
-      "lobbyTimer": 0,
-      "mentionPermissions": 0,
-      "messageExpiration": 0,
-      "name": "string",
-      "notificationCalls": 0,
-      "notificationLevel": 0,
-      "objectId": "string",
-      "objectType": "string",
-      "participantFlags": 0,
-      "participantType": 0,
-      "permissions": 0,
-      "readOnly": 0,
-      "recordingConsent": 0,
-      "remoteServer": "string",
-      "remoteToken": "string",
-      "sessionId": "string",
-      "sipEnabled": 0,
-      "status": "string",
-      "statusClearAt": 0,
-      "statusIcon": "string",
-      "statusMessage": "string",
-      "token": "string",
-      "type": 0,
-      "unreadMention": true,
-      "unreadMentionDirect": true,
-      "unreadMessages": 0,
-      "isArchived": true,
-      "isImportant": true,
-      "isSensitive": true,
-      "tagIds": [
-        "string"
-      ],
-      "lastPinnedId": 0,
-      "hiddenPinnedId": 0,
-      "hasScheduledMessages": 0,
-      "attributes": 0
-    }
-  }
-}
-```
-
-> 401 Response
-
-```json
-{
-  "ocs": {
-    "meta": {
-      "status": "string",
-      "statuscode": 0,
-      "message": "string",
-      "totalitems": "string",
-      "itemsperpage": "string"
-    },
-    "data": null
-  }
-}
-```
-
-<h3 id="remove-a-room-from-the-favorites-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Successfully removed room from favorites|Inline|
-|401|Unauthorized|Current user is not logged in|Inline|
-
-<h3 id="remove-a-room-from-the-favorites-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|ocs|object|true|none|none|
-|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
-|» data|[Room](#schemaroom)|true|none|none|
-
-Status Code **401**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|ocs|object|true|none|none|
-|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
-|» data|object|true|none|none|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer_auth, basic_auth
-</aside>
-
-## Update the notification level for a room
-
-<a id="opIdroom-set-notification-level"></a>
-
-> Code samples
-
-```bash
-curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/notify \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'OCS-APIRequest: true' \
-  -d '{
-    "level": 0
-  }'
-```
-
-`POST /ocs/v2.php/apps/spreed/api/{apiVersion}/room/{token}/notify`
-
-> Body parameter
-
-```json
-{
-  "level": 0
-}
-```
-
-<h3 id="update-the-notification-level-for-a-room-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|apiVersion|path|string|true|none|
-|token|path|string|true|none|
-|OCS-APIRequest|header|boolean|true|Required to be true for the API request to pass|
-|body|body|object|true|none|
-|» level|body|integer(int64)|true|New level|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|apiVersion|v4|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "ocs": {
-    "meta": {
-      "status": "string",
-      "statuscode": 0,
-      "message": "string",
-      "totalitems": "string",
-      "itemsperpage": "string"
-    },
-    "data": {
-      "actorId": "string",
-      "invitedActorId": "string",
-      "actorType": "string",
-      "attendeeId": 0,
-      "attendeePermissions": 0,
-      "attendeePin": "string",
-      "avatarVersion": "string",
-      "breakoutRoomMode": 0,
-      "breakoutRoomStatus": 0,
-      "callFlag": 0,
-      "callPermissions": 0,
-      "callRecording": 0,
-      "callStartTime": 0,
-      "canDeleteConversation": true,
-      "canEnableSIP": true,
-      "canLeaveConversation": true,
-      "canStartCall": true,
-      "defaultPermissions": 0,
-      "description": "string",
-      "displayName": "string",
-      "hasCall": true,
-      "hasPassword": true,
-      "id": 0,
-      "isCustomAvatar": true,
-      "isFavorite": true,
-      "lastActivity": 0,
-      "lastCommonReadMessage": 0,
-      "lastMessage": {
-        "actorDisplayName": "string",
-        "actorId": "string",
-        "actorType": "string",
-        "expirationTimestamp": 0,
-        "message": "string",
-        "messageParameters": {
-          "property1": {
-            "type": "string",
-            "id": "string",
-            "name": "string",
-            "server": "string",
-            "link": "string",
-            "call-type": "one2one",
-            "icon-url": "string",
-            "message-id": "string",
-            "boardname": "string",
-            "stackname": "string",
-            "size": "string",
-            "path": "string",
-            "mimetype": "string",
-            "preview-available": "yes",
-            "hide-download": "yes",
-            "mtime": "string",
-            "latitude": "string",
-            "longitude": "string",
-            "description": "string",
-            "thumb": "string",
-            "website": "string",
-            "visibility": "0",
-            "assignable": "0",
-            "conversation": "string",
-            "etag": "string",
-            "permissions": "string",
-            "width": "string",
-            "height": "string",
-            "blurhash": "string"
-          },
-          "property2": {
-            "type": "string",
-            "id": "string",
-            "name": "string",
-            "server": "string",
-            "link": "string",
-            "call-type": "one2one",
-            "icon-url": "string",
-            "message-id": "string",
-            "boardname": "string",
-            "stackname": "string",
-            "size": "string",
-            "path": "string",
-            "mimetype": "string",
-            "preview-available": "yes",
-            "hide-download": "yes",
-            "mtime": "string",
-            "latitude": "string",
-            "longitude": "string",
-            "description": "string",
-            "thumb": "string",
-            "website": "string",
-            "visibility": "0",
-            "assignable": "0",
-            "conversation": "string",
-            "etag": "string",
-            "permissions": "string",
-            "width": "string",
-            "height": "string",
-            "blurhash": "string"
-          }
-        },
-        "messageType": "string",
-        "systemMessage": "string",
-        "deleted": true,
-        "id": 0,
-        "isReplyable": true,
-        "markdown": true,
-        "reactions": {
-          "property1": 0,
-          "property2": 0
-        },
-        "reactionsSelf": [
-          "string"
-        ],
-        "referenceId": "string",
-        "timestamp": 0,
-        "token": "string",
-        "lastEditActorDisplayName": "string",
-        "lastEditActorId": "string",
-        "lastEditActorType": "string",
-        "lastEditTimestamp": 0,
-        "silent": true,
-        "threadId": 0,
-        "isThread": true,
-        "threadTitle": "string",
-        "threadReplies": 0,
-        "metaData": {
-          "pinnedActorType": "string",
-          "pinnedActorId": "string",
-          "pinnedActorDisplayName": "string",
-          "pinnedAt": 0,
-          "pinnedUntil": 0,
-          "threadId": 0,
-          "threadTitle": "string",
-          "replyToMessageId": 0,
-          "replyToConversationToken": "string",
-          "replyToConversationName": "string",
-          "replyToActorDisplayName": "string"
-        }
-      },
-      "lastPing": 0,
-      "lastReadMessage": 0,
-      "listable": 0,
-      "liveTranscriptionLanguageId": "string",
-      "lobbyState": 0,
-      "lobbyTimer": 0,
-      "mentionPermissions": 0,
-      "messageExpiration": 0,
-      "name": "string",
-      "notificationCalls": 0,
-      "notificationLevel": 0,
-      "objectId": "string",
-      "objectType": "string",
-      "participantFlags": 0,
-      "participantType": 0,
-      "permissions": 0,
-      "readOnly": 0,
-      "recordingConsent": 0,
-      "remoteServer": "string",
-      "remoteToken": "string",
-      "sessionId": "string",
-      "sipEnabled": 0,
-      "status": "string",
-      "statusClearAt": 0,
-      "statusIcon": "string",
-      "statusMessage": "string",
-      "token": "string",
-      "type": 0,
-      "unreadMention": true,
-      "unreadMentionDirect": true,
-      "unreadMessages": 0,
-      "isArchived": true,
-      "isImportant": true,
-      "isSensitive": true,
-      "tagIds": [
-        "string"
-      ],
-      "lastPinnedId": 0,
-      "hiddenPinnedId": 0,
-      "hasScheduledMessages": 0,
-      "attributes": 0
-    }
-  }
-}
-```
-
-> 400 Response
-
-```json
-{
-  "ocs": {
-    "meta": {
-      "status": "string",
-      "statuscode": 0,
-      "message": "string",
-      "totalitems": "string",
-      "itemsperpage": "string"
-    },
-    "data": {
-      "error": "level"
-    }
-  }
-}
-```
-
-> 401 Response
-
-```json
-{
-  "ocs": {
-    "meta": {
-      "status": "string",
-      "statuscode": 0,
-      "message": "string",
-      "totalitems": "string",
-      "itemsperpage": "string"
-    },
-    "data": null
-  }
-}
-```
-
-<h3 id="update-the-notification-level-for-a-room-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Notification level updated successfully|Inline|
-|400|Bad Request|Updating notification level is not possible|Inline|
-|401|Unauthorized|Current user is not logged in|Inline|
-
-<h3 id="update-the-notification-level-for-a-room-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|ocs|object|true|none|none|
-|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
-|» data|[Room](#schemaroom)|true|none|none|
-
-Status Code **400**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|ocs|object|true|none|none|
-|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
-|» data|object|true|none|none|
-|» » error|string|true|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|» » error|level|
-
-Status Code **401**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|ocs|object|true|none|none|
-|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
-|» data|object|true|none|none|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer_auth, basic_auth
-</aside>
-
-## Update call notifications
-
-<a id="opIdroom-set-notification-calls"></a>
-
-> Code samples
-
-```bash
-curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/notify-calls \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'OCS-APIRequest: true' \
-  -d '{
-    "level": 0
-  }'
-```
-
-`POST /ocs/v2.php/apps/spreed/api/{apiVersion}/room/{token}/notify-calls`
-
-> Body parameter
-
-```json
-{
-  "level": 0
-}
-```
-
-<h3 id="update-call-notifications-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|apiVersion|path|string|true|none|
-|token|path|string|true|none|
-|OCS-APIRequest|header|boolean|true|Required to be true for the API request to pass|
-|body|body|object|true|none|
-|» level|body|integer(int64)|true|New level|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|apiVersion|v4|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "ocs": {
-    "meta": {
-      "status": "string",
-      "statuscode": 0,
-      "message": "string",
-      "totalitems": "string",
-      "itemsperpage": "string"
-    },
-    "data": {
-      "actorId": "string",
-      "invitedActorId": "string",
-      "actorType": "string",
-      "attendeeId": 0,
-      "attendeePermissions": 0,
-      "attendeePin": "string",
-      "avatarVersion": "string",
-      "breakoutRoomMode": 0,
-      "breakoutRoomStatus": 0,
-      "callFlag": 0,
-      "callPermissions": 0,
-      "callRecording": 0,
-      "callStartTime": 0,
-      "canDeleteConversation": true,
-      "canEnableSIP": true,
-      "canLeaveConversation": true,
-      "canStartCall": true,
-      "defaultPermissions": 0,
-      "description": "string",
-      "displayName": "string",
-      "hasCall": true,
-      "hasPassword": true,
-      "id": 0,
-      "isCustomAvatar": true,
-      "isFavorite": true,
-      "lastActivity": 0,
-      "lastCommonReadMessage": 0,
-      "lastMessage": {
-        "actorDisplayName": "string",
-        "actorId": "string",
-        "actorType": "string",
-        "expirationTimestamp": 0,
-        "message": "string",
-        "messageParameters": {
-          "property1": {
-            "type": "string",
-            "id": "string",
-            "name": "string",
-            "server": "string",
-            "link": "string",
-            "call-type": "one2one",
-            "icon-url": "string",
-            "message-id": "string",
-            "boardname": "string",
-            "stackname": "string",
-            "size": "string",
-            "path": "string",
-            "mimetype": "string",
-            "preview-available": "yes",
-            "hide-download": "yes",
-            "mtime": "string",
-            "latitude": "string",
-            "longitude": "string",
-            "description": "string",
-            "thumb": "string",
-            "website": "string",
-            "visibility": "0",
-            "assignable": "0",
-            "conversation": "string",
-            "etag": "string",
-            "permissions": "string",
-            "width": "string",
-            "height": "string",
-            "blurhash": "string"
-          },
-          "property2": {
-            "type": "string",
-            "id": "string",
-            "name": "string",
-            "server": "string",
-            "link": "string",
-            "call-type": "one2one",
-            "icon-url": "string",
-            "message-id": "string",
-            "boardname": "string",
-            "stackname": "string",
-            "size": "string",
-            "path": "string",
-            "mimetype": "string",
-            "preview-available": "yes",
-            "hide-download": "yes",
-            "mtime": "string",
-            "latitude": "string",
-            "longitude": "string",
-            "description": "string",
-            "thumb": "string",
-            "website": "string",
-            "visibility": "0",
-            "assignable": "0",
-            "conversation": "string",
-            "etag": "string",
-            "permissions": "string",
-            "width": "string",
-            "height": "string",
-            "blurhash": "string"
-          }
-        },
-        "messageType": "string",
-        "systemMessage": "string",
-        "deleted": true,
-        "id": 0,
-        "isReplyable": true,
-        "markdown": true,
-        "reactions": {
-          "property1": 0,
-          "property2": 0
-        },
-        "reactionsSelf": [
-          "string"
-        ],
-        "referenceId": "string",
-        "timestamp": 0,
-        "token": "string",
-        "lastEditActorDisplayName": "string",
-        "lastEditActorId": "string",
-        "lastEditActorType": "string",
-        "lastEditTimestamp": 0,
-        "silent": true,
-        "threadId": 0,
-        "isThread": true,
-        "threadTitle": "string",
-        "threadReplies": 0,
-        "metaData": {
-          "pinnedActorType": "string",
-          "pinnedActorId": "string",
-          "pinnedActorDisplayName": "string",
-          "pinnedAt": 0,
-          "pinnedUntil": 0,
-          "threadId": 0,
-          "threadTitle": "string",
-          "replyToMessageId": 0,
-          "replyToConversationToken": "string",
-          "replyToConversationName": "string",
-          "replyToActorDisplayName": "string"
-        }
-      },
-      "lastPing": 0,
-      "lastReadMessage": 0,
-      "listable": 0,
-      "liveTranscriptionLanguageId": "string",
-      "lobbyState": 0,
-      "lobbyTimer": 0,
-      "mentionPermissions": 0,
-      "messageExpiration": 0,
-      "name": "string",
-      "notificationCalls": 0,
-      "notificationLevel": 0,
-      "objectId": "string",
-      "objectType": "string",
-      "participantFlags": 0,
-      "participantType": 0,
-      "permissions": 0,
-      "readOnly": 0,
-      "recordingConsent": 0,
-      "remoteServer": "string",
-      "remoteToken": "string",
-      "sessionId": "string",
-      "sipEnabled": 0,
-      "status": "string",
-      "statusClearAt": 0,
-      "statusIcon": "string",
-      "statusMessage": "string",
-      "token": "string",
-      "type": 0,
-      "unreadMention": true,
-      "unreadMentionDirect": true,
-      "unreadMessages": 0,
-      "isArchived": true,
-      "isImportant": true,
-      "isSensitive": true,
-      "tagIds": [
-        "string"
-      ],
-      "lastPinnedId": 0,
-      "hiddenPinnedId": 0,
-      "hasScheduledMessages": 0,
-      "attributes": 0
-    }
-  }
-}
-```
-
-> 400 Response
-
-```json
-{
-  "ocs": {
-    "meta": {
-      "status": "string",
-      "statuscode": 0,
-      "message": "string",
-      "totalitems": "string",
-      "itemsperpage": "string"
-    },
-    "data": {
-      "error": "level"
-    }
-  }
-}
-```
-
-> 401 Response
-
-```json
-{
-  "ocs": {
-    "meta": {
-      "status": "string",
-      "statuscode": 0,
-      "message": "string",
-      "totalitems": "string",
-      "itemsperpage": "string"
-    },
-    "data": null
-  }
-}
-```
-
-<h3 id="update-call-notifications-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Call notification level updated successfully|Inline|
-|400|Bad Request|Updating call notification level is not possible|Inline|
-|401|Unauthorized|Current user is not logged in|Inline|
-
-<h3 id="update-call-notifications-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|ocs|object|true|none|none|
-|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
-|» data|[Room](#schemaroom)|true|none|none|
-
-Status Code **400**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|ocs|object|true|none|none|
-|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
-|» data|object|true|none|none|
-|» » error|string|true|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|» » error|level|
-
-Status Code **401**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|ocs|object|true|none|none|
-|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
-|» data|object|true|none|none|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer_auth, basic_auth
-</aside>
-
-## Update the description of a room
-
-<a id="opIdroom-set-description"></a>
-
-> Code samples
-
-```bash
-curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/description \
-  -X PUT \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H 'OCS-APIRequest: true' \
-  -d '{
-    "description": "string"
-  }'
-```
-
-`PUT /ocs/v2.php/apps/spreed/api/{apiVersion}/room/{token}/description`
-
-> Body parameter
-
-```json
-{
-  "description": "string"
-}
-```
-
-<h3 id="update-the-description-of-a-room-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|apiVersion|path|string|true|none|
-|token|path|string|true|none|
-|OCS-APIRequest|header|boolean|true|Required to be true for the API request to pass|
-|body|body|object|true|none|
-|» description|body|string|true|New description for the conversation (limited to 2.000 characters, was 500 before Talk 21)|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|apiVersion|v4|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "ocs": {
-    "meta": {
-      "status": "string",
-      "statuscode": 0,
-      "message": "string",
-      "totalitems": "string",
-      "itemsperpage": "string"
-    },
-    "data": {
-      "actorId": "string",
-      "invitedActorId": "string",
-      "actorType": "string",
-      "attendeeId": 0,
-      "attendeePermissions": 0,
-      "attendeePin": "string",
-      "avatarVersion": "string",
-      "breakoutRoomMode": 0,
-      "breakoutRoomStatus": 0,
-      "callFlag": 0,
-      "callPermissions": 0,
-      "callRecording": 0,
-      "callStartTime": 0,
-      "canDeleteConversation": true,
-      "canEnableSIP": true,
-      "canLeaveConversation": true,
-      "canStartCall": true,
-      "defaultPermissions": 0,
-      "description": "string",
-      "displayName": "string",
-      "hasCall": true,
-      "hasPassword": true,
-      "id": 0,
-      "isCustomAvatar": true,
-      "isFavorite": true,
-      "lastActivity": 0,
-      "lastCommonReadMessage": 0,
-      "lastMessage": {
-        "actorDisplayName": "string",
-        "actorId": "string",
-        "actorType": "string",
-        "expirationTimestamp": 0,
-        "message": "string",
-        "messageParameters": {
-          "property1": {
-            "type": "string",
-            "id": "string",
-            "name": "string",
-            "server": "string",
-            "link": "string",
-            "call-type": "one2one",
-            "icon-url": "string",
-            "message-id": "string",
-            "boardname": "string",
-            "stackname": "string",
-            "size": "string",
-            "path": "string",
-            "mimetype": "string",
-            "preview-available": "yes",
-            "hide-download": "yes",
-            "mtime": "string",
-            "latitude": "string",
-            "longitude": "string",
-            "description": "string",
-            "thumb": "string",
-            "website": "string",
-            "visibility": "0",
-            "assignable": "0",
-            "conversation": "string",
-            "etag": "string",
-            "permissions": "string",
-            "width": "string",
-            "height": "string",
-            "blurhash": "string"
-          },
-          "property2": {
-            "type": "string",
-            "id": "string",
-            "name": "string",
-            "server": "string",
-            "link": "string",
-            "call-type": "one2one",
-            "icon-url": "string",
-            "message-id": "string",
-            "boardname": "string",
-            "stackname": "string",
-            "size": "string",
-            "path": "string",
-            "mimetype": "string",
-            "preview-available": "yes",
-            "hide-download": "yes",
-            "mtime": "string",
-            "latitude": "string",
-            "longitude": "string",
-            "description": "string",
-            "thumb": "string",
-            "website": "string",
-            "visibility": "0",
-            "assignable": "0",
-            "conversation": "string",
-            "etag": "string",
-            "permissions": "string",
-            "width": "string",
-            "height": "string",
-            "blurhash": "string"
-          }
-        },
-        "messageType": "string",
-        "systemMessage": "string",
-        "deleted": true,
-        "id": 0,
-        "isReplyable": true,
-        "markdown": true,
-        "reactions": {
-          "property1": 0,
-          "property2": 0
-        },
-        "reactionsSelf": [
-          "string"
-        ],
-        "referenceId": "string",
-        "timestamp": 0,
-        "token": "string",
-        "lastEditActorDisplayName": "string",
-        "lastEditActorId": "string",
-        "lastEditActorType": "string",
-        "lastEditTimestamp": 0,
-        "silent": true,
-        "threadId": 0,
-        "isThread": true,
-        "threadTitle": "string",
-        "threadReplies": 0,
-        "metaData": {
-          "pinnedActorType": "string",
-          "pinnedActorId": "string",
-          "pinnedActorDisplayName": "string",
-          "pinnedAt": 0,
-          "pinnedUntil": 0,
-          "threadId": 0,
-          "threadTitle": "string",
-          "replyToMessageId": 0,
-          "replyToConversationToken": "string",
-          "replyToConversationName": "string",
-          "replyToActorDisplayName": "string"
-        }
-      },
-      "lastPing": 0,
-      "lastReadMessage": 0,
-      "listable": 0,
-      "liveTranscriptionLanguageId": "string",
-      "lobbyState": 0,
-      "lobbyTimer": 0,
-      "mentionPermissions": 0,
-      "messageExpiration": 0,
-      "name": "string",
-      "notificationCalls": 0,
-      "notificationLevel": 0,
-      "objectId": "string",
-      "objectType": "string",
-      "participantFlags": 0,
-      "participantType": 0,
-      "permissions": 0,
-      "readOnly": 0,
-      "recordingConsent": 0,
-      "remoteServer": "string",
-      "remoteToken": "string",
-      "sessionId": "string",
-      "sipEnabled": 0,
-      "status": "string",
-      "statusClearAt": 0,
-      "statusIcon": "string",
-      "statusMessage": "string",
-      "token": "string",
-      "type": 0,
-      "unreadMention": true,
-      "unreadMentionDirect": true,
-      "unreadMessages": 0,
-      "isArchived": true,
-      "isImportant": true,
-      "isSensitive": true,
-      "tagIds": [
-        "string"
-      ],
-      "lastPinnedId": 0,
-      "hiddenPinnedId": 0,
-      "hasScheduledMessages": 0,
-      "attributes": 0
-    }
-  }
-}
-```
-
-> 400 Response
-
-```json
-{
-  "ocs": {
-    "meta": {
-      "status": "string",
-      "statuscode": 0,
-      "message": "string",
-      "totalitems": "string",
-      "itemsperpage": "string"
-    },
-    "data": {
-      "error": "event"
-    }
-  }
-}
-```
-
-> 403 Response
-
-```json
-{
-  "ocs": {
-    "meta": {
-      "status": "string",
-      "statuscode": 0,
-      "message": "string",
-      "totalitems": "string",
-      "itemsperpage": "string"
-    },
-    "data": {
-      "error": "account"
-    }
-  }
-}
-```
-
-> 404 Response
-
-```json
-{
-  "ocs": {
-    "meta": {
-      "status": "string",
-      "statuscode": 0,
-      "message": "string",
-      "totalitems": "string",
-      "itemsperpage": "string"
-    },
-    "data": {
-      "error": "account"
-    }
-  }
-}
-```
-
-> 502 Response
-
-```json
-{
-  "ocs": {
-    "meta": {
-      "status": "string",
-      "statuscode": 0,
-      "message": "string",
-      "totalitems": "string",
-      "itemsperpage": "string"
-    },
-    "data": {
-      "error": "account"
-    }
-  }
-}
-```
-
-<h3 id="update-the-description-of-a-room-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Description updated successfully|Inline|
-|400|Bad Request|Updating description is not possible|Inline|
-|403|Forbidden|The Matrix account of the user can not change the topic of the Matrix room|Inline|
-|404|Not Found|The Matrix room or the linked Matrix account of the user was not found|Inline|
-|502|Bad Gateway|The Matrix homeserver rejected the change or could not be reached|Inline|
-
-<h3 id="update-the-description-of-a-room-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|ocs|object|true|none|none|
-|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
-|» data|[Room](#schemaroom)|true|none|none|
-
-Status Code **400**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anyOf*|object|false|none|none|
-|ocs|object|true|none|none|
-|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
-|» data|object|true|none|none|
-|» » error|string|true|none|none|
-|*anyOf*|object|false|none|none|
-|ocs|object|true|none|none|
-|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
-|» data|object|true|none|none|
-|» » error|string|true|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|» » error|event|
-|» » error|type|
-|» » error|value|
-|» » error|account|
-|» » error|encrypted|
-|» » error|matrix|
-|» » error|message|
-|» » error|permission|
-
-Status Code **403**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|ocs|object|true|none|none|
-|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
-|» data|object|true|none|none|
-|» » error|string|true|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|» » error|account|
-|» » error|encrypted|
-|» » error|matrix|
-|» » error|message|
-|» » error|permission|
-
-Status Code **404**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|ocs|object|true|none|none|
-|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
-|» data|object|true|none|none|
-|» » error|string|true|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|» » error|account|
-|» » error|encrypted|
-|» » error|matrix|
-|» » error|message|
-|» » error|permission|
-
-Status Code **502**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|ocs|object|true|none|none|
-|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
-|» data|object|true|none|none|
-|» » error|string|true|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|» » error|account|
-|» » error|encrypted|
-|» » error|matrix|
-|» » error|message|
-|» » error|permission|
-
-<aside class="warning">
-Authentication is optional for this operation. To authenticate, use one of the following methods:
-bearer_auth, basic_auth
-</aside>
-
-## Unbind a room from its object to prevent automatic retention
-
-<a id="opIdroom-unbind-room-from-object"></a>
-
-> Code samples
-
-```bash
-curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/object \
-  -X DELETE \
-  -H 'Accept: application/json' \
-  -H 'OCS-APIRequest: true'
-```
-
-`DELETE /ocs/v2.php/apps/spreed/api/{apiVersion}/room/{token}/object`
-
-Required capability: `unbind-conversation`
-
-<h3 id="unbind-a-room-from-its-object-to-prevent-automatic-retention-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|apiVersion|path|string|true|none|
-|token|path|string|true|none|
-|OCS-APIRequest|header|boolean|true|Required to be true for the API request to pass|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|apiVersion|v4|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "ocs": {
-    "meta": {
-      "status": "string",
-      "statuscode": 0,
-      "message": "string",
-      "totalitems": "string",
-      "itemsperpage": "string"
-    },
-    "data": {
-      "actorId": "string",
-      "invitedActorId": "string",
-      "actorType": "string",
-      "attendeeId": 0,
-      "attendeePermissions": 0,
-      "attendeePin": "string",
-      "avatarVersion": "string",
-      "breakoutRoomMode": 0,
-      "breakoutRoomStatus": 0,
-      "callFlag": 0,
-      "callPermissions": 0,
-      "callRecording": 0,
-      "callStartTime": 0,
-      "canDeleteConversation": true,
-      "canEnableSIP": true,
-      "canLeaveConversation": true,
-      "canStartCall": true,
-      "defaultPermissions": 0,
-      "description": "string",
-      "displayName": "string",
-      "hasCall": true,
-      "hasPassword": true,
-      "id": 0,
-      "isCustomAvatar": true,
-      "isFavorite": true,
-      "lastActivity": 0,
-      "lastCommonReadMessage": 0,
-      "lastMessage": {
-        "actorDisplayName": "string",
-        "actorId": "string",
-        "actorType": "string",
-        "expirationTimestamp": 0,
-        "message": "string",
-        "messageParameters": {
-          "property1": {
-            "type": "string",
-            "id": "string",
-            "name": "string",
-            "server": "string",
-            "link": "string",
-            "call-type": "one2one",
-            "icon-url": "string",
-            "message-id": "string",
-            "boardname": "string",
-            "stackname": "string",
-            "size": "string",
-            "path": "string",
-            "mimetype": "string",
-            "preview-available": "yes",
-            "hide-download": "yes",
-            "mtime": "string",
-            "latitude": "string",
-            "longitude": "string",
-            "description": "string",
-            "thumb": "string",
-            "website": "string",
-            "visibility": "0",
-            "assignable": "0",
-            "conversation": "string",
-            "etag": "string",
-            "permissions": "string",
-            "width": "string",
-            "height": "string",
-            "blurhash": "string"
-          },
-          "property2": {
-            "type": "string",
-            "id": "string",
-            "name": "string",
-            "server": "string",
-            "link": "string",
-            "call-type": "one2one",
-            "icon-url": "string",
-            "message-id": "string",
-            "boardname": "string",
-            "stackname": "string",
-            "size": "string",
-            "path": "string",
-            "mimetype": "string",
-            "preview-available": "yes",
-            "hide-download": "yes",
-            "mtime": "string",
-            "latitude": "string",
-            "longitude": "string",
-            "description": "string",
-            "thumb": "string",
-            "website": "string",
-            "visibility": "0",
-            "assignable": "0",
-            "conversation": "string",
-            "etag": "string",
-            "permissions": "string",
-            "width": "string",
-            "height": "string",
-            "blurhash": "string"
-          }
-        },
-        "messageType": "string",
-        "systemMessage": "string",
-        "deleted": true,
-        "id": 0,
-        "isReplyable": true,
-        "markdown": true,
-        "reactions": {
-          "property1": 0,
-          "property2": 0
-        },
-        "reactionsSelf": [
-          "string"
-        ],
-        "referenceId": "string",
-        "timestamp": 0,
-        "token": "string",
-        "lastEditActorDisplayName": "string",
-        "lastEditActorId": "string",
-        "lastEditActorType": "string",
-        "lastEditTimestamp": 0,
-        "silent": true,
-        "threadId": 0,
-        "isThread": true,
-        "threadTitle": "string",
-        "threadReplies": 0,
-        "metaData": {
-          "pinnedActorType": "string",
-          "pinnedActorId": "string",
-          "pinnedActorDisplayName": "string",
-          "pinnedAt": 0,
-          "pinnedUntil": 0,
-          "threadId": 0,
-          "threadTitle": "string",
-          "replyToMessageId": 0,
-          "replyToConversationToken": "string",
-          "replyToConversationName": "string",
-          "replyToActorDisplayName": "string"
-        }
-      },
-      "lastPing": 0,
-      "lastReadMessage": 0,
-      "listable": 0,
-      "liveTranscriptionLanguageId": "string",
-      "lobbyState": 0,
-      "lobbyTimer": 0,
-      "mentionPermissions": 0,
-      "messageExpiration": 0,
-      "name": "string",
-      "notificationCalls": 0,
-      "notificationLevel": 0,
-      "objectId": "string",
-      "objectType": "string",
-      "participantFlags": 0,
-      "participantType": 0,
-      "permissions": 0,
-      "readOnly": 0,
-      "recordingConsent": 0,
-      "remoteServer": "string",
-      "remoteToken": "string",
-      "sessionId": "string",
-      "sipEnabled": 0,
-      "status": "string",
-      "statusClearAt": 0,
-      "statusIcon": "string",
-      "statusMessage": "string",
-      "token": "string",
-      "type": 0,
-      "unreadMention": true,
-      "unreadMentionDirect": true,
-      "unreadMessages": 0,
-      "isArchived": true,
-      "isImportant": true,
-      "isSensitive": true,
-      "tagIds": [
-        "string"
-      ],
-      "lastPinnedId": 0,
-      "hiddenPinnedId": 0,
-      "hasScheduledMessages": 0,
-      "attributes": 0
-    }
-  }
-}
-```
-
-> 400 Response
-
-```json
-{
-  "ocs": {
-    "meta": {
-      "status": "string",
-      "statuscode": 0,
-      "message": "string",
-      "totalitems": "string",
-      "itemsperpage": "string"
-    },
-    "data": {
-      "error": "object-type"
-    }
-  }
-}
-```
-
-<h3 id="unbind-a-room-from-its-object-to-prevent-automatic-retention-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Room successfully unbound|Inline|
-|400|Bad Request|Unbinding room is not possible|Inline|
-
-<h3 id="unbind-a-room-from-its-object-to-prevent-automatic-retention-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|ocs|object|true|none|none|
-|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
-|» data|[Room](#schemaroom)|true|none|none|
-
-Status Code **400**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|ocs|object|true|none|none|
-|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
-|» data|object|true|none|none|
-|» » error|string|true|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|» » error|object-type|
-
-<aside class="warning">
-Authentication is optional for this operation. To authenticate, use one of the following methods:
 bearer_auth, basic_auth
 </aside>
 
@@ -30544,6 +30777,7 @@ Required capability: `conversation-creation-password` for `string $password` par
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -30590,7 +30824,8 @@ Required capability: `conversation-creation-password` for `string $password` par
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -30894,6 +31129,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/public 
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -30940,7 +31176,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/public 
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -31257,6 +31494,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/read-on
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -31303,7 +31541,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/read-on
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -31584,6 +31823,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/listabl
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -31630,7 +31870,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/listabl
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -31955,6 +32196,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/mention
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -32001,7 +32243,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/mention
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -32286,6 +32529,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/passwor
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -32332,7 +32576,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/passwor
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -32575,6 +32820,7 @@ Required capability: `archived-conversations-v2`
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -32621,7 +32867,8 @@ Required capability: `archived-conversations-v2`
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -32851,6 +33098,7 @@ Required capability: `archived-conversations-v2`
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -32897,7 +33145,8 @@ Required capability: `archived-conversations-v2`
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -33128,6 +33377,7 @@ Required capability: `preserve-conversation`
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -33174,7 +33424,8 @@ Required capability: `preserve-conversation`
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -33439,6 +33690,7 @@ Required capability: `preserve-conversation`
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -33485,7 +33737,8 @@ Required capability: `preserve-conversation`
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -33764,6 +34017,7 @@ Required capability: `conversation-tags`
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -33810,7 +34064,8 @@ Required capability: `conversation-tags`
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -34040,6 +34295,7 @@ Required capability: `important-conversations`
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -34086,7 +34342,8 @@ Required capability: `important-conversations`
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -34316,6 +34573,7 @@ Required capability: `important-conversations`
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -34362,7 +34620,8 @@ Required capability: `important-conversations`
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -34592,6 +34851,7 @@ Required capability: `sensitive-conversations`
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -34638,7 +34898,8 @@ Required capability: `sensitive-conversations`
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -34868,6 +35129,7 @@ Required capability: `sensitive-conversations`
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -34914,7 +35176,8 @@ Required capability: `sensitive-conversations`
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -35193,6 +35456,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/partici
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -35239,7 +35503,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/partici
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -35662,6 +35927,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/partici
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -35708,7 +35974,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/partici
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -36535,6 +36802,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/permiss
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -36581,7 +36849,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/permiss
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -37107,6 +37376,7 @@ This operation is deprecated
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -37153,7 +37423,8 @@ This operation is deprecated
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -37400,6 +37671,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/webinar
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -37446,7 +37718,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/webinar
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -37729,6 +38002,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/webinar
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -37775,7 +38049,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/webinar
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -38148,6 +38423,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/recordi
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -38194,7 +38470,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/recordi
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -38644,6 +38921,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/message
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -38690,7 +38968,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/message
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -39038,7 +39317,8 @@ See "Capability handling in federated conversations" in https://github.com/nextc
           "typing-privacy": 0,
           "summary-threshold": 1,
           "style": "split",
-          "matterbridge-enabled": true
+          "matterbridge-enabled": true,
+          "mobile-preload-chat": true
         },
         "conversations": {
           "can-create": true,
@@ -39294,6 +39574,611 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearer_auth, basic_auth
 </aside>
 
+## Mute chat notifications in a conversation until a specific time. Does not alter notification settings for the attendee.
+
+<a id="opIdroom-mute-conversation"></a>
+
+> Code samples
+
+```bash
+curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/mute \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'OCS-APIRequest: true' \
+  -d '{
+    "muteUntil": 0
+  }'
+```
+
+`POST /ocs/v2.php/apps/spreed/api/{apiVersion}/room/{token}/mute`
+
+Required capability: `mute-conversations`
+
+> Body parameter
+
+```json
+{
+  "muteUntil": 0
+}
+```
+
+<h3 id="mute-chat-notifications-in-a-conversation-until-a-specific-time-does-not-alter-notification-settings-for-the-attendee-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|apiVersion|path|string|true|none|
+|token|path|string|true|none|
+|OCS-APIRequest|header|boolean|true|Required to be true for the API request to pass|
+|body|body|object|true|none|
+|» muteUntil|body|integer(int64)|true|Unix timestamp until notifications are muted|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|apiVersion|v4|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "ocs": {
+    "meta": {
+      "status": "string",
+      "statuscode": 0,
+      "message": "string",
+      "totalitems": "string",
+      "itemsperpage": "string"
+    },
+    "data": {
+      "actorId": "string",
+      "invitedActorId": "string",
+      "actorType": "string",
+      "attendeeId": 0,
+      "attendeePermissions": 0,
+      "attendeePin": "string",
+      "avatarVersion": "string",
+      "breakoutRoomMode": 0,
+      "breakoutRoomStatus": 0,
+      "callFlag": 0,
+      "callPermissions": 0,
+      "callRecording": 0,
+      "callStartTime": 0,
+      "canDeleteConversation": true,
+      "canEnableSIP": true,
+      "canLeaveConversation": true,
+      "canStartCall": true,
+      "defaultPermissions": 0,
+      "description": "string",
+      "displayName": "string",
+      "hasCall": true,
+      "hasPassword": true,
+      "id": 0,
+      "isCustomAvatar": true,
+      "isFavorite": true,
+      "lastActivity": 0,
+      "lastCommonReadMessage": 0,
+      "lastMessage": {
+        "actorDisplayName": "string",
+        "actorId": "string",
+        "actorType": "string",
+        "expirationTimestamp": 0,
+        "message": "string",
+        "messageParameters": {
+          "property1": {
+            "type": "string",
+            "id": "string",
+            "name": "string",
+            "server": "string",
+            "link": "string",
+            "call-type": "one2one",
+            "icon-url": "string",
+            "message-id": "string",
+            "boardname": "string",
+            "stackname": "string",
+            "size": "string",
+            "path": "string",
+            "mimetype": "string",
+            "preview-available": "yes",
+            "hide-download": "yes",
+            "mtime": "string",
+            "latitude": "string",
+            "longitude": "string",
+            "description": "string",
+            "thumb": "string",
+            "website": "string",
+            "visibility": "0",
+            "assignable": "0",
+            "conversation": "string",
+            "etag": "string",
+            "permissions": "string",
+            "width": "string",
+            "height": "string",
+            "blurhash": "string"
+          },
+          "property2": {
+            "type": "string",
+            "id": "string",
+            "name": "string",
+            "server": "string",
+            "link": "string",
+            "call-type": "one2one",
+            "icon-url": "string",
+            "message-id": "string",
+            "boardname": "string",
+            "stackname": "string",
+            "size": "string",
+            "path": "string",
+            "mimetype": "string",
+            "preview-available": "yes",
+            "hide-download": "yes",
+            "mtime": "string",
+            "latitude": "string",
+            "longitude": "string",
+            "description": "string",
+            "thumb": "string",
+            "website": "string",
+            "visibility": "0",
+            "assignable": "0",
+            "conversation": "string",
+            "etag": "string",
+            "permissions": "string",
+            "width": "string",
+            "height": "string",
+            "blurhash": "string"
+          }
+        },
+        "messageType": "string",
+        "systemMessage": "string",
+        "deleted": true,
+        "id": 0,
+        "isReplyable": true,
+        "markdown": true,
+        "reactions": {
+          "property1": 0,
+          "property2": 0
+        },
+        "reactionsSelf": [
+          "string"
+        ],
+        "referenceId": "string",
+        "timestamp": 0,
+        "token": "string",
+        "lastEditActorDisplayName": "string",
+        "lastEditActorId": "string",
+        "lastEditActorType": "string",
+        "lastEditTimestamp": 0,
+        "silent": true,
+        "threadId": 0,
+        "isThread": true,
+        "threadTitle": "string",
+        "threadReplies": 0,
+        "metaData": {
+          "pinnedActorType": "string",
+          "pinnedActorId": "string",
+          "pinnedActorDisplayName": "string",
+          "pinnedAt": 0,
+          "pinnedUntil": 0,
+          "threadId": 0,
+          "threadTitle": "string",
+          "actorRole": "owner",
+          "replyToMessageId": 0,
+          "replyToConversationToken": "string",
+          "replyToConversationName": "string",
+          "replyToActorDisplayName": "string"
+        }
+      },
+      "lastPing": 0,
+      "lastReadMessage": 0,
+      "listable": 0,
+      "liveTranscriptionLanguageId": "string",
+      "lobbyState": 0,
+      "lobbyTimer": 0,
+      "mentionPermissions": 0,
+      "messageExpiration": 0,
+      "name": "string",
+      "notificationCalls": 0,
+      "notificationLevel": 0,
+      "objectId": "string",
+      "objectType": "string",
+      "participantFlags": 0,
+      "participantType": 0,
+      "permissions": 0,
+      "readOnly": 0,
+      "recordingConsent": 0,
+      "remoteServer": "string",
+      "remoteToken": "string",
+      "sessionId": "string",
+      "sipEnabled": 0,
+      "status": "string",
+      "statusClearAt": 0,
+      "statusIcon": "string",
+      "statusMessage": "string",
+      "token": "string",
+      "type": 0,
+      "unreadMention": true,
+      "unreadMentionDirect": true,
+      "unreadMessages": 0,
+      "isArchived": true,
+      "isImportant": true,
+      "isSensitive": true,
+      "tagIds": [
+        "string"
+      ],
+      "lastPinnedId": 0,
+      "hiddenPinnedId": 0,
+      "hasScheduledMessages": 0,
+      "attributes": 0,
+      "muteUntil": 0
+    }
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "ocs": {
+    "meta": {
+      "status": "string",
+      "statuscode": 0,
+      "message": "string",
+      "totalitems": "string",
+      "itemsperpage": "string"
+    },
+    "data": {
+      "error": "mute-until"
+    }
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "ocs": {
+    "meta": {
+      "status": "string",
+      "statuscode": 0,
+      "message": "string",
+      "totalitems": "string",
+      "itemsperpage": "string"
+    },
+    "data": null
+  }
+}
+```
+
+<h3 id="mute-chat-notifications-in-a-conversation-until-a-specific-time-does-not-alter-notification-settings-for-the-attendee-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Conversation muted|Inline|
+|400|Bad Request|Timestamp is in the past|Inline|
+|401|Unauthorized|Current user is not logged in|Inline|
+
+<h3 id="mute-chat-notifications-in-a-conversation-until-a-specific-time-does-not-alter-notification-settings-for-the-attendee-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ocs|object|true|none|none|
+|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
+|» data|[Room](#schemaroom)|true|none|none|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ocs|object|true|none|none|
+|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
+|» data|object|true|none|none|
+|» » error|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» » error|mute-until|
+
+Status Code **401**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ocs|object|true|none|none|
+|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
+|» data|object|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearer_auth, basic_auth
+</aside>
+
+## Unmute chat notifications in a conversation, when they were muted before. Does not alter notification settings for the attendee.
+
+<a id="opIdroom-unmute-conversation"></a>
+
+> Code samples
+
+```bash
+curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/mute \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'OCS-APIRequest: true'
+```
+
+`DELETE /ocs/v2.php/apps/spreed/api/{apiVersion}/room/{token}/mute`
+
+Required capability: `mute-conversations`
+
+<h3 id="unmute-chat-notifications-in-a-conversation-when-they-were-muted-before-does-not-alter-notification-settings-for-the-attendee-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|apiVersion|path|string|true|none|
+|token|path|string|true|none|
+|OCS-APIRequest|header|boolean|true|Required to be true for the API request to pass|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|apiVersion|v4|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "ocs": {
+    "meta": {
+      "status": "string",
+      "statuscode": 0,
+      "message": "string",
+      "totalitems": "string",
+      "itemsperpage": "string"
+    },
+    "data": {
+      "actorId": "string",
+      "invitedActorId": "string",
+      "actorType": "string",
+      "attendeeId": 0,
+      "attendeePermissions": 0,
+      "attendeePin": "string",
+      "avatarVersion": "string",
+      "breakoutRoomMode": 0,
+      "breakoutRoomStatus": 0,
+      "callFlag": 0,
+      "callPermissions": 0,
+      "callRecording": 0,
+      "callStartTime": 0,
+      "canDeleteConversation": true,
+      "canEnableSIP": true,
+      "canLeaveConversation": true,
+      "canStartCall": true,
+      "defaultPermissions": 0,
+      "description": "string",
+      "displayName": "string",
+      "hasCall": true,
+      "hasPassword": true,
+      "id": 0,
+      "isCustomAvatar": true,
+      "isFavorite": true,
+      "lastActivity": 0,
+      "lastCommonReadMessage": 0,
+      "lastMessage": {
+        "actorDisplayName": "string",
+        "actorId": "string",
+        "actorType": "string",
+        "expirationTimestamp": 0,
+        "message": "string",
+        "messageParameters": {
+          "property1": {
+            "type": "string",
+            "id": "string",
+            "name": "string",
+            "server": "string",
+            "link": "string",
+            "call-type": "one2one",
+            "icon-url": "string",
+            "message-id": "string",
+            "boardname": "string",
+            "stackname": "string",
+            "size": "string",
+            "path": "string",
+            "mimetype": "string",
+            "preview-available": "yes",
+            "hide-download": "yes",
+            "mtime": "string",
+            "latitude": "string",
+            "longitude": "string",
+            "description": "string",
+            "thumb": "string",
+            "website": "string",
+            "visibility": "0",
+            "assignable": "0",
+            "conversation": "string",
+            "etag": "string",
+            "permissions": "string",
+            "width": "string",
+            "height": "string",
+            "blurhash": "string"
+          },
+          "property2": {
+            "type": "string",
+            "id": "string",
+            "name": "string",
+            "server": "string",
+            "link": "string",
+            "call-type": "one2one",
+            "icon-url": "string",
+            "message-id": "string",
+            "boardname": "string",
+            "stackname": "string",
+            "size": "string",
+            "path": "string",
+            "mimetype": "string",
+            "preview-available": "yes",
+            "hide-download": "yes",
+            "mtime": "string",
+            "latitude": "string",
+            "longitude": "string",
+            "description": "string",
+            "thumb": "string",
+            "website": "string",
+            "visibility": "0",
+            "assignable": "0",
+            "conversation": "string",
+            "etag": "string",
+            "permissions": "string",
+            "width": "string",
+            "height": "string",
+            "blurhash": "string"
+          }
+        },
+        "messageType": "string",
+        "systemMessage": "string",
+        "deleted": true,
+        "id": 0,
+        "isReplyable": true,
+        "markdown": true,
+        "reactions": {
+          "property1": 0,
+          "property2": 0
+        },
+        "reactionsSelf": [
+          "string"
+        ],
+        "referenceId": "string",
+        "timestamp": 0,
+        "token": "string",
+        "lastEditActorDisplayName": "string",
+        "lastEditActorId": "string",
+        "lastEditActorType": "string",
+        "lastEditTimestamp": 0,
+        "silent": true,
+        "threadId": 0,
+        "isThread": true,
+        "threadTitle": "string",
+        "threadReplies": 0,
+        "metaData": {
+          "pinnedActorType": "string",
+          "pinnedActorId": "string",
+          "pinnedActorDisplayName": "string",
+          "pinnedAt": 0,
+          "pinnedUntil": 0,
+          "threadId": 0,
+          "threadTitle": "string",
+          "actorRole": "owner",
+          "replyToMessageId": 0,
+          "replyToConversationToken": "string",
+          "replyToConversationName": "string",
+          "replyToActorDisplayName": "string"
+        }
+      },
+      "lastPing": 0,
+      "lastReadMessage": 0,
+      "listable": 0,
+      "liveTranscriptionLanguageId": "string",
+      "lobbyState": 0,
+      "lobbyTimer": 0,
+      "mentionPermissions": 0,
+      "messageExpiration": 0,
+      "name": "string",
+      "notificationCalls": 0,
+      "notificationLevel": 0,
+      "objectId": "string",
+      "objectType": "string",
+      "participantFlags": 0,
+      "participantType": 0,
+      "permissions": 0,
+      "readOnly": 0,
+      "recordingConsent": 0,
+      "remoteServer": "string",
+      "remoteToken": "string",
+      "sessionId": "string",
+      "sipEnabled": 0,
+      "status": "string",
+      "statusClearAt": 0,
+      "statusIcon": "string",
+      "statusMessage": "string",
+      "token": "string",
+      "type": 0,
+      "unreadMention": true,
+      "unreadMentionDirect": true,
+      "unreadMessages": 0,
+      "isArchived": true,
+      "isImportant": true,
+      "isSensitive": true,
+      "tagIds": [
+        "string"
+      ],
+      "lastPinnedId": 0,
+      "hiddenPinnedId": 0,
+      "hasScheduledMessages": 0,
+      "attributes": 0,
+      "muteUntil": 0
+    }
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "ocs": {
+    "meta": {
+      "status": "string",
+      "statuscode": 0,
+      "message": "string",
+      "totalitems": "string",
+      "itemsperpage": "string"
+    },
+    "data": null
+  }
+}
+```
+
+<h3 id="unmute-chat-notifications-in-a-conversation-when-they-were-muted-before-does-not-alter-notification-settings-for-the-attendee-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Conversation unmuted|Inline|
+|401|Unauthorized|Current user is not logged in|Inline|
+
+<h3 id="unmute-chat-notifications-in-a-conversation-when-they-were-muted-before-does-not-alter-notification-settings-for-the-attendee-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ocs|object|true|none|none|
+|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
+|» data|[Room](#schemaroom)|true|none|none|
+
+Status Code **401**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ocs|object|true|none|none|
+|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
+|» data|object|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearer_auth, basic_auth
+</aside>
+
 ## Join room on the host server using the session id of the federated user
 
 <a id="opIdroom-join-federated-room"></a>
@@ -39485,6 +40370,7 @@ The session id can be null only for requests from Talk < 20.
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -39531,7 +40417,8 @@ The session id can be null only for requests from Talk < 20.
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -39863,6 +40750,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/pin/str
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -39909,7 +40797,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/pin/str
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -40204,6 +41093,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/verify-
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -40250,7 +41140,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/verify-
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -40549,6 +41440,7 @@ Required capability: `sip-direct-dialin`
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -40595,7 +41487,8 @@ Required capability: `sip-direct-dialin`
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -40922,6 +41815,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/verify-
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -40968,7 +41862,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/verify-
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -41275,6 +42170,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/open-di
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -41321,7 +42217,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/string/open-di
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -43417,6 +44314,7 @@ Required capability: `threads`
             "pinnedUntil": 0,
             "threadId": 0,
             "threadTitle": "string",
+            "actorRole": "owner",
             "replyToMessageId": 0,
             "replyToConversationToken": "string",
             "replyToConversationName": "string",
@@ -43526,6 +44424,7 @@ Required capability: `threads`
             "pinnedUntil": 0,
             "threadId": 0,
             "threadTitle": "string",
+            "actorRole": "owner",
             "replyToMessageId": 0,
             "replyToConversationToken": "string",
             "replyToConversationName": "string",
@@ -43721,6 +44620,7 @@ Required capability: `threads`
             "pinnedUntil": 0,
             "threadId": 0,
             "threadTitle": "string",
+            "actorRole": "owner",
             "replyToMessageId": 0,
             "replyToConversationToken": "string",
             "replyToConversationName": "string",
@@ -43830,6 +44730,7 @@ Required capability: `threads`
             "pinnedUntil": 0,
             "threadId": 0,
             "threadTitle": "string",
+            "actorRole": "owner",
             "replyToMessageId": 0,
             "replyToConversationToken": "string",
             "replyToConversationName": "string",
@@ -44050,6 +44951,7 @@ Required capability: `threads`
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -44159,6 +45061,7 @@ Required capability: `threads`
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -44403,6 +45306,7 @@ Required capability: `threads`
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -44512,6 +45416,7 @@ Required capability: `threads`
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -44825,6 +45730,7 @@ Required capability: `threads`
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -44934,6 +45840,7 @@ Required capability: `threads`
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -45221,6 +46128,7 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/federation/invitati
           "pinnedUntil": 0,
           "threadId": 0,
           "threadTitle": "string",
+          "actorRole": "owner",
           "replyToMessageId": 0,
           "replyToConversationToken": "string",
           "replyToConversationName": "string",
@@ -45267,7 +46175,8 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/federation/invitati
       "lastPinnedId": 0,
       "hiddenPinnedId": 0,
       "hasScheduledMessages": 0,
-      "attributes": 0
+      "attributes": 0,
+      "muteUntil": 0
     }
   }
 }
@@ -47419,7 +48328,8 @@ bearer_auth, basic_auth
       "typing-privacy": 0,
       "summary-threshold": 1,
       "style": "split",
-      "matterbridge-enabled": true
+      "matterbridge-enabled": true,
+      "mobile-preload-chat": true
     },
     "conversations": {
       "can-create": true,
@@ -47633,6 +48543,7 @@ bearer_auth, basic_auth
     "pinnedUntil": 0,
     "threadId": 0,
     "threadTitle": "string",
+    "actorRole": "owner",
     "replyToMessageId": 0,
     "replyToConversationToken": "string",
     "replyToConversationName": "string",
@@ -47695,6 +48606,7 @@ bearer_auth, basic_auth
   "pinnedUntil": 0,
   "threadId": 0,
   "threadTitle": "string",
+  "actorRole": "owner",
   "replyToMessageId": 0,
   "replyToConversationToken": "string",
   "replyToConversationName": "string",
@@ -47713,10 +48625,18 @@ bearer_auth, basic_auth
 |pinnedUntil|integer(int64)|false|none|Timestamp until when the message is pinned. If missing the message is pinned infinitely - Required capability: `pinned-messages`|
 |threadId|integer(int64)|false|none|Set when a thread is created with this message. If missing, no thread creation is associated with this message|
 |threadTitle|string|false|none|Set when a thread is created with this message. If missing, no thread creation is associated with this message|
+|actorRole|string|false|none|Role of the author at the time of posting. If missing, the author was a regular participant, the conversation has no ranks or the message predates it|
 |replyToMessageId|integer(int64)|false|none|Set only when a message in a convo is private replied on a 1-1 room. Represents the parent message id|
 |replyToConversationToken|string|false|none|Set only when a message in a convo is private replied on a 1-1 room. Represents the parent message's group conversation token.|
 |replyToConversationName|string|false|none|Set only when a message in a convo is private replied on a 1-1 room. Represents the parent message's group conversation name|
 |replyToActorDisplayName|string|false|none|Set only when a message in a convo is private replied on a 1-1 room. Represents the parent message's actor display name|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|actorRole|owner|
+|actorRole|moderator|
 
 <h2 id="tocS_ChatMessageWithParent">ChatMessageWithParent</h2>
 <!-- backwards compatibility -->
@@ -47829,6 +48749,7 @@ bearer_auth, basic_auth
     "pinnedUntil": 0,
     "threadId": 0,
     "threadTitle": "string",
+    "actorRole": "owner",
     "replyToMessageId": 0,
     "replyToConversationToken": "string",
     "replyToConversationName": "string",
@@ -47937,6 +48858,7 @@ bearer_auth, basic_auth
       "pinnedUntil": 0,
       "threadId": 0,
       "threadTitle": "string",
+      "actorRole": "owner",
       "replyToMessageId": 0,
       "replyToConversationToken": "string",
       "replyToConversationName": "string",
@@ -49028,7 +49950,8 @@ bearer_auth, basic_auth
         "typing-privacy": 0,
         "summary-threshold": 1,
         "style": "split",
-        "matterbridge-enabled": true
+        "matterbridge-enabled": true,
+        "mobile-preload-chat": true
       },
       "conversations": {
         "can-create": true,
@@ -49348,6 +50271,7 @@ bearer_auth, basic_auth
       "pinnedUntil": 0,
       "threadId": 0,
       "threadTitle": "string",
+      "actorRole": "owner",
       "replyToMessageId": 0,
       "replyToConversationToken": "string",
       "replyToConversationName": "string",
@@ -49394,7 +50318,8 @@ bearer_auth, basic_auth
   "lastPinnedId": 0,
   "hiddenPinnedId": 0,
   "hasScheduledMessages": 0,
-  "attributes": 0
+  "attributes": 0,
+  "muteUntil": 0
 }
 ```
 
@@ -49469,6 +50394,7 @@ bearer_auth, basic_auth
 |hiddenPinnedId|integer(int64)|true|none|Required capability: `pinned-messages`|
 |hasScheduledMessages|integer(int64)|true|none|Required capability: `scheduled-messages` (local)|
 |attributes|integer(int64)|true|none|Bit-flag of enabled attributes of this conversation (only available with capability: `conversation-attributes`). See [attributes list](https://nextcloud-talk.readthedocs.io/en/latest/constants/#conversation-attributes) for details|
+|muteUntil|integer(int64)|true|none|Required capability: `mute-conversations`. Timestamp until the conversation is muted, i.e. not receiving chat notifications|
 
 #### Enumerated Values
 
@@ -49594,6 +50520,7 @@ bearer_auth, basic_auth
     "pinnedUntil": 0,
     "threadId": 0,
     "threadTitle": "string",
+    "actorRole": "owner",
     "replyToMessageId": 0,
     "replyToConversationToken": "string",
     "replyToConversationName": "string",
@@ -49748,6 +50675,7 @@ bearer_auth, basic_auth
       "pinnedUntil": 0,
       "threadId": 0,
       "threadTitle": "string",
+      "actorRole": "owner",
       "replyToMessageId": 0,
       "replyToConversationToken": "string",
       "replyToConversationName": "string",
@@ -49795,6 +50723,7 @@ bearer_auth, basic_auth
   "hiddenPinnedId": 0,
   "hasScheduledMessages": 0,
   "attributes": 0,
+  "muteUntil": 0,
   "invalidParticipants": {
     "users": [
       "string"
@@ -49889,6 +50818,7 @@ bearer_auth, basic_auth
 |hiddenPinnedId|integer(int64)|true|none|Required capability: `pinned-messages`|
 |hasScheduledMessages|integer(int64)|true|none|Required capability: `scheduled-messages` (local)|
 |attributes|integer(int64)|true|none|Bit-flag of enabled attributes of this conversation (only available with capability: `conversation-attributes`). See [attributes list](https://nextcloud-talk.readthedocs.io/en/latest/constants/#conversation-attributes) for details|
+|muteUntil|integer(int64)|true|none|Required capability: `mute-conversations`. Timestamp until the conversation is muted, i.e. not receiving chat notifications|
 |invalidParticipants|[InvitationList](#schemainvitationlist)|true|none|List of participants that could not be invited grouped by source type|
 
 #### Enumerated Values
@@ -50021,6 +50951,7 @@ bearer_auth, basic_auth
       "pinnedUntil": 0,
       "threadId": 0,
       "threadTitle": "string",
+      "actorRole": "owner",
       "replyToMessageId": 0,
       "replyToConversationToken": "string",
       "replyToConversationName": "string",
@@ -50359,6 +51290,7 @@ bearer_auth, basic_auth
       "pinnedUntil": 0,
       "threadId": 0,
       "threadTitle": "string",
+      "actorRole": "owner",
       "replyToMessageId": 0,
       "replyToConversationToken": "string",
       "replyToConversationName": "string",
@@ -50468,6 +51400,7 @@ bearer_auth, basic_auth
       "pinnedUntil": 0,
       "threadId": 0,
       "threadTitle": "string",
+      "actorRole": "owner",
       "replyToMessageId": 0,
       "replyToConversationToken": "string",
       "replyToConversationName": "string",

@@ -1,137 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const IoK8sApiCoreV1TypedLocalObjectReferenceSchema = z
-  .object({
-    apiGroup: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'apiGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required.',
-      }),
-    kind: z
-      .string()
-      .default('')
-      .openapi({ description: 'kind is the type of resource being referenced' }),
-    name: z
-      .string()
-      .default('')
-      .openapi({ description: 'name is the name of resource being referenced' }),
-  })
-  .openapi({
-    description:
-      'TypedLocalObjectReference contains enough information to let you locate the typed referenced object inside the same namespace.',
-    required: ['kind', 'name'],
-    'x-kubernetes-map-type': 'atomic',
-  })
-  .openapi('IoK8sApiCoreV1TypedLocalObjectReference')
-
-const IoK8sApiNetworkingV1ServiceBackendPortSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'name is the name of the port on the Service. This is a mutually exclusive setting with "Number".',
-      }),
-    number: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'number is the numerical port number (e.g. 80) on the Service. This is a mutually exclusive setting with "Name".',
-      }),
-  })
-  .openapi({
-    description: 'ServiceBackendPort is the service port being referenced.',
-    'x-kubernetes-map-type': 'atomic',
-    required: [],
-  })
-  .openapi('IoK8sApiNetworkingV1ServiceBackendPort')
-
-const IoK8sApiNetworkingV1IngressServiceBackendSchema = z
-  .object({
-    name: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'name is the referenced service. The service must exist in the same namespace as the Ingress object.',
-      }),
-    port: IoK8sApiNetworkingV1ServiceBackendPortSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          'port of the referenced service. A port name or port number is required for a IngressServiceBackend.',
-      }),
-  })
-  .openapi({
-    description: 'IngressServiceBackend references a Kubernetes Service as a Backend.',
-    required: ['name'],
-  })
-  .openapi('IoK8sApiNetworkingV1IngressServiceBackend')
-
-const IoK8sApiNetworkingV1IngressBackendSchema = z
-  .object({
-    resource: IoK8sApiCoreV1TypedLocalObjectReferenceSchema.exactOptional().openapi({
-      description:
-        'resource is an ObjectRef to another Kubernetes resource in the namespace of the Ingress object. If resource is specified, a service.Name and service.Port must not be specified. This is a mutually exclusive setting with "Service".',
-    }),
-    service: IoK8sApiNetworkingV1IngressServiceBackendSchema.exactOptional().openapi({
-      description:
-        'service references a service as a backend. This is a mutually exclusive setting with "Resource".',
-    }),
-  })
-  .openapi({
-    description: 'IngressBackend describes all endpoints for a given service and port.',
-    required: [],
-  })
-  .openapi('IoK8sApiNetworkingV1IngressBackend')
-
-const IoK8sApiNetworkingV1HTTPIngressPathSchema = z
-  .object({
-    backend: IoK8sApiNetworkingV1IngressBackendSchema.default({}).openapi({
-      description:
-        'backend defines the referenced service endpoint to which the traffic will be forwarded to.',
-    }),
-    path: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'path is matched against the path of an incoming request. Currently it can contain characters disallowed from the conventional "path" part of a URL as defined by RFC 3986. Paths must begin with a \'/\' and must be present when using PathType with value "Exact" or "Prefix".',
-      }),
-    pathType: z
-      .string()
-      .openapi({
-        description:
-          "pathType determines the interpretation of the path matching. PathType can be one of the following values: * Exact: Matches the URL path exactly. * Prefix: Matches based on a URL path prefix split by '/'. Matching is\n  done on a path element by element basis. A path element refers is the\n  list of labels in the path split by the '/' separator. A request is a\n  match for path p if every p is an element-wise prefix of p of the\n  request path. Note that if the last element of the path is a substring\n  of the last element in request path, it is not a match (e.g. /foo/bar\n  matches /foo/bar/baz, but does not match /foo/barbaz).\n* ImplementationSpecific: Interpretation of the Path matching is up to\n  the IngressClass. Implementations can treat this as a separate PathType\n  or treat it identically to Prefix or Exact path types.\nImplementations are required to support all path types.",
-      }),
-  })
-  .openapi({
-    description:
-      'HTTPIngressPath associates a path with a backend. Incoming urls matching the path are forwarded to the backend.',
-    required: ['pathType', 'backend'],
-  })
-  .openapi('IoK8sApiNetworkingV1HTTPIngressPath')
-
-const IoK8sApiNetworkingV1HTTPIngressRuleValueSchema = z
-  .object({
-    paths: z
-      .array(IoK8sApiNetworkingV1HTTPIngressPathSchema)
-      .openapi({
-        description: 'paths is a collection of paths that map requests to backends.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-  })
-  .openapi({
-    description:
-      "HTTPIngressRuleValue is a list of http selectors pointing to backends. In the example: http://<host>/<path>?<searchpart> -> backend where where parts of the url correspond to RFC 3986, this resource will be used to match against everything after the last '/' and before the first '?' or '#'.",
-    required: ['paths'],
-  })
-  .openapi('IoK8sApiNetworkingV1HTTPIngressRuleValue')
-
 const IoK8sApimachineryPkgApisMetaV1TimeSchema = z.iso
   .datetime({ offset: true })
   .openapi({
@@ -141,7 +9,7 @@ const IoK8sApimachineryPkgApisMetaV1TimeSchema = z.iso
   .openapi('IoK8sApimachineryPkgApisMetaV1Time')
 
 const IoK8sApimachineryPkgApisMetaV1FieldsV1Schema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       "FieldsV1 stores a set of fields in a data structure like a Trie, in JSON format.\n\nEach key is either a '.' representing the field itself, and will always map to an empty set, or a string representing a sub-field or item. The string will follow one of these four formats: 'f:<name>', where <name> is the name of a field in a struct, or key in a map 'v:<value>', where <value> is the exact json formatted value of a list item 'i:<index>', where <index> is position of a item in a list 'k:<keys>', where <keys> is a map of  a list item's key fields to their unique values If a key maps to an empty Fields value, the field that key represents is part of the set.\n\nThe exact format is defined in sigs.k8s.io/structured-merge-diff",
@@ -378,205 +246,137 @@ const IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema = z
   })
   .openapi('IoK8sApimachineryPkgApisMetaV1ObjectMeta')
 
-const IoK8sApiNetworkingV1ParentReferenceSchema = z
+const IoK8sApiCoreV1TypedLocalObjectReferenceSchema = z
   .object({
-    group: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'group is the group of the object being referenced.' }),
-    name: z.string().openapi({ description: 'name is the name of the object being referenced.' }),
-    namespace: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'namespace is the namespace of the object being referenced.' }),
-    resource: z
-      .string()
-      .openapi({ description: 'resource is the resource of the object being referenced.' }),
-  })
-  .openapi({
-    description: 'ParentReference describes a reference to a parent object.',
-    required: ['resource', 'name'],
-  })
-  .openapi('IoK8sApiNetworkingV1ParentReference')
-
-const IoK8sApiNetworkingV1IPAddressSpecSchema = z
-  .object({
-    parentRef: IoK8sApiNetworkingV1ParentReferenceSchema.openapi({
-      description:
-        'parentRef references the resource that an IPAddress is attached to. An IPAddress must reference a parent object.',
-    }),
-  })
-  .openapi({
-    description: 'IPAddressSpec describe the attributes in an IP Address.',
-    required: ['parentRef'],
-  })
-  .openapi('IoK8sApiNetworkingV1IPAddressSpec')
-
-const IoK8sApiNetworkingV1IPAddressSchema = z
-  .object({
-    apiVersion: z
+    apiGroup: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+          'apiGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required.',
       }),
     kind: z
       .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          'metadata is the standard object metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata',
-      }),
-    spec: IoK8sApiNetworkingV1IPAddressSpecSchema.default({}).openapi({
-      description:
-        'spec is the desired state of the IPAddress. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status',
-    }),
-  })
-  .openapi({
-    description:
-      'IPAddress represents a single IP of a single IP Family. The object is designed to be used by APIs that operate on IP addresses. The object is used by the Service core API for allocation of IP addresses. An IP address can be represented in different formats, to guarantee the uniqueness of the IP, the name of the object is the IP address in canonical format, four decimal digits separated by dots suppressing leading zeros for IPv4 and the representation defined by RFC 5952 for IPv6. Valid: 192.168.1.5 or 2001:db8::1 or 2001:db8:aaaa:bbbb:cccc:dddd:eeee:1 Invalid: 10.01.2.3 or 2001:db8:0:0:0::1',
-    required: ['spec'],
-    'x-kubernetes-group-version-kind': [
-      { group: 'networking.k8s.io', kind: 'IPAddress', version: 'v1' },
-    ],
-  })
-  .openapi('IoK8sApiNetworkingV1IPAddress')
-
-const IoK8sApimachineryPkgApisMetaV1ShardInfoSchema = z
-  .object({
-    selector: z
+      .default('')
+      .openapi({ description: 'kind is the type of resource being referenced' }),
+    name: z
       .string()
       .default('')
-      .openapi({
-        description:
-          'selector is the shard selector string from the request, echoed back so clients can verify which shard they received and merge responses from multiple shards.',
-      }),
+      .openapi({ description: 'name is the name of resource being referenced' }),
   })
   .openapi({
     description:
-      'ShardInfo describes the shard selector that was applied to produce a list response. Its presence on a list response indicates the list is a filtered subset.',
-    required: ['selector'],
+      'TypedLocalObjectReference contains enough information to let you locate the typed referenced object inside the same namespace.',
+    required: ['kind', 'name'],
+    'x-kubernetes-map-type': 'atomic',
   })
-  .openapi('IoK8sApimachineryPkgApisMetaV1ShardInfo')
+  .openapi('IoK8sApiCoreV1TypedLocalObjectReference')
 
-const IoK8sApimachineryPkgApisMetaV1ListMetaSchema = z
+const IoK8sApiNetworkingV1ServiceBackendPortSchema = z
   .object({
-    continue: z
+    name: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'continue may be set if the user set a limit on the number of items returned, and indicates that the server has more data available. The value is opaque and may be used to issue another request to the endpoint that served this list to retrieve the next set of available objects. Continuing a consistent list may not be possible if the server configuration has changed or more than a few minutes have passed. The resourceVersion field returned when using this continue value will be identical to the value in the first response, unless you have received this token from an error message.',
+          'name is the name of the port on the Service. This is a mutually exclusive setting with "Number".',
       }),
-    remainingItemCount: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'remainingItemCount is the number of subsequent items in the list which are not included in this list response. If the list request contained label or field selectors, then the number of remaining items is unknown and the field will be left unset and omitted during serialization. If the list is complete (either because it is not chunking or because this is the last chunk), then there are no more remaining items and this field will be left unset and omitted during serialization. Servers older than v1.15 do not set this field. The intended use of the remainingItemCount is *estimating* the size of a collection. Clients should not rely on the remainingItemCount to be set or to be exact.',
-      }),
-    resourceVersion: z
-      .string()
+    number: z
+      .int32()
       .exactOptional()
       .openapi({
         description:
-          "String that identifies the server's internal version of this object that can be used by clients to determine when objects have changed. Value must be treated as opaque by clients and passed unmodified back to the server. Populated by the system. Read-only. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency",
+          'number is the numerical port number (e.g. 80) on the Service. This is a mutually exclusive setting with "Name".',
       }),
-    selfLink: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Deprecated: selfLink is a legacy read-only field that is no longer populated by the system.',
-      }),
-    shardInfo: IoK8sApimachineryPkgApisMetaV1ShardInfoSchema.exactOptional().openapi({
-      description:
-        'shardInfo is set when the list is a filtered subset of the full collection, as selected by a shard selector on the request. It echoes back the selector so clients can verify which shard they received and merge sharded responses. Clients should not cache sharded list responses as a full representation of the collection.\n\nThis is a beta field and is enabled by default via the ShardedListAndWatch feature gate.',
-    }),
   })
   .openapi({
-    description:
-      'ListMeta describes metadata that synthetic resources must have, including lists and various status objects. A resource may have only one of {ObjectMeta, ListMeta}.',
+    description: 'ServiceBackendPort is the service port being referenced.',
+    'x-kubernetes-map-type': 'atomic',
     required: [],
   })
-  .openapi('IoK8sApimachineryPkgApisMetaV1ListMeta')
+  .openapi('IoK8sApiNetworkingV1ServiceBackendPort')
 
-const IoK8sApiNetworkingV1IPAddressListSchema = z
+const IoK8sApiNetworkingV1IngressServiceBackendSchema = z
   .object({
-    apiVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
-      }),
-    items: z
-      .array(IoK8sApiNetworkingV1IPAddressSchema)
-      .openapi({ description: 'items is the list of IPAddresses.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          "Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata",
-      }),
-  })
-  .openapi({
-    description: 'IPAddressList contains a list of IPAddress.',
-    required: ['items'],
-    'x-kubernetes-group-version-kind': [
-      { group: 'networking.k8s.io', kind: 'IPAddressList', version: 'v1' },
-    ],
-  })
-  .openapi('IoK8sApiNetworkingV1IPAddressList')
-
-const IoK8sApiNetworkingV1IPBlockSchema = z
-  .object({
-    cidr: z
+    name: z
       .string()
       .default('')
       .openapi({
         description:
-          'cidr is a string representing the IPBlock Valid examples are "192.168.1.0/24" or "2001:db8::/64"',
+          'name is the referenced service. The service must exist in the same namespace as the Ingress object.',
       }),
-    except: z
-      .array(z.string())
+    port: IoK8sApiNetworkingV1ServiceBackendPortSchema.default({})
       .exactOptional()
       .openapi({
         description:
-          'except is a slice of CIDRs that should not be included within an IPBlock Valid examples are "192.168.1.0/24" or "2001:db8::/64" Except values will be rejected if they are outside the cidr range',
+          'port of the referenced service. A port name or port number is required for a IngressServiceBackend.',
+      }),
+  })
+  .openapi({
+    description: 'IngressServiceBackend references a Kubernetes Service as a Backend.',
+    required: ['name'],
+  })
+  .openapi('IoK8sApiNetworkingV1IngressServiceBackend')
+
+const IoK8sApiNetworkingV1IngressBackendSchema = z
+  .object({
+    resource: IoK8sApiCoreV1TypedLocalObjectReferenceSchema.exactOptional().openapi({
+      description:
+        'resource is an ObjectRef to another Kubernetes resource in the namespace of the Ingress object. If resource is specified, a service.Name and service.Port must not be specified. This is a mutually exclusive setting with "Service".',
+    }),
+    service: IoK8sApiNetworkingV1IngressServiceBackendSchema.exactOptional().openapi({
+      description:
+        'service references a service as a backend. This is a mutually exclusive setting with "Resource".',
+    }),
+  })
+  .openapi({
+    description: 'IngressBackend describes all endpoints for a given service and port.',
+    required: [],
+  })
+  .openapi('IoK8sApiNetworkingV1IngressBackend')
+
+const IoK8sApiNetworkingV1HTTPIngressPathSchema = z
+  .object({
+    backend: IoK8sApiNetworkingV1IngressBackendSchema.default({}).openapi({
+      description:
+        'backend defines the referenced service endpoint to which the traffic will be forwarded to.',
+    }),
+    path: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'path is matched against the path of an incoming request. Currently it can contain characters disallowed from the conventional "path" part of a URL as defined by RFC 3986. Paths must begin with a \'/\' and must be present when using PathType with value "Exact" or "Prefix".',
+      }),
+    pathType: z
+      .string()
+      .openapi({
+        description:
+          "pathType determines the interpretation of the path matching. PathType can be one of the following values: * Exact: Matches the URL path exactly. * Prefix: Matches based on a URL path prefix split by '/'. Matching is\n  done on a path element by element basis. A path element refers is the\n  list of labels in the path split by the '/' separator. A request is a\n  match for path p if every p is an element-wise prefix of p of the\n  request path. Note that if the last element of the path is a substring\n  of the last element in request path, it is not a match (e.g. /foo/bar\n  matches /foo/bar/baz, but does not match /foo/barbaz).\n* ImplementationSpecific: Interpretation of the Path matching is up to\n  the IngressClass. Implementations can treat this as a separate PathType\n  or treat it identically to Prefix or Exact path types.\nImplementations are required to support all path types.",
+      }),
+  })
+  .openapi({
+    description:
+      'HTTPIngressPath associates a path with a backend. Incoming urls matching the path are forwarded to the backend.',
+    required: ['pathType', 'backend'],
+  })
+  .openapi('IoK8sApiNetworkingV1HTTPIngressPath')
+
+const IoK8sApiNetworkingV1HTTPIngressRuleValueSchema = z
+  .object({
+    paths: z
+      .array(IoK8sApiNetworkingV1HTTPIngressPathSchema)
+      .openapi({
+        description: 'paths is a collection of paths that map requests to backends.',
         'x-kubernetes-list-type': 'atomic',
       }),
   })
   .openapi({
     description:
-      'IPBlock describes a particular CIDR (Ex. "192.168.1.0/24","2001:db8::/64") that is allowed to the pods matched by a NetworkPolicySpec\'s podSelector. The except entry describes CIDRs that should not be included within this rule.',
-    required: ['cidr'],
+      "HTTPIngressRuleValue is a list of http selectors pointing to backends. In the example: http://<host>/<path>?<searchpart> -> backend where where parts of the url correspond to RFC 3986, this resource will be used to match against everything after the last '/' and before the first '?' or '#'.",
+    required: ['paths'],
   })
-  .openapi('IoK8sApiNetworkingV1IPBlock')
+  .openapi('IoK8sApiNetworkingV1HTTPIngressRuleValue')
 
 const IoK8sApiNetworkingV1IngressRuleSchema = z
   .object({
@@ -622,7 +422,14 @@ const IoK8sApiNetworkingV1IngressTLSSchema = z
   })
   .openapi('IoK8sApiNetworkingV1IngressTLS')
 
-const IoK8sApiNetworkingV1IngressSpecSchema = z
+type IoK8sApiNetworkingV1IngressSpecType = {
+  defaultBackend?: z.infer<typeof IoK8sApiNetworkingV1IngressBackendSchema>
+  ingressClassName?: string
+  rules?: z.infer<typeof IoK8sApiNetworkingV1IngressRuleSchema>[]
+  tls?: z.infer<typeof IoK8sApiNetworkingV1IngressTLSSchema>[]
+}
+
+const IoK8sApiNetworkingV1IngressSpecSchema: z.ZodType<IoK8sApiNetworkingV1IngressSpecType> = z
   .object({
     defaultBackend: IoK8sApiNetworkingV1IngressBackendSchema.exactOptional().openapi({
       description:
@@ -742,7 +549,15 @@ const IoK8sApiNetworkingV1IngressStatusSchema = z
   })
   .openapi('IoK8sApiNetworkingV1IngressStatus')
 
-const IoK8sApiNetworkingV1IngressSchema = z
+type IoK8sApiNetworkingV1IngressType = {
+  apiVersion?: string
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema>
+  spec?: z.infer<typeof IoK8sApiNetworkingV1IngressSpecSchema>
+  status?: z.infer<typeof IoK8sApiNetworkingV1IngressStatusSchema>
+}
+
+const IoK8sApiNetworkingV1IngressSchema: z.ZodType<IoK8sApiNetworkingV1IngressType> = z
   .object({
     apiVersion: z
       .string()
@@ -787,167 +602,81 @@ const IoK8sApiNetworkingV1IngressSchema = z
   })
   .openapi('IoK8sApiNetworkingV1Ingress')
 
-const IoK8sApiNetworkingV1IngressClassParametersReferenceSchema = z
+const IoK8sApimachineryPkgApisMetaV1ShardInfoSchema = z
   .object({
-    apiGroup: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'apiGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required.',
-      }),
-    kind: z
+    selector: z
       .string()
       .default('')
-      .openapi({ description: 'kind is the type of resource being referenced.' }),
-    name: z
-      .string()
-      .default('')
-      .openapi({ description: 'name is the name of resource being referenced.' }),
-    namespace: z
-      .string()
-      .exactOptional()
       .openapi({
         description:
-          'namespace is the namespace of the resource being referenced. This field is required when scope is set to "Namespace" and must be unset when scope is set to "Cluster".',
-      }),
-    scope: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'scope represents if this refers to a cluster or namespace scoped resource. This may be set to "Cluster" (default) or "Namespace".',
+          'selector is the shard selector string from the request, echoed back so clients can verify which shard they received and merge responses from multiple shards.',
       }),
   })
   .openapi({
     description:
-      'IngressClassParametersReference identifies an API object. This can be used to specify a cluster or namespace-scoped resource.',
-    required: ['kind', 'name'],
+      'ShardInfo describes the shard selector that was applied to produce a list response. Its presence on a list response indicates the list is a filtered subset.',
+    required: ['selector'],
   })
-  .openapi('IoK8sApiNetworkingV1IngressClassParametersReference')
+  .openapi('IoK8sApimachineryPkgApisMetaV1ShardInfo')
 
-const IoK8sApiNetworkingV1IngressClassSpecSchema = z
+const IoK8sApimachineryPkgApisMetaV1ListMetaSchema = z
   .object({
-    controller: z
+    continue: z
       .string()
+      .exactOptional()
       .openapi({
         description:
-          'controller refers to the name of the controller that should handle this class. This allows for different "flavors" that are controlled by the same controller. For example, you may have different parameters for the same implementing controller. This should be specified as a domain-prefixed path no more than 250 characters in length, e.g. "acme.io/ingress-controller". This field is immutable.',
+          'continue may be set if the user set a limit on the number of items returned, and indicates that the server has more data available. The value is opaque and may be used to issue another request to the endpoint that served this list to retrieve the next set of available objects. Continuing a consistent list may not be possible if the server configuration has changed or more than a few minutes have passed. The resourceVersion field returned when using this continue value will be identical to the value in the first response, unless you have received this token from an error message.',
       }),
-    parameters: IoK8sApiNetworkingV1IngressClassParametersReferenceSchema.exactOptional().openapi({
+    remainingItemCount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'remainingItemCount is the number of subsequent items in the list which are not included in this list response. If the list request contained label or field selectors, then the number of remaining items is unknown and the field will be left unset and omitted during serialization. If the list is complete (either because it is not chunking or because this is the last chunk), then there are no more remaining items and this field will be left unset and omitted during serialization. Servers older than v1.15 do not set this field. The intended use of the remainingItemCount is *estimating* the size of a collection. Clients should not rely on the remainingItemCount to be set or to be exact.',
+      }),
+    resourceVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "String that identifies the server's internal version of this object that can be used by clients to determine when objects have changed. Value must be treated as opaque by clients and passed unmodified back to the server. Populated by the system. Read-only. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency",
+      }),
+    selfLink: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Deprecated: selfLink is a legacy read-only field that is no longer populated by the system.',
+      }),
+    shardInfo: IoK8sApimachineryPkgApisMetaV1ShardInfoSchema.exactOptional().openapi({
       description:
-        'parameters is a link to a custom resource containing additional configuration for the controller. This is optional if the controller does not require extra parameters.',
-    }),
-  })
-  .openapi({
-    description: 'IngressClassSpec provides information about the class of an Ingress.',
-    required: ['controller'],
-  })
-  .openapi('IoK8sApiNetworkingV1IngressClassSpec')
-
-const IoK8sApiNetworkingV1IngressClassSchema = z
-  .object({
-    apiVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          'metadata is the standard object metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata',
-      }),
-    spec: IoK8sApiNetworkingV1IngressClassSpecSchema.default({}).openapi({
-      description:
-        'spec is the desired state of the IngressClass. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status',
+        'shardInfo is set when the list is a filtered subset of the full collection, as selected by a shard selector on the request. It echoes back the selector so clients can verify which shard they received and merge sharded responses. Clients should not cache sharded list responses as a full representation of the collection.\n\nThis is a beta field and is enabled by default via the ShardedListAndWatch feature gate.',
     }),
   })
   .openapi({
     description:
-      'IngressClass represents the class of the Ingress, referenced by the Ingress Spec. The `ingressclass.kubernetes.io/is-default-class` annotation can be used to indicate that an IngressClass should be considered default. When a single IngressClass resource has this annotation set to true, new Ingress resources without a class specified will be assigned this default class.',
-    required: ['spec'],
-    'x-kubernetes-group-version-kind': [
-      { group: 'networking.k8s.io', kind: 'IngressClass', version: 'v1' },
-    ],
+      'ListMeta describes metadata that synthetic resources must have, including lists and various status objects. A resource may have only one of {ObjectMeta, ListMeta}.',
+    required: [],
   })
-  .openapi('IoK8sApiNetworkingV1IngressClass')
+  .openapi('IoK8sApimachineryPkgApisMetaV1ListMeta')
 
-const IoK8sApiNetworkingV1IngressClassListSchema = z
-  .object({
-    apiVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
-      }),
-    items: z
-      .array(IoK8sApiNetworkingV1IngressClassSchema)
-      .openapi({ description: 'items is the list of IngressClasses.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
-      .exactOptional()
-      .openapi({ description: 'Standard list metadata.' }),
-  })
-  .openapi({
-    description: 'IngressClassList is a collection of IngressClasses.',
-    required: ['items'],
-    'x-kubernetes-group-version-kind': [
-      { group: 'networking.k8s.io', kind: 'IngressClassList', version: 'v1' },
-    ],
-  })
-  .openapi('IoK8sApiNetworkingV1IngressClassList')
-
-const IoK8sApiNetworkingV1IngressListSchema = z
-  .object({
-    apiVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
-      }),
-    items: z
-      .array(IoK8sApiNetworkingV1IngressSchema)
-      .openapi({ description: 'items is the list of Ingress.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          "Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata",
-      }),
-  })
-  .openapi({
-    description: 'IngressList is a collection of Ingress.',
-    required: ['items'],
-    'x-kubernetes-group-version-kind': [
-      { group: 'networking.k8s.io', kind: 'IngressList', version: 'v1' },
-    ],
-  })
-  .openapi('IoK8sApiNetworkingV1IngressList')
+type IoK8sApiNetworkingV1IngressListType = {
+  apiVersion?: string
+  items: z.infer<typeof IoK8sApiNetworkingV1IngressSchema>[]
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ListMetaSchema>
+}
 
 const IoK8sApimachineryPkgUtilIntstrIntOrStringSchema = z
   .xor([z.int(), z.string()])
@@ -980,6 +709,31 @@ const IoK8sApiNetworkingV1NetworkPolicyPortSchema = z
   })
   .openapi({ description: 'NetworkPolicyPort describes a port to allow traffic on', required: [] })
   .openapi('IoK8sApiNetworkingV1NetworkPolicyPort')
+
+const IoK8sApiNetworkingV1IPBlockSchema = z
+  .object({
+    cidr: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'cidr is a string representing the IPBlock Valid examples are "192.168.1.0/24" or "2001:db8::/64"',
+      }),
+    except: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'except is a slice of CIDRs that should not be included within an IPBlock Valid examples are "192.168.1.0/24" or "2001:db8::/64" Except values will be rejected if they are outside the cidr range',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+  })
+  .openapi({
+    description:
+      'IPBlock describes a particular CIDR (Ex. "192.168.1.0/24","2001:db8::/64") that is allowed to the pods matched by a NetworkPolicySpec\'s podSelector. The except entry describes CIDRs that should not be included within this rule.',
+    required: ['cidr'],
+  })
+  .openapi('IoK8sApiNetworkingV1IPBlock')
 
 const IoK8sApimachineryPkgApisMetaV1LabelSelectorRequirementSchema = z
   .object({
@@ -1110,46 +864,61 @@ const IoK8sApiNetworkingV1NetworkPolicyIngressRuleSchema = z
   })
   .openapi('IoK8sApiNetworkingV1NetworkPolicyIngressRule')
 
-const IoK8sApiNetworkingV1NetworkPolicySpecSchema = z
-  .object({
-    egress: z
-      .array(IoK8sApiNetworkingV1NetworkPolicyEgressRuleSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'egress is a list of egress rules to be applied to the selected pods. Outgoing traffic is allowed if there are no NetworkPolicies selecting the pod (and cluster policy otherwise allows the traffic), OR if the traffic matches at least one egress rule across all of the NetworkPolicy objects whose podSelector matches the pod. If this field is empty then this NetworkPolicy limits all outgoing traffic (and serves solely to ensure that the pods it selects are isolated by default). This field is beta-level in 1.8',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-    ingress: z
-      .array(IoK8sApiNetworkingV1NetworkPolicyIngressRuleSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "ingress is a list of ingress rules to be applied to the selected pods. Traffic is allowed to a pod if there are no NetworkPolicies selecting the pod (and cluster policy otherwise allows the traffic), OR if the traffic source is the pod's local node, OR if the traffic matches at least one ingress rule across all of the NetworkPolicy objects whose podSelector matches the pod. If this field is empty then this NetworkPolicy does not allow any traffic (and serves solely to ensure that the pods it selects are isolated by default)",
-        'x-kubernetes-list-type': 'atomic',
-      }),
-    podSelector: IoK8sApimachineryPkgApisMetaV1LabelSelectorSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          "podSelector selects the pods to which this NetworkPolicy object applies. The array of rules is applied to any pods selected by this field. An empty selector matches all pods in the policy's namespace. Multiple network policies can select the same set of pods. In this case, the ingress rules for each are combined additively. This field is optional. If it is not specified, it defaults to an empty selector.",
-      }),
-    policyTypes: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'policyTypes is a list of rule types that the NetworkPolicy relates to. Valid options are ["Ingress"], ["Egress"], or ["Ingress", "Egress"]. If this field is not specified, it will default based on the existence of ingress or egress rules; policies that contain an egress section are assumed to affect egress, and all policies (whether or not they contain an ingress section) are assumed to affect ingress. If you want to write an egress-only policy, you must explicitly specify policyTypes [ "Egress" ]. Likewise, if you want to write a policy that specifies that no egress is allowed, you must specify a policyTypes value that include "Egress" (since such a policy would not include an egress section and would otherwise default to just [ "Ingress" ]). This field is beta-level in 1.8',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-  })
-  .openapi({
-    description: 'NetworkPolicySpec provides the specification of a NetworkPolicy',
-    required: [],
-  })
-  .openapi('IoK8sApiNetworkingV1NetworkPolicySpec')
+type IoK8sApiNetworkingV1NetworkPolicySpecType = {
+  egress?: z.infer<typeof IoK8sApiNetworkingV1NetworkPolicyEgressRuleSchema>[]
+  ingress?: z.infer<typeof IoK8sApiNetworkingV1NetworkPolicyIngressRuleSchema>[]
+  podSelector?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1LabelSelectorSchema>
+  policyTypes?: string[]
+}
 
-const IoK8sApiNetworkingV1NetworkPolicySchema = z
+const IoK8sApiNetworkingV1NetworkPolicySpecSchema: z.ZodType<IoK8sApiNetworkingV1NetworkPolicySpecType> =
+  z
+    .object({
+      egress: z
+        .array(IoK8sApiNetworkingV1NetworkPolicyEgressRuleSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'egress is a list of egress rules to be applied to the selected pods. Outgoing traffic is allowed if there are no NetworkPolicies selecting the pod (and cluster policy otherwise allows the traffic), OR if the traffic matches at least one egress rule across all of the NetworkPolicy objects whose podSelector matches the pod. If this field is empty then this NetworkPolicy limits all outgoing traffic (and serves solely to ensure that the pods it selects are isolated by default). This field is beta-level in 1.8',
+          'x-kubernetes-list-type': 'atomic',
+        }),
+      ingress: z
+        .array(IoK8sApiNetworkingV1NetworkPolicyIngressRuleSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            "ingress is a list of ingress rules to be applied to the selected pods. Traffic is allowed to a pod if there are no NetworkPolicies selecting the pod (and cluster policy otherwise allows the traffic), OR if the traffic source is the pod's local node, OR if the traffic matches at least one ingress rule across all of the NetworkPolicy objects whose podSelector matches the pod. If this field is empty then this NetworkPolicy does not allow any traffic (and serves solely to ensure that the pods it selects are isolated by default)",
+          'x-kubernetes-list-type': 'atomic',
+        }),
+      podSelector: IoK8sApimachineryPkgApisMetaV1LabelSelectorSchema.default({})
+        .exactOptional()
+        .openapi({
+          description:
+            "podSelector selects the pods to which this NetworkPolicy object applies. The array of rules is applied to any pods selected by this field. An empty selector matches all pods in the policy's namespace. Multiple network policies can select the same set of pods. In this case, the ingress rules for each are combined additively. This field is optional. If it is not specified, it defaults to an empty selector.",
+        }),
+      policyTypes: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            'policyTypes is a list of rule types that the NetworkPolicy relates to. Valid options are ["Ingress"], ["Egress"], or ["Ingress", "Egress"]. If this field is not specified, it will default based on the existence of ingress or egress rules; policies that contain an egress section are assumed to affect egress, and all policies (whether or not they contain an ingress section) are assumed to affect ingress. If you want to write an egress-only policy, you must explicitly specify policyTypes [ "Egress" ]. Likewise, if you want to write a policy that specifies that no egress is allowed, you must specify a policyTypes value that include "Egress" (since such a policy would not include an egress section and would otherwise default to just [ "Ingress" ]). This field is beta-level in 1.8',
+          'x-kubernetes-list-type': 'atomic',
+        }),
+    })
+    .openapi({
+      description: 'NetworkPolicySpec provides the specification of a NetworkPolicy',
+      required: [],
+    })
+    .openapi('IoK8sApiNetworkingV1NetworkPolicySpec')
+
+type IoK8sApiNetworkingV1NetworkPolicyType = {
+  apiVersion?: string
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema>
+  spec?: z.infer<typeof IoK8sApiNetworkingV1NetworkPolicySpecSchema>
+}
+
+const IoK8sApiNetworkingV1NetworkPolicySchema: z.ZodType<IoK8sApiNetworkingV1NetworkPolicyType> = z
   .object({
     apiVersion: z
       .string()
@@ -1187,7 +956,86 @@ const IoK8sApiNetworkingV1NetworkPolicySchema = z
   })
   .openapi('IoK8sApiNetworkingV1NetworkPolicy')
 
-const IoK8sApiNetworkingV1NetworkPolicyListSchema = z
+type IoK8sApiNetworkingV1NetworkPolicyListType = {
+  apiVersion?: string
+  items: z.infer<typeof IoK8sApiNetworkingV1NetworkPolicySchema>[]
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ListMetaSchema>
+}
+
+const IoK8sApiNetworkingV1ParentReferenceSchema = z
+  .object({
+    group: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'group is the group of the object being referenced.' }),
+    name: z.string().openapi({ description: 'name is the name of the object being referenced.' }),
+    namespace: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'namespace is the namespace of the object being referenced.' }),
+    resource: z
+      .string()
+      .openapi({ description: 'resource is the resource of the object being referenced.' }),
+  })
+  .openapi({
+    description: 'ParentReference describes a reference to a parent object.',
+    required: ['resource', 'name'],
+  })
+  .openapi('IoK8sApiNetworkingV1ParentReference')
+
+const IoK8sApiNetworkingV1IPAddressSpecSchema = z
+  .object({
+    parentRef: IoK8sApiNetworkingV1ParentReferenceSchema.openapi({
+      description:
+        'parentRef references the resource that an IPAddress is attached to. An IPAddress must reference a parent object.',
+    }),
+  })
+  .openapi({
+    description: 'IPAddressSpec describe the attributes in an IP Address.',
+    required: ['parentRef'],
+  })
+  .openapi('IoK8sApiNetworkingV1IPAddressSpec')
+
+const IoK8sApiNetworkingV1IPAddressSchema = z
+  .object({
+    apiVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+      }),
+    metadata: IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema.default({})
+      .exactOptional()
+      .openapi({
+        description:
+          'metadata is the standard object metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata',
+      }),
+    spec: IoK8sApiNetworkingV1IPAddressSpecSchema.openapi({
+      description:
+        'spec is the desired state of the IPAddress. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status',
+      default: {},
+    }),
+  })
+  .openapi({
+    description:
+      'IPAddress represents a single IP of a single IP Family. The object is designed to be used by APIs that operate on IP addresses. The object is used by the Service core API for allocation of IP addresses. An IP address can be represented in different formats, to guarantee the uniqueness of the IP, the name of the object is the IP address in canonical format, four decimal digits separated by dots suppressing leading zeros for IPv4 and the representation defined by RFC 5952 for IPv6. Valid: 192.168.1.5 or 2001:db8::1 or 2001:db8:aaaa:bbbb:cccc:dddd:eeee:1 Invalid: 10.01.2.3 or 2001:db8:0:0:0::1',
+    required: ['spec'],
+    'x-kubernetes-group-version-kind': [
+      { group: 'networking.k8s.io', kind: 'IPAddress', version: 'v1' },
+    ],
+  })
+  .openapi('IoK8sApiNetworkingV1IPAddress')
+
+const IoK8sApiNetworkingV1IPAddressListSchema = z
   .object({
     apiVersion: z
       .string()
@@ -1197,8 +1045,8 @@ const IoK8sApiNetworkingV1NetworkPolicyListSchema = z
           'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
       }),
     items: z
-      .array(IoK8sApiNetworkingV1NetworkPolicySchema)
-      .openapi({ description: 'items is a list of schema objects.' }),
+      .array(IoK8sApiNetworkingV1IPAddressSchema)
+      .openapi({ description: 'items is the list of IPAddresses.' }),
     kind: z
       .string()
       .exactOptional()
@@ -1210,17 +1058,216 @@ const IoK8sApiNetworkingV1NetworkPolicyListSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Standard list metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata',
+          "Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata",
       }),
   })
   .openapi({
-    description: 'NetworkPolicyList is a list of NetworkPolicy objects.',
+    description: 'IPAddressList contains a list of IPAddress.',
     required: ['items'],
     'x-kubernetes-group-version-kind': [
-      { group: 'networking.k8s.io', kind: 'NetworkPolicyList', version: 'v1' },
+      { group: 'networking.k8s.io', kind: 'IPAddressList', version: 'v1' },
     ],
   })
-  .openapi('IoK8sApiNetworkingV1NetworkPolicyList')
+  .openapi('IoK8sApiNetworkingV1IPAddressList')
+
+const IoK8sApiNetworkingV1IngressClassParametersReferenceSchema = z
+  .object({
+    apiGroup: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'apiGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required.',
+      }),
+    kind: z
+      .string()
+      .default('')
+      .openapi({ description: 'kind is the type of resource being referenced.' }),
+    name: z
+      .string()
+      .default('')
+      .openapi({ description: 'name is the name of resource being referenced.' }),
+    namespace: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'namespace is the namespace of the resource being referenced. This field is required when scope is set to "Namespace" and must be unset when scope is set to "Cluster".',
+      }),
+    scope: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'scope represents if this refers to a cluster or namespace scoped resource. This may be set to "Cluster" (default) or "Namespace".',
+      }),
+  })
+  .openapi({
+    description:
+      'IngressClassParametersReference identifies an API object. This can be used to specify a cluster or namespace-scoped resource.',
+    required: ['kind', 'name'],
+  })
+  .openapi('IoK8sApiNetworkingV1IngressClassParametersReference')
+
+const IoK8sApiNetworkingV1IngressClassSpecSchema = z
+  .object({
+    controller: z
+      .string()
+      .openapi({
+        description:
+          'controller refers to the name of the controller that should handle this class. This allows for different "flavors" that are controlled by the same controller. For example, you may have different parameters for the same implementing controller. This should be specified as a domain-prefixed path no more than 250 characters in length, e.g. "acme.io/ingress-controller". This field is immutable.',
+      }),
+    parameters: IoK8sApiNetworkingV1IngressClassParametersReferenceSchema.exactOptional().openapi({
+      description:
+        'parameters is a link to a custom resource containing additional configuration for the controller. This is optional if the controller does not require extra parameters.',
+    }),
+  })
+  .openapi({
+    description: 'IngressClassSpec provides information about the class of an Ingress.',
+    required: ['controller'],
+  })
+  .openapi('IoK8sApiNetworkingV1IngressClassSpec')
+
+const IoK8sApiNetworkingV1IngressClassSchema = z
+  .object({
+    apiVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+      }),
+    metadata: IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema.default({})
+      .exactOptional()
+      .openapi({
+        description:
+          'metadata is the standard object metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata',
+      }),
+    spec: IoK8sApiNetworkingV1IngressClassSpecSchema.openapi({
+      description:
+        'spec is the desired state of the IngressClass. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status',
+      default: {},
+    }),
+  })
+  .openapi({
+    description:
+      'IngressClass represents the class of the Ingress, referenced by the Ingress Spec. The `ingressclass.kubernetes.io/is-default-class` annotation can be used to indicate that an IngressClass should be considered default. When a single IngressClass resource has this annotation set to true, new Ingress resources without a class specified will be assigned this default class.',
+    required: ['spec'],
+    'x-kubernetes-group-version-kind': [
+      { group: 'networking.k8s.io', kind: 'IngressClass', version: 'v1' },
+    ],
+  })
+  .openapi('IoK8sApiNetworkingV1IngressClass')
+
+const IoK8sApiNetworkingV1IngressClassListSchema = z
+  .object({
+    apiVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+      }),
+    items: z
+      .array(IoK8sApiNetworkingV1IngressClassSchema)
+      .openapi({ description: 'items is the list of IngressClasses.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+      }),
+    metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
+      .exactOptional()
+      .openapi({ description: 'Standard list metadata.' }),
+  })
+  .openapi({
+    description: 'IngressClassList is a collection of IngressClasses.',
+    required: ['items'],
+    'x-kubernetes-group-version-kind': [
+      { group: 'networking.k8s.io', kind: 'IngressClassList', version: 'v1' },
+    ],
+  })
+  .openapi('IoK8sApiNetworkingV1IngressClassList')
+
+const IoK8sApiNetworkingV1IngressListSchema: z.ZodType<IoK8sApiNetworkingV1IngressListType> = z
+  .object({
+    apiVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+      }),
+    items: z
+      .array(IoK8sApiNetworkingV1IngressSchema)
+      .openapi({ description: 'items is the list of Ingress.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+      }),
+    metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
+      .exactOptional()
+      .openapi({
+        description:
+          "Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata",
+      }),
+  })
+  .openapi({
+    description: 'IngressList is a collection of Ingress.',
+    required: ['items'],
+    'x-kubernetes-group-version-kind': [
+      { group: 'networking.k8s.io', kind: 'IngressList', version: 'v1' },
+    ],
+  })
+  .openapi('IoK8sApiNetworkingV1IngressList')
+
+const IoK8sApiNetworkingV1NetworkPolicyListSchema: z.ZodType<IoK8sApiNetworkingV1NetworkPolicyListType> =
+  z
+    .object({
+      apiVersion: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+        }),
+      items: z
+        .array(IoK8sApiNetworkingV1NetworkPolicySchema)
+        .openapi({ description: 'items is a list of schema objects.' }),
+      kind: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+        }),
+      metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
+        .exactOptional()
+        .openapi({
+          description:
+            'Standard list metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata',
+        }),
+    })
+    .openapi({
+      description: 'NetworkPolicyList is a list of NetworkPolicy objects.',
+      required: ['items'],
+      'x-kubernetes-group-version-kind': [
+        { group: 'networking.k8s.io', kind: 'NetworkPolicyList', version: 'v1' },
+      ],
+    })
+    .openapi('IoK8sApiNetworkingV1NetworkPolicyList')
 
 const IoK8sApiNetworkingV1ServiceCIDRSpecSchema = z
   .object({
@@ -1597,7 +1644,7 @@ const IoK8sApimachineryPkgApisMetaV1DeleteOptionsSchema = z
   .openapi('IoK8sApimachineryPkgApisMetaV1DeleteOptions')
 
 const IoK8sApimachineryPkgApisMetaV1PatchSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Patch is provided to give a concrete name and type to the Kubernetes PATCH request body.',
@@ -1744,7 +1791,7 @@ const IoK8sApimachineryPkgApisMetaV1StatusSchema = z
   .openapi('IoK8sApimachineryPkgApisMetaV1Status')
 
 const IoK8sApimachineryPkgRuntimeRawExtensionSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'RawExtension is used to hold extensions in external versions.\n\nTo use this, make a field which has RawExtension as its type in your external, versioned struct, and Object in your internal struct. You also need to register your various plugin types.\n\n// Internal package:\n\n\ttype MyAPIObject struct {\n\t\truntime.TypeMeta `json:""`\n\t\tMyPlugin runtime.Object `json:"myPlugin"`\n\t}\n\n\ttype PluginA struct {\n\t\tAOption string `json:"aOption"`\n\t}\n\n// External package:\n\n\ttype MyAPIObject struct {\n\t\truntime.TypeMeta `json:""`\n\t\tMyPlugin runtime.RawExtension `json:"myPlugin"`\n\t}\n\n\ttype PluginA struct {\n\t\tAOption string `json:"aOption"`\n\t}\n\n// On the wire, the JSON will look something like this:\n\n\t{\n\t\t"kind":"MyAPIObject",\n\t\t"apiVersion":"v1",\n\t\t"myPlugin": {\n\t\t\t"kind":"PluginA",\n\t\t\t"aOption":"foo",\n\t\t},\n\t}\n\nSo what happens? Decode first uses json or yaml to unmarshal the serialized data into your external MyAPIObject. That causes the raw JSON to be stored, but not unpacked. The next step is to copy (using pkg/conversion) into the internal struct. The runtime package\'s DefaultScheme has conversion functions installed which will unpack the JSON stored in RawExtension, turning it into the correct object type, and storing it in the Object. (TODO: In the case where the object is of an unknown type, a runtime.Unknown object will be created and stored.)',

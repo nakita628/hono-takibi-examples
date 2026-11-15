@@ -1,5 +1,469 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const ListenV1ResponseResultsChannelsItemsSearchItemsHitsItemsSchema = z
+  .object({
+    confidence: z.string().exactOptional().openapi({ title: 'float' }),
+    start: z.string().exactOptional().openapi({ title: 'float' }),
+    end: z.string().exactOptional().openapi({ title: 'float' }),
+    snippet: z.string().exactOptional(),
+  })
+  .openapi({ title: 'ListenV1ResponseResultsChannelsItemsSearchItemsHitsItems', required: [] })
+  .openapi('ListenV1ResponseResultsChannelsItemsSearchItemsHitsItems')
+
+const ListenV1ResponseResultsChannelsItemsSearchItemsSchema = z
+  .object({
+    query: z.string().exactOptional(),
+    hits: z.array(ListenV1ResponseResultsChannelsItemsSearchItemsHitsItemsSchema).exactOptional(),
+  })
+  .openapi({ title: 'ListenV1ResponseResultsChannelsItemsSearchItems', required: [] })
+  .openapi('ListenV1ResponseResultsChannelsItemsSearchItems')
+
+const ListenV1ResponseResultsChannelsItemsAlternativesItemsWordsItemsSchema = z
+  .object({
+    word: z.string().exactOptional(),
+    start: z.string().exactOptional().openapi({ title: 'float' }),
+    end: z.string().exactOptional().openapi({ title: 'float' }),
+    confidence: z.string().exactOptional().openapi({ title: 'float' }),
+    language: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "[BCP-47](https://tools.ietf.org/html/bcp47) language tag of the word's detected language. Only present when `language=multi`. Can be absent on audio that switches languages.",
+      }),
+    speaker: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The speaker of the word, present when diarization is enabled' }),
+    speaker_confidence: z
+      .string()
+      .exactOptional()
+      .openapi({
+        title: 'float',
+        description:
+          'Confidence in the speaker assignment. Returned only for pre-recorded diarization; not available for streaming',
+      }),
+  })
+  .openapi({
+    title: 'ListenV1ResponseResultsChannelsItemsAlternativesItemsWordsItems',
+    required: [],
+  })
+  .openapi('ListenV1ResponseResultsChannelsItemsAlternativesItemsWordsItems')
+
+const ListenV1ResponseResultsChannelsItemsAlternativesItemsParagraphsParagraphsItemsSentencesItemsSchema =
+  z
+    .object({
+      text: z.string().exactOptional(),
+      start: z.string().exactOptional().openapi({ title: 'float' }),
+      end: z.string().exactOptional().openapi({ title: 'float' }),
+    })
+    .openapi({
+      title:
+        'ListenV1ResponseResultsChannelsItemsAlternativesItemsParagraphsParagraphsItemsSentencesItems',
+      required: [],
+    })
+    .openapi(
+      'ListenV1ResponseResultsChannelsItemsAlternativesItemsParagraphsParagraphsItemsSentencesItems',
+    )
+
+const ListenV1ResponseResultsChannelsItemsAlternativesItemsParagraphsParagraphsItemsSchema = z
+  .object({
+    sentences: z
+      .array(
+        ListenV1ResponseResultsChannelsItemsAlternativesItemsParagraphsParagraphsItemsSentencesItemsSchema,
+      )
+      .exactOptional(),
+    speaker: z.int().exactOptional(),
+    num_words: z.int().exactOptional(),
+    start: z.string().exactOptional().openapi({ title: 'float' }),
+    end: z.string().exactOptional().openapi({ title: 'float' }),
+  })
+  .openapi({
+    title: 'ListenV1ResponseResultsChannelsItemsAlternativesItemsParagraphsParagraphsItems',
+    required: [],
+  })
+  .openapi('ListenV1ResponseResultsChannelsItemsAlternativesItemsParagraphsParagraphsItems')
+
+const ListenV1ResponseResultsChannelsItemsAlternativesItemsParagraphsSchema = z
+  .object({
+    transcript: z.string().exactOptional(),
+    paragraphs: z
+      .array(ListenV1ResponseResultsChannelsItemsAlternativesItemsParagraphsParagraphsItemsSchema)
+      .exactOptional(),
+  })
+  .openapi({
+    title: 'ListenV1ResponseResultsChannelsItemsAlternativesItemsParagraphs',
+    required: [],
+  })
+  .openapi('ListenV1ResponseResultsChannelsItemsAlternativesItemsParagraphs')
+
+const ListenV1ResponseResultsChannelsItemsAlternativesItemsEntitiesItemsSchema = z
+  .object({
+    label: z.string().exactOptional(),
+    value: z.string().exactOptional(),
+    raw_value: z.string().exactOptional(),
+    confidence: z.string().exactOptional().openapi({ title: 'float' }),
+    start_word: z.string().exactOptional().openapi({ title: 'float' }),
+    end_word: z.string().exactOptional().openapi({ title: 'float' }),
+  })
+  .openapi({
+    title: 'ListenV1ResponseResultsChannelsItemsAlternativesItemsEntitiesItems',
+    required: [],
+  })
+  .openapi('ListenV1ResponseResultsChannelsItemsAlternativesItemsEntitiesItems')
+
+const ListenV1ResponseResultsChannelsItemsAlternativesItemsSummariesItemsSchema = z
+  .object({
+    summary: z.string().exactOptional(),
+    start_word: z.string().exactOptional().openapi({ title: 'float' }),
+    end_word: z.string().exactOptional().openapi({ title: 'float' }),
+  })
+  .openapi({
+    title: 'ListenV1ResponseResultsChannelsItemsAlternativesItemsSummariesItems',
+    required: [],
+  })
+  .openapi('ListenV1ResponseResultsChannelsItemsAlternativesItemsSummariesItems')
+
+const ListenV1ResponseResultsChannelsItemsAlternativesItemsTopicsItemsSchema = z
+  .object({
+    text: z.string().exactOptional(),
+    start_word: z.string().exactOptional().openapi({ title: 'float' }),
+    end_word: z.string().exactOptional().openapi({ title: 'float' }),
+    topics: z.array(z.string()).exactOptional(),
+  })
+  .openapi({
+    title: 'ListenV1ResponseResultsChannelsItemsAlternativesItemsTopicsItems',
+    required: [],
+  })
+  .openapi('ListenV1ResponseResultsChannelsItemsAlternativesItemsTopicsItems')
+
+const ListenV1ResponseResultsChannelsItemsAlternativesItemsSchema = z
+  .object({
+    transcript: z.string().exactOptional(),
+    confidence: z.string().exactOptional().openapi({ title: 'float' }),
+    languages: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          '[BCP-47](https://tools.ietf.org/html/bcp47) language tags of the languages detected in the transcript, sorted by word count in descending order. Only present when `language=multi`. Can be absent on audio that switches languages.',
+      }),
+    languages_hinted: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The `language_hint` values for the request, normalized: codes are returned in canonical form (`ES` → `es`, `zh-hk` → `zh-HK`), and a regional code the model has no tag for is returned as its base language (`en-GB` → `en`). Returned on every Nova-3 multilingual response (`model=nova-3&language=multi`); an empty array when no `language_hint` was sent.',
+      }),
+    words: z
+      .array(ListenV1ResponseResultsChannelsItemsAlternativesItemsWordsItemsSchema)
+      .exactOptional(),
+    paragraphs:
+      ListenV1ResponseResultsChannelsItemsAlternativesItemsParagraphsSchema.exactOptional(),
+    entities: z
+      .array(ListenV1ResponseResultsChannelsItemsAlternativesItemsEntitiesItemsSchema)
+      .exactOptional(),
+    summaries: z
+      .array(ListenV1ResponseResultsChannelsItemsAlternativesItemsSummariesItemsSchema)
+      .exactOptional(),
+    topics: z
+      .array(ListenV1ResponseResultsChannelsItemsAlternativesItemsTopicsItemsSchema)
+      .exactOptional(),
+  })
+  .openapi({ title: 'ListenV1ResponseResultsChannelsItemsAlternativesItems', required: [] })
+  .openapi('ListenV1ResponseResultsChannelsItemsAlternativesItems')
+
+type ListenV1ResponseResultsChannelsItemsType = {
+  search?: z.infer<typeof ListenV1ResponseResultsChannelsItemsSearchItemsSchema>[]
+  alternatives?: z.infer<typeof ListenV1ResponseResultsChannelsItemsAlternativesItemsSchema>[]
+  detected_language?: string
+}
+
+const ListenV1ResponseResultsChannelsItemsSchema: z.ZodType<ListenV1ResponseResultsChannelsItemsType> =
+  z
+    .object({
+      search: z.array(ListenV1ResponseResultsChannelsItemsSearchItemsSchema).exactOptional(),
+      alternatives: z
+        .array(ListenV1ResponseResultsChannelsItemsAlternativesItemsSchema)
+        .exactOptional(),
+      detected_language: z.string().exactOptional(),
+    })
+    .openapi({ title: 'ListenV1ResponseResultsChannelsItems', required: [] })
+    .openapi('ListenV1ResponseResultsChannelsItems')
+
+type ListenV1ResponseResultsChannelsType = z.infer<
+  typeof ListenV1ResponseResultsChannelsItemsSchema
+>[]
+
+const ListenV1ResponseResultsChannelsSchema: z.ZodType<ListenV1ResponseResultsChannelsType> = z
+  .array(ListenV1ResponseResultsChannelsItemsSchema)
+  .openapi({ title: 'ListenV1ResponseResultsChannels' })
+  .openapi('ListenV1ResponseResultsChannels')
+
+const ListenV1ResponseResultsUtterancesItemsWordsItemsSchema = z
+  .object({
+    word: z.string().exactOptional(),
+    start: z.string().exactOptional().openapi({ title: 'float' }),
+    end: z.string().exactOptional().openapi({ title: 'float' }),
+    confidence: z.string().exactOptional().openapi({ title: 'float' }),
+    language: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "[BCP-47](https://tools.ietf.org/html/bcp47) language tag of the word's detected language. Only present when `language=multi`. Can be absent on audio that switches languages.",
+      }),
+    speaker: z.int().exactOptional(),
+    speaker_confidence: z.string().exactOptional().openapi({ title: 'float' }),
+    punctuated_word: z.string().exactOptional(),
+  })
+  .openapi({ title: 'ListenV1ResponseResultsUtterancesItemsWordsItems', required: [] })
+  .openapi('ListenV1ResponseResultsUtterancesItemsWordsItems')
+
+const ListenV1ResponseResultsUtterancesItemsSchema = z
+  .object({
+    start: z.string().exactOptional().openapi({ title: 'float' }),
+    end: z.string().exactOptional().openapi({ title: 'float' }),
+    confidence: z.string().exactOptional().openapi({ title: 'float' }),
+    channel: z.int().exactOptional(),
+    transcript: z.string().exactOptional(),
+    languages: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          '[BCP-47](https://tools.ietf.org/html/bcp47) language tags of the languages detected in the utterance, sorted by word count in descending order. Only present when `language=multi`.',
+      }),
+    words: z.array(ListenV1ResponseResultsUtterancesItemsWordsItemsSchema).exactOptional(),
+    speaker: z.int().exactOptional(),
+    id: z.uuid().exactOptional(),
+  })
+  .openapi({ title: 'ListenV1ResponseResultsUtterancesItems', required: [] })
+  .openapi('ListenV1ResponseResultsUtterancesItems')
+
+const ListenV1ResponseResultsUtterancesSchema = z
+  .array(ListenV1ResponseResultsUtterancesItemsSchema)
+  .openapi({ title: 'ListenV1ResponseResultsUtterances' })
+  .openapi('ListenV1ResponseResultsUtterances')
+
+const ListenV1ResponseResultsSummarySchema = z
+  .object({ result: z.string().exactOptional(), short: z.string().exactOptional() })
+  .openapi({ title: 'ListenV1ResponseResultsSummary', required: [] })
+  .openapi('ListenV1ResponseResultsSummary')
+
+const SharedTopicsSegmentsItemsTopicsItemsSchema = z
+  .object({
+    topic: z.string().exactOptional(),
+    confidence_score: z.string().exactOptional().openapi({ title: 'float' }),
+  })
+  .openapi({ title: 'SharedTopicsSegmentsItemsTopicsItems', required: [] })
+  .openapi('SharedTopicsSegmentsItemsTopicsItems')
+
+const SharedTopicsSegmentsItemsSchema = z
+  .object({
+    text: z.string().exactOptional(),
+    start_word: z.float64().exactOptional(),
+    end_word: z.float64().exactOptional(),
+    topics: z.array(SharedTopicsSegmentsItemsTopicsItemsSchema).exactOptional(),
+  })
+  .openapi({ title: 'SharedTopicsSegmentsItems', required: [] })
+  .openapi('SharedTopicsSegmentsItems')
+
+const SharedTopicsSchema = z
+  .object({ segments: z.array(SharedTopicsSegmentsItemsSchema).exactOptional() })
+  .openapi({
+    description: 'Output whenever `topics=true` is used',
+    title: 'SharedTopics',
+    required: [],
+  })
+  .openapi('SharedTopics')
+
+const SharedIntentsSegmentsItemsIntentsItemsSchema = z
+  .object({
+    intent: z.string().exactOptional(),
+    confidence_score: z.string().exactOptional().openapi({ title: 'float' }),
+  })
+  .openapi({ title: 'SharedIntentsSegmentsItemsIntentsItems', required: [] })
+  .openapi('SharedIntentsSegmentsItemsIntentsItems')
+
+const SharedIntentsSegmentsItemsSchema = z
+  .object({
+    text: z.string().exactOptional(),
+    start_word: z.float64().exactOptional(),
+    end_word: z.float64().exactOptional(),
+    intents: z.array(SharedIntentsSegmentsItemsIntentsItemsSchema).exactOptional(),
+  })
+  .openapi({ title: 'SharedIntentsSegmentsItems', required: [] })
+  .openapi('SharedIntentsSegmentsItems')
+
+const SharedIntentsSchema = z
+  .object({ segments: z.array(SharedIntentsSegmentsItemsSchema).exactOptional() })
+  .openapi({
+    description: 'Output whenever `intents=true` is used',
+    title: 'SharedIntents',
+    required: [],
+  })
+  .openapi('SharedIntents')
+
+const SharedSentimentsSegmentsItemsSchema = z
+  .object({
+    text: z.string().exactOptional(),
+    start_word: z.float64().exactOptional(),
+    end_word: z.float64().exactOptional(),
+    sentiment: z.string().exactOptional(),
+    sentiment_score: z.float64().exactOptional(),
+  })
+  .openapi({ title: 'SharedSentimentsSegmentsItems', required: [] })
+  .openapi('SharedSentimentsSegmentsItems')
+
+const SharedSentimentsAverageSchema = z
+  .object({ sentiment: z.string().exactOptional(), sentiment_score: z.float64().exactOptional() })
+  .openapi({ title: 'SharedSentimentsAverage', required: [] })
+  .openapi('SharedSentimentsAverage')
+
+const SharedSentimentsSchema = z
+  .object({
+    segments: z.array(SharedSentimentsSegmentsItemsSchema).exactOptional(),
+    average: SharedSentimentsAverageSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Output whenever `sentiment=true` is used',
+    title: 'SharedSentiments',
+    required: [],
+  })
+  .openapi('SharedSentiments')
+
+type ListenV1ResponseResultsType = {
+  channels: z.infer<typeof ListenV1ResponseResultsChannelsSchema>
+  utterances?: z.infer<typeof ListenV1ResponseResultsUtterancesSchema>
+  summary?: z.infer<typeof ListenV1ResponseResultsSummarySchema>
+  topics?: z.infer<typeof SharedTopicsSchema>
+  intents?: z.infer<typeof SharedIntentsSchema>
+  sentiments?: z.infer<typeof SharedSentimentsSchema>
+}
+
+const ListenV1ResponseMetadataModelInfoSchema = z
+  .looseObject({})
+  .openapi({ title: 'ListenV1ResponseMetadataModelInfo' })
+  .openapi('ListenV1ResponseMetadataModelInfo')
+
+const ListenV1ResponseMetadataDiarizeInfoSchema = z
+  .object({
+    model_uuid: z.string().openapi({ description: 'The diarizer model UUID' }),
+    arch: z.string().openapi({ description: 'The diarizer arch, such as `v1` or `v2`' }),
+  })
+  .openapi({
+    required: ['model_uuid', 'arch'],
+    description: 'The diarizer that produced the speaker labels. Present only when a diarizer ran.',
+    title: 'ListenV1ResponseMetadataDiarizeInfo',
+  })
+  .openapi('ListenV1ResponseMetadataDiarizeInfo')
+
+const ListenV1ResponseMetadataSummaryInfoSchema = z
+  .object({
+    model_uuid: z.string().exactOptional(),
+    input_tokens: z.int().exactOptional(),
+    output_tokens: z.int().exactOptional(),
+  })
+  .openapi({ title: 'ListenV1ResponseMetadataSummaryInfo', required: [] })
+  .openapi('ListenV1ResponseMetadataSummaryInfo')
+
+const ListenV1ResponseMetadataSentimentInfoSchema = z
+  .object({
+    model_uuid: z.string().exactOptional(),
+    input_tokens: z.int().exactOptional(),
+    output_tokens: z.int().exactOptional(),
+  })
+  .openapi({ title: 'ListenV1ResponseMetadataSentimentInfo', required: [] })
+  .openapi('ListenV1ResponseMetadataSentimentInfo')
+
+const ListenV1ResponseMetadataTopicsInfoSchema = z
+  .object({
+    model_uuid: z.string().exactOptional(),
+    input_tokens: z.int().exactOptional(),
+    output_tokens: z.int().exactOptional(),
+  })
+  .openapi({ title: 'ListenV1ResponseMetadataTopicsInfo', required: [] })
+  .openapi('ListenV1ResponseMetadataTopicsInfo')
+
+const ListenV1ResponseMetadataIntentsInfoSchema = z
+  .object({
+    model_uuid: z.string().exactOptional(),
+    input_tokens: z.int().exactOptional(),
+    output_tokens: z.int().exactOptional(),
+  })
+  .openapi({ title: 'ListenV1ResponseMetadataIntentsInfo', required: [] })
+  .openapi('ListenV1ResponseMetadataIntentsInfo')
+
+const ListenV1ResponseMetadataSchema = z
+  .object({
+    transaction_key: z.string().default('deprecated').exactOptional().openapi({ deprecated: true }),
+    request_id: z.uuid(),
+    sha256: z.string(),
+    created: z.iso.datetime({ offset: true }),
+    duration: z.float64(),
+    channels: z.int(),
+    models: z.array(z.string()),
+    model_info: ListenV1ResponseMetadataModelInfoSchema,
+    diarize_info: ListenV1ResponseMetadataDiarizeInfoSchema.exactOptional().openapi({
+      description:
+        'The diarizer that produced the speaker labels. Present only when a diarizer ran.',
+    }),
+    summary_info: ListenV1ResponseMetadataSummaryInfoSchema.exactOptional(),
+    sentiment_info: ListenV1ResponseMetadataSentimentInfoSchema.exactOptional(),
+    topics_info: ListenV1ResponseMetadataTopicsInfoSchema.exactOptional(),
+    intents_info: ListenV1ResponseMetadataIntentsInfoSchema.exactOptional(),
+    tags: z.array(z.string()).exactOptional(),
+  })
+  .openapi({
+    required: ['request_id', 'sha256', 'created', 'duration', 'channels', 'models', 'model_info'],
+    title: 'ListenV1ResponseMetadata',
+  })
+  .openapi('ListenV1ResponseMetadata')
+
+const ListenV1ResponseResultsSchema: z.ZodType<ListenV1ResponseResultsType> = z
+  .object({
+    channels: ListenV1ResponseResultsChannelsSchema,
+    utterances: ListenV1ResponseResultsUtterancesSchema.exactOptional(),
+    summary: ListenV1ResponseResultsSummarySchema.exactOptional(),
+    topics: SharedTopicsSchema.exactOptional(),
+    intents: SharedIntentsSchema.exactOptional(),
+    sentiments: SharedSentimentsSchema.exactOptional(),
+  })
+  .openapi({ required: ['channels'], title: 'ListenV1ResponseResults' })
+  .openapi('ListenV1ResponseResults')
+
+type ListenV1ResponseType = {
+  metadata: z.infer<typeof ListenV1ResponseMetadataSchema>
+  results: z.infer<typeof ListenV1ResponseResultsSchema>
+}
+
+const ListenV1ResponseSchema: z.ZodType<ListenV1ResponseType> = z
+  .object({ metadata: ListenV1ResponseMetadataSchema, results: ListenV1ResponseResultsSchema })
+  .openapi({
+    required: ['metadata', 'results'],
+    description: 'The standard transcription response',
+    title: 'ListenV1Response',
+  })
+  .openapi('ListenV1Response')
+
+const ListenV1AcceptedResponseSchema = z
+  .object({
+    request_id: z
+      .uuid()
+      .openapi({ description: 'Unique identifier for tracking the asynchronous request' }),
+  })
+  .openapi({
+    required: ['request_id'],
+    description: 'Accepted response for asynchronous transcription requests',
+    title: 'ListenV1AcceptedResponse',
+  })
+  .openapi('ListenV1AcceptedResponse')
+
+type ListenV1MediaTranscribeResponse_200Type =
+  | z.infer<typeof ListenV1ResponseSchema>
+  | z.infer<typeof ListenV1AcceptedResponseSchema>
+
 const AgentThinkModelsV1ResponseModelsItemsOneOf0IdSchema = z
   .enum([
     'gpt-5',
@@ -199,7 +663,7 @@ const CreateAgentConfigurationV1RequestSchema = z
   .openapi('CreateAgentConfigurationV1Request')
 
 const CreateAgentConfigurationV1ResponseConfigSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'The parsed agent configuration object',
     title: 'CreateAgentConfigurationV1ResponseConfig',
@@ -223,7 +687,7 @@ const CreateAgentConfigurationV1ResponseSchema = z
   .openapi('CreateAgentConfigurationV1Response')
 
 const AgentConfigurationV1ConfigSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The agent configuration object', title: 'AgentConfigurationV1Config' })
   .openapi('AgentConfigurationV1Config')
 
@@ -284,7 +748,7 @@ const UpdateAgentMetadataV1RequestSchema = z
   .openapi('UpdateAgentMetadataV1Request')
 
 const DeleteAgentConfigurationV1ResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'Confirmation that the agent configuration was deleted',
     title: 'DeleteAgentConfigurationV1Response',
@@ -358,7 +822,7 @@ const UpdateAgentVariableV1RequestSchema = z
   .openapi('UpdateAgentVariableV1Request')
 
 const DeleteAgentVariableV1ResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'Confirmation that the agent variable was deleted',
     title: 'DeleteAgentVariableV1Response',
@@ -528,445 +992,11 @@ const ListenV1RequestUrlSchema = z
   })
   .openapi('ListenV1RequestUrl')
 
-const ListenV1ResponseMetadataModelInfoSchema = z
-  .object({})
-  .openapi({ title: 'ListenV1ResponseMetadataModelInfo' })
-  .openapi('ListenV1ResponseMetadataModelInfo')
-
-const ListenV1ResponseMetadataDiarizeInfoSchema = z
-  .object({
-    model_uuid: z.string().openapi({ description: 'The diarizer model UUID' }),
-    arch: z.string().openapi({ description: 'The diarizer arch, such as `v1` or `v2`' }),
-  })
-  .openapi({
-    required: ['model_uuid', 'arch'],
-    description: 'The diarizer that produced the speaker labels. Present only when a diarizer ran.',
-    title: 'ListenV1ResponseMetadataDiarizeInfo',
-  })
-  .openapi('ListenV1ResponseMetadataDiarizeInfo')
-
-const ListenV1ResponseMetadataSummaryInfoSchema = z
-  .object({
-    model_uuid: z.string().exactOptional(),
-    input_tokens: z.int().exactOptional(),
-    output_tokens: z.int().exactOptional(),
-  })
-  .openapi({ title: 'ListenV1ResponseMetadataSummaryInfo', required: [] })
-  .openapi('ListenV1ResponseMetadataSummaryInfo')
-
-const ListenV1ResponseMetadataSentimentInfoSchema = z
-  .object({
-    model_uuid: z.string().exactOptional(),
-    input_tokens: z.int().exactOptional(),
-    output_tokens: z.int().exactOptional(),
-  })
-  .openapi({ title: 'ListenV1ResponseMetadataSentimentInfo', required: [] })
-  .openapi('ListenV1ResponseMetadataSentimentInfo')
-
-const ListenV1ResponseMetadataTopicsInfoSchema = z
-  .object({
-    model_uuid: z.string().exactOptional(),
-    input_tokens: z.int().exactOptional(),
-    output_tokens: z.int().exactOptional(),
-  })
-  .openapi({ title: 'ListenV1ResponseMetadataTopicsInfo', required: [] })
-  .openapi('ListenV1ResponseMetadataTopicsInfo')
-
-const ListenV1ResponseMetadataIntentsInfoSchema = z
-  .object({
-    model_uuid: z.string().exactOptional(),
-    input_tokens: z.int().exactOptional(),
-    output_tokens: z.int().exactOptional(),
-  })
-  .openapi({ title: 'ListenV1ResponseMetadataIntentsInfo', required: [] })
-  .openapi('ListenV1ResponseMetadataIntentsInfo')
-
-const ListenV1ResponseMetadataSchema = z
-  .object({
-    transaction_key: z.string().default('deprecated').exactOptional().openapi({ deprecated: true }),
-    request_id: z.uuid(),
-    sha256: z.string(),
-    created: z.iso.datetime({ offset: true }),
-    duration: z.float64(),
-    channels: z.int(),
-    models: z.array(z.string()),
-    model_info: ListenV1ResponseMetadataModelInfoSchema,
-    diarize_info: ListenV1ResponseMetadataDiarizeInfoSchema.exactOptional().openapi({
-      description:
-        'The diarizer that produced the speaker labels. Present only when a diarizer ran.',
-    }),
-    summary_info: ListenV1ResponseMetadataSummaryInfoSchema.exactOptional(),
-    sentiment_info: ListenV1ResponseMetadataSentimentInfoSchema.exactOptional(),
-    topics_info: ListenV1ResponseMetadataTopicsInfoSchema.exactOptional(),
-    intents_info: ListenV1ResponseMetadataIntentsInfoSchema.exactOptional(),
-    tags: z.array(z.string()).exactOptional(),
-  })
-  .openapi({
-    required: ['request_id', 'sha256', 'created', 'duration', 'channels', 'models', 'model_info'],
-    title: 'ListenV1ResponseMetadata',
-  })
-  .openapi('ListenV1ResponseMetadata')
-
-const ListenV1ResponseResultsChannelsItemsSearchItemsHitsItemsSchema = z
-  .object({
-    confidence: z.string().exactOptional().openapi({ title: 'float' }),
-    start: z.string().exactOptional().openapi({ title: 'float' }),
-    end: z.string().exactOptional().openapi({ title: 'float' }),
-    snippet: z.string().exactOptional(),
-  })
-  .openapi({ title: 'ListenV1ResponseResultsChannelsItemsSearchItemsHitsItems', required: [] })
-  .openapi('ListenV1ResponseResultsChannelsItemsSearchItemsHitsItems')
-
-const ListenV1ResponseResultsChannelsItemsSearchItemsSchema = z
-  .object({
-    query: z.string().exactOptional(),
-    hits: z.array(ListenV1ResponseResultsChannelsItemsSearchItemsHitsItemsSchema).exactOptional(),
-  })
-  .openapi({ title: 'ListenV1ResponseResultsChannelsItemsSearchItems', required: [] })
-  .openapi('ListenV1ResponseResultsChannelsItemsSearchItems')
-
-const ListenV1ResponseResultsChannelsItemsAlternativesItemsWordsItemsSchema = z
-  .object({
-    word: z.string().exactOptional(),
-    start: z.string().exactOptional().openapi({ title: 'float' }),
-    end: z.string().exactOptional().openapi({ title: 'float' }),
-    confidence: z.string().exactOptional().openapi({ title: 'float' }),
-    language: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "[BCP-47](https://tools.ietf.org/html/bcp47) language tag of the word's detected language. Only present when `language=multi`. Can be absent on audio that switches languages.",
-      }),
-    speaker: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The speaker of the word, present when diarization is enabled' }),
-    speaker_confidence: z
-      .string()
-      .exactOptional()
-      .openapi({
-        title: 'float',
-        description:
-          'Confidence in the speaker assignment. Returned only for pre-recorded diarization; not available for streaming',
-      }),
-  })
-  .openapi({
-    title: 'ListenV1ResponseResultsChannelsItemsAlternativesItemsWordsItems',
-    required: [],
-  })
-  .openapi('ListenV1ResponseResultsChannelsItemsAlternativesItemsWordsItems')
-
-const ListenV1ResponseResultsChannelsItemsAlternativesItemsParagraphsParagraphsItemsSentencesItemsSchema =
+const ListenV1MediaTranscribeResponse_200Schema: z.ZodType<ListenV1MediaTranscribeResponse_200Type> =
   z
-    .object({
-      text: z.string().exactOptional(),
-      start: z.string().exactOptional().openapi({ title: 'float' }),
-      end: z.string().exactOptional().openapi({ title: 'float' }),
-    })
-    .openapi({
-      title:
-        'ListenV1ResponseResultsChannelsItemsAlternativesItemsParagraphsParagraphsItemsSentencesItems',
-      required: [],
-    })
-    .openapi(
-      'ListenV1ResponseResultsChannelsItemsAlternativesItemsParagraphsParagraphsItemsSentencesItems',
-    )
-
-const ListenV1ResponseResultsChannelsItemsAlternativesItemsParagraphsParagraphsItemsSchema = z
-  .object({
-    sentences: z
-      .array(
-        ListenV1ResponseResultsChannelsItemsAlternativesItemsParagraphsParagraphsItemsSentencesItemsSchema,
-      )
-      .exactOptional(),
-    speaker: z.int().exactOptional(),
-    num_words: z.int().exactOptional(),
-    start: z.string().exactOptional().openapi({ title: 'float' }),
-    end: z.string().exactOptional().openapi({ title: 'float' }),
-  })
-  .openapi({
-    title: 'ListenV1ResponseResultsChannelsItemsAlternativesItemsParagraphsParagraphsItems',
-    required: [],
-  })
-  .openapi('ListenV1ResponseResultsChannelsItemsAlternativesItemsParagraphsParagraphsItems')
-
-const ListenV1ResponseResultsChannelsItemsAlternativesItemsParagraphsSchema = z
-  .object({
-    transcript: z.string().exactOptional(),
-    paragraphs: z
-      .array(ListenV1ResponseResultsChannelsItemsAlternativesItemsParagraphsParagraphsItemsSchema)
-      .exactOptional(),
-  })
-  .openapi({
-    title: 'ListenV1ResponseResultsChannelsItemsAlternativesItemsParagraphs',
-    required: [],
-  })
-  .openapi('ListenV1ResponseResultsChannelsItemsAlternativesItemsParagraphs')
-
-const ListenV1ResponseResultsChannelsItemsAlternativesItemsEntitiesItemsSchema = z
-  .object({
-    label: z.string().exactOptional(),
-    value: z.string().exactOptional(),
-    raw_value: z.string().exactOptional(),
-    confidence: z.string().exactOptional().openapi({ title: 'float' }),
-    start_word: z.string().exactOptional().openapi({ title: 'float' }),
-    end_word: z.string().exactOptional().openapi({ title: 'float' }),
-  })
-  .openapi({
-    title: 'ListenV1ResponseResultsChannelsItemsAlternativesItemsEntitiesItems',
-    required: [],
-  })
-  .openapi('ListenV1ResponseResultsChannelsItemsAlternativesItemsEntitiesItems')
-
-const ListenV1ResponseResultsChannelsItemsAlternativesItemsSummariesItemsSchema = z
-  .object({
-    summary: z.string().exactOptional(),
-    start_word: z.string().exactOptional().openapi({ title: 'float' }),
-    end_word: z.string().exactOptional().openapi({ title: 'float' }),
-  })
-  .openapi({
-    title: 'ListenV1ResponseResultsChannelsItemsAlternativesItemsSummariesItems',
-    required: [],
-  })
-  .openapi('ListenV1ResponseResultsChannelsItemsAlternativesItemsSummariesItems')
-
-const ListenV1ResponseResultsChannelsItemsAlternativesItemsTopicsItemsSchema = z
-  .object({
-    text: z.string().exactOptional(),
-    start_word: z.string().exactOptional().openapi({ title: 'float' }),
-    end_word: z.string().exactOptional().openapi({ title: 'float' }),
-    topics: z.array(z.string()).exactOptional(),
-  })
-  .openapi({
-    title: 'ListenV1ResponseResultsChannelsItemsAlternativesItemsTopicsItems',
-    required: [],
-  })
-  .openapi('ListenV1ResponseResultsChannelsItemsAlternativesItemsTopicsItems')
-
-const ListenV1ResponseResultsChannelsItemsAlternativesItemsSchema = z
-  .object({
-    transcript: z.string().exactOptional(),
-    confidence: z.string().exactOptional().openapi({ title: 'float' }),
-    languages: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          '[BCP-47](https://tools.ietf.org/html/bcp47) language tags of the languages detected in the transcript, sorted by word count in descending order. Only present when `language=multi`. Can be absent on audio that switches languages.',
-      }),
-    languages_hinted: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'The `language_hint` values for the request, normalized: codes are returned in canonical form (`ES` → `es`, `zh-hk` → `zh-HK`), and a regional code the model has no tag for is returned as its base language (`en-GB` → `en`). Returned on every Nova-3 multilingual response (`model=nova-3&language=multi`); an empty array when no `language_hint` was sent.',
-      }),
-    words: z
-      .array(ListenV1ResponseResultsChannelsItemsAlternativesItemsWordsItemsSchema)
-      .exactOptional(),
-    paragraphs:
-      ListenV1ResponseResultsChannelsItemsAlternativesItemsParagraphsSchema.exactOptional(),
-    entities: z
-      .array(ListenV1ResponseResultsChannelsItemsAlternativesItemsEntitiesItemsSchema)
-      .exactOptional(),
-    summaries: z
-      .array(ListenV1ResponseResultsChannelsItemsAlternativesItemsSummariesItemsSchema)
-      .exactOptional(),
-    topics: z
-      .array(ListenV1ResponseResultsChannelsItemsAlternativesItemsTopicsItemsSchema)
-      .exactOptional(),
-  })
-  .openapi({ title: 'ListenV1ResponseResultsChannelsItemsAlternativesItems', required: [] })
-  .openapi('ListenV1ResponseResultsChannelsItemsAlternativesItems')
-
-const ListenV1ResponseResultsChannelsItemsSchema = z
-  .object({
-    search: z.array(ListenV1ResponseResultsChannelsItemsSearchItemsSchema).exactOptional(),
-    alternatives: z
-      .array(ListenV1ResponseResultsChannelsItemsAlternativesItemsSchema)
-      .exactOptional(),
-    detected_language: z.string().exactOptional(),
-  })
-  .openapi({ title: 'ListenV1ResponseResultsChannelsItems', required: [] })
-  .openapi('ListenV1ResponseResultsChannelsItems')
-
-const ListenV1ResponseResultsChannelsSchema = z
-  .array(ListenV1ResponseResultsChannelsItemsSchema)
-  .openapi({ title: 'ListenV1ResponseResultsChannels' })
-  .openapi('ListenV1ResponseResultsChannels')
-
-const ListenV1ResponseResultsUtterancesItemsWordsItemsSchema = z
-  .object({
-    word: z.string().exactOptional(),
-    start: z.string().exactOptional().openapi({ title: 'float' }),
-    end: z.string().exactOptional().openapi({ title: 'float' }),
-    confidence: z.string().exactOptional().openapi({ title: 'float' }),
-    language: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "[BCP-47](https://tools.ietf.org/html/bcp47) language tag of the word's detected language. Only present when `language=multi`. Can be absent on audio that switches languages.",
-      }),
-    speaker: z.int().exactOptional(),
-    speaker_confidence: z.string().exactOptional().openapi({ title: 'float' }),
-    punctuated_word: z.string().exactOptional(),
-  })
-  .openapi({ title: 'ListenV1ResponseResultsUtterancesItemsWordsItems', required: [] })
-  .openapi('ListenV1ResponseResultsUtterancesItemsWordsItems')
-
-const ListenV1ResponseResultsUtterancesItemsSchema = z
-  .object({
-    start: z.string().exactOptional().openapi({ title: 'float' }),
-    end: z.string().exactOptional().openapi({ title: 'float' }),
-    confidence: z.string().exactOptional().openapi({ title: 'float' }),
-    channel: z.int().exactOptional(),
-    transcript: z.string().exactOptional(),
-    languages: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          '[BCP-47](https://tools.ietf.org/html/bcp47) language tags of the languages detected in the utterance, sorted by word count in descending order. Only present when `language=multi`.',
-      }),
-    words: z.array(ListenV1ResponseResultsUtterancesItemsWordsItemsSchema).exactOptional(),
-    speaker: z.int().exactOptional(),
-    id: z.uuid().exactOptional(),
-  })
-  .openapi({ title: 'ListenV1ResponseResultsUtterancesItems', required: [] })
-  .openapi('ListenV1ResponseResultsUtterancesItems')
-
-const ListenV1ResponseResultsUtterancesSchema = z
-  .array(ListenV1ResponseResultsUtterancesItemsSchema)
-  .openapi({ title: 'ListenV1ResponseResultsUtterances' })
-  .openapi('ListenV1ResponseResultsUtterances')
-
-const ListenV1ResponseResultsSummarySchema = z
-  .object({ result: z.string().exactOptional(), short: z.string().exactOptional() })
-  .openapi({ title: 'ListenV1ResponseResultsSummary', required: [] })
-  .openapi('ListenV1ResponseResultsSummary')
-
-const SharedTopicsSegmentsItemsTopicsItemsSchema = z
-  .object({
-    topic: z.string().exactOptional(),
-    confidence_score: z.string().exactOptional().openapi({ title: 'float' }),
-  })
-  .openapi({ title: 'SharedTopicsSegmentsItemsTopicsItems', required: [] })
-  .openapi('SharedTopicsSegmentsItemsTopicsItems')
-
-const SharedTopicsSegmentsItemsSchema = z
-  .object({
-    text: z.string().exactOptional(),
-    start_word: z.float64().exactOptional(),
-    end_word: z.float64().exactOptional(),
-    topics: z.array(SharedTopicsSegmentsItemsTopicsItemsSchema).exactOptional(),
-  })
-  .openapi({ title: 'SharedTopicsSegmentsItems', required: [] })
-  .openapi('SharedTopicsSegmentsItems')
-
-const SharedTopicsSchema = z
-  .object({ segments: z.array(SharedTopicsSegmentsItemsSchema).exactOptional() })
-  .openapi({
-    description: 'Output whenever `topics=true` is used',
-    title: 'SharedTopics',
-    required: [],
-  })
-  .openapi('SharedTopics')
-
-const SharedIntentsSegmentsItemsIntentsItemsSchema = z
-  .object({
-    intent: z.string().exactOptional(),
-    confidence_score: z.string().exactOptional().openapi({ title: 'float' }),
-  })
-  .openapi({ title: 'SharedIntentsSegmentsItemsIntentsItems', required: [] })
-  .openapi('SharedIntentsSegmentsItemsIntentsItems')
-
-const SharedIntentsSegmentsItemsSchema = z
-  .object({
-    text: z.string().exactOptional(),
-    start_word: z.float64().exactOptional(),
-    end_word: z.float64().exactOptional(),
-    intents: z.array(SharedIntentsSegmentsItemsIntentsItemsSchema).exactOptional(),
-  })
-  .openapi({ title: 'SharedIntentsSegmentsItems', required: [] })
-  .openapi('SharedIntentsSegmentsItems')
-
-const SharedIntentsSchema = z
-  .object({ segments: z.array(SharedIntentsSegmentsItemsSchema).exactOptional() })
-  .openapi({
-    description: 'Output whenever `intents=true` is used',
-    title: 'SharedIntents',
-    required: [],
-  })
-  .openapi('SharedIntents')
-
-const SharedSentimentsSegmentsItemsSchema = z
-  .object({
-    text: z.string().exactOptional(),
-    start_word: z.float64().exactOptional(),
-    end_word: z.float64().exactOptional(),
-    sentiment: z.string().exactOptional(),
-    sentiment_score: z.float64().exactOptional(),
-  })
-  .openapi({ title: 'SharedSentimentsSegmentsItems', required: [] })
-  .openapi('SharedSentimentsSegmentsItems')
-
-const SharedSentimentsAverageSchema = z
-  .object({ sentiment: z.string().exactOptional(), sentiment_score: z.float64().exactOptional() })
-  .openapi({ title: 'SharedSentimentsAverage', required: [] })
-  .openapi('SharedSentimentsAverage')
-
-const SharedSentimentsSchema = z
-  .object({
-    segments: z.array(SharedSentimentsSegmentsItemsSchema).exactOptional(),
-    average: SharedSentimentsAverageSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'Output whenever `sentiment=true` is used',
-    title: 'SharedSentiments',
-    required: [],
-  })
-  .openapi('SharedSentiments')
-
-const ListenV1ResponseResultsSchema = z
-  .object({
-    channels: ListenV1ResponseResultsChannelsSchema,
-    utterances: ListenV1ResponseResultsUtterancesSchema.exactOptional(),
-    summary: ListenV1ResponseResultsSummarySchema.exactOptional(),
-    topics: SharedTopicsSchema.exactOptional(),
-    intents: SharedIntentsSchema.exactOptional(),
-    sentiments: SharedSentimentsSchema.exactOptional(),
-  })
-  .openapi({ required: ['channels'], title: 'ListenV1ResponseResults' })
-  .openapi('ListenV1ResponseResults')
-
-const ListenV1ResponseSchema = z
-  .object({ metadata: ListenV1ResponseMetadataSchema, results: ListenV1ResponseResultsSchema })
-  .openapi({
-    required: ['metadata', 'results'],
-    description: 'The standard transcription response',
-    title: 'ListenV1Response',
-  })
-  .openapi('ListenV1Response')
-
-const ListenV1AcceptedResponseSchema = z
-  .object({
-    request_id: z
-      .uuid()
-      .openapi({ description: 'Unique identifier for tracking the asynchronous request' }),
-  })
-  .openapi({
-    required: ['request_id'],
-    description: 'Accepted response for asynchronous transcription requests',
-    title: 'ListenV1AcceptedResponse',
-  })
-  .openapi('ListenV1AcceptedResponse')
-
-const ListenV1MediaTranscribeResponse_200Schema = z
-  .xor([ListenV1ResponseSchema, ListenV1AcceptedResponseSchema])
-  .openapi({ title: 'listen_v1_media_transcribe_Response_200' })
-  .openapi('ListenV1MediaTranscribeResponse_200')
+    .xor([ListenV1ResponseSchema, ListenV1AcceptedResponseSchema])
+    .openapi({ title: 'listen_v1_media_transcribe_Response_200' })
+    .openapi('ListenV1MediaTranscribeResponse_200')
 
 const V1SpeakPostParametersCallbackMethodSchema = z
   .enum(['POST', 'PUT'])
@@ -1289,7 +1319,7 @@ const SpeakV1RequestSchema = z
   .openapi('SpeakV1Request')
 
 const SpeakV1AudioGenerateResponse_200Schema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Empty response body', title: 'speak_v1_audio_generate_Response_200' })
   .openapi('SpeakV1AudioGenerateResponse_200')
 
@@ -1623,8 +1653,14 @@ const ListProjectKeysV1ResponseSchema = z
   .openapi('ListProjectKeysV1Response')
 
 const CreateKeyV1RequestSchema = z
-  .xor([z.any().openapi({ description: 'Any type' }), z.any().openapi({ description: 'Any type' })])
-  .openapi({ title: 'CreateKeyV1Request' })
+  .object({
+    comment: z.string(),
+    scopes: z.array(z.string()),
+    tags: z.array(z.string()).exactOptional(),
+    expiration_date: z.iso.datetime({ offset: true }).exactOptional(),
+    time_to_live_in_seconds: z.float64().exactOptional(),
+  })
+  .openapi({ required: ['comment', 'scopes'], title: 'CreateKeyV1Request' })
   .openapi('CreateKeyV1Request')
 
 const CreateKeyV1ResponseSchema = z
@@ -1795,7 +1831,7 @@ const V1ProjectsProjectIdRequestsGetParametersStatusSchema = z
   .openapi('V1ProjectsProjectIdRequestsGetParametersStatus')
 
 const ProjectRequestResponseResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The response of the request', title: 'ProjectRequestResponseResponse' })
   .openapi('ProjectRequestResponseResponse')
 
@@ -2692,6 +2728,7 @@ export const getV1AgentSettingsThinkModelsRoute = createRoute({
       content: { 'application/json': { schema: ErrorResponseSchema } },
     },
   },
+  servers: [{ url: 'https://agent.deepgram.com', description: 'Production' }],
 })
 
 export const getV1ProjectsProjectIdAgentsRoute = createRoute({
@@ -3558,7 +3595,7 @@ export const postV1ListenRoute = createRoute({
         }),
       redact: z
         .xor([z.string(), V1ListenPostParametersRedact1Schema])
-        .default(false)
+        .default('false')
         .exactOptional()
         .openapi({
           param: {
@@ -3576,6 +3613,20 @@ export const postV1ListenRoute = createRoute({
             },
           },
           title: 'V1ListenPostParametersRedact',
+        }),
+      redact_usage: z
+        .stringbool()
+        .default(false)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'redact_usage',
+            in: 'query',
+            description:
+              "Replaces the values of user-supplied text parameters (`keyterm`, `keywords`, `replace`, `search`, `extra`, `custom_topic`, and `custom_intent`) with `[REDACTED]` in this request's usage records. Does not affect transcription, the response, `tag`, or `callback`. Independent of `mip_opt_out`. https://developers.deepgram.com/docs/redact-usage\n",
+            required: false,
+            schema: { type: 'boolean', default: false },
+          },
         }),
       replace: V1ListenPostParametersReplaceSchema.openapi({
         param: {
@@ -4101,7 +4152,6 @@ export const postV1SpeakRoute = createRoute({
           V1SpeakPostParametersSampleRate3Schema,
           V1SpeakPostParametersSampleRate4Schema,
         ])
-        .default(24000)
         .exactOptional()
         .openapi({
           param: {
@@ -4123,6 +4173,7 @@ export const postV1SpeakRoute = createRoute({
             },
           },
           title: 'V1SpeakPostParametersSampleRate',
+          default: 24000,
         }),
       speed: z
         .preprocess(
@@ -7411,6 +7462,20 @@ export const postV2SpeakRoute = createRoute({
             schema: { type: 'string' },
           },
         }),
+      normalize_volume: z
+        .stringbool()
+        .default(true)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'normalize_volume',
+            in: 'query',
+            description:
+              'Normalizes the loudness of the generated speech to a consistent level across voices and requests. On by default; set to `false` to opt out. Peak limiting is applied either way.',
+            required: false,
+            schema: { type: 'boolean', default: true },
+          },
+        }),
       sample_rate: z
         .xor([
           V2SpeakPostParametersSampleRate0Schema,
@@ -7418,7 +7483,6 @@ export const postV2SpeakRoute = createRoute({
           V2SpeakPostParametersSampleRate2Schema,
           V2SpeakPostParametersSampleRate3Schema,
         ])
-        .default(24000)
         .exactOptional()
         .openapi({
           param: {
@@ -7439,6 +7503,7 @@ export const postV2SpeakRoute = createRoute({
             },
           },
           title: 'V2SpeakPostParametersSampleRate',
+          default: 24000,
         }),
       speed: z
         .preprocess(

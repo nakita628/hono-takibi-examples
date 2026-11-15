@@ -1078,22 +1078,6 @@ export const getVehiclesRoute = createRoute({
             ).openapi({
               description:
                 'An optional array of Vehicle fields that should be included in the response, for example: `?field[]=information&field[]=location` \n\nBy default, no fields are included and only the Vehicle ID will be returned. Response time may be impacted by which fields you request.',
-              explode: true,
-              in: 'query',
-              name: 'field[]',
-              schema: {
-                items: {
-                  enum: [
-                    'smartChargingPolicy',
-                    'chargeState',
-                    'location',
-                    'information',
-                    'odometer',
-                  ],
-                  type: 'string',
-                },
-                type: 'array',
-              },
             }),
           ),
         )
@@ -1109,22 +1093,6 @@ export const getVehiclesRoute = createRoute({
               items: {
                 description:
                   'An optional array of Vehicle fields that should be included in the response, for example: `?field[]=information&field[]=location` \n\nBy default, no fields are included and only the Vehicle ID will be returned. Response time may be impacted by which fields you request.',
-                explode: true,
-                in: 'query',
-                name: 'field[]',
-                schema: {
-                  items: {
-                    enum: [
-                      'smartChargingPolicy',
-                      'chargeState',
-                      'location',
-                      'information',
-                      'odometer',
-                    ],
-                    type: 'string',
-                  },
-                  type: 'array',
-                },
               },
               type: 'array',
             },

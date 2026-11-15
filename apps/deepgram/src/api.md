@@ -4,8 +4,6 @@
 
 Base URLs:
 
-* <a href="https://agent.deepgram.com">https://agent.deepgram.com</a> - Production
-
 * <a href="https://api.deepgram.com">https://api.deepgram.com</a> - Base
 
 # Authentication
@@ -1077,6 +1075,7 @@ Transcribe audio and video using Deepgram's speech-to-text REST API
 |profanity_filter|query|boolean|false|Profanity Filter looks for recognized profanity and converts it to the nearest recognized non-profane word or removes it from the transcript completely|
 |punctuate|query|boolean|false|Add punctuation and capitalization to the transcript|
 |redact|query|[V1ListenPostParametersRedact](#schemav1listenpostparametersredact)|false|Redaction removes sensitive information from your transcripts|
+|redact_usage|query|boolean|false|Replaces the values of user-supplied text parameters (`keyterm`, `keywords`, `replace`, `search`, `extra`, `custom_topic`, and `custom_intent`) with `[REDACTED]` in this request's usage records. Does not affect transcription, the response, `tag`, or `callback`. Independent of `mip_opt_out`. https://developers.deepgram.com/docs/redact-usage<br>|
 |replace|query|[V1ListenPostParametersReplace](#schemav1listenpostparametersreplace)|false|Search for terms or phrases in submitted audio and replaces them|
 |search|query|[V1ListenPostParametersSearch](#schemav1listenpostparameterssearch)|false|Search for terms or phrases in submitted audio|
 |smart_format|query|boolean|false|Apply formatting to transcript output. When set to true, additional formatting will be applied to transcripts to improve readability|
@@ -1766,6 +1765,7 @@ Synthesize a complete block of text into a single audio response using Deepgram'
 |encoding|query|[V2SpeakPostParametersEncoding](#schemav2speakpostparametersencoding)|false|Encoding allows you to specify the expected encoding of your audio output|
 |expressivity|query|[V2SpeakPostParametersExpressivity](#schemav2speakpostparametersexpressivity)|false|Expressive range of the generated speech, on a calm-to-animated axis. Accepted values: `-2`, `-1`, `0`, `1`, `2`. `0` (the default) is the voice's tuned delivery and the production-validated setting, with `-2` the calm end of the range and `2` the animated end. Supported on all Flux voices; applies to the whole request. Beta: behavior may change in future model versions, and non-default values increase the risk of hallucinations and pronunciation errors; audition before shipping. An invalid value is rejected with a `400` — `EXPRESSIVITY_OUT_OF_RANGE` for a value outside the range, `EXPRESSIVITY_INCREMENT_INVALID` for a fractional value. See [Expressivity](/docs/tts-expressivity).|
 |model|query|string|true|Flux TTS model used to synthesize the submitted text, in the form `flux-{voice}-{language}` (for example, `flux-alexis-en`). Required; unlike the v1 (Aura) endpoint there is no default and only flux models are accepted.|
+|normalize_volume|query|boolean|false|Normalizes the loudness of the generated speech to a consistent level across voices and requests. On by default; set to `false` to opt out. Peak limiting is applied either way.|
 |sample_rate|query|[V2SpeakPostParametersSampleRate](#schemav2speakpostparameterssamplerate)|false|Sample Rate specifies the sample rate for the output audio. Based on the encoding, different sample rates are supported. For some encodings, the sample rate is not configurable|
 |speed|query|number(double)|false|Speaking rate multiplier that adjusts the pace of generated speech while preserving natural prosody and voice quality. Accepted values run `0.5` to `1.5` in `0.05` increments. Not yet supported in all languages. When the text contains an inline pause marker, speed is capped at `1.15` (`PAUSE_SPEED_CAP_EXCEEDED` above that). A value other than `1.0` cannot be combined with inline pronunciation controls (`CONTROL_COMBINATION_INVALID`).|
 |priority|query|[V2SpeakPostParametersPriority](#schemav2speakpostparameterspriority)|false|Processing priority for asynchronous (callback) requests. The only supported value is low.|
@@ -2342,7 +2342,17 @@ curl https://api.deepgram.com/v1/projects/string/keys \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "Authorization: ${API_KEY}" \
-  -d 'null'
+  -d '{
+    "comment": "string",
+    "scopes": [
+      "string"
+    ],
+    "tags": [
+      "string"
+    ],
+    "expiration_date": "1970-01-01T00:00:00Z",
+    "time_to_live_in_seconds": 0
+  }'
 ```
 
 `POST /v1/projects/{project_id}/keys`
@@ -2352,7 +2362,17 @@ Creates a new API key with specified settings for the project
 > Body parameter
 
 ```json
-null
+{
+  "comment": "string",
+  "scopes": [
+    "string"
+  ],
+  "tags": [
+    "string"
+  ],
+  "expiration_date": "1970-01-01T00:00:00Z",
+  "time_to_live_in_seconds": 0
+}
 ```
 
 <h3 id="create-a-project-key-parameters">Parameters</h3>
@@ -2361,8 +2381,11 @@ null
 |---|---|---|---|---|
 |project_id|path|string|true|The unique identifier of the project|
 |body|body|[CreateKeyV1Request](#schemacreatekeyv1request)|false|API key settings|
-|» *oneOf*|body|object|false|Any type|
-|» *oneOf*|body|object|false|Any type|
+|» comment|body|string|true|none|
+|» scopes|body|[string]|true|none|
+|» tags|body|[string]|false|none|
+|» expiration_date|body|string(date-time)|false|none|
+|» time_to_live_in_seconds|body|number(double)|false|none|
 
 > Example responses
 
@@ -8583,15 +8606,28 @@ The standard text response
 <a id="tocscreatekeyv1request"></a>
 
 ```json
-null
+{
+  "comment": "string",
+  "scopes": [
+    "string"
+  ],
+  "tags": [
+    "string"
+  ],
+  "expiration_date": "1970-01-01T00:00:00Z",
+  "time_to_live_in_seconds": 0
+}
 ```
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|*oneOf*|object|false|none|Any type|
-|*oneOf*|object|false|none|Any type|
+|comment|string|true|none|none|
+|scopes|[string]|true|none|none|
+|tags|[string]|false|none|none|
+|expiration_date|string(date-time)|false|none|none|
+|time_to_live_in_seconds|number(double)|false|none|none|
 
 <h2 id="tocS_CreateKeyV1Response">CreateKeyV1Response</h2>
 <!-- backwards compatibility -->

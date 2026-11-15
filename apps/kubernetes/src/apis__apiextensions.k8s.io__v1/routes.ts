@@ -1,316 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsOrBoolSchema = z
-  .any()
-  .openapi({
-    description:
-      'JSONSchemaPropsOrBool represents JSONSchemaProps or a boolean value. Defaults to true for the boolean property.',
-  })
-  .openapi('IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsOrBool')
-
-const IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchema = z
-  .any()
-  .openapi({
-    description:
-      'JSON represents any valid JSON value. These types are supported: bool, int64, float64, string, []interface{}, map[string]interface{} and nil.',
-  })
-  .openapi('IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSON')
-
-const IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsOrStringArraySchema = z
-  .any()
-  .openapi({
-    description: 'JSONSchemaPropsOrStringArray represents a JSONSchemaProps or a string array.',
-  })
-  .openapi('IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsOrStringArray')
-
-const IoK8sApiextensionsApiserverPkgApisApiextensionsV1ExternalDocumentationSchema = z
-  .object({ description: z.string().exactOptional(), url: z.string().exactOptional() })
-  .openapi({
-    description:
-      'ExternalDocumentation allows referencing an external resource for extended documentation.',
-    required: [],
-  })
-  .openapi('IoK8sApiextensionsApiserverPkgApisApiextensionsV1ExternalDocumentation')
-
-const IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsOrArraySchema = z
-  .any()
-  .openapi({
-    description:
-      'JSONSchemaPropsOrArray represents a value that can either be a JSONSchemaProps or an array of JSONSchemaProps. Mainly here for serialization purposes.',
-  })
-  .openapi('IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsOrArray')
-
-const IoK8sApiextensionsApiserverPkgApisApiextensionsV1ValidationRuleSchema = z
-  .object({
-    fieldPath: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "fieldPath represents the field path returned when the validation fails. It must be a relative JSON path (i.e. with array notation) scoped to the location of this x-kubernetes-validations extension in the schema and refer to an existing field. e.g. when validation checks if a specific attribute `foo` under a map `testMap`, the fieldPath could be set to `.testMap.foo` If the validation checks two lists must have unique attributes, the fieldPath could be set to either of the list: e.g. `.testList` It does not support list numeric index. It supports child operation to refer to an existing field currently. Refer to [JSONPath support in Kubernetes](https://kubernetes.io/docs/reference/kubectl/jsonpath/) for more info. Numeric index of array is not supported. For field name which contains special characters, use `['specialName']` to refer the field name. e.g. for attribute `foo.34$` appears in a list `testList`, the fieldPath could be set to `.testList['foo.34$']`",
-      }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Message represents the message displayed when validation fails. The message is required if the Rule contains line breaks. The message must not contain line breaks. If unset, the message is "failed rule: {Rule}". e.g. "must be a URL with the host matching spec.host"',
-      }),
-    messageExpression: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'MessageExpression declares a CEL expression that evaluates to the validation failure message that is returned when this rule fails. Since messageExpression is used as a failure message, it must evaluate to a string. If both message and messageExpression are present on a rule, then messageExpression will be used if validation fails. If messageExpression results in a runtime error, the runtime error is logged, and the validation failure message is produced as if the messageExpression field were unset. If messageExpression evaluates to an empty string, a string with only spaces, or a string that contains line breaks, then the validation failure message will also be produced as if the messageExpression field were unset, and the fact that messageExpression produced an empty string/string with only spaces/string with line breaks will be logged. messageExpression has access to all the same variables as the rule; the only difference is the return type. Example: "x must be less than max ("+string(self.max)+")"',
-      }),
-    optionalOldSelf: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'optionalOldSelf is used to opt a transition rule into evaluation even when the object is first created, or if the old object is missing the value.\n\nWhen enabled `oldSelf` will be a CEL optional whose value will be `None` if there is no old value, or when the object is initially created.\n\nYou may check for presence of oldSelf using `oldSelf.hasValue()` and unwrap it after checking using `oldSelf.value()`. Check the CEL documentation for Optional types for more information: https://pkg.go.dev/github.com/google/cel-go/cel#OptionalTypes\n\nMay not be set unless `oldSelf` is used in `rule`.',
-      }),
-    reason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'reason provides a machine-readable validation failure reason that is returned to the caller when a request fails this validation rule. The HTTP status code returned to the caller will match the reason of the reason of the first failed validation rule. The currently supported reasons are: "FieldValueInvalid", "FieldValueForbidden", "FieldValueRequired", "FieldValueDuplicate". If not set, default to use "FieldValueInvalid". All future added reasons must be accepted by clients when reading this value and unknown reasons should be treated as FieldValueInvalid.',
-      }),
-    rule: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'Rule represents the expression which will be evaluated by CEL. ref: https://github.com/google/cel-spec The Rule is scoped to the location of the x-kubernetes-validations extension in the schema. The `self` variable in the CEL expression is bound to the scoped value. Example: - Rule scoped to the root of a resource with a status subresource: {"rule": "self.status.actual <= self.spec.maxDesired"}\n\nIf the Rule is scoped to an object with properties, the accessible properties of the object are field selectable via `self.field` and field presence can be checked via `has(self.field)`. Null valued fields are treated as absent fields in CEL expressions. If the Rule is scoped to an object with additionalProperties (i.e. a map) the value of the map are accessible via `self[mapKey]`, map containment can be checked via `mapKey in self` and all entries of the map are accessible via CEL macros and functions such as `self.all(...)`. If the Rule is scoped to an array, the elements of the array are accessible via `self[i]` and also by macros and functions. If the Rule is scoped to a scalar, `self` is bound to the scalar value. Examples: - Rule scoped to a map of objects: {"rule": "self.components[\'Widget\'].priority < 10"} - Rule scoped to a list of integers: {"rule": "self.values.all(value, value >= 0 && value < 100)"} - Rule scoped to a string value: {"rule": "self.startsWith(\'kube\')"}\n\nThe `apiVersion`, `kind`, `metadata.name` and `metadata.generateName` are always accessible from the root of the object and from any x-kubernetes-embedded-resource annotated objects. No other metadata properties are accessible.\n\nUnknown data preserved in custom resources via x-kubernetes-preserve-unknown-fields is not accessible in CEL expressions. This includes: - Unknown field values that are preserved by object schemas with x-kubernetes-preserve-unknown-fields. - Object properties where the property schema is of an "unknown type". An "unknown type" is recursively defined as:\n  - A schema with no type and x-kubernetes-preserve-unknown-fields set to true\n  - An array where the items schema is of an "unknown type"\n  - An object where the additionalProperties schema is of an "unknown type"\n\nOnly property names of the form `[a-zA-Z_.-/][a-zA-Z0-9_.-/]*` are accessible. Accessible property names are escaped according to the following rules when accessed in the expression: - \'__\' escapes to \'__underscores__\' - \'.\' escapes to \'__dot__\' - \'-\' escapes to \'__dash__\' - \'/\' escapes to \'__slash__\' - Property names that exactly match a CEL RESERVED keyword escape to \'__{keyword}__\'. The keywords are:\n\t  "true", "false", "null", "in", "as", "break", "const", "continue", "else", "for", "function", "if",\n\t  "import", "let", "loop", "package", "namespace", "return".\nExamples:\n  - Rule accessing a property named "namespace": {"rule": "self.__namespace__ > 0"}\n  - Rule accessing a property named "x-prop": {"rule": "self.x__dash__prop > 0"}\n  - Rule accessing a property named "redact__d": {"rule": "self.redact__underscores__d > 0"}\n\nEquality on arrays with x-kubernetes-list-type of \'set\' or \'map\' ignores element order, i.e. [1, 2] == [2, 1]. Concatenation on arrays with x-kubernetes-list-type use the semantics of the list type:\n  - \'set\': `X + Y` performs a union where the array positions of all elements in `X` are preserved and\n    non-intersecting elements in `Y` are appended, retaining their partial order.\n  - \'map\': `X + Y` performs a merge where the array positions of all keys in `X` are preserved but the values\n    are overwritten by values in `Y` when the key sets of `X` and `Y` intersect. Elements in `Y` with\n    non-intersecting keys are appended, retaining their partial order.\n\nIf `rule` makes use of the `oldSelf` variable it is implicitly a `transition rule`.\n\nBy default, the `oldSelf` variable is the same type as `self`. When `optionalOldSelf` is true, the `oldSelf` variable is a CEL optional\n variable whose value() is the same type as `self`.\nSee the documentation for the `optionalOldSelf` field for details.\n\nTransition rules by default are applied only on UPDATE requests and are skipped if an old value could not be found. You can opt a transition rule into unconditional evaluation by setting `optionalOldSelf` to true.',
-      }),
-  })
-  .openapi({
-    description:
-      'ValidationRule describes a validation rule written in the CEL expression language.',
-    required: ['rule'],
-  })
-  .openapi('IoK8sApiextensionsApiserverPkgApisApiextensionsV1ValidationRule')
-
-type IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsType = {
-  $ref?: string
-  $schema?: string
-  additionalItems?: z.infer<
-    typeof IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsOrBoolSchema
-  >
-  additionalProperties?: z.infer<
-    typeof IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsOrBoolSchema
-  >
-  allOf?: IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsType[]
-  anyOf?: IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsType[]
-  default?: z.infer<typeof IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchema>
-  definitions?: {
-    [key: string]: IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsType
-  }
-  dependencies?: {
-    [key: string]: z.infer<
-      typeof IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsOrStringArraySchema
-    >
-  }
-  description?: string
-  enum?: z.infer<typeof IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchema>[]
-  example?: z.infer<typeof IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchema>
-  exclusiveMaximum?: boolean
-  exclusiveMinimum?: boolean
-  externalDocs?: z.infer<
-    typeof IoK8sApiextensionsApiserverPkgApisApiextensionsV1ExternalDocumentationSchema
-  >
-  format?: string
-  id?: string
-  items?: z.infer<
-    typeof IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsOrArraySchema
-  >
-  maxItems?: bigint
-  maxLength?: bigint
-  maxProperties?: bigint
-  maximum?: number
-  minItems?: bigint
-  minLength?: bigint
-  minProperties?: bigint
-  minimum?: number
-  multipleOf?: number
-  not?: IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsType
-  nullable?: boolean
-  oneOf?: IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsType[]
-  pattern?: string
-  patternProperties?: {
-    [key: string]: IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsType
-  }
-  properties?: {
-    [key: string]: IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsType
-  }
-  required?: string[]
-  title?: string
-  type?: string
-  uniqueItems?: boolean
-  'x-kubernetes-embedded-resource'?: boolean
-  'x-kubernetes-int-or-string'?: boolean
-  'x-kubernetes-list-map-keys'?: string[]
-  'x-kubernetes-list-type'?: string
-  'x-kubernetes-map-type'?: string
-  'x-kubernetes-preserve-unknown-fields'?: boolean
-  'x-kubernetes-validations'?: z.infer<
-    typeof IoK8sApiextensionsApiserverPkgApisApiextensionsV1ValidationRuleSchema
-  >[]
-}
-
-const IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceColumnDefinitionSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'description is a human readable description of this column.' }),
-    format: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "format is an optional OpenAPI type definition for this column. The 'name' format is applied to the primary identifier column to assist in clients identifying column is the resource name. See https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#data-types for details.",
-      }),
-    jsonPath: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'jsonPath is a simple JSON path (i.e. with array notation) which is evaluated against each custom resource to produce the value for this column.',
-      }),
-    name: z
-      .string()
-      .default('')
-      .openapi({ description: 'name is a human readable name for the column.' }),
-    priority: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'priority is an integer defining the relative importance of this column compared to others. Lower numbers are considered higher priority. Columns that may be omitted in limited space scenarios should be given a priority greater than 0.',
-      }),
-    type: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'type is an OpenAPI type definition for this column. See https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#data-types for details.',
-      }),
-  })
-  .openapi({
-    description: 'CustomResourceColumnDefinition specifies a column for server side printing.',
-    required: ['name', 'type', 'jsonPath'],
-  })
-  .openapi('IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceColumnDefinition')
-
-const IoK8sApiextensionsApiserverPkgApisApiextensionsV1ServiceReferenceSchema = z
-  .object({
-    name: z
-      .string()
-      .default('')
-      .openapi({ description: 'name is the name of the service. Required' }),
-    namespace: z
-      .string()
-      .default('')
-      .openapi({ description: 'namespace is the namespace of the service. Required' }),
-    path: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'path is an optional URL path at which the webhook will be contacted.',
-      }),
-    port: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'port is an optional service port at which the webhook will be contacted. `port` should be a valid port number (1-65535, inclusive). Defaults to 443 for backward compatibility.',
-      }),
-  })
-  .openapi({
-    description: 'ServiceReference holds a reference to Service.legacy.k8s.io',
-    required: ['namespace', 'name'],
-  })
-  .openapi('IoK8sApiextensionsApiserverPkgApisApiextensionsV1ServiceReference')
-
-const IoK8sApiextensionsApiserverPkgApisApiextensionsV1WebhookClientConfigSchema = z
-  .object({
-    caBundle: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "caBundle is a PEM encoded CA bundle which will be used to validate the webhook's server certificate. If unspecified, system trust roots on the apiserver are used.",
-      }),
-    service:
-      IoK8sApiextensionsApiserverPkgApisApiextensionsV1ServiceReferenceSchema.exactOptional().openapi(
-        {
-          description:
-            'service is a reference to the service for this webhook. Either service or url must be specified.\n\nIf the webhook is running within the cluster, then you should use `service`.',
-        },
-      ),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'url gives the location of the webhook, in standard URL form (`scheme://host:port/path`). Exactly one of `url` or `service` must be specified.\n\nThe `host` should not refer to a service running in the cluster; use the `service` field instead. The host might be resolved via external DNS in some apiservers (e.g., `kube-apiserver` cannot resolve in-cluster DNS as that would be a layering violation). `host` may also be an IP address.\n\nPlease note that using `localhost` or `127.0.0.1` as a `host` is risky unless you take great care to run this webhook on all hosts which run an apiserver which might need to make calls to this webhook. Such installs are likely to be non-portable, i.e., not easy to turn up in a new cluster.\n\nThe scheme must be "https"; the URL must begin with "https://".\n\nA path is optional, and if present may be any string permissible in a URL. You may use the path to pass an arbitrary string to the webhook, for example, a cluster identifier.\n\nAttempting to use a user or basic auth e.g. "user:password@" is not allowed. Fragments ("#...") and query parameters ("?...") are not allowed, either.',
-      }),
-  })
-  .openapi({
-    description:
-      'WebhookClientConfig contains the information to make a TLS connection with the webhook.',
-    required: [],
-  })
-  .openapi('IoK8sApiextensionsApiserverPkgApisApiextensionsV1WebhookClientConfig')
-
-const IoK8sApiextensionsApiserverPkgApisApiextensionsV1WebhookConversionSchema = z
-  .object({
-    clientConfig:
-      IoK8sApiextensionsApiserverPkgApisApiextensionsV1WebhookClientConfigSchema.exactOptional().openapi(
-        {
-          description:
-            'clientConfig is the instructions for how to call the webhook if strategy is `Webhook`.',
-        },
-      ),
-    conversionReviewVersions: z
-      .array(z.string())
-      .openapi({
-        description:
-          'conversionReviewVersions is an ordered list of preferred `ConversionReview` versions the Webhook expects. The API server will use the first version in the list which it supports. If none of the versions specified in this list are supported by API server, conversion will fail for the custom resource. If a persisted Webhook configuration specifies allowed versions and does not include any versions known to the API Server, calls to the webhook will fail.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-  })
-  .openapi({
-    description: 'WebhookConversion describes how to call a conversion webhook',
-    required: ['conversionReviewVersions'],
-  })
-  .openapi('IoK8sApiextensionsApiserverPkgApisApiextensionsV1WebhookConversion')
-
-const IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceConversionSchema = z
-  .object({
-    strategy: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'strategy specifies how custom resources are converted between versions. Allowed values are: - `"None"`: The converter only change the apiVersion and would not touch any other field in the custom resource. - `"Webhook"`: API Server will call to an external webhook to do the conversion. Additional information\n  is needed for this option. This requires spec.preserveUnknownFields to be false, and spec.conversion.webhook to be set.',
-      }),
-    webhook:
-      IoK8sApiextensionsApiserverPkgApisApiextensionsV1WebhookConversionSchema.exactOptional().openapi(
-        {
-          description:
-            'webhook describes how to call the conversion webhook. Required when `strategy` is set to `"Webhook"`.',
-        },
-      ),
-  })
-  .openapi({
-    description: 'CustomResourceConversion describes how to convert different versions of a CR.',
-    required: ['strategy'],
-  })
-  .openapi('IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceConversion')
-
 const IoK8sApimachineryPkgApisMetaV1TimeSchema = z.iso
   .datetime({ offset: true })
   .openapi({
@@ -320,7 +9,7 @@ const IoK8sApimachineryPkgApisMetaV1TimeSchema = z.iso
   .openapi('IoK8sApimachineryPkgApisMetaV1Time')
 
 const IoK8sApimachineryPkgApisMetaV1FieldsV1Schema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       "FieldsV1 stores a set of fields in a data structure like a Trie, in JSON format.\n\nEach key is either a '.' representing the field itself, and will always map to an empty set, or a string representing a sub-field or item. The string will follow one of these four formats: 'f:<name>', where <name> is the name of a field in a struct, or key in a map 'v:<value>', where <value> is the exact json formatted value of a list item 'i:<index>', where <index> is position of a item in a list 'k:<keys>', where <keys> is a map of  a list item's key fields to their unique values If a key maps to an empty Fields value, the field that key represents is part of the set.\n\nThe exact format is defined in sigs.k8s.io/structured-merge-diff",
@@ -557,6 +246,113 @@ const IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema = z
   })
   .openapi('IoK8sApimachineryPkgApisMetaV1ObjectMeta')
 
+const IoK8sApiextensionsApiserverPkgApisApiextensionsV1ServiceReferenceSchema = z
+  .object({
+    name: z
+      .string()
+      .default('')
+      .openapi({ description: 'name is the name of the service. Required' }),
+    namespace: z
+      .string()
+      .default('')
+      .openapi({ description: 'namespace is the namespace of the service. Required' }),
+    path: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'path is an optional URL path at which the webhook will be contacted.',
+      }),
+    port: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'port is an optional service port at which the webhook will be contacted. `port` should be a valid port number (1-65535, inclusive). Defaults to 443 for backward compatibility.',
+      }),
+  })
+  .openapi({
+    description: 'ServiceReference holds a reference to Service.legacy.k8s.io',
+    required: ['namespace', 'name'],
+  })
+  .openapi('IoK8sApiextensionsApiserverPkgApisApiextensionsV1ServiceReference')
+
+const IoK8sApiextensionsApiserverPkgApisApiextensionsV1WebhookClientConfigSchema = z
+  .object({
+    caBundle: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "caBundle is a PEM encoded CA bundle which will be used to validate the webhook's server certificate. If unspecified, system trust roots on the apiserver are used.",
+      }),
+    service:
+      IoK8sApiextensionsApiserverPkgApisApiextensionsV1ServiceReferenceSchema.exactOptional().openapi(
+        {
+          description:
+            'service is a reference to the service for this webhook. Either service or url must be specified.\n\nIf the webhook is running within the cluster, then you should use `service`.',
+        },
+      ),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'url gives the location of the webhook, in standard URL form (`scheme://host:port/path`). Exactly one of `url` or `service` must be specified.\n\nThe `host` should not refer to a service running in the cluster; use the `service` field instead. The host might be resolved via external DNS in some apiservers (e.g., `kube-apiserver` cannot resolve in-cluster DNS as that would be a layering violation). `host` may also be an IP address.\n\nPlease note that using `localhost` or `127.0.0.1` as a `host` is risky unless you take great care to run this webhook on all hosts which run an apiserver which might need to make calls to this webhook. Such installs are likely to be non-portable, i.e., not easy to turn up in a new cluster.\n\nThe scheme must be "https"; the URL must begin with "https://".\n\nA path is optional, and if present may be any string permissible in a URL. You may use the path to pass an arbitrary string to the webhook, for example, a cluster identifier.\n\nAttempting to use a user or basic auth e.g. "user:password@" is not allowed. Fragments ("#...") and query parameters ("?...") are not allowed, either.',
+      }),
+  })
+  .openapi({
+    description:
+      'WebhookClientConfig contains the information to make a TLS connection with the webhook.',
+    required: [],
+  })
+  .openapi('IoK8sApiextensionsApiserverPkgApisApiextensionsV1WebhookClientConfig')
+
+const IoK8sApiextensionsApiserverPkgApisApiextensionsV1WebhookConversionSchema = z
+  .object({
+    clientConfig:
+      IoK8sApiextensionsApiserverPkgApisApiextensionsV1WebhookClientConfigSchema.exactOptional().openapi(
+        {
+          description:
+            'clientConfig is the instructions for how to call the webhook if strategy is `Webhook`.',
+        },
+      ),
+    conversionReviewVersions: z
+      .array(z.string())
+      .openapi({
+        description:
+          'conversionReviewVersions is an ordered list of preferred `ConversionReview` versions the Webhook expects. The API server will use the first version in the list which it supports. If none of the versions specified in this list are supported by API server, conversion will fail for the custom resource. If a persisted Webhook configuration specifies allowed versions and does not include any versions known to the API Server, calls to the webhook will fail.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+  })
+  .openapi({
+    description: 'WebhookConversion describes how to call a conversion webhook',
+    required: ['conversionReviewVersions'],
+  })
+  .openapi('IoK8sApiextensionsApiserverPkgApisApiextensionsV1WebhookConversion')
+
+const IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceConversionSchema = z
+  .object({
+    strategy: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'strategy specifies how custom resources are converted between versions. Allowed values are: - `"None"`: The converter only change the apiVersion and would not touch any other field in the custom resource. - `"Webhook"`: API Server will call to an external webhook to do the conversion. Additional information\n  is needed for this option. This requires spec.preserveUnknownFields to be false, and spec.conversion.webhook to be set.',
+      }),
+    webhook:
+      IoK8sApiextensionsApiserverPkgApisApiextensionsV1WebhookConversionSchema.exactOptional().openapi(
+        {
+          description:
+            'webhook describes how to call the conversion webhook. Required when `strategy` is set to `"Webhook"`.',
+        },
+      ),
+  })
+  .openapi({
+    description: 'CustomResourceConversion describes how to convert different versions of a CR.',
+    required: ['strategy'],
+  })
+  .openapi('IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceConversion')
+
 const IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceDefinitionNamesSchema = z
   .object({
     categories: z
@@ -610,6 +406,51 @@ const IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceDefinitionN
     required: ['plural', 'kind'],
   })
   .openapi('IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceDefinitionNames')
+
+const IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceColumnDefinitionSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'description is a human readable description of this column.' }),
+    format: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "format is an optional OpenAPI type definition for this column. The 'name' format is applied to the primary identifier column to assist in clients identifying column is the resource name. See https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#data-types for details.",
+      }),
+    jsonPath: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'jsonPath is a simple JSON path (i.e. with array notation) which is evaluated against each custom resource to produce the value for this column.',
+      }),
+    name: z
+      .string()
+      .default('')
+      .openapi({ description: 'name is a human readable name for the column.' }),
+    priority: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'priority is an integer defining the relative importance of this column compared to others. Lower numbers are considered higher priority. Columns that may be omitted in limited space scenarios should be given a priority greater than 0.',
+      }),
+    type: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'type is an OpenAPI type definition for this column. See https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#data-types for details.',
+      }),
+  })
+  .openapi({
+    description: 'CustomResourceColumnDefinition specifies a column for server side printing.',
+    required: ['name', 'type', 'jsonPath'],
+  })
+  .openapi('IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceColumnDefinition')
 
 const IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsSchema: z.ZodType<IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsType> =
   z
@@ -896,7 +737,7 @@ const IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceSubresource
   .openapi('IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceSubresourceScale')
 
 const IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceSubresourceStatusSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'CustomResourceSubresourceStatus defines how to serve the status subresource for CustomResources. Status is represented by the `.status` JSON path inside of a CustomResource. When set, * exposes a /status subresource for the custom resource * PUT requests to the /status subresource take a custom resource object, and ignore changes to anything except the status stanza * PUT/POST/PATCH requests to the custom resource ignore changes to the status stanza',
@@ -1015,10 +856,9 @@ const IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceDefinitionS
           'group is the API group of the defined custom resource. The custom resources are served under `/apis/<group>/...`. Must match the name of the CustomResourceDefinition (in the form `<names.plural>.<group>`).',
       }),
     names:
-      IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceDefinitionNamesSchema.default(
-        {},
-      ).openapi({
+      IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceDefinitionNamesSchema.openapi({
         description: 'names specify the resource and kind names for the custom resource.',
+        default: {},
       }),
     preserveUnknownFields: z
       .boolean()
@@ -1109,14 +949,13 @@ const IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceDefinitionC
 const IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceDefinitionStatusSchema = z
   .object({
     acceptedNames:
-      IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceDefinitionNamesSchema.default(
-        {},
-      )
-        .exactOptional()
-        .openapi({
+      IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceDefinitionNamesSchema.exactOptional().openapi(
+        {
           description:
             'acceptedNames are the names that are actually being used to serve discovery. They may be different than the names in spec.',
-        }),
+          default: {},
+        },
+      ),
     conditions: z
       .array(
         IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceDefinitionConditionSchema,
@@ -1160,49 +999,62 @@ const IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceDefinitionS
   })
   .openapi('IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceDefinitionStatus')
 
-const IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceDefinitionSchema = z
-  .object({
-    apiVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          "Standard object's metadata More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata",
-      }),
-    spec: IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceDefinitionSpecSchema.default(
-      {},
-    ).openapi({ description: 'spec describes how the user wants the resources to appear' }),
-    status:
-      IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceDefinitionStatusSchema.default(
-        {},
-      )
+type IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceDefinitionType = {
+  apiVersion?: string
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema>
+  spec: z.infer<
+    typeof IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceDefinitionSpecSchema
+  >
+  status?: z.infer<
+    typeof IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceDefinitionStatusSchema
+  >
+}
+
+const IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceDefinitionSchema: z.ZodType<IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceDefinitionType> =
+  z
+    .object({
+      apiVersion: z
+        .string()
         .exactOptional()
         .openapi({
-          description: 'status indicates the actual state of the CustomResourceDefinition',
+          description:
+            'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
         }),
-  })
-  .openapi({
-    description:
-      'CustomResourceDefinition represents a resource that should be exposed on the API server.  Its name MUST be in the format <.spec.name>.<.spec.group>.',
-    required: ['spec'],
-    'x-kubernetes-group-version-kind': [
-      { group: 'apiextensions.k8s.io', kind: 'CustomResourceDefinition', version: 'v1' },
-    ],
-  })
-  .openapi('IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceDefinition')
+      kind: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+        }),
+      metadata: IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema.default({})
+        .exactOptional()
+        .openapi({
+          description:
+            "Standard object's metadata More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata",
+        }),
+      spec: IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceDefinitionSpecSchema.openapi(
+        { description: 'spec describes how the user wants the resources to appear', default: {} },
+      ),
+      status:
+        IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceDefinitionStatusSchema.default(
+          {},
+        )
+          .exactOptional()
+          .openapi({
+            description: 'status indicates the actual state of the CustomResourceDefinition',
+          }),
+    })
+    .openapi({
+      description:
+        'CustomResourceDefinition represents a resource that should be exposed on the API server.  Its name MUST be in the format <.spec.name>.<.spec.group>.',
+      required: ['spec'],
+      'x-kubernetes-group-version-kind': [
+        { group: 'apiextensions.k8s.io', kind: 'CustomResourceDefinition', version: 'v1' },
+      ],
+    })
+    .openapi('IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceDefinition')
 
 const IoK8sApimachineryPkgApisMetaV1ShardInfoSchema = z
   .object({
@@ -1273,40 +1125,209 @@ const IoK8sApimachineryPkgApisMetaV1ListMetaSchema = z
   })
   .openapi('IoK8sApimachineryPkgApisMetaV1ListMeta')
 
-const IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceDefinitionListSchema = z
+type IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceDefinitionListType = {
+  apiVersion?: string
+  items: z.infer<
+    typeof IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceDefinitionSchema
+  >[]
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ListMetaSchema>
+}
+
+const IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsOrBoolSchema = z
+  .any()
+  .openapi({
+    description:
+      'JSONSchemaPropsOrBool represents JSONSchemaProps or a boolean value. Defaults to true for the boolean property.',
+  })
+  .openapi('IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsOrBool')
+
+const IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchema = z
+  .any()
+  .openapi({
+    description:
+      'JSON represents any valid JSON value. These types are supported: bool, int64, float64, string, []interface{}, map[string]interface{} and nil.',
+  })
+  .openapi('IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSON')
+
+const IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsOrStringArraySchema = z
+  .any()
+  .openapi({
+    description: 'JSONSchemaPropsOrStringArray represents a JSONSchemaProps or a string array.',
+  })
+  .openapi('IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsOrStringArray')
+
+const IoK8sApiextensionsApiserverPkgApisApiextensionsV1ExternalDocumentationSchema = z
+  .object({ description: z.string().exactOptional(), url: z.string().exactOptional() })
+  .openapi({
+    description:
+      'ExternalDocumentation allows referencing an external resource for extended documentation.',
+    required: [],
+  })
+  .openapi('IoK8sApiextensionsApiserverPkgApisApiextensionsV1ExternalDocumentation')
+
+const IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsOrArraySchema = z
+  .any()
+  .openapi({
+    description:
+      'JSONSchemaPropsOrArray represents a value that can either be a JSONSchemaProps or an array of JSONSchemaProps. Mainly here for serialization purposes.',
+  })
+  .openapi('IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsOrArray')
+
+const IoK8sApiextensionsApiserverPkgApisApiextensionsV1ValidationRuleSchema = z
   .object({
-    apiVersion: z
+    fieldPath: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+          "fieldPath represents the field path returned when the validation fails. It must be a relative JSON path (i.e. with array notation) scoped to the location of this x-kubernetes-validations extension in the schema and refer to an existing field. e.g. when validation checks if a specific attribute `foo` under a map `testMap`, the fieldPath could be set to `.testMap.foo` If the validation checks two lists must have unique attributes, the fieldPath could be set to either of the list: e.g. `.testList` It does not support list numeric index. It supports child operation to refer to an existing field currently. Refer to [JSONPath support in Kubernetes](https://kubernetes.io/docs/reference/kubectl/jsonpath/) for more info. Numeric index of array is not supported. For field name which contains special characters, use `['specialName']` to refer the field name. e.g. for attribute `foo.34$` appears in a list `testList`, the fieldPath could be set to `.testList['foo.34$']`",
       }),
-    items: z
-      .array(IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceDefinitionSchema)
-      .openapi({ description: 'items list individual CustomResourceDefinition objects' }),
-    kind: z
+    message: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+          'Message represents the message displayed when validation fails. The message is required if the Rule contains line breaks. The message must not contain line breaks. If unset, the message is "failed rule: {Rule}". e.g. "must be a URL with the host matching spec.host"',
       }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
+    messageExpression: z
+      .string()
       .exactOptional()
       .openapi({
         description:
-          "Standard object's metadata More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata",
+          'MessageExpression declares a CEL expression that evaluates to the validation failure message that is returned when this rule fails. Since messageExpression is used as a failure message, it must evaluate to a string. If both message and messageExpression are present on a rule, then messageExpression will be used if validation fails. If messageExpression results in a runtime error, the runtime error is logged, and the validation failure message is produced as if the messageExpression field were unset. If messageExpression evaluates to an empty string, a string with only spaces, or a string that contains line breaks, then the validation failure message will also be produced as if the messageExpression field were unset, and the fact that messageExpression produced an empty string/string with only spaces/string with line breaks will be logged. messageExpression has access to all the same variables as the rule; the only difference is the return type. Example: "x must be less than max ("+string(self.max)+")"',
+      }),
+    optionalOldSelf: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'optionalOldSelf is used to opt a transition rule into evaluation even when the object is first created, or if the old object is missing the value.\n\nWhen enabled `oldSelf` will be a CEL optional whose value will be `None` if there is no old value, or when the object is initially created.\n\nYou may check for presence of oldSelf using `oldSelf.hasValue()` and unwrap it after checking using `oldSelf.value()`. Check the CEL documentation for Optional types for more information: https://pkg.go.dev/github.com/google/cel-go/cel#OptionalTypes\n\nMay not be set unless `oldSelf` is used in `rule`.',
+      }),
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'reason provides a machine-readable validation failure reason that is returned to the caller when a request fails this validation rule. The HTTP status code returned to the caller will match the reason of the reason of the first failed validation rule. The currently supported reasons are: "FieldValueInvalid", "FieldValueForbidden", "FieldValueRequired", "FieldValueDuplicate". If not set, default to use "FieldValueInvalid". All future added reasons must be accepted by clients when reading this value and unknown reasons should be treated as FieldValueInvalid.',
+      }),
+    rule: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'Rule represents the expression which will be evaluated by CEL. ref: https://github.com/google/cel-spec The Rule is scoped to the location of the x-kubernetes-validations extension in the schema. The `self` variable in the CEL expression is bound to the scoped value. Example: - Rule scoped to the root of a resource with a status subresource: {"rule": "self.status.actual <= self.spec.maxDesired"}\n\nIf the Rule is scoped to an object with properties, the accessible properties of the object are field selectable via `self.field` and field presence can be checked via `has(self.field)`. Null valued fields are treated as absent fields in CEL expressions. If the Rule is scoped to an object with additionalProperties (i.e. a map) the value of the map are accessible via `self[mapKey]`, map containment can be checked via `mapKey in self` and all entries of the map are accessible via CEL macros and functions such as `self.all(...)`. If the Rule is scoped to an array, the elements of the array are accessible via `self[i]` and also by macros and functions. If the Rule is scoped to a scalar, `self` is bound to the scalar value. Examples: - Rule scoped to a map of objects: {"rule": "self.components[\'Widget\'].priority < 10"} - Rule scoped to a list of integers: {"rule": "self.values.all(value, value >= 0 && value < 100)"} - Rule scoped to a string value: {"rule": "self.startsWith(\'kube\')"}\n\nThe `apiVersion`, `kind`, `metadata.name` and `metadata.generateName` are always accessible from the root of the object and from any x-kubernetes-embedded-resource annotated objects. No other metadata properties are accessible.\n\nUnknown data preserved in custom resources via x-kubernetes-preserve-unknown-fields is not accessible in CEL expressions. This includes: - Unknown field values that are preserved by object schemas with x-kubernetes-preserve-unknown-fields. - Object properties where the property schema is of an "unknown type". An "unknown type" is recursively defined as:\n  - A schema with no type and x-kubernetes-preserve-unknown-fields set to true\n  - An array where the items schema is of an "unknown type"\n  - An object where the additionalProperties schema is of an "unknown type"\n\nOnly property names of the form `[a-zA-Z_.-/][a-zA-Z0-9_.-/]*` are accessible. Accessible property names are escaped according to the following rules when accessed in the expression: - \'__\' escapes to \'__underscores__\' - \'.\' escapes to \'__dot__\' - \'-\' escapes to \'__dash__\' - \'/\' escapes to \'__slash__\' - Property names that exactly match a CEL RESERVED keyword escape to \'__{keyword}__\'. The keywords are:\n\t  "true", "false", "null", "in", "as", "break", "const", "continue", "else", "for", "function", "if",\n\t  "import", "let", "loop", "package", "namespace", "return".\nExamples:\n  - Rule accessing a property named "namespace": {"rule": "self.__namespace__ > 0"}\n  - Rule accessing a property named "x-prop": {"rule": "self.x__dash__prop > 0"}\n  - Rule accessing a property named "redact__d": {"rule": "self.redact__underscores__d > 0"}\n\nEquality on arrays with x-kubernetes-list-type of \'set\' or \'map\' ignores element order, i.e. [1, 2] == [2, 1]. Concatenation on arrays with x-kubernetes-list-type use the semantics of the list type:\n  - \'set\': `X + Y` performs a union where the array positions of all elements in `X` are preserved and\n    non-intersecting elements in `Y` are appended, retaining their partial order.\n  - \'map\': `X + Y` performs a merge where the array positions of all keys in `X` are preserved but the values\n    are overwritten by values in `Y` when the key sets of `X` and `Y` intersect. Elements in `Y` with\n    non-intersecting keys are appended, retaining their partial order.\n\nIf `rule` makes use of the `oldSelf` variable it is implicitly a `transition rule`.\n\nBy default, the `oldSelf` variable is the same type as `self`. When `optionalOldSelf` is true, the `oldSelf` variable is a CEL optional\n variable whose value() is the same type as `self`.\nSee the documentation for the `optionalOldSelf` field for details.\n\nTransition rules by default are applied only on UPDATE requests and are skipped if an old value could not be found. You can opt a transition rule into unconditional evaluation by setting `optionalOldSelf` to true.',
       }),
   })
   .openapi({
-    description: 'CustomResourceDefinitionList is a list of CustomResourceDefinition objects.',
-    required: ['items'],
-    'x-kubernetes-group-version-kind': [
-      { group: 'apiextensions.k8s.io', kind: 'CustomResourceDefinitionList', version: 'v1' },
-    ],
+    description:
+      'ValidationRule describes a validation rule written in the CEL expression language.',
+    required: ['rule'],
   })
-  .openapi('IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceDefinitionList')
+  .openapi('IoK8sApiextensionsApiserverPkgApisApiextensionsV1ValidationRule')
+
+type IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsType = {
+  $ref?: string
+  $schema?: string
+  additionalItems?: z.infer<
+    typeof IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsOrBoolSchema
+  >
+  additionalProperties?: z.infer<
+    typeof IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsOrBoolSchema
+  >
+  allOf?: IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsType[]
+  anyOf?: IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsType[]
+  default?: z.infer<typeof IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchema>
+  definitions?: {
+    [key: string]: IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsType
+  }
+  dependencies?: {
+    [key: string]: z.infer<
+      typeof IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsOrStringArraySchema
+    >
+  }
+  description?: string
+  enum?: z.infer<typeof IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchema>[]
+  example?: z.infer<typeof IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchema>
+  exclusiveMaximum?: boolean
+  exclusiveMinimum?: boolean
+  externalDocs?: z.infer<
+    typeof IoK8sApiextensionsApiserverPkgApisApiextensionsV1ExternalDocumentationSchema
+  >
+  format?: string
+  id?: string
+  items?: z.infer<
+    typeof IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsOrArraySchema
+  >
+  maxItems?: bigint
+  maxLength?: bigint
+  maxProperties?: bigint
+  maximum?: number
+  minItems?: bigint
+  minLength?: bigint
+  minProperties?: bigint
+  minimum?: number
+  multipleOf?: number
+  not?: IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsType
+  nullable?: boolean
+  oneOf?: IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsType[]
+  pattern?: string
+  patternProperties?: {
+    [key: string]: IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsType
+  }
+  properties?: {
+    [key: string]: IoK8sApiextensionsApiserverPkgApisApiextensionsV1JSONSchemaPropsType
+  }
+  required?: string[]
+  title?: string
+  type?: string
+  uniqueItems?: boolean
+  'x-kubernetes-embedded-resource'?: boolean
+  'x-kubernetes-int-or-string'?: boolean
+  'x-kubernetes-list-map-keys'?: string[]
+  'x-kubernetes-list-type'?: string
+  'x-kubernetes-map-type'?: string
+  'x-kubernetes-preserve-unknown-fields'?: boolean
+  'x-kubernetes-validations'?: z.infer<
+    typeof IoK8sApiextensionsApiserverPkgApisApiextensionsV1ValidationRuleSchema
+  >[]
+}
+
+const IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceDefinitionListSchema: z.ZodType<IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceDefinitionListType> =
+  z
+    .object({
+      apiVersion: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+        }),
+      items: z
+        .array(IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceDefinitionSchema)
+        .openapi({ description: 'items list individual CustomResourceDefinition objects' }),
+      kind: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+        }),
+      metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
+        .exactOptional()
+        .openapi({
+          description:
+            "Standard object's metadata More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata",
+        }),
+    })
+    .openapi({
+      description: 'CustomResourceDefinitionList is a list of CustomResourceDefinition objects.',
+      required: ['items'],
+      'x-kubernetes-group-version-kind': [
+        { group: 'apiextensions.k8s.io', kind: 'CustomResourceDefinitionList', version: 'v1' },
+      ],
+    })
+    .openapi('IoK8sApiextensionsApiserverPkgApisApiextensionsV1CustomResourceDefinitionList')
 
 const IoK8sApimachineryPkgApisMetaV1APIResourceSchema = z
   .object({
@@ -1511,7 +1532,7 @@ const IoK8sApimachineryPkgApisMetaV1DeleteOptionsSchema = z
   .openapi('IoK8sApimachineryPkgApisMetaV1DeleteOptions')
 
 const IoK8sApimachineryPkgApisMetaV1PatchSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Patch is provided to give a concrete name and type to the Kubernetes PATCH request body.',
@@ -1658,7 +1679,7 @@ const IoK8sApimachineryPkgApisMetaV1StatusSchema = z
   .openapi('IoK8sApimachineryPkgApisMetaV1Status')
 
 const IoK8sApimachineryPkgRuntimeRawExtensionSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'RawExtension is used to hold extensions in external versions.\n\nTo use this, make a field which has RawExtension as its type in your external, versioned struct, and Object in your internal struct. You also need to register your various plugin types.\n\n// Internal package:\n\n\ttype MyAPIObject struct {\n\t\truntime.TypeMeta `json:""`\n\t\tMyPlugin runtime.Object `json:"myPlugin"`\n\t}\n\n\ttype PluginA struct {\n\t\tAOption string `json:"aOption"`\n\t}\n\n// External package:\n\n\ttype MyAPIObject struct {\n\t\truntime.TypeMeta `json:""`\n\t\tMyPlugin runtime.RawExtension `json:"myPlugin"`\n\t}\n\n\ttype PluginA struct {\n\t\tAOption string `json:"aOption"`\n\t}\n\n// On the wire, the JSON will look something like this:\n\n\t{\n\t\t"kind":"MyAPIObject",\n\t\t"apiVersion":"v1",\n\t\t"myPlugin": {\n\t\t\t"kind":"PluginA",\n\t\t\t"aOption":"foo",\n\t\t},\n\t}\n\nSo what happens? Decode first uses json or yaml to unmarshal the serialized data into your external MyAPIObject. That causes the raw JSON to be stored, but not unpacked. The next step is to copy (using pkg/conversion) into the internal struct. The runtime package\'s DefaultScheme has conversion functions installed which will unpack the JSON stored in RawExtension, turning it into the correct object type, and storing it in the Object. (TODO: In the case where the object is of an unknown type, a runtime.Unknown object will be created and stored.)',

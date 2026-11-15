@@ -1340,11 +1340,11 @@ export const putPricingPricesItemIdRoute = createRoute({
                           title: 'value',
                         }),
                     })
-                    .default([])
                     .openapi({
                       description: "Array with general information about the SKU's fixed prices.",
                       required: ['minQuantity', 'value', 'tradePolicyId'],
                       title: 'fixedPrices',
+                      default: [],
                     }),
                 )
                 .exactOptional(),

@@ -119,6 +119,14 @@ const IoK8sApiCoreV1AzureFilePersistentVolumeSourceSchema = z
   })
   .openapi('IoK8sApiCoreV1AzureFilePersistentVolumeSource')
 
+const IoK8sApimachineryPkgApiResourceQuantitySchema = z
+  .xor([z.string(), z.number()])
+  .openapi({
+    description:
+      'Quantity is a fixed-point representation of a number. It provides convenient marshaling/unmarshaling in JSON and YAML, in addition to String() and AsInt64() accessors.\n\nThe serialization format is:\n\n- `<quantity>`: `<signedNumber><suffix>`\n\n- `<digit>`: `0 | 1 | ... | 9`\n\n- `<digits>`: `<digit> | <digit><digits>`\n\n- `<number>`: `<digits> | <digits>.<digits> | <digits>. | .<digits>`\n\n- `<sign>`: `"+" | "-"`\n\n- `<signedNumber>`: `<number> | <sign><number>`\n\n- `<signedDigits>`: `<digits> | <sign><digits>`\n\n- `<suffix>`: `<binarySI> | <decimalExponent> | <decimalSI>`\n\n- `<binarySI>`: `Ki | Mi | Gi | Ti | Pi | Ei`\n\n- `<decimalSI>`: `n | u | m | "" | k | M | G | T | P | E`\n\n- `<decimalExponent>`: `"e" <signedDigits> | "E" <signedDigits>`\n\nNote that `<suffix>` may be empty, from the `""` case in `<decimalSI>`. For `<binarySI>`, 1024 = 1Ki but 1000 = 1k; I didn\'t choose the capitalization. See http://physics.nist.gov/cuu/Units/binary.html.\n\nA decimal quantity is not capped at 2^63-1 in magnitude, and no quantity is limited to three decimal places: "18446744073709551616" keeps its value, and "1.2345" keeps its precision (String reports it as "1234500u"). Parsing does cap a binarySI quantity, silently, at 2^63-1: "8Ei" parses as 2^63-1. Parsing keeps at most 29 significant digits, enough for any int64 value at nano precision, and rounds any precision beyond this away from zero. Parsing also preserves a value only down to nano, rounding a finer non-zero value away from zero, so "0.9n" becomes "1n". Parsing saturates the exponent to [-2147483647, 2147483647] after accounting for any digits after the decimal point, so "0.01e2147483649" keeps its value but "1e4294967297" parses as 1e2147483647. The int64 accessors round and may overflow on top of that: see Value, MilliValue and ScaledValue.\n\nWhen a Quantity is parsed from a string, it will remember the type of suffix it had, and will use the same type again when it is serialized.\n\nBefore serializing, Quantity will be put in "canonical form". This means that Exponent/suffix will be adjusted up or down (with a corresponding increase or decrease in Mantissa) such that:\n\n- No precision is lost\n\n- No fractional digits will be emitted\n\n- The exponent (or suffix) is as large as possible.\n\nThe sign will be omitted unless the number is negative.\n\nExamples:\n\n- 1.5 will be serialized as "1500m"\n\n- 1.5Gi will be serialized as "1536Mi"\n\nNote that the quantity will NEVER be internally represented by a floating point number. That is the whole point of this exercise.\n\nNon-canonical values will still parse as long as they are well formed, but will be re-emitted in their canonical form. (So always use canonical form, or don\'t diff.)\n\nThis format is intended to make it difficult to use these numbers without writing some sort of special handling code in the hopes that that will cause implementors to also use a fixed point implementation.',
+  })
+  .openapi('IoK8sApimachineryPkgApiResourceQuantity')
+
 const IoK8sApiCoreV1SecretReferenceSchema = z
   .object({
     name: z
@@ -141,66 +149,6 @@ const IoK8sApiCoreV1SecretReferenceSchema = z
     required: [],
   })
   .openapi('IoK8sApiCoreV1SecretReference')
-
-const IoK8sApiCoreV1CSIPersistentVolumeSourceSchema = z
-  .object({
-    controllerExpandSecretRef: IoK8sApiCoreV1SecretReferenceSchema.exactOptional().openapi({
-      description:
-        'controllerExpandSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI ControllerExpandVolume call. This field is optional, and may be empty if no secret is required. If the secret object contains more than one secret, all secrets are passed.',
-    }),
-    controllerPublishSecretRef: IoK8sApiCoreV1SecretReferenceSchema.exactOptional().openapi({
-      description:
-        'controllerPublishSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI ControllerPublishVolume and ControllerUnpublishVolume calls. This field is optional, and may be empty if no secret is required. If the secret object contains more than one secret, all secrets are passed.',
-    }),
-    driver: z
-      .string()
-      .default('')
-      .openapi({
-        description: 'driver is the name of the driver to use for this volume. Required.',
-      }),
-    fsType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'fsType to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs".',
-      }),
-    nodeExpandSecretRef: IoK8sApiCoreV1SecretReferenceSchema.exactOptional().openapi({
-      description:
-        'nodeExpandSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI NodeExpandVolume call. This field is optional, may be omitted if no secret is required. If the secret object contains more than one secret, all secrets are passed.',
-    }),
-    nodePublishSecretRef: IoK8sApiCoreV1SecretReferenceSchema.exactOptional().openapi({
-      description:
-        'nodePublishSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI NodePublishVolume and NodeUnpublishVolume calls. This field is optional, and may be empty if no secret is required. If the secret object contains more than one secret, all secrets are passed.',
-    }),
-    nodeStageSecretRef: IoK8sApiCoreV1SecretReferenceSchema.exactOptional().openapi({
-      description:
-        'nodeStageSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI NodeStageVolume and NodeStageVolume and NodeUnstageVolume calls. This field is optional, and may be empty if no secret is required. If the secret object contains more than one secret, all secrets are passed.',
-    }),
-    readOnly: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'readOnly value to pass to ControllerPublishVolumeRequest. Defaults to false (read/write).',
-      }),
-    volumeAttributes: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'volumeAttributes of the volume to publish.' }),
-    volumeHandle: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'volumeHandle is the unique volume name returned by the CSI volume plugin’s CreateVolume to refer to the volume on all subsequent calls. Required.',
-      }),
-  })
-  .openapi({
-    description: 'Represents storage that is managed by an external CSI volume driver',
-    required: ['driver', 'volumeHandle'],
-  })
-  .openapi('IoK8sApiCoreV1CSIPersistentVolumeSource')
 
 const IoK8sApiCoreV1CephFSPersistentVolumeSourceSchema = z
   .object({
@@ -285,6 +233,123 @@ const IoK8sApiCoreV1CinderPersistentVolumeSourceSchema = z
     required: ['volumeID'],
   })
   .openapi('IoK8sApiCoreV1CinderPersistentVolumeSource')
+
+const IoK8sApiCoreV1ObjectReferenceSchema = z
+  .object({
+    apiVersion: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'apiVersion is API version of the referent.' }),
+    fieldPath: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'fieldPath if referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object.',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names',
+      }),
+    namespace: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/',
+      }),
+    resourceVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'resourceVersion is the specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency',
+      }),
+    uid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'uid of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids',
+      }),
+  })
+  .openapi({
+    description:
+      'ObjectReference contains enough information to let you inspect or modify the referred object.',
+    'x-kubernetes-map-type': 'atomic',
+    required: [],
+  })
+  .openapi('IoK8sApiCoreV1ObjectReference')
+
+const IoK8sApiCoreV1CSIPersistentVolumeSourceSchema = z
+  .object({
+    controllerExpandSecretRef: IoK8sApiCoreV1SecretReferenceSchema.exactOptional().openapi({
+      description:
+        'controllerExpandSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI ControllerExpandVolume call. This field is optional, and may be empty if no secret is required. If the secret object contains more than one secret, all secrets are passed.',
+    }),
+    controllerPublishSecretRef: IoK8sApiCoreV1SecretReferenceSchema.exactOptional().openapi({
+      description:
+        'controllerPublishSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI ControllerPublishVolume and ControllerUnpublishVolume calls. This field is optional, and may be empty if no secret is required. If the secret object contains more than one secret, all secrets are passed.',
+    }),
+    driver: z
+      .string()
+      .default('')
+      .openapi({
+        description: 'driver is the name of the driver to use for this volume. Required.',
+      }),
+    fsType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'fsType to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs".',
+      }),
+    nodeExpandSecretRef: IoK8sApiCoreV1SecretReferenceSchema.exactOptional().openapi({
+      description:
+        'nodeExpandSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI NodeExpandVolume call. This field is optional, may be omitted if no secret is required. If the secret object contains more than one secret, all secrets are passed.',
+    }),
+    nodePublishSecretRef: IoK8sApiCoreV1SecretReferenceSchema.exactOptional().openapi({
+      description:
+        'nodePublishSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI NodePublishVolume and NodeUnpublishVolume calls. This field is optional, and may be empty if no secret is required. If the secret object contains more than one secret, all secrets are passed.',
+    }),
+    nodeStageSecretRef: IoK8sApiCoreV1SecretReferenceSchema.exactOptional().openapi({
+      description:
+        'nodeStageSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI NodeStageVolume and NodeStageVolume and NodeUnstageVolume calls. This field is optional, and may be empty if no secret is required. If the secret object contains more than one secret, all secrets are passed.',
+    }),
+    readOnly: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'readOnly value to pass to ControllerPublishVolumeRequest. Defaults to false (read/write).',
+      }),
+    volumeAttributes: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'volumeAttributes of the volume to publish.' }),
+    volumeHandle: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'volumeHandle is the unique volume name returned by the CSI volume plugin’s CreateVolume to refer to the volume on all subsequent calls. Required.',
+      }),
+  })
+  .openapi({
+    description: 'Represents storage that is managed by an external CSI volume driver',
+    required: ['driver', 'volumeHandle'],
+  })
+  .openapi('IoK8sApiCoreV1CSIPersistentVolumeSource')
 
 const IoK8sApiCoreV1FCVolumeSourceSchema = z
   .object({
@@ -693,71 +758,6 @@ const IoK8sApiCoreV1NodeSelectorSchema = z
   })
   .openapi('IoK8sApiCoreV1NodeSelector')
 
-const IoK8sApiCoreV1ObjectReferenceSchema = z
-  .object({
-    apiVersion: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'apiVersion is API version of the referent.' }),
-    fieldPath: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'fieldPath if referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object.',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names',
-      }),
-    namespace: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/',
-      }),
-    resourceVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'resourceVersion is the specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency',
-      }),
-    uid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'uid of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids',
-      }),
-  })
-  .openapi({
-    description:
-      'ObjectReference contains enough information to let you inspect or modify the referred object.',
-    'x-kubernetes-map-type': 'atomic',
-    required: [],
-  })
-  .openapi('IoK8sApiCoreV1ObjectReference')
-
-const IoK8sApimachineryPkgApiResourceQuantitySchema = z
-  .xor([z.string(), z.number()])
-  .openapi({
-    description:
-      'Quantity is a fixed-point representation of a number. It provides convenient marshaling/unmarshaling in JSON and YAML, in addition to String() and AsInt64() accessors.\n\nThe serialization format is:\n\n- `<quantity>`: `<signedNumber><suffix>`\n\n- `<digit>`: `0 | 1 | ... | 9`\n\n- `<digits>`: `<digit> | <digit><digits>`\n\n- `<number>`: `<digits> | <digits>.<digits> | <digits>. | .<digits>`\n\n- `<sign>`: `"+" | "-"`\n\n- `<signedNumber>`: `<number> | <sign><number>`\n\n- `<signedDigits>`: `<digits> | <sign><digits>`\n\n- `<suffix>`: `<binarySI> | <decimalExponent> | <decimalSI>`\n\n- `<binarySI>`: `Ki | Mi | Gi | Ti | Pi | Ei`\n\n- `<decimalSI>`: `n | u | m | "" | k | M | G | T | P | E`\n\n- `<decimalExponent>`: `"e" <signedDigits> | "E" <signedDigits>`\n\nNote that `<suffix>` may be empty, from the `""` case in `<decimalSI>`. For `<binarySI>`, 1024 = 1Ki but 1000 = 1k; I didn\'t choose the capitalization. See http://physics.nist.gov/cuu/Units/binary.html.\n\nA decimal quantity is not capped at 2^63-1 in magnitude, and no quantity is limited to three decimal places: "18446744073709551616" keeps its value, and "1.2345" keeps its precision (String reports it as "1234500u"). Parsing does cap a binarySI quantity, silently, at 2^63-1: "8Ei" parses as 2^63-1. Parsing also preserves a value only down to nano, rounding a finer non-zero value away from zero, so "0.9n" becomes "1n". The int64 accessors round and may overflow on top of that: see Value, MilliValue and ScaledValue.\n\nWhen a Quantity is parsed from a string, it will remember the type of suffix it had, and will use the same type again when it is serialized.\n\nBefore serializing, Quantity will be put in "canonical form". This means that Exponent/suffix will be adjusted up or down (with a corresponding increase or decrease in Mantissa) such that:\n\n- No precision is lost\n\n- No fractional digits will be emitted\n\n- The exponent (or suffix) is as large as possible.\n\nThe sign will be omitted unless the number is negative.\n\nExamples:\n\n- 1.5 will be serialized as "1500m"\n\n- 1.5Gi will be serialized as "1536Mi"\n\nNote that the quantity will NEVER be internally represented by a floating point number. That is the whole point of this exercise.\n\nNon-canonical values will still parse as long as they are well formed, but will be re-emitted in their canonical form. (So always use canonical form, or don\'t diff.)\n\nThis format is intended to make it difficult to use these numbers without writing some sort of special handling code in the hopes that that will cause implementors to also use a fixed point implementation.',
-  })
-  .openapi('IoK8sApimachineryPkgApiResourceQuantity')
-
 const IoK8sApiCoreV1VolumeNodeAffinitySchema = z
   .object({
     required: IoK8sApiCoreV1NodeSelectorSchema.openapi({
@@ -1074,202 +1074,39 @@ const IoK8sApiCoreV1VsphereVirtualDiskVolumeSourceSchema = z
   .openapi({ description: 'Represents a vSphere volume resource.', required: ['volumePath'] })
   .openapi('IoK8sApiCoreV1VsphereVirtualDiskVolumeSource')
 
-const IoK8sApiCoreV1PersistentVolumeSpecSchema = z
-  .object({
-    accessModes: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'accessModes contains all ways the volume can be mounted. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-    awsElasticBlockStore:
-      IoK8sApiCoreV1AWSElasticBlockStoreVolumeSourceSchema.exactOptional().openapi({
-        description:
-          "awsElasticBlockStore represents an AWS Disk resource that is attached to a kubelet's host machine and then exposed to the pod.\n\nDeprecated: AWSElasticBlockStore is deprecated. All operations for the in-tree awsElasticBlockStore type are redirected to the ebs.csi.aws.com CSI driver. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore",
-      }),
-    azureDisk: IoK8sApiCoreV1AzureDiskVolumeSourceSchema.exactOptional().openapi({
-      description:
-        'azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.\n\nDeprecated: AzureDisk is deprecated. All operations for the in-tree azureDisk type are redirected to the disk.csi.azure.com CSI driver.',
-    }),
-    azureFile: IoK8sApiCoreV1AzureFilePersistentVolumeSourceSchema.exactOptional().openapi({
-      description:
-        'azureFile represents an Azure File Service mount on the host and bind mount to the pod.\n\nDeprecated: AzureFile is deprecated. All operations for the in-tree azureFile type are redirected to the file.csi.azure.com CSI driver.',
-    }),
-    capacity: z
-      .record(z.string(), IoK8sApimachineryPkgApiResourceQuantitySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "capacity is the description of the persistent volume's resources and capacity. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#capacity",
-      }),
-    cephfs: IoK8sApiCoreV1CephFSPersistentVolumeSourceSchema.exactOptional().openapi({
-      description:
-        "cephfs represents a Ceph FS mount on the host that shares a pod's lifetime.\n\nDeprecated: CephFS is deprecated and the in-tree cephfs type is no longer supported.",
-    }),
-    cinder: IoK8sApiCoreV1CinderPersistentVolumeSourceSchema.exactOptional().openapi({
-      description:
-        'cinder represents a cinder volume attached and mounted on kubelets host machine.\n\nDeprecated: Cinder is deprecated. All operations for the in-tree cinder type are redirected to the cinder.csi.openstack.org CSI driver. More info: https://examples.k8s.io/mysql-cinder-pd/README.md',
-    }),
-    claimRef: IoK8sApiCoreV1ObjectReferenceSchema.exactOptional().openapi({
-      description:
-        'claimRef is part of a bi-directional binding between PersistentVolume and PersistentVolumeClaim. Expected to be non-nil when bound. claim.VolumeName is the authoritative bind between PV and PVC. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#binding',
-      'x-kubernetes-map-type': 'granular',
-    }),
-    csi: IoK8sApiCoreV1CSIPersistentVolumeSourceSchema.exactOptional().openapi({
-      description: 'csi represents storage that is handled by an external CSI driver.',
-    }),
-    fc: IoK8sApiCoreV1FCVolumeSourceSchema.exactOptional().openapi({
-      description:
-        "fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.",
-    }),
-    flexVolume: IoK8sApiCoreV1FlexPersistentVolumeSourceSchema.exactOptional().openapi({
-      description:
-        'flexVolume represents a generic volume resource that is provisioned/attached using an exec based plugin.\n\nDeprecated: FlexVolume is deprecated. Consider using a CSIDriver instead.',
-    }),
-    flocker: IoK8sApiCoreV1FlockerVolumeSourceSchema.exactOptional().openapi({
-      description:
-        "flocker represents a Flocker volume attached to a kubelet's host machine and exposed to the pod for its usage. This depends on the Flocker control service being running.\n\nDeprecated: Flocker is deprecated and the in-tree flocker type is no longer supported.",
-    }),
-    gcePersistentDisk: IoK8sApiCoreV1GCEPersistentDiskVolumeSourceSchema.exactOptional().openapi({
-      description:
-        "gcePersistentDisk represents a GCE Disk resource that is attached to a kubelet's host machine and then exposed to the pod. Provisioned by an admin.\n\nDeprecated: GCEPersistentDisk is deprecated. All operations for the in-tree gcePersistentDisk type are redirected to the pd.csi.storage.gke.io CSI driver. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk",
-    }),
-    glusterfs: IoK8sApiCoreV1GlusterfsPersistentVolumeSourceSchema.exactOptional().openapi({
-      description:
-        'glusterfs represents a Glusterfs volume that is attached to a host and exposed to the pod. Provisioned by an admin.\n\nDeprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported. More info: https://examples.k8s.io/volumes/glusterfs/README.md',
-    }),
-    hostPath: IoK8sApiCoreV1HostPathVolumeSourceSchema.exactOptional().openapi({
-      description:
-        'hostPath represents a directory on the host. Provisioned by a developer or tester. This is useful for single-node development and testing only! On-host storage is not supported in any way and WILL NOT WORK in a multi-node cluster. More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath',
-    }),
-    iscsi: IoK8sApiCoreV1ISCSIPersistentVolumeSourceSchema.exactOptional().openapi({
-      description:
-        "iscsi represents an ISCSI Disk resource that is attached to a kubelet's host machine and then exposed to the pod. Provisioned by an admin.",
-    }),
-    local: IoK8sApiCoreV1LocalVolumeSourceSchema.exactOptional().openapi({
-      description: 'local represents directly-attached storage with node affinity',
-    }),
-    mountOptions: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'mountOptions is the list of mount options, e.g. ["ro", "soft"]. Not validated - mount will simply fail if one is invalid. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#mount-options',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-    nfs: IoK8sApiCoreV1NFSVolumeSourceSchema.exactOptional().openapi({
-      description:
-        'nfs represents an NFS mount on the host. Provisioned by an admin. More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs',
-    }),
-    nodeAffinity: IoK8sApiCoreV1VolumeNodeAffinitySchema.exactOptional().openapi({
-      description:
-        'nodeAffinity defines constraints that limit what nodes this volume can be accessed from. This field influences the scheduling of pods that use this volume. This field is mutable if MutablePVNodeAffinity feature gate is enabled.',
-    }),
-    persistentVolumeReclaimPolicy: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'persistentVolumeReclaimPolicy defines what happens to a persistent volume when released from its claim. Valid options are Retain (default for manually created PersistentVolumes), Delete (default for dynamically provisioned PersistentVolumes), and Recycle (deprecated). Recycle must be supported by the volume plugin underlying this PersistentVolume. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#reclaiming',
-      }),
-    photonPersistentDisk:
-      IoK8sApiCoreV1PhotonPersistentDiskVolumeSourceSchema.exactOptional().openapi({
-        description:
-          'photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine.\n\nDeprecated: PhotonPersistentDisk is deprecated and the in-tree photonPersistentDisk type is no longer supported.',
-      }),
-    portworxVolume: IoK8sApiCoreV1PortworxVolumeSourceSchema.exactOptional().openapi({
-      description:
-        'portworxVolume represents a portworx volume attached and mounted on kubelets host machine.\n\nDeprecated: PortworxVolume is deprecated. All operations for the in-tree portworxVolume type are redirected to the pxd.portworx.com CSI driver.',
-    }),
-    quobyte: IoK8sApiCoreV1QuobyteVolumeSourceSchema.exactOptional().openapi({
-      description:
-        "quobyte represents a Quobyte mount on the host that shares a pod's lifetime.\n\nDeprecated: Quobyte is deprecated and the in-tree quobyte type is no longer supported.",
-    }),
-    rbd: IoK8sApiCoreV1RBDPersistentVolumeSourceSchema.exactOptional().openapi({
-      description:
-        "rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.\n\nDeprecated: RBD is deprecated and the in-tree rbd type is no longer supported. More info: https://examples.k8s.io/volumes/rbd/README.md",
-    }),
-    scaleIO: IoK8sApiCoreV1ScaleIOPersistentVolumeSourceSchema.exactOptional().openapi({
-      description:
-        'scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.\n\nDeprecated: ScaleIO is deprecated and the in-tree scaleIO type is no longer supported.',
-    }),
-    storageClassName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'storageClassName is the name of StorageClass to which this persistent volume belongs. Empty value means that this volume does not belong to any StorageClass.',
-      }),
-    storageos: IoK8sApiCoreV1StorageOSPersistentVolumeSourceSchema.exactOptional().openapi({
-      description:
-        "storageos represents a StorageOS volume that is attached to the kubelet's host machine and mounted into the pod.\n\nDeprecated: StorageOS is deprecated and the in-tree storageos type is no longer supported. More info: https://examples.k8s.io/volumes/storageos/README.md",
-    }),
-    volumeAttributesClassName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'volumeAttributesClassName is the name of VolumeAttributesClass to which this persistent volume belongs. Empty value is not allowed. When this field is not set, it indicates that this volume does not belong to any VolumeAttributesClass. This field is mutable and can be changed by the CSI driver after a volume has been updated successfully to a new class. For an unbound PersistentVolume, the volumeAttributesClassName will be matched with unbound PersistentVolumeClaims during the binding process.',
-      }),
-    volumeMode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'volumeMode defines if a volume is intended to be used with a formatted filesystem or to remain in raw block state. Value of Filesystem is implied when not included in spec.',
-      }),
-    vsphereVolume: IoK8sApiCoreV1VsphereVirtualDiskVolumeSourceSchema.exactOptional().openapi({
-      description:
-        'vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine.\n\nDeprecated: VsphereVolume is deprecated. All operations for the in-tree vsphereVolume type are redirected to the csi.vsphere.vmware.com CSI driver.',
-    }),
-  })
-  .openapi({
-    description: 'PersistentVolumeSpec is the specification of a persistent volume.',
-    required: [],
-  })
-  .openapi('IoK8sApiCoreV1PersistentVolumeSpec')
-
-const IoK8sApiCoreV1TopologySelectorLabelRequirementSchema = z
-  .object({
-    key: z
-      .string()
-      .default('')
-      .openapi({ description: 'key is the label key that the selector applies to.' }),
-    values: z
-      .array(z.string())
-      .openapi({
-        description:
-          'values is an array of string values. One value must match the label to be selected. Each entry in values is ORed.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-  })
-  .openapi({
-    description:
-      'A topology selector requirement is a selector that matches given label. This is an alpha feature and may change in the future.',
-    required: ['key', 'values'],
-  })
-  .openapi('IoK8sApiCoreV1TopologySelectorLabelRequirement')
-
-const IoK8sApiCoreV1TopologySelectorTermSchema = z
-  .object({
-    matchLabelExpressions: z
-      .array(IoK8sApiCoreV1TopologySelectorLabelRequirementSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'matchLabelExpressions is a list of topology selector requirements by labels. Usage: Fields of type []TopologySelectorTerm must be listType=atomic. A list of topology selector requirements by labels.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-  })
-  .openapi({
-    description:
-      'A topology selector term represents the result of label queries. A null or empty topology selector term matches no objects. The requirements of them are ANDed. It provides a subset of functionality as NodeSelectorTerm. This is an alpha feature and may change in the future.',
-    'x-kubernetes-map-type': 'atomic',
-    required: [],
-  })
-  .openapi('IoK8sApiCoreV1TopologySelectorTerm')
+type IoK8sApiCoreV1PersistentVolumeSpecType = {
+  accessModes?: string[]
+  awsElasticBlockStore?: z.infer<typeof IoK8sApiCoreV1AWSElasticBlockStoreVolumeSourceSchema>
+  azureDisk?: z.infer<typeof IoK8sApiCoreV1AzureDiskVolumeSourceSchema>
+  azureFile?: z.infer<typeof IoK8sApiCoreV1AzureFilePersistentVolumeSourceSchema>
+  capacity?: { [key: string]: z.infer<typeof IoK8sApimachineryPkgApiResourceQuantitySchema> }
+  cephfs?: z.infer<typeof IoK8sApiCoreV1CephFSPersistentVolumeSourceSchema>
+  cinder?: z.infer<typeof IoK8sApiCoreV1CinderPersistentVolumeSourceSchema>
+  claimRef?: z.infer<typeof IoK8sApiCoreV1ObjectReferenceSchema>
+  csi?: z.infer<typeof IoK8sApiCoreV1CSIPersistentVolumeSourceSchema>
+  fc?: z.infer<typeof IoK8sApiCoreV1FCVolumeSourceSchema>
+  flexVolume?: z.infer<typeof IoK8sApiCoreV1FlexPersistentVolumeSourceSchema>
+  flocker?: z.infer<typeof IoK8sApiCoreV1FlockerVolumeSourceSchema>
+  gcePersistentDisk?: z.infer<typeof IoK8sApiCoreV1GCEPersistentDiskVolumeSourceSchema>
+  glusterfs?: z.infer<typeof IoK8sApiCoreV1GlusterfsPersistentVolumeSourceSchema>
+  hostPath?: z.infer<typeof IoK8sApiCoreV1HostPathVolumeSourceSchema>
+  iscsi?: z.infer<typeof IoK8sApiCoreV1ISCSIPersistentVolumeSourceSchema>
+  local?: z.infer<typeof IoK8sApiCoreV1LocalVolumeSourceSchema>
+  mountOptions?: string[]
+  nfs?: z.infer<typeof IoK8sApiCoreV1NFSVolumeSourceSchema>
+  nodeAffinity?: z.infer<typeof IoK8sApiCoreV1VolumeNodeAffinitySchema>
+  persistentVolumeReclaimPolicy?: string
+  photonPersistentDisk?: z.infer<typeof IoK8sApiCoreV1PhotonPersistentDiskVolumeSourceSchema>
+  portworxVolume?: z.infer<typeof IoK8sApiCoreV1PortworxVolumeSourceSchema>
+  quobyte?: z.infer<typeof IoK8sApiCoreV1QuobyteVolumeSourceSchema>
+  rbd?: z.infer<typeof IoK8sApiCoreV1RBDPersistentVolumeSourceSchema>
+  scaleIO?: z.infer<typeof IoK8sApiCoreV1ScaleIOPersistentVolumeSourceSchema>
+  storageClassName?: string
+  storageos?: z.infer<typeof IoK8sApiCoreV1StorageOSPersistentVolumeSourceSchema>
+  volumeAttributesClassName?: string
+  volumeMode?: string
+  vsphereVolume?: z.infer<typeof IoK8sApiCoreV1VsphereVirtualDiskVolumeSourceSchema>
+}
 
 const IoK8sApimachineryPkgApisMetaV1TimeSchema = z.iso
   .datetime({ offset: true })
@@ -1280,7 +1117,7 @@ const IoK8sApimachineryPkgApisMetaV1TimeSchema = z.iso
   .openapi('IoK8sApimachineryPkgApisMetaV1Time')
 
 const IoK8sApimachineryPkgApisMetaV1FieldsV1Schema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       "FieldsV1 stores a set of fields in a data structure like a Trie, in JSON format.\n\nEach key is either a '.' representing the field itself, and will always map to an empty set, or a string representing a sub-field or item. The string will follow one of these four formats: 'f:<name>', where <name> is the name of a field in a struct, or key in a map 'v:<value>', where <value> is the exact json formatted value of a list item 'i:<index>', where <index> is position of a item in a list 'k:<keys>', where <keys> is a map of  a list item's key fields to their unique values If a key maps to an empty Fields value, the field that key represents is part of the set.\n\nThe exact format is defined in sigs.k8s.io/structured-merge-diff",
@@ -1517,6 +1354,747 @@ const IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema = z
   })
   .openapi('IoK8sApimachineryPkgApisMetaV1ObjectMeta')
 
+const IoK8sApiStorageV1VolumeNodeResourcesSchema = z
+  .object({
+    count: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'count indicates the maximum number of unique volumes managed by the CSI driver that can be used on a node. A volume that is both attached and mounted on a node is considered to be used once, not twice. The same rule applies for a unique volume that is shared among multiple pods on the same node. If this field is not specified, then the supported number of volumes on this node is unbounded.',
+      }),
+  })
+  .openapi({
+    description: 'VolumeNodeResources is a set of resource limits for scheduling of volumes.',
+    required: [],
+  })
+  .openapi('IoK8sApiStorageV1VolumeNodeResources')
+
+const IoK8sApiStorageV1CSINodeDriverSchema = z
+  .object({
+    allocatable: IoK8sApiStorageV1VolumeNodeResourcesSchema.exactOptional().openapi({
+      description:
+        'allocatable represents the volume resources of a node that are available for scheduling. This field is beta.',
+    }),
+    name: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'name represents the name of the CSI driver that this object refers to. This MUST be the same name returned by the CSI GetPluginName() call for that driver.',
+      }),
+    nodeID: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'nodeID of the node from the driver point of view. This field enables Kubernetes to communicate with storage systems that do not share the same nomenclature for nodes. For example, Kubernetes may refer to a given node as "node1", but the storage system may refer to the same node as "nodeA". When Kubernetes issues a command to the storage system to attach a volume to a specific node, it can use this field to refer to the node name using the ID that the storage system will understand, e.g. "nodeA" instead of "node1". This field is required.',
+      }),
+    topologyKeys: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'topologyKeys is the list of keys supported by the driver. When a driver is initialized on a cluster, it provides a set of topology keys that it understands (e.g. "company.com/zone", "company.com/region"). When a driver is initialized on a node, it provides the same topology keys along with values. Kubelet will expose these topology keys as labels on its own node object. When Kubernetes does topology aware provisioning, it can use this list to determine which labels it should retrieve from the node object and pass back to the driver. It is possible for different nodes to use different topology keys. This can be empty if driver does not support topology.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+  })
+  .openapi({
+    description:
+      'CSINodeDriver holds information about the specification of one CSI driver installed on a node',
+    required: ['name', 'nodeID'],
+  })
+  .openapi('IoK8sApiStorageV1CSINodeDriver')
+
+const IoK8sApiStorageV1CSINodeSpecSchema = z
+  .object({
+    drivers: z
+      .array(IoK8sApiStorageV1CSINodeDriverSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'drivers is a list of information of all CSI Drivers existing on a node. If all drivers in the list are uninstalled, this can become empty.',
+        'x-kubernetes-list-map-keys': ['name'],
+        'x-kubernetes-list-type': 'map',
+        'x-kubernetes-patch-merge-key': 'name',
+        'x-kubernetes-patch-strategy': 'merge',
+      }),
+  })
+  .openapi({
+    description:
+      'CSINodeSpec holds information about the specification of all CSI drivers installed on a node',
+    required: [],
+  })
+  .openapi('IoK8sApiStorageV1CSINodeSpec')
+
+const IoK8sApiStorageV1StorageHealthConditionSchema = z
+  .object({
+    accessMode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'accessMode is the access mode affected. Nil means all access modes are affected.',
+      }),
+    lastTransitionTime: IoK8sApimachineryPkgApisMetaV1TimeSchema.exactOptional().openapi({
+      description:
+        'lastTransitionTime is when this condition first appeared at its current state. lastTransitionTime remains unchanged when only the message changes.',
+    }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'message is a human-readable description. Maximum permitted length of a message is 1024 bytes.',
+      }),
+    reason: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'reason is a brief CamelCase machine-parseable reason. Maximum permitted length of a reason is 256 bytes.',
+      }),
+    status: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'status is the health status category. Possible values are: - "StorageHealthUnknown": the driver reported an unknown health status, or a status Kubernetes does not recognize; the backend must not be considered healthy. - "StorageUnreachable": the storage backend is unreachable. - "StorageDegraded": the storage backend is functioning with reduced capability. - "StorageHealthy": the storage backend is healthy as seen from this node.\n\nAdditional values may be introduced as the CSI specification evolves. Writers that do not recognize a status may classify it as StorageHealthUnknown. Readers that do not recognize a status must use it only for health reporting and observability.',
+      }),
+    volumeMode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'volumeMode is the volume mode affected. Nil means both are affected.',
+      }),
+  })
+  .openapi({
+    description:
+      'StorageHealthCondition represents a health condition reported by a CSI driver for its storage backend on a node.',
+    required: ['status', 'reason'],
+  })
+  .openapi('IoK8sApiStorageV1StorageHealthCondition')
+
+const IoK8sApiStorageV1StorageHealthSchema = z
+  .object({
+    healthConditions: z
+      .array(IoK8sApiStorageV1StorageHealthConditionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'healthConditions are the storage backend conditions reported by the CSI driver. At most 16 conditions may be reported. An empty list means the CSI driver either does not support storage health or has not reported it yet. If the driver supports storage health and its storage backend is healthy, the kubelet reports a StorageHealthy condition.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+    name: z
+      .string()
+      .default('')
+      .openapi({ description: 'name is the CSI driver name, matching CSINodeDriver.name.' }),
+  })
+  .openapi({
+    description:
+      'StorageHealth contains storage backend health reported by a CSI driver on a node.',
+    required: ['name'],
+  })
+  .openapi('IoK8sApiStorageV1StorageHealth')
+
+const IoK8sApiStorageV1CSINodeStatusSchema = z
+  .object({
+    storageHealth: z
+      .array(IoK8sApiStorageV1StorageHealthSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'storageHealth contains backend health reports for CSI drivers registered on the node. This is an alpha field and requires enabling the CSIVolumeHealth feature gate.',
+        'x-kubernetes-list-map-keys': ['name'],
+        'x-kubernetes-list-type': 'map',
+        'x-kubernetes-patch-merge-key': 'name',
+        'x-kubernetes-patch-strategy': 'merge',
+      }),
+  })
+  .openapi({
+    description: 'CSINodeStatus contains health and status information for storage on a node.',
+    required: [],
+  })
+  .openapi('IoK8sApiStorageV1CSINodeStatus')
+
+const IoK8sApiStorageV1CSINodeSchema = z
+  .object({
+    apiVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+      }),
+    metadata: IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema.default({})
+      .exactOptional()
+      .openapi({
+        description:
+          'metadata is the standard object metadata. metadata.name must be the Kubernetes node name.',
+      }),
+    spec: IoK8sApiStorageV1CSINodeSpecSchema.default({})
+      .exactOptional()
+      .openapi({ description: 'spec is the specification of CSINode' }),
+    status: IoK8sApiStorageV1CSINodeStatusSchema.default({})
+      .exactOptional()
+      .openapi({
+        description: "status contains health and status information for the node's storage.",
+      }),
+  })
+  .openapi({
+    description:
+      "CSINode holds information about all CSI drivers installed on a node. CSI drivers do not need to create the CSINode object directly. As long as they use the node-driver-registrar sidecar container, the kubelet will automatically populate the CSINode object for the CSI driver as part of kubelet plugin registration. CSINode has the same name as a node. If the object is missing, it means either there are no CSI Drivers available on the node, or the Kubelet version is low enough that it doesn't create this object. CSINode has an OwnerReference that points to the corresponding node object.",
+    'x-kubernetes-group-version-kind': [
+      { group: 'storage.k8s.io', kind: 'CSINode', version: 'v1' },
+    ],
+    required: [],
+  })
+  .openapi('IoK8sApiStorageV1CSINode')
+
+const IoK8sApimachineryPkgApisMetaV1ShardInfoSchema = z
+  .object({
+    selector: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'selector is the shard selector string from the request, echoed back so clients can verify which shard they received and merge responses from multiple shards.',
+      }),
+  })
+  .openapi({
+    description:
+      'ShardInfo describes the shard selector that was applied to produce a list response. Its presence on a list response indicates the list is a filtered subset.',
+    required: ['selector'],
+  })
+  .openapi('IoK8sApimachineryPkgApisMetaV1ShardInfo')
+
+const IoK8sApimachineryPkgApisMetaV1ListMetaSchema = z
+  .object({
+    continue: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'continue may be set if the user set a limit on the number of items returned, and indicates that the server has more data available. The value is opaque and may be used to issue another request to the endpoint that served this list to retrieve the next set of available objects. Continuing a consistent list may not be possible if the server configuration has changed or more than a few minutes have passed. The resourceVersion field returned when using this continue value will be identical to the value in the first response, unless you have received this token from an error message.',
+      }),
+    remainingItemCount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'remainingItemCount is the number of subsequent items in the list which are not included in this list response. If the list request contained label or field selectors, then the number of remaining items is unknown and the field will be left unset and omitted during serialization. If the list is complete (either because it is not chunking or because this is the last chunk), then there are no more remaining items and this field will be left unset and omitted during serialization. Servers older than v1.15 do not set this field. The intended use of the remainingItemCount is *estimating* the size of a collection. Clients should not rely on the remainingItemCount to be set or to be exact.',
+      }),
+    resourceVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "String that identifies the server's internal version of this object that can be used by clients to determine when objects have changed. Value must be treated as opaque by clients and passed unmodified back to the server. Populated by the system. Read-only. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency",
+      }),
+    selfLink: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Deprecated: selfLink is a legacy read-only field that is no longer populated by the system.',
+      }),
+    shardInfo: IoK8sApimachineryPkgApisMetaV1ShardInfoSchema.exactOptional().openapi({
+      description:
+        'shardInfo is set when the list is a filtered subset of the full collection, as selected by a shard selector on the request. It echoes back the selector so clients can verify which shard they received and merge sharded responses. Clients should not cache sharded list responses as a full representation of the collection.\n\nThis is a beta field and is enabled by default via the ShardedListAndWatch feature gate.',
+    }),
+  })
+  .openapi({
+    description:
+      'ListMeta describes metadata that synthetic resources must have, including lists and various status objects. A resource may have only one of {ObjectMeta, ListMeta}.',
+    required: [],
+  })
+  .openapi('IoK8sApimachineryPkgApisMetaV1ListMeta')
+
+type IoK8sApiStorageV1CSINodeListType = {
+  apiVersion?: string
+  items: z.infer<typeof IoK8sApiStorageV1CSINodeSchema>[]
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ListMetaSchema>
+}
+
+const IoK8sApiCoreV1TopologySelectorLabelRequirementSchema = z
+  .object({
+    key: z
+      .string()
+      .default('')
+      .openapi({ description: 'key is the label key that the selector applies to.' }),
+    values: z
+      .array(z.string())
+      .openapi({
+        description:
+          'values is an array of string values. One value must match the label to be selected. Each entry in values is ORed.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+  })
+  .openapi({
+    description:
+      'A topology selector requirement is a selector that matches given label. This is an alpha feature and may change in the future.',
+    required: ['key', 'values'],
+  })
+  .openapi('IoK8sApiCoreV1TopologySelectorLabelRequirement')
+
+const IoK8sApiCoreV1TopologySelectorTermSchema = z
+  .object({
+    matchLabelExpressions: z
+      .array(IoK8sApiCoreV1TopologySelectorLabelRequirementSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'matchLabelExpressions is a list of topology selector requirements by labels. Usage: Fields of type []TopologySelectorTerm must be listType=atomic. A list of topology selector requirements by labels.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+  })
+  .openapi({
+    description:
+      'A topology selector term represents the result of label queries. A null or empty topology selector term matches no objects. The requirements of them are ANDed. It provides a subset of functionality as NodeSelectorTerm. This is an alpha feature and may change in the future.',
+    'x-kubernetes-map-type': 'atomic',
+    required: [],
+  })
+  .openapi('IoK8sApiCoreV1TopologySelectorTerm')
+
+const IoK8sApiStorageV1StorageClassSchema = z
+  .object({
+    allowVolumeExpansion: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'allowVolumeExpansion shows whether the storage class allow volume expand.',
+      }),
+    allowedTopologies: z
+      .array(IoK8sApiCoreV1TopologySelectorTermSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'allowedTopologies restrict the node topologies where volumes can be dynamically provisioned. Each volume plugin defines its own supported topology specifications. An empty TopologySelectorTerm list means there is no topology restriction. This field is only honored by servers that enable the VolumeScheduling feature.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+    apiVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+      }),
+    metadata: IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema.default({})
+      .exactOptional()
+      .openapi({
+        description:
+          'metadata is the standard object metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata',
+      }),
+    mountOptions: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'mountOptions controls the mountOptions for dynamically provisioned PersistentVolumes of this storage class. e.g. ["ro", "soft"]. Not validated - mount of the PVs will simply fail if one is invalid.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+    parameters: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'parameters holds the parameters for the provisioner that should create volumes of this storage class.',
+      }),
+    provisioner: z
+      .string()
+      .default('')
+      .openapi({ description: 'provisioner indicates the type of the provisioner.' }),
+    reclaimPolicy: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'reclaimPolicy controls the reclaimPolicy for dynamically provisioned PersistentVolumes of this storage class. Defaults to Delete.',
+      }),
+    volumeBindingMode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'volumeBindingMode indicates how PersistentVolumeClaims should be provisioned and bound.  When unset, VolumeBindingImmediate is used. This field is only honored by servers that enable the VolumeScheduling feature.',
+      }),
+  })
+  .openapi({
+    description:
+      'StorageClass describes the parameters for a class of storage for which PersistentVolumes can be dynamically provisioned.\n\nStorageClasses are non-namespaced; the name of the storage class according to etcd is in ObjectMeta.Name.',
+    required: ['provisioner'],
+    'x-kubernetes-group-version-kind': [
+      { group: 'storage.k8s.io', kind: 'StorageClass', version: 'v1' },
+    ],
+  })
+  .openapi('IoK8sApiStorageV1StorageClass')
+
+type IoK8sApiStorageV1StorageClassListType = {
+  apiVersion?: string
+  items: z.infer<typeof IoK8sApiStorageV1StorageClassSchema>[]
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ListMetaSchema>
+}
+
+const IoK8sApiCoreV1PersistentVolumeSpecSchema: z.ZodType<IoK8sApiCoreV1PersistentVolumeSpecType> =
+  z
+    .object({
+      accessModes: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            'accessModes contains all ways the volume can be mounted. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes',
+          'x-kubernetes-list-type': 'atomic',
+        }),
+      awsElasticBlockStore:
+        IoK8sApiCoreV1AWSElasticBlockStoreVolumeSourceSchema.exactOptional().openapi({
+          description:
+            "awsElasticBlockStore represents an AWS Disk resource that is attached to a kubelet's host machine and then exposed to the pod.\n\nDeprecated: AWSElasticBlockStore is deprecated. All operations for the in-tree awsElasticBlockStore type are redirected to the ebs.csi.aws.com CSI driver. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore",
+        }),
+      azureDisk: IoK8sApiCoreV1AzureDiskVolumeSourceSchema.exactOptional().openapi({
+        description:
+          'azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.\n\nDeprecated: AzureDisk is deprecated. All operations for the in-tree azureDisk type are redirected to the disk.csi.azure.com CSI driver.',
+      }),
+      azureFile: IoK8sApiCoreV1AzureFilePersistentVolumeSourceSchema.exactOptional().openapi({
+        description:
+          'azureFile represents an Azure File Service mount on the host and bind mount to the pod.\n\nDeprecated: AzureFile is deprecated. All operations for the in-tree azureFile type are redirected to the file.csi.azure.com CSI driver.',
+      }),
+      capacity: z
+        .record(z.string(), IoK8sApimachineryPkgApiResourceQuantitySchema)
+        .exactOptional()
+        .openapi({
+          description:
+            "capacity is the description of the persistent volume's resources and capacity. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#capacity",
+        }),
+      cephfs: IoK8sApiCoreV1CephFSPersistentVolumeSourceSchema.exactOptional().openapi({
+        description:
+          "cephfs represents a Ceph FS mount on the host that shares a pod's lifetime.\n\nDeprecated: CephFS is deprecated and the in-tree cephfs type is no longer supported.",
+      }),
+      cinder: IoK8sApiCoreV1CinderPersistentVolumeSourceSchema.exactOptional().openapi({
+        description:
+          'cinder represents a cinder volume attached and mounted on kubelets host machine.\n\nDeprecated: Cinder is deprecated. All operations for the in-tree cinder type are redirected to the cinder.csi.openstack.org CSI driver. More info: https://examples.k8s.io/mysql-cinder-pd/README.md',
+      }),
+      claimRef: IoK8sApiCoreV1ObjectReferenceSchema.exactOptional().openapi({
+        description:
+          'claimRef is part of a bi-directional binding between PersistentVolume and PersistentVolumeClaim. Expected to be non-nil when bound. claim.VolumeName is the authoritative bind between PV and PVC. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#binding',
+        'x-kubernetes-map-type': 'granular',
+      }),
+      csi: IoK8sApiCoreV1CSIPersistentVolumeSourceSchema.exactOptional().openapi({
+        description: 'csi represents storage that is handled by an external CSI driver.',
+      }),
+      fc: IoK8sApiCoreV1FCVolumeSourceSchema.exactOptional().openapi({
+        description:
+          "fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.",
+      }),
+      flexVolume: IoK8sApiCoreV1FlexPersistentVolumeSourceSchema.exactOptional().openapi({
+        description:
+          'flexVolume represents a generic volume resource that is provisioned/attached using an exec based plugin.\n\nDeprecated: FlexVolume is deprecated. Consider using a CSIDriver instead.',
+      }),
+      flocker: IoK8sApiCoreV1FlockerVolumeSourceSchema.exactOptional().openapi({
+        description:
+          "flocker represents a Flocker volume attached to a kubelet's host machine and exposed to the pod for its usage. This depends on the Flocker control service being running.\n\nDeprecated: Flocker is deprecated and the in-tree flocker type is no longer supported.",
+      }),
+      gcePersistentDisk: IoK8sApiCoreV1GCEPersistentDiskVolumeSourceSchema.exactOptional().openapi({
+        description:
+          "gcePersistentDisk represents a GCE Disk resource that is attached to a kubelet's host machine and then exposed to the pod. Provisioned by an admin.\n\nDeprecated: GCEPersistentDisk is deprecated. All operations for the in-tree gcePersistentDisk type are redirected to the pd.csi.storage.gke.io CSI driver. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk",
+      }),
+      glusterfs: IoK8sApiCoreV1GlusterfsPersistentVolumeSourceSchema.exactOptional().openapi({
+        description:
+          'glusterfs represents a Glusterfs volume that is attached to a host and exposed to the pod. Provisioned by an admin.\n\nDeprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported. More info: https://examples.k8s.io/volumes/glusterfs/README.md',
+      }),
+      hostPath: IoK8sApiCoreV1HostPathVolumeSourceSchema.exactOptional().openapi({
+        description:
+          'hostPath represents a directory on the host. Provisioned by a developer or tester. This is useful for single-node development and testing only! On-host storage is not supported in any way and WILL NOT WORK in a multi-node cluster. More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath',
+      }),
+      iscsi: IoK8sApiCoreV1ISCSIPersistentVolumeSourceSchema.exactOptional().openapi({
+        description:
+          "iscsi represents an ISCSI Disk resource that is attached to a kubelet's host machine and then exposed to the pod. Provisioned by an admin.",
+      }),
+      local: IoK8sApiCoreV1LocalVolumeSourceSchema.exactOptional().openapi({
+        description: 'local represents directly-attached storage with node affinity',
+      }),
+      mountOptions: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            'mountOptions is the list of mount options, e.g. ["ro", "soft"]. Not validated - mount will simply fail if one is invalid. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#mount-options',
+          'x-kubernetes-list-type': 'atomic',
+        }),
+      nfs: IoK8sApiCoreV1NFSVolumeSourceSchema.exactOptional().openapi({
+        description:
+          'nfs represents an NFS mount on the host. Provisioned by an admin. More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs',
+      }),
+      nodeAffinity: IoK8sApiCoreV1VolumeNodeAffinitySchema.exactOptional().openapi({
+        description:
+          'nodeAffinity defines constraints that limit what nodes this volume can be accessed from. This field influences the scheduling of pods that use this volume. This field is mutable if MutablePVNodeAffinity feature gate is enabled.',
+      }),
+      persistentVolumeReclaimPolicy: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'persistentVolumeReclaimPolicy defines what happens to a persistent volume when released from its claim. Valid options are Retain (default for manually created PersistentVolumes), Delete (default for dynamically provisioned PersistentVolumes), and Recycle (deprecated). Recycle must be supported by the volume plugin underlying this PersistentVolume. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#reclaiming',
+        }),
+      photonPersistentDisk:
+        IoK8sApiCoreV1PhotonPersistentDiskVolumeSourceSchema.exactOptional().openapi({
+          description:
+            'photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine.\n\nDeprecated: PhotonPersistentDisk is deprecated and the in-tree photonPersistentDisk type is no longer supported.',
+        }),
+      portworxVolume: IoK8sApiCoreV1PortworxVolumeSourceSchema.exactOptional().openapi({
+        description:
+          'portworxVolume represents a portworx volume attached and mounted on kubelets host machine.\n\nDeprecated: PortworxVolume is deprecated. All operations for the in-tree portworxVolume type are redirected to the pxd.portworx.com CSI driver.',
+      }),
+      quobyte: IoK8sApiCoreV1QuobyteVolumeSourceSchema.exactOptional().openapi({
+        description:
+          "quobyte represents a Quobyte mount on the host that shares a pod's lifetime.\n\nDeprecated: Quobyte is deprecated and the in-tree quobyte type is no longer supported.",
+      }),
+      rbd: IoK8sApiCoreV1RBDPersistentVolumeSourceSchema.exactOptional().openapi({
+        description:
+          "rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.\n\nDeprecated: RBD is deprecated and the in-tree rbd type is no longer supported. More info: https://examples.k8s.io/volumes/rbd/README.md",
+      }),
+      scaleIO: IoK8sApiCoreV1ScaleIOPersistentVolumeSourceSchema.exactOptional().openapi({
+        description:
+          'scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.\n\nDeprecated: ScaleIO is deprecated and the in-tree scaleIO type is no longer supported.',
+      }),
+      storageClassName: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'storageClassName is the name of StorageClass to which this persistent volume belongs. Empty value means that this volume does not belong to any StorageClass.',
+        }),
+      storageos: IoK8sApiCoreV1StorageOSPersistentVolumeSourceSchema.exactOptional().openapi({
+        description:
+          "storageos represents a StorageOS volume that is attached to the kubelet's host machine and mounted into the pod.\n\nDeprecated: StorageOS is deprecated and the in-tree storageos type is no longer supported. More info: https://examples.k8s.io/volumes/storageos/README.md",
+      }),
+      volumeAttributesClassName: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'volumeAttributesClassName is the name of VolumeAttributesClass to which this persistent volume belongs. Empty value is not allowed. When this field is not set, it indicates that this volume does not belong to any VolumeAttributesClass. This field is mutable and can be changed by the CSI driver after a volume has been updated successfully to a new class. For an unbound PersistentVolume, the volumeAttributesClassName will be matched with unbound PersistentVolumeClaims during the binding process.',
+        }),
+      volumeMode: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'volumeMode defines if a volume is intended to be used with a formatted filesystem or to remain in raw block state. Value of Filesystem is implied when not included in spec.',
+        }),
+      vsphereVolume: IoK8sApiCoreV1VsphereVirtualDiskVolumeSourceSchema.exactOptional().openapi({
+        description:
+          'vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine.\n\nDeprecated: VsphereVolume is deprecated. All operations for the in-tree vsphereVolume type are redirected to the csi.vsphere.vmware.com CSI driver.',
+      }),
+    })
+    .openapi({
+      description: 'PersistentVolumeSpec is the specification of a persistent volume.',
+      required: [],
+    })
+    .openapi('IoK8sApiCoreV1PersistentVolumeSpec')
+
+type IoK8sApiStorageV1VolumeAttachmentSourceType = {
+  inlineVolumeSpec?: z.infer<typeof IoK8sApiCoreV1PersistentVolumeSpecSchema>
+  persistentVolumeName?: string
+}
+
+const IoK8sApiStorageV1VolumeAttachmentSourceSchema: z.ZodType<IoK8sApiStorageV1VolumeAttachmentSourceType> =
+  z
+    .object({
+      inlineVolumeSpec: IoK8sApiCoreV1PersistentVolumeSpecSchema.exactOptional().openapi({
+        description:
+          "inlineVolumeSpec contains all the information necessary to attach a persistent volume defined by a pod's inline VolumeSource. This field is populated only for the CSIMigration feature. It contains translated fields from a pod's inline VolumeSource to a PersistentVolumeSpec. This field is beta-level and is only honored by servers that enabled the CSIMigration feature.",
+      }),
+      persistentVolumeName: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'persistentVolumeName represents the name of the persistent volume to attach.',
+        }),
+    })
+    .openapi({
+      description:
+        'VolumeAttachmentSource represents a volume that should be attached. Right now only PersistentVolumes can be attached via external attacher, in the future we may allow also inline volumes in pods. Exactly one member can be set.',
+      required: [],
+    })
+    .openapi('IoK8sApiStorageV1VolumeAttachmentSource')
+
+type IoK8sApiStorageV1VolumeAttachmentSpecType = {
+  attacher: string
+  nodeName: string
+  source: z.infer<typeof IoK8sApiStorageV1VolumeAttachmentSourceSchema>
+}
+
+const IoK8sApiStorageV1VolumeAttachmentSpecSchema: z.ZodType<IoK8sApiStorageV1VolumeAttachmentSpecType> =
+  z
+    .object({
+      attacher: z
+        .string()
+        .default('')
+        .openapi({
+          description:
+            'attacher indicates the name of the volume driver that MUST handle this request. This is the name returned by GetPluginName().',
+        }),
+      nodeName: z
+        .string()
+        .default('')
+        .openapi({
+          description: 'nodeName represents the node that the volume should be attached to.',
+        }),
+      source: IoK8sApiStorageV1VolumeAttachmentSourceSchema.default({}).openapi({
+        description: 'source represents the volume that should be attached.',
+      }),
+    })
+    .openapi({
+      description: 'VolumeAttachmentSpec is the specification of a VolumeAttachment request.',
+      required: ['attacher', 'source', 'nodeName'],
+    })
+    .openapi('IoK8sApiStorageV1VolumeAttachmentSpec')
+
+const IoK8sApiStorageV1VolumeErrorSchema = z
+  .object({
+    errorCode: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'errorCode is a numeric gRPC code representing the error encountered during Attach or Detach operations.\n\nThis field requires the MutableCSINodeAllocatableCount feature gate being enabled to be set.',
+      }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'message represents the error encountered during Attach or Detach operation. This string may be logged, so it should not contain sensitive information.',
+      }),
+    time: IoK8sApimachineryPkgApisMetaV1TimeSchema.exactOptional().openapi({
+      description: 'time represents the time the error was encountered.',
+    }),
+  })
+  .openapi({
+    description: 'VolumeError captures an error encountered during a volume operation.',
+    required: [],
+  })
+  .openapi('IoK8sApiStorageV1VolumeError')
+
+const IoK8sApiStorageV1VolumeAttachmentStatusSchema = z
+  .object({
+    attachError: IoK8sApiStorageV1VolumeErrorSchema.exactOptional().openapi({
+      description:
+        'attachError represents the last error encountered during attach operation, if any. This field must only be set by the entity completing the attach operation, i.e. the external-attacher.',
+    }),
+    attached: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'attached indicates the volume is successfully attached. This field must only be set by the entity completing the attach operation, i.e. the external-attacher.',
+      }),
+    attachmentMetadata: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'attachmentMetadata is populated with any information returned by the attach operation, upon successful attach, that must be passed into subsequent WaitForAttach or Mount calls. This field must only be set by the entity completing the attach operation, i.e. the external-attacher.',
+      }),
+    detachError: IoK8sApiStorageV1VolumeErrorSchema.exactOptional().openapi({
+      description:
+        'detachError represents the last error encountered during detach operation, if any. This field must only be set by the entity completing the detach operation, i.e. the external-attacher.',
+    }),
+  })
+  .openapi({
+    description: 'VolumeAttachmentStatus is the status of a VolumeAttachment request.',
+    required: [],
+  })
+  .openapi('IoK8sApiStorageV1VolumeAttachmentStatus')
+
+type IoK8sApiStorageV1VolumeAttachmentType = {
+  apiVersion?: string
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema>
+  spec: z.infer<typeof IoK8sApiStorageV1VolumeAttachmentSpecSchema>
+  status?: z.infer<typeof IoK8sApiStorageV1VolumeAttachmentStatusSchema>
+}
+
+const IoK8sApiStorageV1VolumeAttachmentSchema: z.ZodType<IoK8sApiStorageV1VolumeAttachmentType> = z
+  .object({
+    apiVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+      }),
+    metadata: IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema.default({})
+      .exactOptional()
+      .openapi({
+        description:
+          'metadata is the standard object metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata',
+      }),
+    spec: IoK8sApiStorageV1VolumeAttachmentSpecSchema.openapi({
+      description:
+        'spec represents specification of the desired attach/detach volume behavior. Populated by the Kubernetes system.',
+      default: {},
+    }),
+    status: IoK8sApiStorageV1VolumeAttachmentStatusSchema.default({})
+      .exactOptional()
+      .openapi({
+        description:
+          'status represents status of the VolumeAttachment request. Populated by the entity completing the attach or detach operation, i.e. the external-attacher.',
+      }),
+  })
+  .openapi({
+    description:
+      'VolumeAttachment captures the intent to attach or detach the specified volume to/from the specified node.\n\nVolumeAttachment objects are non-namespaced.',
+    required: ['spec'],
+    'x-kubernetes-group-version-kind': [
+      { group: 'storage.k8s.io', kind: 'VolumeAttachment', version: 'v1' },
+    ],
+  })
+  .openapi('IoK8sApiStorageV1VolumeAttachment')
+
+type IoK8sApiStorageV1VolumeAttachmentListType = {
+  apiVersion?: string
+  items: z.infer<typeof IoK8sApiStorageV1VolumeAttachmentSchema>[]
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ListMetaSchema>
+}
+
 const IoK8sApiStorageV1TokenRequestSchema = z
   .object({
     audience: z
@@ -1682,75 +2260,6 @@ const IoK8sApiStorageV1CSIDriverSchema = z
   })
   .openapi('IoK8sApiStorageV1CSIDriver')
 
-const IoK8sApimachineryPkgApisMetaV1ShardInfoSchema = z
-  .object({
-    selector: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'selector is the shard selector string from the request, echoed back so clients can verify which shard they received and merge responses from multiple shards.',
-      }),
-  })
-  .openapi({
-    description:
-      'ShardInfo describes the shard selector that was applied to produce a list response. Its presence on a list response indicates the list is a filtered subset.',
-    required: ['selector'],
-  })
-  .openapi('IoK8sApimachineryPkgApisMetaV1ShardInfo')
-
-const IoK8sApimachineryPkgApisMetaV1ListMetaSchema = z
-  .object({
-    continue: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'continue may be set if the user set a limit on the number of items returned, and indicates that the server has more data available. The value is opaque and may be used to issue another request to the endpoint that served this list to retrieve the next set of available objects. Continuing a consistent list may not be possible if the server configuration has changed or more than a few minutes have passed. The resourceVersion field returned when using this continue value will be identical to the value in the first response, unless you have received this token from an error message.',
-      }),
-    remainingItemCount: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'remainingItemCount is the number of subsequent items in the list which are not included in this list response. If the list request contained label or field selectors, then the number of remaining items is unknown and the field will be left unset and omitted during serialization. If the list is complete (either because it is not chunking or because this is the last chunk), then there are no more remaining items and this field will be left unset and omitted during serialization. Servers older than v1.15 do not set this field. The intended use of the remainingItemCount is *estimating* the size of a collection. Clients should not rely on the remainingItemCount to be set or to be exact.',
-      }),
-    resourceVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "String that identifies the server's internal version of this object that can be used by clients to determine when objects have changed. Value must be treated as opaque by clients and passed unmodified back to the server. Populated by the system. Read-only. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency",
-      }),
-    selfLink: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Deprecated: selfLink is a legacy read-only field that is no longer populated by the system.',
-      }),
-    shardInfo: IoK8sApimachineryPkgApisMetaV1ShardInfoSchema.exactOptional().openapi({
-      description:
-        'shardInfo is set when the list is a filtered subset of the full collection, as selected by a shard selector on the request. It echoes back the selector so clients can verify which shard they received and merge sharded responses. Clients should not cache sharded list responses as a full representation of the collection.\n\nThis is a beta field and is enabled by default via the ShardedListAndWatch feature gate.',
-    }),
-  })
-  .openapi({
-    description:
-      'ListMeta describes metadata that synthetic resources must have, including lists and various status objects. A resource may have only one of {ObjectMeta, ListMeta}.',
-    required: [],
-  })
-  .openapi('IoK8sApimachineryPkgApisMetaV1ListMeta')
-
 const IoK8sApiStorageV1CSIDriverListSchema = z
   .object({
     apiVersion: z
@@ -1786,210 +2295,7 @@ const IoK8sApiStorageV1CSIDriverListSchema = z
   })
   .openapi('IoK8sApiStorageV1CSIDriverList')
 
-const IoK8sApiStorageV1VolumeNodeResourcesSchema = z
-  .object({
-    count: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'count indicates the maximum number of unique volumes managed by the CSI driver that can be used on a node. A volume that is both attached and mounted on a node is considered to be used once, not twice. The same rule applies for a unique volume that is shared among multiple pods on the same node. If this field is not specified, then the supported number of volumes on this node is unbounded.',
-      }),
-  })
-  .openapi({
-    description: 'VolumeNodeResources is a set of resource limits for scheduling of volumes.',
-    required: [],
-  })
-  .openapi('IoK8sApiStorageV1VolumeNodeResources')
-
-const IoK8sApiStorageV1CSINodeDriverSchema = z
-  .object({
-    allocatable: IoK8sApiStorageV1VolumeNodeResourcesSchema.exactOptional().openapi({
-      description:
-        'allocatable represents the volume resources of a node that are available for scheduling. This field is beta.',
-    }),
-    name: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'name represents the name of the CSI driver that this object refers to. This MUST be the same name returned by the CSI GetPluginName() call for that driver.',
-      }),
-    nodeID: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'nodeID of the node from the driver point of view. This field enables Kubernetes to communicate with storage systems that do not share the same nomenclature for nodes. For example, Kubernetes may refer to a given node as "node1", but the storage system may refer to the same node as "nodeA". When Kubernetes issues a command to the storage system to attach a volume to a specific node, it can use this field to refer to the node name using the ID that the storage system will understand, e.g. "nodeA" instead of "node1". This field is required.',
-      }),
-    topologyKeys: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'topologyKeys is the list of keys supported by the driver. When a driver is initialized on a cluster, it provides a set of topology keys that it understands (e.g. "company.com/zone", "company.com/region"). When a driver is initialized on a node, it provides the same topology keys along with values. Kubelet will expose these topology keys as labels on its own node object. When Kubernetes does topology aware provisioning, it can use this list to determine which labels it should retrieve from the node object and pass back to the driver. It is possible for different nodes to use different topology keys. This can be empty if driver does not support topology.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-  })
-  .openapi({
-    description:
-      'CSINodeDriver holds information about the specification of one CSI driver installed on a node',
-    required: ['name', 'nodeID'],
-  })
-  .openapi('IoK8sApiStorageV1CSINodeDriver')
-
-const IoK8sApiStorageV1CSINodeSpecSchema = z
-  .object({
-    drivers: z
-      .array(IoK8sApiStorageV1CSINodeDriverSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'drivers is a list of information of all CSI Drivers existing on a node. If all drivers in the list are uninstalled, this can become empty.',
-        'x-kubernetes-list-map-keys': ['name'],
-        'x-kubernetes-list-type': 'map',
-        'x-kubernetes-patch-merge-key': 'name',
-        'x-kubernetes-patch-strategy': 'merge',
-      }),
-  })
-  .openapi({
-    description:
-      'CSINodeSpec holds information about the specification of all CSI drivers installed on a node',
-    required: [],
-  })
-  .openapi('IoK8sApiStorageV1CSINodeSpec')
-
-const IoK8sApiStorageV1StorageHealthConditionSchema = z
-  .object({
-    accessMode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'accessMode is the access mode affected. Nil means all access modes are affected.',
-      }),
-    lastTransitionTime: IoK8sApimachineryPkgApisMetaV1TimeSchema.exactOptional().openapi({
-      description: 'lastTransitionTime is when this condition first appeared at its current state.',
-    }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'message is a human-readable description. Maximum permitted length of a message is 1024 bytes.',
-      }),
-    reason: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'reason is a brief CamelCase machine-parseable reason. Maximum permitted length of a reason is 256 bytes.',
-      }),
-    status: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'status is the health status category. One of "StorageUnreachable", "StorageDegraded".',
-      }),
-    volumeMode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'volumeMode is the volume mode affected. Nil means both are affected.',
-      }),
-  })
-  .openapi({
-    description:
-      'StorageHealthCondition represents an adverse health condition reported by a CSI driver for its storage backend on a node.',
-    required: ['status', 'reason'],
-  })
-  .openapi('IoK8sApiStorageV1StorageHealthCondition')
-
-const IoK8sApiStorageV1StorageHealthSchema = z
-  .object({
-    healthConditions: z
-      .array(IoK8sApiStorageV1StorageHealthConditionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'healthConditions are the adverse storage backend conditions reported by the CSI driver. At most 16 conditions may be reported.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-    name: z
-      .string()
-      .default('')
-      .openapi({ description: 'name is the CSI driver name, matching CSINodeDriver.name.' }),
-  })
-  .openapi({
-    description:
-      'StorageHealth contains storage backend health reported by a CSI driver on a node.',
-    required: ['name'],
-  })
-  .openapi('IoK8sApiStorageV1StorageHealth')
-
-const IoK8sApiStorageV1CSINodeStatusSchema = z
-  .object({
-    storageHealth: z
-      .array(IoK8sApiStorageV1StorageHealthSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'storageHealth contains backend health reports for CSI drivers registered on the node.',
-        'x-kubernetes-list-map-keys': ['name'],
-        'x-kubernetes-list-type': 'map',
-        'x-kubernetes-patch-merge-key': 'name',
-        'x-kubernetes-patch-strategy': 'merge',
-      }),
-  })
-  .openapi({
-    description: 'CSINodeStatus contains health and status information for storage on a node.',
-    required: [],
-  })
-  .openapi('IoK8sApiStorageV1CSINodeStatus')
-
-const IoK8sApiStorageV1CSINodeSchema = z
-  .object({
-    apiVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          'metadata is the standard object metadata. metadata.name must be the Kubernetes node name.',
-      }),
-    spec: IoK8sApiStorageV1CSINodeSpecSchema.default({})
-      .exactOptional()
-      .openapi({ description: 'spec is the specification of CSINode' }),
-    status: IoK8sApiStorageV1CSINodeStatusSchema.default({})
-      .exactOptional()
-      .openapi({
-        description: "status contains health and status information for the node's storage.",
-      }),
-  })
-  .openapi({
-    description:
-      "CSINode holds information about all CSI drivers installed on a node. CSI drivers do not need to create the CSINode object directly. As long as they use the node-driver-registrar sidecar container, the kubelet will automatically populate the CSINode object for the CSI driver as part of kubelet plugin registration. CSINode has the same name as a node. If the object is missing, it means either there are no CSI Drivers available on the node, or the Kubelet version is low enough that it doesn't create this object. CSINode has an OwnerReference that points to the corresponding node object.",
-    'x-kubernetes-group-version-kind': [
-      { group: 'storage.k8s.io', kind: 'CSINode', version: 'v1' },
-    ],
-    required: [],
-  })
-  .openapi('IoK8sApiStorageV1CSINode')
-
-const IoK8sApiStorageV1CSINodeListSchema = z
+const IoK8sApiStorageV1CSINodeListSchema: z.ZodType<IoK8sApiStorageV1CSINodeListType> = z
   .object({
     apiVersion: z
       .string()
@@ -2166,87 +2472,7 @@ const IoK8sApiStorageV1CSIStorageCapacityListSchema = z
   })
   .openapi('IoK8sApiStorageV1CSIStorageCapacityList')
 
-const IoK8sApiStorageV1StorageClassSchema = z
-  .object({
-    allowVolumeExpansion: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'allowVolumeExpansion shows whether the storage class allow volume expand.',
-      }),
-    allowedTopologies: z
-      .array(IoK8sApiCoreV1TopologySelectorTermSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'allowedTopologies restrict the node topologies where volumes can be dynamically provisioned. Each volume plugin defines its own supported topology specifications. An empty TopologySelectorTerm list means there is no topology restriction. This field is only honored by servers that enable the VolumeScheduling feature.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-    apiVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          'metadata is the standard object metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata',
-      }),
-    mountOptions: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'mountOptions controls the mountOptions for dynamically provisioned PersistentVolumes of this storage class. e.g. ["ro", "soft"]. Not validated - mount of the PVs will simply fail if one is invalid.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-    parameters: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'parameters holds the parameters for the provisioner that should create volumes of this storage class.',
-      }),
-    provisioner: z
-      .string()
-      .default('')
-      .openapi({ description: 'provisioner indicates the type of the provisioner.' }),
-    reclaimPolicy: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'reclaimPolicy controls the reclaimPolicy for dynamically provisioned PersistentVolumes of this storage class. Defaults to Delete.',
-      }),
-    volumeBindingMode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'volumeBindingMode indicates how PersistentVolumeClaims should be provisioned and bound.  When unset, VolumeBindingImmediate is used. This field is only honored by servers that enable the VolumeScheduling feature.',
-      }),
-  })
-  .openapi({
-    description:
-      'StorageClass describes the parameters for a class of storage for which PersistentVolumes can be dynamically provisioned.\n\nStorageClasses are non-namespaced; the name of the storage class according to etcd is in ObjectMeta.Name.',
-    required: ['provisioner'],
-    'x-kubernetes-group-version-kind': [
-      { group: 'storage.k8s.io', kind: 'StorageClass', version: 'v1' },
-    ],
-  })
-  .openapi('IoK8sApiStorageV1StorageClass')
-
-const IoK8sApiStorageV1StorageClassListSchema = z
+const IoK8sApiStorageV1StorageClassListSchema: z.ZodType<IoK8sApiStorageV1StorageClassListType> = z
   .object({
     apiVersion: z
       .string()
@@ -2281,186 +2507,41 @@ const IoK8sApiStorageV1StorageClassListSchema = z
   })
   .openapi('IoK8sApiStorageV1StorageClassList')
 
-const IoK8sApiStorageV1VolumeAttachmentSourceSchema = z
-  .object({
-    inlineVolumeSpec: IoK8sApiCoreV1PersistentVolumeSpecSchema.exactOptional().openapi({
-      description:
-        "inlineVolumeSpec contains all the information necessary to attach a persistent volume defined by a pod's inline VolumeSource. This field is populated only for the CSIMigration feature. It contains translated fields from a pod's inline VolumeSource to a PersistentVolumeSpec. This field is beta-level and is only honored by servers that enabled the CSIMigration feature.",
-    }),
-    persistentVolumeName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'persistentVolumeName represents the name of the persistent volume to attach.',
-      }),
-  })
-  .openapi({
-    description:
-      'VolumeAttachmentSource represents a volume that should be attached. Right now only PersistentVolumes can be attached via external attacher, in the future we may allow also inline volumes in pods. Exactly one member can be set.',
-    required: [],
-  })
-  .openapi('IoK8sApiStorageV1VolumeAttachmentSource')
-
-const IoK8sApiStorageV1VolumeAttachmentSpecSchema = z
-  .object({
-    attacher: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'attacher indicates the name of the volume driver that MUST handle this request. This is the name returned by GetPluginName().',
-      }),
-    nodeName: z
-      .string()
-      .default('')
-      .openapi({
-        description: 'nodeName represents the node that the volume should be attached to.',
-      }),
-    source: IoK8sApiStorageV1VolumeAttachmentSourceSchema.default({}).openapi({
-      description: 'source represents the volume that should be attached.',
-    }),
-  })
-  .openapi({
-    description: 'VolumeAttachmentSpec is the specification of a VolumeAttachment request.',
-    required: ['attacher', 'source', 'nodeName'],
-  })
-  .openapi('IoK8sApiStorageV1VolumeAttachmentSpec')
-
-const IoK8sApiStorageV1VolumeErrorSchema = z
-  .object({
-    errorCode: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'errorCode is a numeric gRPC code representing the error encountered during Attach or Detach operations.\n\nThis field requires the MutableCSINodeAllocatableCount feature gate being enabled to be set.',
-      }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'message represents the error encountered during Attach or Detach operation. This string may be logged, so it should not contain sensitive information.',
-      }),
-    time: IoK8sApimachineryPkgApisMetaV1TimeSchema.exactOptional().openapi({
-      description: 'time represents the time the error was encountered.',
-    }),
-  })
-  .openapi({
-    description: 'VolumeError captures an error encountered during a volume operation.',
-    required: [],
-  })
-  .openapi('IoK8sApiStorageV1VolumeError')
-
-const IoK8sApiStorageV1VolumeAttachmentStatusSchema = z
-  .object({
-    attachError: IoK8sApiStorageV1VolumeErrorSchema.exactOptional().openapi({
-      description:
-        'attachError represents the last error encountered during attach operation, if any. This field must only be set by the entity completing the attach operation, i.e. the external-attacher.',
-    }),
-    attached: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'attached indicates the volume is successfully attached. This field must only be set by the entity completing the attach operation, i.e. the external-attacher.',
-      }),
-    attachmentMetadata: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'attachmentMetadata is populated with any information returned by the attach operation, upon successful attach, that must be passed into subsequent WaitForAttach or Mount calls. This field must only be set by the entity completing the attach operation, i.e. the external-attacher.',
-      }),
-    detachError: IoK8sApiStorageV1VolumeErrorSchema.exactOptional().openapi({
-      description:
-        'detachError represents the last error encountered during detach operation, if any. This field must only be set by the entity completing the detach operation, i.e. the external-attacher.',
-    }),
-  })
-  .openapi({
-    description: 'VolumeAttachmentStatus is the status of a VolumeAttachment request.',
-    required: [],
-  })
-  .openapi('IoK8sApiStorageV1VolumeAttachmentStatus')
-
-const IoK8sApiStorageV1VolumeAttachmentSchema = z
-  .object({
-    apiVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          'metadata is the standard object metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata',
-      }),
-    spec: IoK8sApiStorageV1VolumeAttachmentSpecSchema.default({}).openapi({
-      description:
-        'spec represents specification of the desired attach/detach volume behavior. Populated by the Kubernetes system.',
-    }),
-    status: IoK8sApiStorageV1VolumeAttachmentStatusSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          'status represents status of the VolumeAttachment request. Populated by the entity completing the attach or detach operation, i.e. the external-attacher.',
-      }),
-  })
-  .openapi({
-    description:
-      'VolumeAttachment captures the intent to attach or detach the specified volume to/from the specified node.\n\nVolumeAttachment objects are non-namespaced.',
-    required: ['spec'],
-    'x-kubernetes-group-version-kind': [
-      { group: 'storage.k8s.io', kind: 'VolumeAttachment', version: 'v1' },
-    ],
-  })
-  .openapi('IoK8sApiStorageV1VolumeAttachment')
-
-const IoK8sApiStorageV1VolumeAttachmentListSchema = z
-  .object({
-    apiVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
-      }),
-    items: z
-      .array(IoK8sApiStorageV1VolumeAttachmentSchema)
-      .openapi({ description: 'items is the list of VolumeAttachments' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          'Standard list metadata More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata',
-      }),
-  })
-  .openapi({
-    description: 'VolumeAttachmentList is a collection of VolumeAttachment objects.',
-    required: ['items'],
-    'x-kubernetes-group-version-kind': [
-      { group: 'storage.k8s.io', kind: 'VolumeAttachmentList', version: 'v1' },
-    ],
-  })
-  .openapi('IoK8sApiStorageV1VolumeAttachmentList')
+const IoK8sApiStorageV1VolumeAttachmentListSchema: z.ZodType<IoK8sApiStorageV1VolumeAttachmentListType> =
+  z
+    .object({
+      apiVersion: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+        }),
+      items: z
+        .array(IoK8sApiStorageV1VolumeAttachmentSchema)
+        .openapi({ description: 'items is the list of VolumeAttachments' }),
+      kind: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+        }),
+      metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
+        .exactOptional()
+        .openapi({
+          description:
+            'Standard list metadata More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata',
+        }),
+    })
+    .openapi({
+      description: 'VolumeAttachmentList is a collection of VolumeAttachment objects.',
+      required: ['items'],
+      'x-kubernetes-group-version-kind': [
+        { group: 'storage.k8s.io', kind: 'VolumeAttachmentList', version: 'v1' },
+      ],
+    })
+    .openapi('IoK8sApiStorageV1VolumeAttachmentList')
 
 const IoK8sApiStorageV1VolumeAttributesClassSchema = z
   .object({
@@ -2745,7 +2826,7 @@ const IoK8sApimachineryPkgApisMetaV1DeleteOptionsSchema = z
   .openapi('IoK8sApimachineryPkgApisMetaV1DeleteOptions')
 
 const IoK8sApimachineryPkgApisMetaV1PatchSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Patch is provided to give a concrete name and type to the Kubernetes PATCH request body.',
@@ -2892,7 +2973,7 @@ const IoK8sApimachineryPkgApisMetaV1StatusSchema = z
   .openapi('IoK8sApimachineryPkgApisMetaV1Status')
 
 const IoK8sApimachineryPkgRuntimeRawExtensionSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'RawExtension is used to hold extensions in external versions.\n\nTo use this, make a field which has RawExtension as its type in your external, versioned struct, and Object in your internal struct. You also need to register your various plugin types.\n\n// Internal package:\n\n\ttype MyAPIObject struct {\n\t\truntime.TypeMeta `json:""`\n\t\tMyPlugin runtime.Object `json:"myPlugin"`\n\t}\n\n\ttype PluginA struct {\n\t\tAOption string `json:"aOption"`\n\t}\n\n// External package:\n\n\ttype MyAPIObject struct {\n\t\truntime.TypeMeta `json:""`\n\t\tMyPlugin runtime.RawExtension `json:"myPlugin"`\n\t}\n\n\ttype PluginA struct {\n\t\tAOption string `json:"aOption"`\n\t}\n\n// On the wire, the JSON will look something like this:\n\n\t{\n\t\t"kind":"MyAPIObject",\n\t\t"apiVersion":"v1",\n\t\t"myPlugin": {\n\t\t\t"kind":"PluginA",\n\t\t\t"aOption":"foo",\n\t\t},\n\t}\n\nSo what happens? Decode first uses json or yaml to unmarshal the serialized data into your external MyAPIObject. That causes the raw JSON to be stored, but not unpacked. The next step is to copy (using pkg/conversion) into the internal struct. The runtime package\'s DefaultScheme has conversion functions installed which will unpack the JSON stored in RawExtension, turning it into the correct object type, and storing it in the Object. (TODO: In the case where the object is of an unknown type, a runtime.Unknown object will be created and stored.)',

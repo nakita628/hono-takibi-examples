@@ -82,7 +82,7 @@ const IoK8sApimachineryPkgApisMetaV1TimeSchema = z.iso
   .openapi('IoK8sApimachineryPkgApisMetaV1Time')
 
 const IoK8sApimachineryPkgApisMetaV1FieldsV1Schema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       "FieldsV1 stores a set of fields in a data structure like a Trie, in JSON format.\n\nEach key is either a '.' representing the field itself, and will always map to an empty set, or a string representing a sub-field or item. The string will follow one of these four formats: 'f:<name>', where <name> is the name of a field in a struct, or key in a map 'v:<value>', where <value> is the exact json formatted value of a list item 'i:<index>', where <index> is position of a item in a list 'k:<keys>', where <keys> is a map of  a list item's key fields to their unique values If a key maps to an empty Fields value, the field that key represents is part of the set.\n\nThe exact format is defined in sigs.k8s.io/structured-merge-diff",
@@ -409,6 +409,82 @@ const IoK8sApiRbacV1ClusterRoleSchema = z
   })
   .openapi('IoK8sApiRbacV1ClusterRole')
 
+const IoK8sApimachineryPkgApisMetaV1ShardInfoSchema = z
+  .object({
+    selector: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'selector is the shard selector string from the request, echoed back so clients can verify which shard they received and merge responses from multiple shards.',
+      }),
+  })
+  .openapi({
+    description:
+      'ShardInfo describes the shard selector that was applied to produce a list response. Its presence on a list response indicates the list is a filtered subset.',
+    required: ['selector'],
+  })
+  .openapi('IoK8sApimachineryPkgApisMetaV1ShardInfo')
+
+const IoK8sApimachineryPkgApisMetaV1ListMetaSchema = z
+  .object({
+    continue: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'continue may be set if the user set a limit on the number of items returned, and indicates that the server has more data available. The value is opaque and may be used to issue another request to the endpoint that served this list to retrieve the next set of available objects. Continuing a consistent list may not be possible if the server configuration has changed or more than a few minutes have passed. The resourceVersion field returned when using this continue value will be identical to the value in the first response, unless you have received this token from an error message.',
+      }),
+    remainingItemCount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'remainingItemCount is the number of subsequent items in the list which are not included in this list response. If the list request contained label or field selectors, then the number of remaining items is unknown and the field will be left unset and omitted during serialization. If the list is complete (either because it is not chunking or because this is the last chunk), then there are no more remaining items and this field will be left unset and omitted during serialization. Servers older than v1.15 do not set this field. The intended use of the remainingItemCount is *estimating* the size of a collection. Clients should not rely on the remainingItemCount to be set or to be exact.',
+      }),
+    resourceVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "String that identifies the server's internal version of this object that can be used by clients to determine when objects have changed. Value must be treated as opaque by clients and passed unmodified back to the server. Populated by the system. Read-only. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency",
+      }),
+    selfLink: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Deprecated: selfLink is a legacy read-only field that is no longer populated by the system.',
+      }),
+    shardInfo: IoK8sApimachineryPkgApisMetaV1ShardInfoSchema.exactOptional().openapi({
+      description:
+        'shardInfo is set when the list is a filtered subset of the full collection, as selected by a shard selector on the request. It echoes back the selector so clients can verify which shard they received and merge sharded responses. Clients should not cache sharded list responses as a full representation of the collection.\n\nThis is a beta field and is enabled by default via the ShardedListAndWatch feature gate.',
+    }),
+  })
+  .openapi({
+    description:
+      'ListMeta describes metadata that synthetic resources must have, including lists and various status objects. A resource may have only one of {ObjectMeta, ListMeta}.',
+    required: [],
+  })
+  .openapi('IoK8sApimachineryPkgApisMetaV1ListMeta')
+
+type IoK8sApiRbacV1ClusterRoleListType = {
+  apiVersion?: string
+  items: z.infer<typeof IoK8sApiRbacV1ClusterRoleSchema>[]
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ListMetaSchema>
+}
+
 const IoK8sApiRbacV1RoleRefSchema = z
   .object({
     apiGroup: z
@@ -484,9 +560,10 @@ const IoK8sApiRbacV1ClusterRoleBindingSchema = z
     metadata: IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema.default({})
       .exactOptional()
       .openapi({ description: "metadata is the standard object's metadata." }),
-    roleRef: IoK8sApiRbacV1RoleRefSchema.default({}).openapi({
+    roleRef: IoK8sApiRbacV1RoleRefSchema.openapi({
       description:
         'roleRef can only reference a ClusterRole in the global namespace. If the RoleRef cannot be resolved, the Authorizer must return an error. This field is immutable.',
+      default: {},
     }),
     subjects: z
       .array(IoK8sApiRbacV1SubjectSchema)
@@ -505,75 +582,6 @@ const IoK8sApiRbacV1ClusterRoleBindingSchema = z
     ],
   })
   .openapi('IoK8sApiRbacV1ClusterRoleBinding')
-
-const IoK8sApimachineryPkgApisMetaV1ShardInfoSchema = z
-  .object({
-    selector: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'selector is the shard selector string from the request, echoed back so clients can verify which shard they received and merge responses from multiple shards.',
-      }),
-  })
-  .openapi({
-    description:
-      'ShardInfo describes the shard selector that was applied to produce a list response. Its presence on a list response indicates the list is a filtered subset.',
-    required: ['selector'],
-  })
-  .openapi('IoK8sApimachineryPkgApisMetaV1ShardInfo')
-
-const IoK8sApimachineryPkgApisMetaV1ListMetaSchema = z
-  .object({
-    continue: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'continue may be set if the user set a limit on the number of items returned, and indicates that the server has more data available. The value is opaque and may be used to issue another request to the endpoint that served this list to retrieve the next set of available objects. Continuing a consistent list may not be possible if the server configuration has changed or more than a few minutes have passed. The resourceVersion field returned when using this continue value will be identical to the value in the first response, unless you have received this token from an error message.',
-      }),
-    remainingItemCount: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'remainingItemCount is the number of subsequent items in the list which are not included in this list response. If the list request contained label or field selectors, then the number of remaining items is unknown and the field will be left unset and omitted during serialization. If the list is complete (either because it is not chunking or because this is the last chunk), then there are no more remaining items and this field will be left unset and omitted during serialization. Servers older than v1.15 do not set this field. The intended use of the remainingItemCount is *estimating* the size of a collection. Clients should not rely on the remainingItemCount to be set or to be exact.',
-      }),
-    resourceVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "String that identifies the server's internal version of this object that can be used by clients to determine when objects have changed. Value must be treated as opaque by clients and passed unmodified back to the server. Populated by the system. Read-only. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency",
-      }),
-    selfLink: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Deprecated: selfLink is a legacy read-only field that is no longer populated by the system.',
-      }),
-    shardInfo: IoK8sApimachineryPkgApisMetaV1ShardInfoSchema.exactOptional().openapi({
-      description:
-        'shardInfo is set when the list is a filtered subset of the full collection, as selected by a shard selector on the request. It echoes back the selector so clients can verify which shard they received and merge sharded responses. Clients should not cache sharded list responses as a full representation of the collection.\n\nThis is a beta field and is enabled by default via the ShardedListAndWatch feature gate.',
-    }),
-  })
-  .openapi({
-    description:
-      'ListMeta describes metadata that synthetic resources must have, including lists and various status objects. A resource may have only one of {ObjectMeta, ListMeta}.',
-    required: [],
-  })
-  .openapi('IoK8sApimachineryPkgApisMetaV1ListMeta')
 
 const IoK8sApiRbacV1ClusterRoleBindingListSchema = z
   .object({
@@ -607,7 +615,7 @@ const IoK8sApiRbacV1ClusterRoleBindingListSchema = z
   })
   .openapi('IoK8sApiRbacV1ClusterRoleBindingList')
 
-const IoK8sApiRbacV1ClusterRoleListSchema = z
+const IoK8sApiRbacV1ClusterRoleListSchema: z.ZodType<IoK8sApiRbacV1ClusterRoleListType> = z
   .object({
     apiVersion: z
       .string()
@@ -695,9 +703,10 @@ const IoK8sApiRbacV1RoleBindingSchema = z
     metadata: IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema.default({})
       .exactOptional()
       .openapi({ description: "metadata is the standard object's metadata." }),
-    roleRef: IoK8sApiRbacV1RoleRefSchema.default({}).openapi({
+    roleRef: IoK8sApiRbacV1RoleRefSchema.openapi({
       description:
         'roleRef can reference a Role in the current namespace or a ClusterRole in the global namespace. If the RoleRef cannot be resolved, the Authorizer must return an error. This field is immutable.',
+      default: {},
     }),
     subjects: z
       .array(IoK8sApiRbacV1SubjectSchema)
@@ -982,7 +991,7 @@ const IoK8sApimachineryPkgApisMetaV1DeleteOptionsSchema = z
   .openapi('IoK8sApimachineryPkgApisMetaV1DeleteOptions')
 
 const IoK8sApimachineryPkgApisMetaV1PatchSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Patch is provided to give a concrete name and type to the Kubernetes PATCH request body.',
@@ -1129,7 +1138,7 @@ const IoK8sApimachineryPkgApisMetaV1StatusSchema = z
   .openapi('IoK8sApimachineryPkgApisMetaV1Status')
 
 const IoK8sApimachineryPkgRuntimeRawExtensionSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'RawExtension is used to hold extensions in external versions.\n\nTo use this, make a field which has RawExtension as its type in your external, versioned struct, and Object in your internal struct. You also need to register your various plugin types.\n\n// Internal package:\n\n\ttype MyAPIObject struct {\n\t\truntime.TypeMeta `json:""`\n\t\tMyPlugin runtime.Object `json:"myPlugin"`\n\t}\n\n\ttype PluginA struct {\n\t\tAOption string `json:"aOption"`\n\t}\n\n// External package:\n\n\ttype MyAPIObject struct {\n\t\truntime.TypeMeta `json:""`\n\t\tMyPlugin runtime.RawExtension `json:"myPlugin"`\n\t}\n\n\ttype PluginA struct {\n\t\tAOption string `json:"aOption"`\n\t}\n\n// On the wire, the JSON will look something like this:\n\n\t{\n\t\t"kind":"MyAPIObject",\n\t\t"apiVersion":"v1",\n\t\t"myPlugin": {\n\t\t\t"kind":"PluginA",\n\t\t\t"aOption":"foo",\n\t\t},\n\t}\n\nSo what happens? Decode first uses json or yaml to unmarshal the serialized data into your external MyAPIObject. That causes the raw JSON to be stored, but not unpacked. The next step is to copy (using pkg/conversion) into the internal struct. The runtime package\'s DefaultScheme has conversion functions installed which will unpack the JSON stored in RawExtension, turning it into the correct object type, and storing it in the Object. (TODO: In the case where the object is of an unknown type, a runtime.Unknown object will be created and stored.)',

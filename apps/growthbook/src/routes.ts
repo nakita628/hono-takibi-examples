@@ -581,7 +581,37 @@ const FeatureEnvironmentV1Schema = z
   .openapi({ required: ['enabled', 'defaultValue', 'rules'] })
   .openapi('FeatureEnvironmentV1')
 
-const FeatureV1Schema = z
+type FeatureV1Type = {
+  id: string
+  dateCreated: string
+  dateUpdated: string
+  archived: boolean
+  description: string
+  owner: string
+  ownerEmail?: string
+  project: string
+  targetingAllProjects?: boolean
+  targetingProjects?: string[]
+  valueType: 'boolean' | 'string' | 'number' | 'json'
+  defaultValue: string
+  baseConfig?: string | null
+  defaultValueConfig?: string | null
+  tags: string[]
+  environments: { [key: string]: z.infer<typeof FeatureEnvironmentV1Schema> }
+  prerequisites?: string[]
+  revision: {
+    id?: string
+    version: number
+    comment: string
+    date: string
+    createdBy: string
+    publishedBy: string
+  }
+  customFields?: { [key: string]: unknown }
+  holdout?: { id: string; value: string } | null
+}
+
+const FeatureV1Schema: z.ZodType<FeatureV1Type> = z
   .strictObject({
     id: z.string(),
     dateCreated: z.iso.datetime({ offset: true }),
@@ -673,19 +703,204 @@ const FeatureV1Schema = z
   })
   .openapi('FeatureV1')
 
-const PaginationFieldsSchema = z
-  .strictObject({
-    limit: z.int(),
-    offset: z.int(),
-    count: z.int(),
-    total: z.int(),
-    hasMore: z.boolean(),
-    nextOffset: z.union([z.int(), z.null().nullable()]),
-  })
-  .openapi({ required: ['limit', 'offset', 'count', 'total', 'hasMore', 'nextOffset'] })
-  .openapi('PaginationFields')
+type FeatureRevisionV1Type = {
+  id: string
+  featureId: string
+  baseVersion: number
+  version: number
+  comment: string
+  date: string
+  status: string
+  createdBy?: string
+  publishedBy?: string
+  defaultValue?: string
+  rules: { [key: string]: z.infer<typeof FeatureRuleV1Schema>[] }
+  definitions?: { [key: string]: string }
+  environmentsEnabled?: { [key: string]: boolean }
+  envPrerequisites?: { [key: string]: { id: string; condition: string }[] }
+  prerequisites?: { id: string; condition: string }[]
+  metadata?: {
+    description?: string
+    owner?: string
+    project?: string
+    tags?: string[]
+    neverStale?: boolean
+    valueType?: string
+    jsonSchema?: {
+      schemaType?: 'schema' | 'simple'
+      schema?: string
+      simple?: { [key: string]: unknown }
+      date?: string
+      enabled?: boolean
+    }
+    customFields?: { [key: string]: unknown }
+    baseConfig?: string | null
+  }
+  rampActions?: (
+    | {
+        mode: 'create'
+        name?: string
+        environment?: string | null
+        templateId?: string
+        startActions?: {
+          targetType?: 'feature-rule'
+          targetId?: string
+          patch: {
+            ruleId?: string
+            coverage?: number | null
+            condition?: string | null
+            savedGroups?: { match: 'all' | 'none' | 'any'; ids: string[] }[] | null
+            prerequisites?: { id: string; condition: string }[] | null
+            allEnvironments?: boolean | null
+            environments?: string[] | null
+            force?: unknown
+            enabled?: boolean | null
+            hashAttribute?: string | null
+            seed?: string | null
+            hashVersion?: (1 | 2) | null
+          }
+        }[]
+        steps?: {
+          interval: number | null
+          actions?: {
+            targetType?: 'feature-rule'
+            targetId?: string
+            patch: {
+              ruleId?: string
+              coverage?: number | null
+              condition?: string | null
+              savedGroups?: { match: 'all' | 'none' | 'any'; ids: string[] }[] | null
+              prerequisites?: { id: string; condition: string }[] | null
+              allEnvironments?: boolean | null
+              environments?: string[] | null
+              force?: unknown
+              enabled?: boolean | null
+            }
+          }[]
+          approvalNotes?: string | null
+          monitored?: boolean
+          holdConditions?: { minSampleSize?: number; requiresApproval?: boolean }
+        }[]
+        endActions?: {
+          targetType?: 'feature-rule'
+          targetId?: string
+          patch: {
+            ruleId?: string
+            coverage?: number | null
+            condition?: string | null
+            savedGroups?: { match: 'all' | 'none' | 'any'; ids: string[] }[] | null
+            prerequisites?: { id: string; condition: string }[] | null
+            allEnvironments?: boolean | null
+            environments?: string[] | null
+            force?: unknown
+            enabled?: boolean | null
+          }
+        }[]
+        startDate?: string | null
+        cutoffDate?: string | null
+        ruleId: string
+        monitoringConfig?: {
+          datasourceId: string
+          guardrailMetricIds: string[]
+          signalMetricIds?: string[]
+          updateScheduleMinutes?: number | null
+          monitoringMode?: 'auto' | 'manual'
+          autoUpdate?: boolean
+          srmAction?: 'rollback' | 'hold' | 'warn'
+          noTrafficAction?: 'rollback' | 'hold' | 'warn'
+          noTrafficGracePeriodHours?: number | null
+          multipleExposureAction?: 'rollback' | 'hold' | 'warn'
+          exposureQuery: { id: string; identifierType: string | null }
+          exposureQueryId: string
+        }
+        lockdownConfig?: { mode: 'none' | 'locked' }
+        requiresStartApproval?: boolean | null
+      }
+    | {
+        name?: string
+        environment?: string | null
+        templateId?: string
+        startActions?: {
+          targetType?: 'feature-rule'
+          targetId?: string
+          patch: {
+            ruleId?: string
+            coverage?: number | null
+            condition?: string | null
+            savedGroups?: { match: 'all' | 'none' | 'any'; ids: string[] }[] | null
+            prerequisites?: { id: string; condition: string }[] | null
+            allEnvironments?: boolean | null
+            environments?: string[] | null
+            force?: unknown
+            enabled?: boolean | null
+            hashAttribute?: string | null
+            seed?: string | null
+            hashVersion?: (1 | 2) | null
+          }
+        }[]
+        steps?: {
+          interval: number | null
+          actions?: {
+            targetType?: 'feature-rule'
+            targetId?: string
+            patch: {
+              ruleId?: string
+              coverage?: number | null
+              condition?: string | null
+              savedGroups?: { match: 'all' | 'none' | 'any'; ids: string[] }[] | null
+              prerequisites?: { id: string; condition: string }[] | null
+              allEnvironments?: boolean | null
+              environments?: string[] | null
+              force?: unknown
+              enabled?: boolean | null
+            }
+          }[]
+          approvalNotes?: string | null
+          monitored?: boolean
+          holdConditions?: { minSampleSize?: number; requiresApproval?: boolean }
+        }[]
+        endActions?: {
+          targetType?: 'feature-rule'
+          targetId?: string
+          patch: {
+            ruleId?: string
+            coverage?: number | null
+            condition?: string | null
+            savedGroups?: { match: 'all' | 'none' | 'any'; ids: string[] }[] | null
+            prerequisites?: { id: string; condition: string }[] | null
+            allEnvironments?: boolean | null
+            environments?: string[] | null
+            force?: unknown
+            enabled?: boolean | null
+          }
+        }[]
+        startDate?: string | null
+        cutoffDate?: string | null
+        ruleId: string
+        monitoringConfig?: {
+          datasourceId: string
+          guardrailMetricIds: string[]
+          signalMetricIds?: string[]
+          updateScheduleMinutes?: number | null
+          monitoringMode?: 'auto' | 'manual'
+          autoUpdate?: boolean
+          srmAction?: 'rollback' | 'hold' | 'warn'
+          noTrafficAction?: 'rollback' | 'hold' | 'warn'
+          noTrafficGracePeriodHours?: number | null
+          multipleExposureAction?: 'rollback' | 'hold' | 'warn'
+          exposureQuery: { id: string; identifierType: string | null }
+          exposureQueryId: string
+        }
+        lockdownConfig?: { mode: 'none' | 'locked' }
+        requiresStartApproval?: boolean | null
+        mode: 'update'
+        rampScheduleId: string
+      }
+    | { mode: 'detach'; rampScheduleId: string; ruleId: string; deleteScheduleWhenEmpty?: boolean }
+  )[]
+}
 
-const FeatureRevisionV1Schema = z
+const FeatureRevisionV1Schema: z.ZodType<FeatureRevisionV1Type> = z
   .strictObject({
     id: z
       .string()
@@ -1417,11 +1632,9 @@ const FeatureRevisionV1Schema = z
   })
   .openapi('FeatureRevisionV1')
 
-const FeatureWithRevisionsV1Schema = FeatureV1Schema.and(
-  z
-    .strictObject({ revisions: z.array(FeatureRevisionV1Schema).exactOptional() })
-    .openapi({ required: [] }),
-).openapi('FeatureWithRevisionsV1')
+type FeatureWithRevisionsV1Type = z.infer<typeof FeatureV1Schema> & {
+  revisions?: z.infer<typeof FeatureRevisionV1Schema>[]
+}
 
 const FeatureBaseRuleSchema = z
   .strictObject({
@@ -1751,7 +1964,221 @@ const FeatureV2Schema = z
   })
   .openapi('FeatureV2')
 
-const FeatureRevisionV2Schema = z
+type FeatureRevisionV2Type = {
+  id: string
+  featureId: string
+  baseVersion: number
+  version: number
+  comment: string
+  date: string
+  status: string
+  createdBy?: z.infer<typeof EventUserSchema>
+  publishedBy?: z.infer<typeof EventUserSchema>
+  defaultValue?: string
+  defaultValueConfig?: string | null
+  rules: z.infer<typeof FeatureRuleV2Schema>[]
+  definitions?: { [key: string]: string }
+  environmentsEnabled?: { [key: string]: boolean }
+  envPrerequisites?: { [key: string]: { id: string }[] }
+  prerequisites?: { id: string }[]
+  metadata?: {
+    description?: string
+    owner?: string
+    project?: string
+    tags?: string[]
+    neverStale?: boolean
+    valueType?: string
+    jsonSchema?: {
+      schemaType?: 'schema' | 'simple'
+      schema?: string
+      simple?: { [key: string]: unknown }
+      date?: string
+      enabled?: boolean
+    }
+    customFields?: { [key: string]: unknown }
+    baseConfig?: string | null
+  }
+  rampActions?: (
+    | {
+        mode: 'create'
+        name?: string
+        environment?: string | null
+        templateId?: string
+        startActions?: {
+          targetType?: 'feature-rule'
+          targetId?: string
+          patch: {
+            ruleId?: string
+            coverage?: number | null
+            condition?: string | null
+            savedGroups?: { match: 'all' | 'none' | 'any'; ids: string[] }[] | null
+            prerequisites?: { id: string; condition: string }[] | null
+            allEnvironments?: boolean | null
+            environments?: string[] | null
+            force?: unknown
+            enabled?: boolean | null
+            hashAttribute?: string | null
+            seed?: string | null
+            hashVersion?: (1 | 2) | null
+          }
+        }[]
+        steps?: {
+          interval: number | null
+          actions?: {
+            targetType?: 'feature-rule'
+            targetId?: string
+            patch: {
+              ruleId?: string
+              coverage?: number | null
+              condition?: string | null
+              savedGroups?: { match: 'all' | 'none' | 'any'; ids: string[] }[] | null
+              prerequisites?: { id: string; condition: string }[] | null
+              allEnvironments?: boolean | null
+              environments?: string[] | null
+              force?: unknown
+              enabled?: boolean | null
+            }
+          }[]
+          approvalNotes?: string | null
+          monitored?: boolean
+          holdConditions?: { minSampleSize?: number; requiresApproval?: boolean }
+        }[]
+        endActions?: {
+          targetType?: 'feature-rule'
+          targetId?: string
+          patch: {
+            ruleId?: string
+            coverage?: number | null
+            condition?: string | null
+            savedGroups?: { match: 'all' | 'none' | 'any'; ids: string[] }[] | null
+            prerequisites?: { id: string; condition: string }[] | null
+            allEnvironments?: boolean | null
+            environments?: string[] | null
+            force?: unknown
+            enabled?: boolean | null
+          }
+        }[]
+        startDate?: string | null
+        cutoffDate?: string | null
+        ruleId: string
+        monitoringConfig?: {
+          datasourceId: string
+          guardrailMetricIds: string[]
+          signalMetricIds?: string[]
+          updateScheduleMinutes?: number | null
+          monitoringMode?: 'auto' | 'manual'
+          autoUpdate?: boolean
+          srmAction?: 'rollback' | 'hold' | 'warn'
+          noTrafficAction?: 'rollback' | 'hold' | 'warn'
+          noTrafficGracePeriodHours?: number | null
+          multipleExposureAction?: 'rollback' | 'hold' | 'warn'
+          exposureQuery: { id: string; identifierType: string | null }
+          exposureQueryId: string
+        }
+        lockdownConfig?: { mode: 'none' | 'locked' }
+        requiresStartApproval?: boolean | null
+      }
+    | {
+        name?: string
+        environment?: string | null
+        templateId?: string
+        startActions?: {
+          targetType?: 'feature-rule'
+          targetId?: string
+          patch: {
+            ruleId?: string
+            coverage?: number | null
+            condition?: string | null
+            savedGroups?: { match: 'all' | 'none' | 'any'; ids: string[] }[] | null
+            prerequisites?: { id: string; condition: string }[] | null
+            allEnvironments?: boolean | null
+            environments?: string[] | null
+            force?: unknown
+            enabled?: boolean | null
+            hashAttribute?: string | null
+            seed?: string | null
+            hashVersion?: (1 | 2) | null
+          }
+        }[]
+        steps?: {
+          interval: number | null
+          actions?: {
+            targetType?: 'feature-rule'
+            targetId?: string
+            patch: {
+              ruleId?: string
+              coverage?: number | null
+              condition?: string | null
+              savedGroups?: { match: 'all' | 'none' | 'any'; ids: string[] }[] | null
+              prerequisites?: { id: string; condition: string }[] | null
+              allEnvironments?: boolean | null
+              environments?: string[] | null
+              force?: unknown
+              enabled?: boolean | null
+            }
+          }[]
+          approvalNotes?: string | null
+          monitored?: boolean
+          holdConditions?: { minSampleSize?: number; requiresApproval?: boolean }
+        }[]
+        endActions?: {
+          targetType?: 'feature-rule'
+          targetId?: string
+          patch: {
+            ruleId?: string
+            coverage?: number | null
+            condition?: string | null
+            savedGroups?: { match: 'all' | 'none' | 'any'; ids: string[] }[] | null
+            prerequisites?: { id: string; condition: string }[] | null
+            allEnvironments?: boolean | null
+            environments?: string[] | null
+            force?: unknown
+            enabled?: boolean | null
+          }
+        }[]
+        startDate?: string | null
+        cutoffDate?: string | null
+        ruleId: string
+        monitoringConfig?: {
+          datasourceId: string
+          guardrailMetricIds: string[]
+          signalMetricIds?: string[]
+          updateScheduleMinutes?: number | null
+          monitoringMode?: 'auto' | 'manual'
+          autoUpdate?: boolean
+          srmAction?: 'rollback' | 'hold' | 'warn'
+          noTrafficAction?: 'rollback' | 'hold' | 'warn'
+          noTrafficGracePeriodHours?: number | null
+          multipleExposureAction?: 'rollback' | 'hold' | 'warn'
+          exposureQuery: { id: string; identifierType: string | null }
+          exposureQueryId: string
+        }
+        lockdownConfig?: { mode: 'none' | 'locked' }
+        requiresStartApproval?: boolean | null
+        mode: 'update'
+        rampScheduleId: string
+      }
+    | { mode: 'detach'; rampScheduleId: string; ruleId: string; deleteScheduleWhenEmpty?: boolean }
+  )[]
+  autoPublishOnApproval?: boolean
+  scheduledPublishAt?: string | null
+  scheduledPublishLockEdits?: boolean
+  scheduledPublishLockOthers?: boolean
+  scheduledPublishBypassApproval?: boolean
+  scheduledPublishLastError?: string
+  autoPublishEnabledBy?: string
+  autoPublishEnabledByUser?: z.infer<typeof EventUserSchema>
+  scheduledPublishAttempts?: number
+  scheduledPublishGaveUpAt?: string
+  reviews?: {
+    userId: string
+    user?: z.infer<typeof EventUserSchema>
+    status: 'approved' | 'changes-requested' | 'approved-stale' | 'changes-requested-stale'
+    timestamp: string
+  }[]
+}
+
+const FeatureRevisionV2Schema: z.ZodType<FeatureRevisionV2Type> = z
   .strictObject({
     id: z
       .string()
@@ -2590,7 +3017,3022 @@ const FeatureRevisionV2Schema = z
   })
   .openapi('FeatureRevisionV2')
 
-const FeatureWithRevisionsV2Schema = FeatureV2Schema.and(
+type FeatureWithRevisionsV2Type = z.infer<typeof FeatureV2Schema> & {
+  revisions?: z.infer<typeof FeatureRevisionV2Schema>[]
+}
+
+const LookbackOverrideSchema = z
+  .strictObject({
+    type: z.enum(['date', 'window']),
+    value: z
+      .union([
+        z
+          .number()
+          .openapi({
+            description:
+              'For "window" type - non-negative numeric value (e.g. 7 for 7 days). For "date" type a date string.',
+          }),
+        z.iso
+          .datetime({ offset: true })
+          .openapi({
+            description:
+              'For "window" type - non-negative numeric value (e.g. 7 for 7 days). For "date" type a date string.',
+          }),
+      ])
+      .openapi({
+        description:
+          'For "window" type - non-negative numeric value (e.g. 7 for 7 days). For "date" type a date string.',
+      }),
+    valueUnit: z
+      .enum(['minutes', 'hours', 'days', 'weeks'])
+      .exactOptional()
+      .openapi({ description: 'Used when type is "window". Defaults to "days".' }),
+  })
+  .openapi({
+    description:
+      'Controls the lookback override for the experiment. For type "window", value must be a non-negative number and valueUnit is required.',
+    required: ['type', 'value'],
+  })
+  .openapi('LookbackOverride')
+
+const ExperimentDecisionFrameworkSettingsSchema = z
+  .strictObject({
+    decisionCriteriaId: z.string().exactOptional(),
+    decisionFrameworkMetricOverrides: z
+      .array(
+        z
+          .strictObject({
+            id: z.string().openapi({ description: 'ID of the metric to override settings for.' }),
+            targetMDE: z
+              .number()
+              .gt(0)
+              .exactOptional()
+              .openapi({
+                description:
+                  'The target relative MDE to use for the metric, expressed as proportions (e.g. use 0.1 for 10%). Must be greater than 0.',
+              }),
+          })
+          .openapi({ required: ['id'] }),
+      )
+      .exactOptional(),
+  })
+  .openapi({
+    description:
+      'Controls the decision framework and metric overrides for the experiment. Replaces the entire stored object on update (does not patch individual fields).',
+    required: [],
+  })
+  .openapi('ExperimentDecisionFrameworkSettings')
+
+const ExperimentMetricOverrideEntrySchema = z
+  .strictObject({
+    id: z.string().openapi({ description: 'ID of the metric to override settings for.' }),
+    windowType: z.enum(['conversion', 'lookback', '']).exactOptional(),
+    windowHours: z.number().exactOptional(),
+    delayHours: z.number().exactOptional(),
+    properPriorOverride: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Must be true for the override to take effect. If true, the other proper prior settings in this object will be used if present.',
+      }),
+    properPriorEnabled: z.boolean().exactOptional(),
+    properPriorMean: z.number().exactOptional(),
+    properPriorStdDev: z.number().exactOptional(),
+    regressionAdjustmentOverride: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Must be true for the override to take effect. If true, the other regression adjustment settings in this object will be used if present.',
+      }),
+    regressionAdjustmentEnabled: z.boolean().exactOptional(),
+    regressionAdjustmentDays: z.number().exactOptional(),
+  })
+  .openapi({
+    description:
+      'Per-metric analysis overrides stored on the experiment (matches internal metricOverrides).',
+    required: ['id'],
+  })
+  .openapi('ExperimentMetricOverrideEntry')
+
+const ExperimentMetricSchema = z
+  .strictObject({
+    metricId: z.string(),
+    overrides: z
+      .strictObject({
+        delayHours: z.number().exactOptional(),
+        windowHours: z.number().exactOptional(),
+        window: z.enum(['conversion', 'lookback', '']).exactOptional(),
+        properPriorOverride: z.boolean().exactOptional(),
+        properPriorEnabled: z.boolean().exactOptional(),
+        properPriorMean: z.number().exactOptional(),
+        properPriorStdDev: z.number().exactOptional(),
+        regressionAdjustmentOverride: z.boolean().exactOptional(),
+        regressionAdjustmentEnabled: z.boolean().exactOptional(),
+        regressionAdjustmentDays: z.number().exactOptional(),
+        winRiskThreshold: z
+          .number()
+          .exactOptional()
+          .openapi({ deprecated: true, description: 'No longer used. Never returned.' }),
+        loseRiskThreshold: z
+          .number()
+          .exactOptional()
+          .openapi({ deprecated: true, description: 'No longer used. Never returned.' }),
+      })
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: ['metricId', 'overrides'] })
+  .openapi('ExperimentMetric')
+
+const ExperimentAnalysisSettingsSchema = z
+  .strictObject({
+    datasourceId: z.string(),
+    assignmentQuery: z
+      .strictObject({
+        id: z
+          .string()
+          .openapi({ description: "The ID of one of the data source's assignment queries." }),
+        identifierType: z
+          .union([z.string(), z.null().nullable()])
+          .openapi({
+            description:
+              'The identifier type analyzed on. Null when none can be resolved: no assignment query is selected, or a record saved before identifier types were stored points at a query that no longer exists.',
+          }),
+      })
+      .openapi({
+        description: 'The assignment query, grouping its ID with the identifier type analyzed on.',
+        required: ['id', 'identifierType'],
+      }),
+    assignmentQueryId: z
+      .string()
+      .openapi({ description: 'Deprecated: use `assignmentQuery`.', deprecated: true }),
+    isClusterExperiment: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Whether this is a cluster-randomized experiment (randomized on the assignment query's identifier type, analyzed on clusterSubUnitIdentifier).",
+      }),
+    clusterSubUnitIdentifier: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'For cluster experiments, the nested sub-unit identifier type analyzed within each cluster (e.g. user_id).',
+      }),
+    experimentId: z.string(),
+    segmentId: z.string(),
+    queryFilter: z.string(),
+    inProgressConversions: z.enum(['include', 'exclude']),
+    attributionModel: z
+      .enum(['firstExposure', 'experimentDuration', 'lookbackOverride'])
+      .openapi({
+        description:
+          'Setting attribution model to `"experimentDuration"` is the same as selecting "Ignore Conversion Windows" for the Conversion Window Override. Setting it to `"lookbackOverride"` requires a `lookbackOverride` object to be provided.',
+      }),
+    lookbackOverride: LookbackOverrideSchema.exactOptional(),
+    statsEngine: z.enum(['bayesian', 'frequentist']),
+    regressionAdjustmentEnabled: z.boolean().exactOptional(),
+    sequentialTestingEnabled: z.boolean().exactOptional(),
+    sequentialTestingTuningParameter: z.number().exactOptional(),
+    postStratificationEnabled: z
+      .union([
+        z.boolean().openapi({ description: 'When null, the organization default is used.' }),
+        z
+          .null()
+          .nullable()
+          .openapi({ description: 'When null, the organization default is used.' }),
+      ])
+      .exactOptional()
+      .openapi({ description: 'When null, the organization default is used.' }),
+    decisionFrameworkSettings: ExperimentDecisionFrameworkSettingsSchema.exactOptional().openapi({
+      description:
+        'Controls the decision framework and metric overrides for the experiment. Replaces the entire stored object on update (does not patch individual fields).',
+    }),
+    metricOverrides: z
+      .array(ExperimentMetricOverrideEntrySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Per-metric analysis overrides; also reflected in goals/secondaryMetrics/guardrails overrides when applicable. On create/update, this replaces the entire stored array (it does not patch individual entries).',
+      }),
+    goals: z.array(ExperimentMetricSchema),
+    secondaryMetrics: z.array(ExperimentMetricSchema),
+    guardrails: z.array(ExperimentMetricSchema),
+    activationMetric: ExperimentMetricSchema.exactOptional(),
+  })
+  .openapi({
+    required: [
+      'datasourceId',
+      'assignmentQuery',
+      'assignmentQueryId',
+      'experimentId',
+      'segmentId',
+      'queryFilter',
+      'inProgressConversions',
+      'attributionModel',
+      'statsEngine',
+      'goals',
+      'secondaryMetrics',
+      'guardrails',
+    ],
+  })
+  .openapi('ExperimentAnalysisSettings')
+
+type ExperimentResultsType = {
+  id: string
+  dateUpdated: string
+  experimentId: string
+  phase: string
+  dateStart: string
+  dateEnd: string
+  dimension: { type: string; id?: string; dimensions?: { type: string; id?: string }[] }
+  settings: z.infer<typeof ExperimentAnalysisSettingsSchema>
+  queryIds: string[]
+  health?: {
+    srm: {
+      pValue: number
+      status: 'healthy' | 'unhealthy' | 'not-enough-traffic'
+      threshold: number
+      totalUnits: number | null
+      variationUnits: number[] | null
+    } | null
+    multipleExposures: {
+      count: number
+      totalUnits: number
+      percent: number
+      status: 'healthy' | 'unhealthy' | 'not-enough-traffic'
+      threshold: number
+    } | null
+    unknownVariations: string[]
+    power: { isLowPowered: boolean; additionalDaysNeeded: number | null } | null
+    covariateImbalance: {
+      isImbalanced: boolean
+      numGoalMetricsImbalanced: number
+      numGuardrailMetricsImbalanced: number
+      numSecondaryMetricsImbalanced: number
+    } | null
+    cluster?: {
+      mixedAssignment: {
+        totalClusters: number
+        mixedClusters: number
+        percent: number
+        status: 'healthy' | 'unhealthy' | 'not-enough-traffic'
+      } | null
+      unitsInMultipleClusters: {
+        totalUnits: number
+        multiClusterUnits: number
+        percent: number
+        status: 'healthy' | 'unhealthy' | 'not-enough-traffic'
+      } | null
+      reliability: {
+        status: 'healthy' | 'unhealthy'
+        minClustersPerVariation: number
+        maxClusterShare: number
+        tooFewClusters: {
+          variationIndex: number
+          variationKey: string
+          variationId?: string
+          clusters: number
+        } | null
+        oversizedCluster: { id: string; percent: number } | null
+      } | null
+    }
+  }
+  results: {
+    dimension: string
+    totalUsers: number
+    checks: { srm: number }
+    metrics: {
+      metricId: string
+      metricName?: string
+      variations: {
+        variationId: string
+        variationName?: string
+        users?: number
+        analyses: {
+          engine: 'bayesian' | 'frequentist'
+          numerator: number
+          denominator: number
+          mean: number
+          stddev: number
+          percentChange: number
+          effectStandardError: number
+          ciLow: number
+          ciHigh: number
+          pValue?: number
+          risk?: number
+          chanceToBeatControl?: number
+          errorMessage?: string
+        }[]
+      }[]
+    }[]
+  }[]
+}
+
+type RampScheduleType = {
+  id: string
+  dateCreated: string
+  dateUpdated: string
+  name: string
+  entityType: 'feature'
+  entityId: string
+  targets: {
+    id: string
+    entityType: 'feature'
+    entityId: string
+    ruleId?: string | null
+    environment?: string | null
+    status: 'pending-join' | 'active'
+    activatingRevisionVersion?: number | null
+  }[]
+  startActions?: {
+    targetType: 'feature-rule'
+    targetId: string
+    patch: {
+      ruleId: string
+      coverage?: number | null
+      condition?: string | null
+      savedGroups?: { match: 'all' | 'none' | 'any'; ids: string[] }[] | null
+      prerequisites?: { id: string; condition: string }[] | null
+      allEnvironments?: boolean | null
+      environments?: string[] | null
+      force?: unknown
+      enabled?: boolean | null
+      hashAttribute?: string | null
+      seed?: string | null
+      hashVersion?: (1 | 2) | null
+    }
+  }[]
+  steps: {
+    interval: number | null
+    approvalNotes?: string | null
+    monitored?: boolean
+    holdConditions?: { minSampleSize?: number; requiresApproval?: boolean }
+    actions: {
+      targetType: 'feature-rule'
+      targetId: string
+      patch: {
+        ruleId: string
+        coverage?: number | null
+        condition?: string | null
+        savedGroups?: { match: 'all' | 'none' | 'any'; ids: string[] }[] | null
+        prerequisites?: { id: string; condition: string }[] | null
+        allEnvironments?: boolean | null
+        environments?: string[] | null
+        force?: unknown
+        enabled?: boolean | null
+      }
+    }[]
+  }[]
+  endActions?: {
+    targetType: 'feature-rule'
+    targetId: string
+    patch: {
+      ruleId: string
+      coverage?: number | null
+      condition?: string | null
+      savedGroups?: { match: 'all' | 'none' | 'any'; ids: string[] }[] | null
+      prerequisites?: { id: string; condition: string }[] | null
+      allEnvironments?: boolean | null
+      environments?: string[] | null
+      force?: unknown
+      enabled?: boolean | null
+    }
+  }[]
+  startDate?: string | null
+  cutoffDate?: string | null
+  requiresStartApproval?: boolean
+  startApprovedAt?: string | null
+  status: 'pending' | 'ready' | 'running' | 'paused' | 'completed' | 'rolled-back'
+  currentStepIndex: number
+  startedAt?: string | null
+  phaseStartedAt?: string | null
+  pausedAt?: string | null
+  nextStepAt: string | null
+  nextProcessAt?: string | null
+  elapsedMs?: number | null
+  lockdownConfig?: { mode: 'none' | 'locked' }
+  monitoringConfig?: {
+    datasourceId: string
+    guardrailMetricIds: string[]
+    signalMetricIds?: string[]
+    updateScheduleMinutes?: number | null
+    monitoringMode?: 'auto' | 'manual'
+    autoUpdate?: boolean
+    srmAction?: 'rollback' | 'hold' | 'warn'
+    noTrafficAction?: 'rollback' | 'hold' | 'warn'
+    noTrafficGracePeriodHours?: number | null
+    multipleExposureAction?: 'rollback' | 'hold' | 'warn'
+    exposureQuery: { id: string; identifierType: string | null }
+    exposureQueryId: string
+  } | null
+  experimentHealthAction?: 'rollback' | 'hold' | 'warn'
+  currentStepEnteredAt?: string | null
+  stepApproval?: {
+    stepIndex: number
+    approvedAt: string
+    approvedBy: string
+    approvedByUser?: z.infer<typeof EventUserSchema>
+    context: 'ui' | 'api'
+  } | null
+  awaitingApproval: boolean
+  monitoringStartDate?: string | null
+  lastRollbackAt?: string | null
+  lastRollbackReason?: string | null
+  monitoringStatus?: {
+    safeRolloutId?: string | null
+    monitoringMode: 'auto' | 'manual'
+    autoUpdate: boolean
+    effectiveAutoUpdate: boolean
+    blockedReason?: string | null
+    nextSnapshotAt?: string | null
+    currentStepMonitored: boolean
+  } | null
+}
+
+const ExperimentResultsSchema: z.ZodType<ExperimentResultsType> = z
+  .strictObject({
+    id: z.string(),
+    dateUpdated: z.string(),
+    experimentId: z.string(),
+    phase: z.string(),
+    dateStart: z.string(),
+    dateEnd: z.string(),
+    dimension: z
+      .strictObject({
+        type: z.string(),
+        id: z.string().exactOptional(),
+        dimensions: z
+          .array(
+            z
+              .strictObject({ type: z.string(), id: z.string().exactOptional() })
+              .openapi({ required: ['type'] }),
+          )
+          .exactOptional(),
+      })
+      .openapi({ required: ['type'] }),
+    settings: ExperimentAnalysisSettingsSchema,
+    queryIds: z.array(z.string()),
+    health: z
+      .strictObject({
+        srm: z
+          .union([
+            z
+              .strictObject({
+                pValue: z.number().openapi({ description: 'Sample ratio mismatch p-value.' }),
+                status: z
+                  .enum(['healthy', 'unhealthy', 'not-enough-traffic'])
+                  .openapi({
+                    description:
+                      "`unhealthy` when the check fails the organization's threshold. `not-enough-traffic` when there are too few units to judge.",
+                  }),
+                threshold: z
+                  .number()
+                  .openapi({
+                    description:
+                      "The organization's SRM p-value threshold. The check is `unhealthy` when `pValue` is below it.",
+                  }),
+                totalUnits: z
+                  .union([z.number(), z.null().nullable()])
+                  .openapi({
+                    description:
+                      'Units the p-value was computed on: clusters for cluster experiments, otherwise the randomization unit.',
+                  }),
+                variationUnits: z
+                  .union([z.array(z.number()), z.null().nullable()])
+                  .openapi({
+                    description: "Units per variation, in the experiment's variation order.",
+                  }),
+              })
+              .openapi({
+                required: ['pValue', 'status', 'threshold', 'totalUnits', 'variationUnits'],
+              }),
+            z.null().nullable(),
+          ])
+          .openapi({
+            description:
+              'Sample ratio mismatch check for the experiment as a whole. It comes from the traffic query, or from the overall result when that query did not run or failed. null when neither is available, for example on some dimension breakdowns.',
+          }),
+        multipleExposures: z
+          .union([
+            z
+              .strictObject({
+                count: z
+                  .number()
+                  .openapi({
+                    description:
+                      'Units exposed to more than one variation. They are excluded from the analysis.',
+                  }),
+                totalUnits: z
+                  .number()
+                  .openapi({ description: 'Units `percent` is measured against.' }),
+                percent: z
+                  .number()
+                  .openapi({
+                    description: '`count` divided by `totalUnits`, as a fraction from 0 to 1.',
+                  }),
+                status: z
+                  .enum(['healthy', 'unhealthy', 'not-enough-traffic'])
+                  .openapi({
+                    description:
+                      "`unhealthy` when the check fails the organization's threshold. `not-enough-traffic` when there are too few units to judge.",
+                  }),
+                threshold: z
+                  .number()
+                  .openapi({
+                    description:
+                      "The organization's threshold, as a fraction from 0 to 1. The check is `unhealthy` when `percent` reaches or exceeds it.",
+                  }),
+              })
+              .openapi({ required: ['count', 'totalUnits', 'percent', 'status', 'threshold'] }),
+            z.null().nullable(),
+          ])
+          .openapi({
+            description:
+              'Multiple exposures check. For cluster experiments it counts sub-units. null when the snapshot has no unit total to measure against, for example on dimension breakdowns whose traffic query did not run or failed.',
+          }),
+        unknownVariations: z
+          .array(z.string())
+          .openapi({
+            description:
+              "Variation IDs found in the exposure data that match none of the experiment's variations. A non-empty list usually means the tracked variation IDs are misconfigured.",
+          }),
+        power: z
+          .union([
+            z
+              .strictObject({
+                isLowPowered: z
+                  .boolean()
+                  .openapi({
+                    description:
+                      'Whether the experiment is unlikely to detect its target effect by the end of its planned run.',
+                  }),
+                additionalDaysNeeded: z
+                  .union([z.number(), z.null().nullable()])
+                  .openapi({
+                    description:
+                      'Estimated extra days needed to reach the target power. null when the experiment is not expected to reach it at the current traffic.',
+                  }),
+              })
+              .openapi({ required: ['isLowPowered', 'additionalDaysNeeded'] }),
+            z.null().nullable(),
+          ])
+          .openapi({
+            description:
+              'Mid-experiment power estimate. null when the snapshot did not compute one or the calculation failed.',
+          }),
+        covariateImbalance: z
+          .union([
+            z
+              .strictObject({
+                isImbalanced: z
+                  .boolean()
+                  .openapi({
+                    description:
+                      "Whether variations already differed on the experiment's metrics before exposure (pre-exposure bias).",
+                  }),
+                numGoalMetricsImbalanced: z.number(),
+                numGuardrailMetricsImbalanced: z.number(),
+                numSecondaryMetricsImbalanced: z.number(),
+              })
+              .openapi({
+                required: [
+                  'isImbalanced',
+                  'numGoalMetricsImbalanced',
+                  'numGuardrailMetricsImbalanced',
+                  'numSecondaryMetricsImbalanced',
+                ],
+              }),
+            z.null().nullable(),
+          ])
+          .openapi({
+            description: 'Pre-exposure bias check. null when the snapshot did not compute one.',
+          }),
+        cluster: z
+          .strictObject({
+            mixedAssignment: z.union([
+              z
+                .strictObject({
+                  totalClusters: z.number(),
+                  mixedClusters: z
+                    .number()
+                    .openapi({
+                      description: 'Clusters whose sub-units saw more than one variation.',
+                    }),
+                  percent: z.number(),
+                  status: z
+                    .enum(['healthy', 'unhealthy', 'not-enough-traffic'])
+                    .openapi({
+                      description:
+                        "`unhealthy` when the check fails the organization's threshold. `not-enough-traffic` when there are too few units to judge.",
+                    }),
+                })
+                .openapi({ required: ['totalClusters', 'mixedClusters', 'percent', 'status'] }),
+              z.null().nullable(),
+            ]),
+            unitsInMultipleClusters: z.union([
+              z
+                .strictObject({
+                  totalUnits: z.number(),
+                  multiClusterUnits: z
+                    .number()
+                    .openapi({ description: 'Sub-units that appear in more than one cluster.' }),
+                  percent: z.number(),
+                  status: z
+                    .enum(['healthy', 'unhealthy', 'not-enough-traffic'])
+                    .openapi({
+                      description:
+                        "`unhealthy` when the check fails the organization's threshold. `not-enough-traffic` when there are too few units to judge.",
+                    }),
+                })
+                .openapi({ required: ['totalUnits', 'multiClusterUnits', 'percent', 'status'] }),
+              z.null().nullable(),
+            ]),
+            reliability: z
+              .union([
+                z
+                  .strictObject({
+                    status: z.enum(['healthy', 'unhealthy']),
+                    minClustersPerVariation: z
+                      .number()
+                      .openapi({
+                        description: 'Recommended minimum number of clusters per variation.',
+                      }),
+                    maxClusterShare: z
+                      .number()
+                      .openapi({
+                        description:
+                          'Share of sub-units, as a fraction from 0 to 1, that no single cluster should reach.',
+                      }),
+                    tooFewClusters: z
+                      .union([
+                        z
+                          .strictObject({
+                            variationIndex: z.number(),
+                            variationKey: z.string(),
+                            variationId: z.string().exactOptional(),
+                            clusters: z.number(),
+                          })
+                          .openapi({ required: ['variationIndex', 'variationKey', 'clusters'] }),
+                        z.null().nullable(),
+                      ])
+                      .openapi({
+                        description:
+                          'The variation with the fewest clusters, when it has fewer than `minClustersPerVariation`. `variationIndex` and `variationKey` come from the snapshot; `variationId` is the current variation with that key, omitted when none matches.',
+                      }),
+                    oversizedCluster: z
+                      .union([
+                        z
+                          .strictObject({
+                            id: z.string(),
+                            percent: z
+                              .number()
+                              .openapi({
+                                description:
+                                  "The cluster's share of sub-units, as a fraction from 0 to 1.",
+                              }),
+                          })
+                          .openapi({ required: ['id', 'percent'] }),
+                        z.null().nullable(),
+                      ])
+                      .openapi({
+                        description:
+                          'The largest cluster, when its share reaches `maxClusterShare`.',
+                      }),
+                  })
+                  .openapi({
+                    required: [
+                      'status',
+                      'minClustersPerVariation',
+                      'maxClusterShare',
+                      'tooFewClusters',
+                      'oversizedCluster',
+                    ],
+                  }),
+                z.null().nullable(),
+              ])
+              .openapi({
+                description:
+                  'Whether there are enough clusters, evenly sized enough, to trust the results. `unhealthy` when either `tooFewClusters` or `oversizedCluster` is set. The app shows it as a warning on the results; it is not part of `enhancedStatus.decision`. null when the snapshot has no cluster counts.',
+              }),
+          })
+          .exactOptional()
+          .openapi({
+            description: 'Cluster experiment checks. Omitted for other experiments.',
+            required: ['mixedAssignment', 'unitsInMultipleClusters', 'reliability'],
+          }),
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          'Health checks for the snapshot as a whole, with the same verdicts the app shows. They are not broken down by dimension value.',
+        required: ['srm', 'multipleExposures', 'unknownVariations', 'power', 'covariateImbalance'],
+      }),
+    results: z.array(
+      z
+        .strictObject({
+          dimension: z.string(),
+          totalUsers: z.number(),
+          checks: z
+            .strictObject({
+              srm: z
+                .number()
+                .openapi({
+                  description:
+                    "Sample ratio mismatch p-value for this row's units. `health.srm` is the experiment-wide check with a verdict; the two can differ slightly as this comes from the metric query and the other comes from the traffic query. If they disagree, rely on the `health.srm` value.",
+                }),
+            })
+            .openapi({ required: ['srm'] }),
+          metrics: z.array(
+            z
+              .strictObject({
+                metricId: z.string(),
+                metricName: z.string().exactOptional(),
+                variations: z.array(
+                  z
+                    .strictObject({
+                      variationId: z.string(),
+                      variationName: z.string().exactOptional(),
+                      users: z.number().exactOptional(),
+                      analyses: z.array(
+                        z
+                          .strictObject({
+                            engine: z.enum(['bayesian', 'frequentist']),
+                            numerator: z.number(),
+                            denominator: z.number(),
+                            mean: z.number(),
+                            stddev: z.number(),
+                            percentChange: z.number(),
+                            effectStandardError: z
+                              .number()
+                              .openapi({
+                                description:
+                                  'Standard error of the estimated effect (`percentChange`).',
+                              }),
+                            ciLow: z.number(),
+                            ciHigh: z.number(),
+                            pValue: z.number().exactOptional(),
+                            risk: z.number().exactOptional(),
+                            chanceToBeatControl: z.number().exactOptional(),
+                            errorMessage: z.string().exactOptional(),
+                          })
+                          .openapi({
+                            required: [
+                              'engine',
+                              'numerator',
+                              'denominator',
+                              'mean',
+                              'stddev',
+                              'percentChange',
+                              'effectStandardError',
+                              'ciLow',
+                              'ciHigh',
+                            ],
+                          }),
+                      ),
+                    })
+                    .openapi({ required: ['variationId', 'analyses'] }),
+                ),
+              })
+              .openapi({ required: ['metricId', 'variations'] }),
+          ),
+        })
+        .openapi({ required: ['dimension', 'totalUsers', 'checks', 'metrics'] }),
+    ),
+  })
+  .openapi({
+    required: [
+      'id',
+      'dateUpdated',
+      'experimentId',
+      'phase',
+      'dateStart',
+      'dateEnd',
+      'dimension',
+      'settings',
+      'queryIds',
+      'results',
+    ],
+  })
+  .openapi('ExperimentResults')
+
+type ReportType = {
+  id: string
+  dateCreated: string
+  dateUpdated: string
+  title: string
+  description: string
+  type: 'experiment-snapshot' | 'experiment'
+  status?: 'published' | 'private'
+  shareLevel?: 'public' | 'organization' | 'private'
+  shareUrl?: string
+  experimentId?: string
+  owner?: string
+  ownerEmail?: string
+  snapshotId?: string
+  snapshotStatus?: 'running' | 'success' | 'error'
+  snapshotError?: string
+  analysisSettings?: {
+    statsEngine?: 'bayesian' | 'frequentist'
+    goalMetrics?: string[]
+    secondaryMetrics?: string[]
+    guardrailMetrics?: string[]
+    activationMetric?: string
+    metricOverrides?: {
+      id: string
+      windowType?: 'conversion' | 'lookback' | ''
+      windowHours?: number
+      delayHours?: number
+      properPriorOverride?: boolean
+      properPriorEnabled?: boolean
+      properPriorMean?: number
+      properPriorStdDev?: number
+      regressionAdjustmentOverride?: boolean
+      regressionAdjustmentEnabled?: boolean
+      regressionAdjustmentDays?: number
+      winRisk?: number
+      loseRisk?: number
+    }[]
+    customMetricSlices?: { slices: { column: string; levels: string[] }[] }[]
+    dimension?: string
+    differenceType?: 'relative' | 'absolute' | 'scaled'
+    dateStarted?: string
+    dateEnded?: string
+    regressionAdjustmentEnabled?: boolean
+    sequentialTestingEnabled?: boolean
+    sequentialTestingTuningParameter?: number
+    attributionModel?: 'firstExposure' | 'experimentDuration' | 'lookbackOverride'
+    lookbackOverride?:
+      | { type: 'date'; value: unknown }
+      | { type: 'window'; value: number; valueUnit: 'minutes' | 'hours' | 'days' | 'weeks' }
+    trackingKey?: string
+    exposureQuery?: { id: string; identifierType: string | null }
+    exposureQueryId?: string
+    segment?: string
+    queryFilter?: string
+    skipPartialData?: boolean
+  }
+  experimentMetadata?: {
+    type?: 'standard' | 'multi-armed-bandit' | 'holdout'
+    variations?: { id: string; name: string; key: string; weight: number }[]
+    phases?: { name?: string; dateStarted?: string; dateEnded?: string; coverage?: number }[]
+  }
+  results?: z.infer<typeof ExperimentResultsSchema>
+}
+
+const ExplorationPopulationSchema = z
+  .strictObject({
+    source: z.union([
+      z
+        .strictObject({ type: z.literal('factTable'), factTableId: z.string() })
+        .openapi({ required: ['type', 'factTableId'] }),
+    ]),
+    rowFilters: z
+      .array(
+        z
+          .strictObject({
+            operator: z.enum([
+              '=',
+              '!=',
+              '<',
+              '<=',
+              '>',
+              '>=',
+              'between',
+              'not_between',
+              'in',
+              'not_in',
+              'contains',
+              'not_contains',
+              'matches_pattern',
+              'not_matches_pattern',
+              'starts_with',
+              'ends_with',
+              'is_null',
+              'not_null',
+              'is_true',
+              'is_false',
+              'sql_expr',
+              'saved_filter',
+            ]),
+            column: z.string().exactOptional(),
+            values: z.array(z.string()).exactOptional(),
+          })
+          .openapi({ required: ['operator'] }),
+      )
+      .default([]),
+    aggregateFilter: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Conditions on each unit\'s total within the queried date range, such as ">=3" or ">=3,<10". Requires aggregateFilterColumn',
+      }),
+    aggregateFilterColumn: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Numeric column to total, or "$$count" to count rows. Requires aggregateFilter',
+      }),
+    unit: z
+      .string()
+      .openapi({
+        description:
+          "Identifier type that defines population membership. Every metric's unit must match it.",
+      }),
+  })
+  .openapi({ required: ['source', 'rowFilters', 'unit'] })
+  .openapi('ExplorationPopulation')
+
+type DashboardType = {
+  id: string
+  uid: string
+  organization: string
+  experimentId?: string
+  isDefault: boolean
+  isDeleted: boolean
+  userId: string
+  editLevel: 'published' | 'private'
+  shareLevel: 'published' | 'private'
+  enableAutoUpdates: boolean
+  updateSchedule?: { type: 'stale'; hours: number } | { type: 'cron'; cron: string }
+  title: string
+  globalControls?: {
+    dateRange?: {
+      predefined:
+        | 'today'
+        | 'yesterday'
+        | 'last7Days'
+        | 'last30Days'
+        | 'last90Days'
+        | 'last12Months'
+        | 'lastCalendarYear'
+        | 'customLookback'
+        | 'customDateRange'
+      lookbackValue?: number | null
+      lookbackUnit?: 'hour' | 'day' | 'week' | 'month' | null
+      startDate?: string | null
+      endDate?: string | null
+    }
+    dateGranularity?: 'auto' | 'hour' | 'day' | 'week' | 'month' | 'year'
+    projects?: string[]
+    experimentSearchString?: string
+  }
+  comparison?: {
+    enabled: boolean
+    mode?:
+      | 'previousPeriod'
+      | 'previousPeriodMatchDayOfWeek'
+      | 'previousYear'
+      | 'previousYearMatchDayOfWeek'
+      | 'custom'
+    previousTimeFrame?: {
+      predefined:
+        | 'today'
+        | 'yesterday'
+        | 'last7Days'
+        | 'last30Days'
+        | 'last90Days'
+        | 'last12Months'
+        | 'lastCalendarYear'
+        | 'customLookback'
+        | 'customDateRange'
+      lookbackValue?: number | null
+      lookbackUnit?: 'hour' | 'day' | 'week' | 'month' | null
+      startDate?: string | null
+      endDate?: string | null
+    }
+  }
+  grid?: { cols: number; rowHeight: number }
+  projects?: string[]
+  nextUpdate?: string
+  lastUpdated?: string
+  dateCreated: string
+  dateUpdated: string
+  blocks: (
+    | {
+        organization: string
+        id: string
+        uid: string
+        type: 'metric-explorer'
+        title: string
+        description: string
+        snapshotId?: string
+        layout?: { x: number; y: number; w: number; h: number; static?: boolean }
+        factMetricId: string
+        visualizationType: 'histogram' | 'bigNumber' | 'timeseries'
+        valueType: 'avg' | 'sum'
+        metricAnalysisId: string
+        comparison?: {
+          enabled: boolean
+          mode?:
+            | 'previousPeriod'
+            | 'previousPeriodMatchDayOfWeek'
+            | 'previousYear'
+            | 'previousYearMatchDayOfWeek'
+            | 'custom'
+          previousTimeFrame?: {
+            predefined:
+              | 'today'
+              | 'yesterday'
+              | 'last7Days'
+              | 'last30Days'
+              | 'last90Days'
+              | 'last12Months'
+              | 'lastCalendarYear'
+              | 'customLookback'
+              | 'customDateRange'
+            lookbackValue?: number | null
+            lookbackUnit?: 'hour' | 'day' | 'week' | 'month' | null
+            startDate?: string | null
+            endDate?: string | null
+          }
+        }
+        comparisonMetricAnalysisId?: string
+        analysisSettings: {
+          userIdType: string
+          lookbackDays: number
+          populationType: 'metric' | 'factTable' | 'exposureQuery' | 'population' | 'segment'
+          populationId: string | null
+          additionalNumeratorFilters?: string[]
+          additionalDenominatorFilters?: string[]
+          startDate: string
+          endDate: string
+        }
+      }
+    | {
+        organization: string
+        id: string
+        uid: string
+        type: 'markdown'
+        title: string
+        description: string
+        snapshotId?: string
+        layout?: { x: number; y: number; w: number; h: number; static?: boolean }
+        content: string
+      }
+    | {
+        organization: string
+        id: string
+        uid: string
+        type: 'experiment-metadata'
+        title: string
+        description: string
+        snapshotId?: string
+        layout?: { x: number; y: number; w: number; h: number; static?: boolean }
+        experimentId: string
+        showDescription: boolean
+        showHypothesis: boolean
+        showVariationImages: boolean
+        variationIds?: string[]
+      }
+    | {
+        organization: string
+        id: string
+        uid: string
+        type: 'experiment-metric'
+        title: string
+        description: string
+        snapshotId: string
+        layout?: { x: number; y: number; w: number; h: number; static?: boolean }
+        experimentId: string
+        metricIds: string[]
+        variationIds: string[]
+        baselineRow: number
+        differenceType: 'absolute' | 'relative' | 'scaled'
+        columnsFilter: (
+          | 'Metric & Variation Names'
+          | 'Baseline Average'
+          | 'Variation Averages'
+          | 'Chance to Win'
+          | 'CI Graph'
+          | 'Lift'
+        )[]
+        sliceTagsFilter: string[]
+        metricTagFilter: string[]
+        sortBy: 'metrics' | 'metricTags' | 'significance' | 'change' | null
+        sortDirection: 'asc' | 'desc' | null
+      }
+    | {
+        organization: string
+        id: string
+        uid: string
+        type: 'metric-experiments'
+        title: string
+        description: string
+        snapshotId?: string
+        layout?: { x: number; y: number; w: number; h: number; static?: boolean }
+        metricId: string
+        projects: string[]
+        experimentSearchString: string
+        differenceType: 'absolute' | 'relative' | 'scaled'
+        bandits: boolean
+        startDateRange?: {
+          predefined:
+            | 'today'
+            | 'yesterday'
+            | 'last7Days'
+            | 'last30Days'
+            | 'last90Days'
+            | 'last12Months'
+            | 'lastCalendarYear'
+            | 'customLookback'
+            | 'customDateRange'
+          lookbackValue?: number | null
+          lookbackUnit?: 'hour' | 'day' | 'week' | 'month' | null
+          startDate?: string | null
+          endDate?: string | null
+        }
+        endDateRange?: {
+          predefined:
+            | 'today'
+            | 'yesterday'
+            | 'last7Days'
+            | 'last30Days'
+            | 'last90Days'
+            | 'last12Months'
+            | 'lastCalendarYear'
+            | 'customLookback'
+            | 'customDateRange'
+          lookbackValue?: number | null
+          lookbackUnit?: 'hour' | 'day' | 'week' | 'month' | null
+          startDate?: string | null
+          endDate?: string | null
+        }
+        columns?: { id: string; visible: boolean }[]
+        globalControlSettings?: {
+          dateRange?: boolean
+          projects?: boolean
+          experimentSearchString?: boolean
+        }
+      }
+    | {
+        organization: string
+        id: string
+        uid: string
+        type: 'experiments-scaled-impact'
+        title: string
+        description: string
+        snapshotId?: string
+        layout?: { x: number; y: number; w: number; h: number; static?: boolean }
+        dateRange: {
+          predefined:
+            | 'today'
+            | 'yesterday'
+            | 'last7Days'
+            | 'last30Days'
+            | 'last90Days'
+            | 'last12Months'
+            | 'lastCalendarYear'
+            | 'customLookback'
+            | 'customDateRange'
+          lookbackValue?: number | null
+          lookbackUnit?: 'hour' | 'day' | 'week' | 'month' | null
+          startDate?: string | null
+          endDate?: string | null
+        }
+        projects: string[]
+        experimentSearchString?: string
+        comparison?: {
+          enabled: boolean
+          mode?:
+            | 'previousPeriod'
+            | 'previousPeriodMatchDayOfWeek'
+            | 'previousYear'
+            | 'previousYearMatchDayOfWeek'
+            | 'custom'
+          previousTimeFrame?: {
+            predefined:
+              | 'today'
+              | 'yesterday'
+              | 'last7Days'
+              | 'last30Days'
+              | 'last90Days'
+              | 'last12Months'
+              | 'lastCalendarYear'
+              | 'customLookback'
+              | 'customDateRange'
+            lookbackValue?: number | null
+            lookbackUnit?: 'hour' | 'day' | 'week' | 'month' | null
+            startDate?: string | null
+            endDate?: string | null
+          }
+        }
+        globalControlSettings?: {
+          dateRange?: boolean
+          projects?: boolean
+          experimentSearchString?: boolean
+        }
+        metricId: string
+      }
+    | {
+        organization: string
+        id: string
+        uid: string
+        type: 'experiments-win-rate'
+        title: string
+        description: string
+        snapshotId?: string
+        layout?: { x: number; y: number; w: number; h: number; static?: boolean }
+        dateRange: {
+          predefined:
+            | 'today'
+            | 'yesterday'
+            | 'last7Days'
+            | 'last30Days'
+            | 'last90Days'
+            | 'last12Months'
+            | 'lastCalendarYear'
+            | 'customLookback'
+            | 'customDateRange'
+          lookbackValue?: number | null
+          lookbackUnit?: 'hour' | 'day' | 'week' | 'month' | null
+          startDate?: string | null
+          endDate?: string | null
+        }
+        projects: string[]
+        experimentSearchString?: string
+        comparison?: {
+          enabled: boolean
+          mode?:
+            | 'previousPeriod'
+            | 'previousPeriodMatchDayOfWeek'
+            | 'previousYear'
+            | 'previousYearMatchDayOfWeek'
+            | 'custom'
+          previousTimeFrame?: {
+            predefined:
+              | 'today'
+              | 'yesterday'
+              | 'last7Days'
+              | 'last30Days'
+              | 'last90Days'
+              | 'last12Months'
+              | 'lastCalendarYear'
+              | 'customLookback'
+              | 'customDateRange'
+            lookbackValue?: number | null
+            lookbackUnit?: 'hour' | 'day' | 'week' | 'month' | null
+            startDate?: string | null
+            endDate?: string | null
+          }
+        }
+        globalControlSettings?: {
+          dateRange?: boolean
+          projects?: boolean
+          experimentSearchString?: boolean
+        }
+        showProjectBreakdown: boolean
+      }
+    | {
+        organization: string
+        id: string
+        uid: string
+        type: 'experiments-status'
+        title: string
+        description: string
+        snapshotId?: string
+        layout?: { x: number; y: number; w: number; h: number; static?: boolean }
+        dateRange: {
+          predefined:
+            | 'today'
+            | 'yesterday'
+            | 'last7Days'
+            | 'last30Days'
+            | 'last90Days'
+            | 'last12Months'
+            | 'lastCalendarYear'
+            | 'customLookback'
+            | 'customDateRange'
+          lookbackValue?: number | null
+          lookbackUnit?: 'hour' | 'day' | 'week' | 'month' | null
+          startDate?: string | null
+          endDate?: string | null
+        }
+        projects: string[]
+        experimentSearchString?: string
+        comparison?: {
+          enabled: boolean
+          mode?:
+            | 'previousPeriod'
+            | 'previousPeriodMatchDayOfWeek'
+            | 'previousYear'
+            | 'previousYearMatchDayOfWeek'
+            | 'custom'
+          previousTimeFrame?: {
+            predefined:
+              | 'today'
+              | 'yesterday'
+              | 'last7Days'
+              | 'last30Days'
+              | 'last90Days'
+              | 'last12Months'
+              | 'lastCalendarYear'
+              | 'customLookback'
+              | 'customDateRange'
+            lookbackValue?: number | null
+            lookbackUnit?: 'hour' | 'day' | 'week' | 'month' | null
+            startDate?: string | null
+            endDate?: string | null
+          }
+        }
+        globalControlSettings?: {
+          dateRange?: boolean
+          projects?: boolean
+          experimentSearchString?: boolean
+        }
+        dateGranularity?: 'auto' | 'hour' | 'day' | 'week' | 'month' | 'year'
+      }
+    | {
+        organization: string
+        id: string
+        uid: string
+        type: 'experiment-dimension'
+        title: string
+        description: string
+        snapshotId: string
+        layout?: { x: number; y: number; w: number; h: number; static?: boolean }
+        experimentId: string
+        dimensionId: string
+        dimensionValues: string[]
+        metricIds: string[]
+        variationIds: string[]
+        baselineRow: number
+        differenceType: 'absolute' | 'relative' | 'scaled'
+        columnsFilter: (
+          | 'Metric & Variation Names'
+          | 'Baseline Average'
+          | 'Variation Averages'
+          | 'Chance to Win'
+          | 'CI Graph'
+          | 'Lift'
+        )[]
+        metricTagFilter: string[]
+        sortBy: 'metrics' | 'metricTags' | 'significance' | 'change' | null
+        sortDirection: 'asc' | 'desc' | null
+      }
+    | {
+        organization: string
+        id: string
+        uid: string
+        type: 'experiment-time-series'
+        title: string
+        description: string
+        snapshotId: string
+        layout?: { x: number; y: number; w: number; h: number; static?: boolean }
+        experimentId: string
+        metricId?: string
+        metricIds: string[]
+        variationIds: string[]
+        differenceType: 'absolute' | 'relative' | 'scaled'
+        sliceTagsFilter: string[]
+        metricTagFilter: string[]
+        sortBy: 'metrics' | 'metricTags' | 'significance' | 'change' | null
+        sortDirection: 'asc' | 'desc' | null
+      }
+    | {
+        organization: string
+        id: string
+        uid: string
+        type: 'experiment-traffic'
+        title: string
+        description: string
+        snapshotId?: string
+        layout?: { x: number; y: number; w: number; h: number; static?: boolean }
+        experimentId: string
+        showTable: boolean
+        showTimeseries: boolean
+      }
+    | {
+        organization: string
+        id: string
+        uid: string
+        type: 'sql-explorer'
+        title: string
+        description: string
+        snapshotId?: string
+        layout?: { x: number; y: number; w: number; h: number; static?: boolean }
+        savedQueryId: string
+        dataVizConfigIndex?: number
+        blockConfig: string[]
+      }
+    | {
+        organization: string
+        id: string
+        uid: string
+        type: 'metric-exploration'
+        title: string
+        description: string
+        snapshotId?: string
+        layout?: { x: number; y: number; w: number; h: number; static?: boolean }
+        explorerAnalysisId: string
+        comparison?: {
+          enabled: boolean
+          mode?:
+            | 'previousPeriod'
+            | 'previousPeriodMatchDayOfWeek'
+            | 'previousYear'
+            | 'previousYearMatchDayOfWeek'
+            | 'custom'
+          previousTimeFrame?: {
+            predefined:
+              | 'today'
+              | 'yesterday'
+              | 'last7Days'
+              | 'last30Days'
+              | 'last90Days'
+              | 'last12Months'
+              | 'lastCalendarYear'
+              | 'customLookback'
+              | 'customDateRange'
+            lookbackValue?: number | null
+            lookbackUnit?: 'hour' | 'day' | 'week' | 'month' | null
+            startDate?: string | null
+            endDate?: string | null
+          }
+        }
+        comparisonExplorerAnalysisId?: string
+        globalControlSettings?: { dateRange?: boolean }
+        config: {
+          datasource: string
+          dimensions: (
+            | {
+                dimensionType: 'date'
+                column: string | null
+                dateGranularity: 'auto' | 'hour' | 'day' | 'week' | 'month' | 'year'
+              }
+            | { dimensionType: 'dynamic'; column: string | null; maxValues: number }
+            | { dimensionType: 'static'; column: string; values: string[] }
+            | {
+                dimensionType: 'slice'
+                slices: {
+                  name: string
+                  filters: {
+                    operator:
+                      | '='
+                      | '!='
+                      | '<'
+                      | '<='
+                      | '>'
+                      | '>='
+                      | 'between'
+                      | 'not_between'
+                      | 'in'
+                      | 'not_in'
+                      | 'contains'
+                      | 'not_contains'
+                      | 'matches_pattern'
+                      | 'not_matches_pattern'
+                      | 'starts_with'
+                      | 'ends_with'
+                      | 'is_null'
+                      | 'not_null'
+                      | 'is_true'
+                      | 'is_false'
+                      | 'sql_expr'
+                      | 'saved_filter'
+                    column?: string
+                    values?: string[]
+                  }[]
+                }[]
+              }
+          )[]
+          chartType:
+            | 'line'
+            | 'area'
+            | 'timeseries-table'
+            | 'table'
+            | 'bar'
+            | 'stackedBar'
+            | 'horizontalBar'
+            | 'stackedHorizontalBar'
+            | 'bigNumber'
+            | 'rawTable'
+          dateRange: {
+            predefined:
+              | 'today'
+              | 'yesterday'
+              | 'last7Days'
+              | 'last30Days'
+              | 'last90Days'
+              | 'last12Months'
+              | 'lastCalendarYear'
+              | 'customLookback'
+              | 'customDateRange'
+            lookbackValue?: number | null
+            lookbackUnit?: 'hour' | 'day' | 'week' | 'month' | null
+            startDate?: string | null
+            endDate?: string | null
+          }
+          showAs?: 'total' | 'per_unit'
+          chartSettings?: {
+            categoryAxisLabel?: string
+            valueAxisLabel?: string
+            anchorYAxisToZero?: boolean
+          }
+          type: 'metric'
+          dataset: {
+            type: 'metric'
+            values: {
+              name: string
+              rowFilters: {
+                operator:
+                  | '='
+                  | '!='
+                  | '<'
+                  | '<='
+                  | '>'
+                  | '>='
+                  | 'between'
+                  | 'not_between'
+                  | 'in'
+                  | 'not_in'
+                  | 'contains'
+                  | 'not_contains'
+                  | 'matches_pattern'
+                  | 'not_matches_pattern'
+                  | 'starts_with'
+                  | 'ends_with'
+                  | 'is_null'
+                  | 'not_null'
+                  | 'is_true'
+                  | 'is_false'
+                  | 'sql_expr'
+                  | 'saved_filter'
+                column?: string
+                values?: string[]
+              }[]
+              type: 'metric'
+              metricId: string
+              unit: string | null
+              denominatorUnit: string | null
+              showAs?: 'total' | 'per_unit'
+            }[]
+            population?: z.infer<typeof ExplorationPopulationSchema>
+          }
+        }
+      }
+    | {
+        organization: string
+        id: string
+        uid: string
+        type: 'fact-table-exploration'
+        title: string
+        description: string
+        snapshotId?: string
+        layout?: { x: number; y: number; w: number; h: number; static?: boolean }
+        explorerAnalysisId: string
+        comparison?: {
+          enabled: boolean
+          mode?:
+            | 'previousPeriod'
+            | 'previousPeriodMatchDayOfWeek'
+            | 'previousYear'
+            | 'previousYearMatchDayOfWeek'
+            | 'custom'
+          previousTimeFrame?: {
+            predefined:
+              | 'today'
+              | 'yesterday'
+              | 'last7Days'
+              | 'last30Days'
+              | 'last90Days'
+              | 'last12Months'
+              | 'lastCalendarYear'
+              | 'customLookback'
+              | 'customDateRange'
+            lookbackValue?: number | null
+            lookbackUnit?: 'hour' | 'day' | 'week' | 'month' | null
+            startDate?: string | null
+            endDate?: string | null
+          }
+        }
+        comparisonExplorerAnalysisId?: string
+        globalControlSettings?: { dateRange?: boolean }
+        config: {
+          datasource: string
+          dimensions: (
+            | {
+                dimensionType: 'date'
+                column: string | null
+                dateGranularity: 'auto' | 'hour' | 'day' | 'week' | 'month' | 'year'
+              }
+            | { dimensionType: 'dynamic'; column: string | null; maxValues: number }
+            | { dimensionType: 'static'; column: string; values: string[] }
+            | {
+                dimensionType: 'slice'
+                slices: {
+                  name: string
+                  filters: {
+                    operator:
+                      | '='
+                      | '!='
+                      | '<'
+                      | '<='
+                      | '>'
+                      | '>='
+                      | 'between'
+                      | 'not_between'
+                      | 'in'
+                      | 'not_in'
+                      | 'contains'
+                      | 'not_contains'
+                      | 'matches_pattern'
+                      | 'not_matches_pattern'
+                      | 'starts_with'
+                      | 'ends_with'
+                      | 'is_null'
+                      | 'not_null'
+                      | 'is_true'
+                      | 'is_false'
+                      | 'sql_expr'
+                      | 'saved_filter'
+                    column?: string
+                    values?: string[]
+                  }[]
+                }[]
+              }
+          )[]
+          chartType:
+            | 'line'
+            | 'area'
+            | 'timeseries-table'
+            | 'table'
+            | 'bar'
+            | 'stackedBar'
+            | 'horizontalBar'
+            | 'stackedHorizontalBar'
+            | 'bigNumber'
+            | 'rawTable'
+          dateRange: {
+            predefined:
+              | 'today'
+              | 'yesterday'
+              | 'last7Days'
+              | 'last30Days'
+              | 'last90Days'
+              | 'last12Months'
+              | 'lastCalendarYear'
+              | 'customLookback'
+              | 'customDateRange'
+            lookbackValue?: number | null
+            lookbackUnit?: 'hour' | 'day' | 'week' | 'month' | null
+            startDate?: string | null
+            endDate?: string | null
+          }
+          showAs?: 'total' | 'per_unit'
+          chartSettings?: {
+            categoryAxisLabel?: string
+            valueAxisLabel?: string
+            anchorYAxisToZero?: boolean
+          }
+          type: 'fact_table'
+          dataset: {
+            type: 'fact_table'
+            factTableId: string | null
+            values: {
+              name: string
+              rowFilters: {
+                operator:
+                  | '='
+                  | '!='
+                  | '<'
+                  | '<='
+                  | '>'
+                  | '>='
+                  | 'between'
+                  | 'not_between'
+                  | 'in'
+                  | 'not_in'
+                  | 'contains'
+                  | 'not_contains'
+                  | 'matches_pattern'
+                  | 'not_matches_pattern'
+                  | 'starts_with'
+                  | 'ends_with'
+                  | 'is_null'
+                  | 'not_null'
+                  | 'is_true'
+                  | 'is_false'
+                  | 'sql_expr'
+                  | 'saved_filter'
+                column?: string
+                values?: string[]
+              }[]
+              type: 'fact_table'
+              valueType: 'unit_count' | 'count' | 'sum'
+              valueColumn: string | null
+              unit: string | null
+            }[]
+          }
+        }
+      }
+    | {
+        organization: string
+        id: string
+        uid: string
+        type: 'data-source-exploration'
+        title: string
+        description: string
+        snapshotId?: string
+        layout?: { x: number; y: number; w: number; h: number; static?: boolean }
+        explorerAnalysisId: string
+        comparison?: {
+          enabled: boolean
+          mode?:
+            | 'previousPeriod'
+            | 'previousPeriodMatchDayOfWeek'
+            | 'previousYear'
+            | 'previousYearMatchDayOfWeek'
+            | 'custom'
+          previousTimeFrame?: {
+            predefined:
+              | 'today'
+              | 'yesterday'
+              | 'last7Days'
+              | 'last30Days'
+              | 'last90Days'
+              | 'last12Months'
+              | 'lastCalendarYear'
+              | 'customLookback'
+              | 'customDateRange'
+            lookbackValue?: number | null
+            lookbackUnit?: 'hour' | 'day' | 'week' | 'month' | null
+            startDate?: string | null
+            endDate?: string | null
+          }
+        }
+        comparisonExplorerAnalysisId?: string
+        globalControlSettings?: { dateRange?: boolean }
+        config: {
+          datasource: string
+          dimensions: (
+            | {
+                dimensionType: 'date'
+                column: string | null
+                dateGranularity: 'auto' | 'hour' | 'day' | 'week' | 'month' | 'year'
+              }
+            | { dimensionType: 'dynamic'; column: string | null; maxValues: number }
+            | { dimensionType: 'static'; column: string; values: string[] }
+            | {
+                dimensionType: 'slice'
+                slices: {
+                  name: string
+                  filters: {
+                    operator:
+                      | '='
+                      | '!='
+                      | '<'
+                      | '<='
+                      | '>'
+                      | '>='
+                      | 'between'
+                      | 'not_between'
+                      | 'in'
+                      | 'not_in'
+                      | 'contains'
+                      | 'not_contains'
+                      | 'matches_pattern'
+                      | 'not_matches_pattern'
+                      | 'starts_with'
+                      | 'ends_with'
+                      | 'is_null'
+                      | 'not_null'
+                      | 'is_true'
+                      | 'is_false'
+                      | 'sql_expr'
+                      | 'saved_filter'
+                    column?: string
+                    values?: string[]
+                  }[]
+                }[]
+              }
+          )[]
+          chartType:
+            | 'line'
+            | 'area'
+            | 'timeseries-table'
+            | 'table'
+            | 'bar'
+            | 'stackedBar'
+            | 'horizontalBar'
+            | 'stackedHorizontalBar'
+            | 'bigNumber'
+            | 'rawTable'
+          dateRange: {
+            predefined:
+              | 'today'
+              | 'yesterday'
+              | 'last7Days'
+              | 'last30Days'
+              | 'last90Days'
+              | 'last12Months'
+              | 'lastCalendarYear'
+              | 'customLookback'
+              | 'customDateRange'
+            lookbackValue?: number | null
+            lookbackUnit?: 'hour' | 'day' | 'week' | 'month' | null
+            startDate?: string | null
+            endDate?: string | null
+          }
+          showAs?: 'total' | 'per_unit'
+          chartSettings?: {
+            categoryAxisLabel?: string
+            valueAxisLabel?: string
+            anchorYAxisToZero?: boolean
+          }
+          type: 'data_source'
+          dataset: {
+            type: 'data_source'
+            table: string
+            path: string
+            timestampColumn: string
+            columnTypes: { [key: string]: 'string' | 'number' | 'date' | 'boolean' | 'other' }
+            values: {
+              name: string
+              rowFilters: {
+                operator:
+                  | '='
+                  | '!='
+                  | '<'
+                  | '<='
+                  | '>'
+                  | '>='
+                  | 'between'
+                  | 'not_between'
+                  | 'in'
+                  | 'not_in'
+                  | 'contains'
+                  | 'not_contains'
+                  | 'matches_pattern'
+                  | 'not_matches_pattern'
+                  | 'starts_with'
+                  | 'ends_with'
+                  | 'is_null'
+                  | 'not_null'
+                  | 'is_true'
+                  | 'is_false'
+                  | 'sql_expr'
+                  | 'saved_filter'
+                column?: string
+                values?: string[]
+              }[]
+              type: 'data_source'
+              valueType: 'unit_count' | 'count' | 'sum'
+              valueColumn: string | null
+              unit: string | null
+            }[]
+          }
+        }
+      }
+    | {
+        organization: string
+        id: string
+        uid: string
+        type: 'sql-exploration'
+        title: string
+        description: string
+        snapshotId?: string
+        layout?: { x: number; y: number; w: number; h: number; static?: boolean }
+        explorerAnalysisId: string
+        comparison?: {
+          enabled: boolean
+          mode?:
+            | 'previousPeriod'
+            | 'previousPeriodMatchDayOfWeek'
+            | 'previousYear'
+            | 'previousYearMatchDayOfWeek'
+            | 'custom'
+          previousTimeFrame?: {
+            predefined:
+              | 'today'
+              | 'yesterday'
+              | 'last7Days'
+              | 'last30Days'
+              | 'last90Days'
+              | 'last12Months'
+              | 'lastCalendarYear'
+              | 'customLookback'
+              | 'customDateRange'
+            lookbackValue?: number | null
+            lookbackUnit?: 'hour' | 'day' | 'week' | 'month' | null
+            startDate?: string | null
+            endDate?: string | null
+          }
+        }
+        comparisonExplorerAnalysisId?: string
+        globalControlSettings?: { dateRange?: boolean }
+        config: {
+          datasource: string
+          dimensions: (
+            | {
+                dimensionType: 'date'
+                column: string | null
+                dateGranularity: 'auto' | 'hour' | 'day' | 'week' | 'month' | 'year'
+              }
+            | { dimensionType: 'dynamic'; column: string | null; maxValues: number }
+            | { dimensionType: 'static'; column: string; values: string[] }
+            | {
+                dimensionType: 'slice'
+                slices: {
+                  name: string
+                  filters: {
+                    operator:
+                      | '='
+                      | '!='
+                      | '<'
+                      | '<='
+                      | '>'
+                      | '>='
+                      | 'between'
+                      | 'not_between'
+                      | 'in'
+                      | 'not_in'
+                      | 'contains'
+                      | 'not_contains'
+                      | 'matches_pattern'
+                      | 'not_matches_pattern'
+                      | 'starts_with'
+                      | 'ends_with'
+                      | 'is_null'
+                      | 'not_null'
+                      | 'is_true'
+                      | 'is_false'
+                      | 'sql_expr'
+                      | 'saved_filter'
+                    column?: string
+                    values?: string[]
+                  }[]
+                }[]
+              }
+          )[]
+          chartType:
+            | 'line'
+            | 'area'
+            | 'timeseries-table'
+            | 'table'
+            | 'bar'
+            | 'stackedBar'
+            | 'horizontalBar'
+            | 'stackedHorizontalBar'
+            | 'bigNumber'
+            | 'rawTable'
+          dateRange: {
+            predefined:
+              | 'today'
+              | 'yesterday'
+              | 'last7Days'
+              | 'last30Days'
+              | 'last90Days'
+              | 'last12Months'
+              | 'lastCalendarYear'
+              | 'customLookback'
+              | 'customDateRange'
+            lookbackValue?: number | null
+            lookbackUnit?: 'hour' | 'day' | 'week' | 'month' | null
+            startDate?: string | null
+            endDate?: string | null
+          }
+          showAs?: 'total' | 'per_unit'
+          chartSettings?: {
+            categoryAxisLabel?: string
+            valueAxisLabel?: string
+            anchorYAxisToZero?: boolean
+          }
+          type: 'sql'
+          dataset: {
+            type: 'sql'
+            sql: string
+            timestampColumn: string | null
+            columnTypes: { [key: string]: 'string' | 'number' | 'date' | 'boolean' | 'other' }
+            values: {
+              name: string
+              rowFilters: {
+                operator:
+                  | '='
+                  | '!='
+                  | '<'
+                  | '<='
+                  | '>'
+                  | '>='
+                  | 'between'
+                  | 'not_between'
+                  | 'in'
+                  | 'not_in'
+                  | 'contains'
+                  | 'not_contains'
+                  | 'matches_pattern'
+                  | 'not_matches_pattern'
+                  | 'starts_with'
+                  | 'ends_with'
+                  | 'is_null'
+                  | 'not_null'
+                  | 'is_true'
+                  | 'is_false'
+                  | 'sql_expr'
+                  | 'saved_filter'
+                column?: string
+                values?: string[]
+              }[]
+              type: 'sql'
+              valueType: 'unit_count' | 'count' | 'sum'
+              valueColumn: string | null
+              unit: string | null
+            }[]
+            hiddenColumns?: string[]
+          }
+        }
+      }
+    | {
+        organization: string
+        id: string
+        uid: string
+        type: 'funnel-exploration'
+        title: string
+        description: string
+        snapshotId?: string
+        layout?: { x: number; y: number; w: number; h: number; static?: boolean }
+        explorerAnalysisId: string
+        comparison?: {
+          enabled: boolean
+          mode?:
+            | 'previousPeriod'
+            | 'previousPeriodMatchDayOfWeek'
+            | 'previousYear'
+            | 'previousYearMatchDayOfWeek'
+            | 'custom'
+          previousTimeFrame?: {
+            predefined:
+              | 'today'
+              | 'yesterday'
+              | 'last7Days'
+              | 'last30Days'
+              | 'last90Days'
+              | 'last12Months'
+              | 'lastCalendarYear'
+              | 'customLookback'
+              | 'customDateRange'
+            lookbackValue?: number | null
+            lookbackUnit?: 'hour' | 'day' | 'week' | 'month' | null
+            startDate?: string | null
+            endDate?: string | null
+          }
+        }
+        comparisonExplorerAnalysisId?: string
+        globalControlSettings?: { dateRange?: boolean }
+        config: {
+          datasource: string
+          dimensions: (
+            | {
+                dimensionType: 'date'
+                column: string | null
+                dateGranularity: 'auto' | 'hour' | 'day' | 'week' | 'month' | 'year'
+              }
+            | { dimensionType: 'dynamic'; column: string | null; maxValues: number }
+            | { dimensionType: 'static'; column: string; values: string[] }
+            | {
+                dimensionType: 'slice'
+                slices: {
+                  name: string
+                  filters: {
+                    operator:
+                      | '='
+                      | '!='
+                      | '<'
+                      | '<='
+                      | '>'
+                      | '>='
+                      | 'between'
+                      | 'not_between'
+                      | 'in'
+                      | 'not_in'
+                      | 'contains'
+                      | 'not_contains'
+                      | 'matches_pattern'
+                      | 'not_matches_pattern'
+                      | 'starts_with'
+                      | 'ends_with'
+                      | 'is_null'
+                      | 'not_null'
+                      | 'is_true'
+                      | 'is_false'
+                      | 'sql_expr'
+                      | 'saved_filter'
+                    column?: string
+                    values?: string[]
+                  }[]
+                }[]
+              }
+          )[]
+          chartType:
+            | 'line'
+            | 'area'
+            | 'timeseries-table'
+            | 'table'
+            | 'bar'
+            | 'stackedBar'
+            | 'horizontalBar'
+            | 'stackedHorizontalBar'
+            | 'bigNumber'
+            | 'rawTable'
+          dateRange: {
+            predefined:
+              | 'today'
+              | 'yesterday'
+              | 'last7Days'
+              | 'last30Days'
+              | 'last90Days'
+              | 'last12Months'
+              | 'lastCalendarYear'
+              | 'customLookback'
+              | 'customDateRange'
+            lookbackValue?: number | null
+            lookbackUnit?: 'hour' | 'day' | 'week' | 'month' | null
+            startDate?: string | null
+            endDate?: string | null
+          }
+          showAs?: 'total' | 'per_unit'
+          chartSettings?: {
+            categoryAxisLabel?: string
+            valueAxisLabel?: string
+            anchorYAxisToZero?: boolean
+          }
+          type: 'funnel'
+          dataset: {
+            type: 'funnel'
+            unit: string | null
+            steps: {
+              name: string
+              factTableId: string
+              rowFilters: {
+                operator:
+                  | '='
+                  | '!='
+                  | '<'
+                  | '<='
+                  | '>'
+                  | '>='
+                  | 'between'
+                  | 'not_between'
+                  | 'in'
+                  | 'not_in'
+                  | 'contains'
+                  | 'not_contains'
+                  | 'matches_pattern'
+                  | 'not_matches_pattern'
+                  | 'starts_with'
+                  | 'ends_with'
+                  | 'is_null'
+                  | 'not_null'
+                  | 'is_true'
+                  | 'is_false'
+                  | 'sql_expr'
+                  | 'saved_filter'
+                column?: string
+                values?: string[]
+              }[]
+              optional: boolean
+              conversionWindow?: {
+                unit: 'weeks' | 'days' | 'hours' | 'minutes'
+                value: number
+              } | null
+            }[]
+            concurrencyWindowSeconds?: number
+            yAxisScale?: 'count' | 'percent'
+          }
+        }
+        linkedFunnelMetricId?: string | null
+      }
+  )[]
+  owner: string
+  ownerEmail?: string
+}
+
+type AnalyticsExplorationType = {
+  id: string
+  dateCreated: string
+  dateUpdated: string
+  datasource: string
+  status: 'running' | 'success' | 'error'
+  dateStart: string
+  dateEnd: string
+  error?: string | null
+  result: {
+    rows: {
+      dimensions: (string | null)[]
+      values?: { metricId: string; numerator: number | null; denominator: number | null }[]
+      populationCount?: number
+      steps?: {
+        count: number
+        timeFromPrevSumHrs: number | null
+        timeFromPrevSumSquaresHrs: number | null
+      }[]
+      journey?:
+        | { kind: 'path'; direction: 'forward' | 'backward'; levels: string[]; count: number }
+        | {
+            kind: 'committed'
+            direction: 'forward' | 'backward'
+            stepIndex: number
+            value: string
+            count: number
+          }
+    }[]
+    rawRows?: { [key: string]: unknown }[]
+    truncated?: boolean
+  }
+  config:
+    | {
+        datasource: string
+        dimensions: (
+          | {
+              dimensionType: 'date'
+              column: string | null
+              dateGranularity: 'auto' | 'hour' | 'day' | 'week' | 'month' | 'year'
+            }
+          | { dimensionType: 'dynamic'; column: string | null; maxValues: number }
+          | { dimensionType: 'static'; column: string; values: string[] }
+          | {
+              dimensionType: 'slice'
+              slices: {
+                name: string
+                filters: {
+                  operator:
+                    | '='
+                    | '!='
+                    | '<'
+                    | '<='
+                    | '>'
+                    | '>='
+                    | 'between'
+                    | 'not_between'
+                    | 'in'
+                    | 'not_in'
+                    | 'contains'
+                    | 'not_contains'
+                    | 'matches_pattern'
+                    | 'not_matches_pattern'
+                    | 'starts_with'
+                    | 'ends_with'
+                    | 'is_null'
+                    | 'not_null'
+                    | 'is_true'
+                    | 'is_false'
+                    | 'sql_expr'
+                    | 'saved_filter'
+                  column?: string
+                  values?: string[]
+                }[]
+              }[]
+            }
+        )[]
+        chartType:
+          | 'line'
+          | 'area'
+          | 'timeseries-table'
+          | 'table'
+          | 'bar'
+          | 'stackedBar'
+          | 'horizontalBar'
+          | 'stackedHorizontalBar'
+          | 'bigNumber'
+          | 'rawTable'
+        dateRange: {
+          predefined:
+            | 'today'
+            | 'yesterday'
+            | 'last7Days'
+            | 'last30Days'
+            | 'last90Days'
+            | 'last12Months'
+            | 'lastCalendarYear'
+            | 'customLookback'
+            | 'customDateRange'
+          lookbackValue?: number | null
+          lookbackUnit?: 'hour' | 'day' | 'week' | 'month' | null
+          startDate?: string | null
+          endDate?: string | null
+        }
+        showAs?: 'total' | 'per_unit'
+        chartSettings?: {
+          categoryAxisLabel?: string
+          valueAxisLabel?: string
+          anchorYAxisToZero?: boolean
+        }
+        type: 'metric'
+        dataset: {
+          type: 'metric'
+          values: {
+            name: string
+            rowFilters: {
+              operator:
+                | '='
+                | '!='
+                | '<'
+                | '<='
+                | '>'
+                | '>='
+                | 'between'
+                | 'not_between'
+                | 'in'
+                | 'not_in'
+                | 'contains'
+                | 'not_contains'
+                | 'matches_pattern'
+                | 'not_matches_pattern'
+                | 'starts_with'
+                | 'ends_with'
+                | 'is_null'
+                | 'not_null'
+                | 'is_true'
+                | 'is_false'
+                | 'sql_expr'
+                | 'saved_filter'
+              column?: string
+              values?: string[]
+            }[]
+            type: 'metric'
+            metricId: string
+            unit: string | null
+            denominatorUnit: string | null
+            showAs?: 'total' | 'per_unit'
+          }[]
+          population?: z.infer<typeof ExplorationPopulationSchema>
+        }
+      }
+    | {
+        datasource: string
+        dimensions: (
+          | {
+              dimensionType: 'date'
+              column: string | null
+              dateGranularity: 'auto' | 'hour' | 'day' | 'week' | 'month' | 'year'
+            }
+          | { dimensionType: 'dynamic'; column: string | null; maxValues: number }
+          | { dimensionType: 'static'; column: string; values: string[] }
+          | {
+              dimensionType: 'slice'
+              slices: {
+                name: string
+                filters: {
+                  operator:
+                    | '='
+                    | '!='
+                    | '<'
+                    | '<='
+                    | '>'
+                    | '>='
+                    | 'between'
+                    | 'not_between'
+                    | 'in'
+                    | 'not_in'
+                    | 'contains'
+                    | 'not_contains'
+                    | 'matches_pattern'
+                    | 'not_matches_pattern'
+                    | 'starts_with'
+                    | 'ends_with'
+                    | 'is_null'
+                    | 'not_null'
+                    | 'is_true'
+                    | 'is_false'
+                    | 'sql_expr'
+                    | 'saved_filter'
+                  column?: string
+                  values?: string[]
+                }[]
+              }[]
+            }
+        )[]
+        chartType:
+          | 'line'
+          | 'area'
+          | 'timeseries-table'
+          | 'table'
+          | 'bar'
+          | 'stackedBar'
+          | 'horizontalBar'
+          | 'stackedHorizontalBar'
+          | 'bigNumber'
+          | 'rawTable'
+        dateRange: {
+          predefined:
+            | 'today'
+            | 'yesterday'
+            | 'last7Days'
+            | 'last30Days'
+            | 'last90Days'
+            | 'last12Months'
+            | 'lastCalendarYear'
+            | 'customLookback'
+            | 'customDateRange'
+          lookbackValue?: number | null
+          lookbackUnit?: 'hour' | 'day' | 'week' | 'month' | null
+          startDate?: string | null
+          endDate?: string | null
+        }
+        showAs?: 'total' | 'per_unit'
+        chartSettings?: {
+          categoryAxisLabel?: string
+          valueAxisLabel?: string
+          anchorYAxisToZero?: boolean
+        }
+        type: 'fact_table'
+        dataset: {
+          type: 'fact_table'
+          factTableId: string | null
+          values: {
+            name: string
+            rowFilters: {
+              operator:
+                | '='
+                | '!='
+                | '<'
+                | '<='
+                | '>'
+                | '>='
+                | 'between'
+                | 'not_between'
+                | 'in'
+                | 'not_in'
+                | 'contains'
+                | 'not_contains'
+                | 'matches_pattern'
+                | 'not_matches_pattern'
+                | 'starts_with'
+                | 'ends_with'
+                | 'is_null'
+                | 'not_null'
+                | 'is_true'
+                | 'is_false'
+                | 'sql_expr'
+                | 'saved_filter'
+              column?: string
+              values?: string[]
+            }[]
+            type: 'fact_table'
+            valueType: 'unit_count' | 'count' | 'sum'
+            valueColumn: string | null
+            unit: string | null
+          }[]
+        }
+      }
+    | {
+        datasource: string
+        dimensions: (
+          | {
+              dimensionType: 'date'
+              column: string | null
+              dateGranularity: 'auto' | 'hour' | 'day' | 'week' | 'month' | 'year'
+            }
+          | { dimensionType: 'dynamic'; column: string | null; maxValues: number }
+          | { dimensionType: 'static'; column: string; values: string[] }
+          | {
+              dimensionType: 'slice'
+              slices: {
+                name: string
+                filters: {
+                  operator:
+                    | '='
+                    | '!='
+                    | '<'
+                    | '<='
+                    | '>'
+                    | '>='
+                    | 'between'
+                    | 'not_between'
+                    | 'in'
+                    | 'not_in'
+                    | 'contains'
+                    | 'not_contains'
+                    | 'matches_pattern'
+                    | 'not_matches_pattern'
+                    | 'starts_with'
+                    | 'ends_with'
+                    | 'is_null'
+                    | 'not_null'
+                    | 'is_true'
+                    | 'is_false'
+                    | 'sql_expr'
+                    | 'saved_filter'
+                  column?: string
+                  values?: string[]
+                }[]
+              }[]
+            }
+        )[]
+        chartType:
+          | 'line'
+          | 'area'
+          | 'timeseries-table'
+          | 'table'
+          | 'bar'
+          | 'stackedBar'
+          | 'horizontalBar'
+          | 'stackedHorizontalBar'
+          | 'bigNumber'
+          | 'rawTable'
+        dateRange: {
+          predefined:
+            | 'today'
+            | 'yesterday'
+            | 'last7Days'
+            | 'last30Days'
+            | 'last90Days'
+            | 'last12Months'
+            | 'lastCalendarYear'
+            | 'customLookback'
+            | 'customDateRange'
+          lookbackValue?: number | null
+          lookbackUnit?: 'hour' | 'day' | 'week' | 'month' | null
+          startDate?: string | null
+          endDate?: string | null
+        }
+        showAs?: 'total' | 'per_unit'
+        chartSettings?: {
+          categoryAxisLabel?: string
+          valueAxisLabel?: string
+          anchorYAxisToZero?: boolean
+        }
+        type: 'data_source'
+        dataset: {
+          type: 'data_source'
+          table: string
+          path: string
+          timestampColumn: string
+          columnTypes: { [key: string]: 'string' | 'number' | 'date' | 'boolean' | 'other' }
+          values: {
+            name: string
+            rowFilters: {
+              operator:
+                | '='
+                | '!='
+                | '<'
+                | '<='
+                | '>'
+                | '>='
+                | 'between'
+                | 'not_between'
+                | 'in'
+                | 'not_in'
+                | 'contains'
+                | 'not_contains'
+                | 'matches_pattern'
+                | 'not_matches_pattern'
+                | 'starts_with'
+                | 'ends_with'
+                | 'is_null'
+                | 'not_null'
+                | 'is_true'
+                | 'is_false'
+                | 'sql_expr'
+                | 'saved_filter'
+              column?: string
+              values?: string[]
+            }[]
+            type: 'data_source'
+            valueType: 'unit_count' | 'count' | 'sum'
+            valueColumn: string | null
+            unit: string | null
+          }[]
+        }
+      }
+    | {
+        datasource: string
+        dimensions: (
+          | {
+              dimensionType: 'date'
+              column: string | null
+              dateGranularity: 'auto' | 'hour' | 'day' | 'week' | 'month' | 'year'
+            }
+          | { dimensionType: 'dynamic'; column: string | null; maxValues: number }
+          | { dimensionType: 'static'; column: string; values: string[] }
+          | {
+              dimensionType: 'slice'
+              slices: {
+                name: string
+                filters: {
+                  operator:
+                    | '='
+                    | '!='
+                    | '<'
+                    | '<='
+                    | '>'
+                    | '>='
+                    | 'between'
+                    | 'not_between'
+                    | 'in'
+                    | 'not_in'
+                    | 'contains'
+                    | 'not_contains'
+                    | 'matches_pattern'
+                    | 'not_matches_pattern'
+                    | 'starts_with'
+                    | 'ends_with'
+                    | 'is_null'
+                    | 'not_null'
+                    | 'is_true'
+                    | 'is_false'
+                    | 'sql_expr'
+                    | 'saved_filter'
+                  column?: string
+                  values?: string[]
+                }[]
+              }[]
+            }
+        )[]
+        chartType:
+          | 'line'
+          | 'area'
+          | 'timeseries-table'
+          | 'table'
+          | 'bar'
+          | 'stackedBar'
+          | 'horizontalBar'
+          | 'stackedHorizontalBar'
+          | 'bigNumber'
+          | 'rawTable'
+        dateRange: {
+          predefined:
+            | 'today'
+            | 'yesterday'
+            | 'last7Days'
+            | 'last30Days'
+            | 'last90Days'
+            | 'last12Months'
+            | 'lastCalendarYear'
+            | 'customLookback'
+            | 'customDateRange'
+          lookbackValue?: number | null
+          lookbackUnit?: 'hour' | 'day' | 'week' | 'month' | null
+          startDate?: string | null
+          endDate?: string | null
+        }
+        showAs?: 'total' | 'per_unit'
+        chartSettings?: {
+          categoryAxisLabel?: string
+          valueAxisLabel?: string
+          anchorYAxisToZero?: boolean
+        }
+        type: 'sql'
+        dataset: {
+          type: 'sql'
+          sql: string
+          timestampColumn: string | null
+          columnTypes: { [key: string]: 'string' | 'number' | 'date' | 'boolean' | 'other' }
+          values: {
+            name: string
+            rowFilters: {
+              operator:
+                | '='
+                | '!='
+                | '<'
+                | '<='
+                | '>'
+                | '>='
+                | 'between'
+                | 'not_between'
+                | 'in'
+                | 'not_in'
+                | 'contains'
+                | 'not_contains'
+                | 'matches_pattern'
+                | 'not_matches_pattern'
+                | 'starts_with'
+                | 'ends_with'
+                | 'is_null'
+                | 'not_null'
+                | 'is_true'
+                | 'is_false'
+                | 'sql_expr'
+                | 'saved_filter'
+              column?: string
+              values?: string[]
+            }[]
+            type: 'sql'
+            valueType: 'unit_count' | 'count' | 'sum'
+            valueColumn: string | null
+            unit: string | null
+          }[]
+          hiddenColumns?: string[]
+        }
+      }
+    | {
+        datasource: string
+        dimensions: (
+          | {
+              dimensionType: 'date'
+              column: string | null
+              dateGranularity: 'auto' | 'hour' | 'day' | 'week' | 'month' | 'year'
+            }
+          | { dimensionType: 'dynamic'; column: string | null; maxValues: number }
+          | { dimensionType: 'static'; column: string; values: string[] }
+          | {
+              dimensionType: 'slice'
+              slices: {
+                name: string
+                filters: {
+                  operator:
+                    | '='
+                    | '!='
+                    | '<'
+                    | '<='
+                    | '>'
+                    | '>='
+                    | 'between'
+                    | 'not_between'
+                    | 'in'
+                    | 'not_in'
+                    | 'contains'
+                    | 'not_contains'
+                    | 'matches_pattern'
+                    | 'not_matches_pattern'
+                    | 'starts_with'
+                    | 'ends_with'
+                    | 'is_null'
+                    | 'not_null'
+                    | 'is_true'
+                    | 'is_false'
+                    | 'sql_expr'
+                    | 'saved_filter'
+                  column?: string
+                  values?: string[]
+                }[]
+              }[]
+            }
+        )[]
+        chartType:
+          | 'line'
+          | 'area'
+          | 'timeseries-table'
+          | 'table'
+          | 'bar'
+          | 'stackedBar'
+          | 'horizontalBar'
+          | 'stackedHorizontalBar'
+          | 'bigNumber'
+          | 'rawTable'
+        dateRange: {
+          predefined:
+            | 'today'
+            | 'yesterday'
+            | 'last7Days'
+            | 'last30Days'
+            | 'last90Days'
+            | 'last12Months'
+            | 'lastCalendarYear'
+            | 'customLookback'
+            | 'customDateRange'
+          lookbackValue?: number | null
+          lookbackUnit?: 'hour' | 'day' | 'week' | 'month' | null
+          startDate?: string | null
+          endDate?: string | null
+        }
+        showAs?: 'total' | 'per_unit'
+        chartSettings?: {
+          categoryAxisLabel?: string
+          valueAxisLabel?: string
+          anchorYAxisToZero?: boolean
+        }
+        type: 'funnel'
+        dataset: {
+          type: 'funnel'
+          unit: string | null
+          steps: {
+            name: string
+            factTableId: string
+            rowFilters: {
+              operator:
+                | '='
+                | '!='
+                | '<'
+                | '<='
+                | '>'
+                | '>='
+                | 'between'
+                | 'not_between'
+                | 'in'
+                | 'not_in'
+                | 'contains'
+                | 'not_contains'
+                | 'matches_pattern'
+                | 'not_matches_pattern'
+                | 'starts_with'
+                | 'ends_with'
+                | 'is_null'
+                | 'not_null'
+                | 'is_true'
+                | 'is_false'
+                | 'sql_expr'
+                | 'saved_filter'
+              column?: string
+              values?: string[]
+            }[]
+            optional: boolean
+            conversionWindow?: {
+              unit: 'weeks' | 'days' | 'hours' | 'minutes'
+              value: number
+            } | null
+          }[]
+          concurrencyWindowSeconds?: number
+          yAxisScale?: 'count' | 'percent'
+        }
+      }
+    | {
+        datasource: string
+        dimensions: (
+          | {
+              dimensionType: 'date'
+              column: string | null
+              dateGranularity: 'auto' | 'hour' | 'day' | 'week' | 'month' | 'year'
+            }
+          | { dimensionType: 'dynamic'; column: string | null; maxValues: number }
+          | { dimensionType: 'static'; column: string; values: string[] }
+          | {
+              dimensionType: 'slice'
+              slices: {
+                name: string
+                filters: {
+                  operator:
+                    | '='
+                    | '!='
+                    | '<'
+                    | '<='
+                    | '>'
+                    | '>='
+                    | 'between'
+                    | 'not_between'
+                    | 'in'
+                    | 'not_in'
+                    | 'contains'
+                    | 'not_contains'
+                    | 'matches_pattern'
+                    | 'not_matches_pattern'
+                    | 'starts_with'
+                    | 'ends_with'
+                    | 'is_null'
+                    | 'not_null'
+                    | 'is_true'
+                    | 'is_false'
+                    | 'sql_expr'
+                    | 'saved_filter'
+                  column?: string
+                  values?: string[]
+                }[]
+              }[]
+            }
+        )[]
+        chartType:
+          | 'line'
+          | 'area'
+          | 'timeseries-table'
+          | 'table'
+          | 'bar'
+          | 'stackedBar'
+          | 'horizontalBar'
+          | 'stackedHorizontalBar'
+          | 'bigNumber'
+          | 'rawTable'
+        dateRange: {
+          predefined:
+            | 'today'
+            | 'yesterday'
+            | 'last7Days'
+            | 'last30Days'
+            | 'last90Days'
+            | 'last12Months'
+            | 'lastCalendarYear'
+            | 'customLookback'
+            | 'customDateRange'
+          lookbackValue?: number | null
+          lookbackUnit?: 'hour' | 'day' | 'week' | 'month' | null
+          startDate?: string | null
+          endDate?: string | null
+        }
+        showAs?: 'total' | 'per_unit'
+        chartSettings?: {
+          categoryAxisLabel?: string
+          valueAxisLabel?: string
+          anchorYAxisToZero?: boolean
+        }
+        type: 'journey'
+        dataset: {
+          type: 'journey'
+          factTableId: string | null
+          unit: string | null
+          stepColumns: string[]
+          stepGroups?: { column: string; pattern: string }[]
+          anchorStepValues: string[] | null
+          direction: 'forward' | 'backward'
+          rowFilters: {
+            operator:
+              | '='
+              | '!='
+              | '<'
+              | '<='
+              | '>'
+              | '>='
+              | 'between'
+              | 'not_between'
+              | 'in'
+              | 'not_in'
+              | 'contains'
+              | 'not_contains'
+              | 'matches_pattern'
+              | 'not_matches_pattern'
+              | 'starts_with'
+              | 'ends_with'
+              | 'is_null'
+              | 'not_null'
+              | 'is_true'
+              | 'is_false'
+              | 'sql_expr'
+              | 'saved_filter'
+            column?: string
+            values?: string[]
+          }[]
+          path: { value: string }[]
+          lookaheadDepth: number
+          optionsPerStep: number[]
+          heightScale?: 'relative' | 'absolute'
+        }
+      }
+}
+
+type RampScheduleTemplateType = {
+  id: string
+  dateCreated: string
+  dateUpdated: string
+  name: string
+  steps: {
+    interval: number | null
+    approvalNotes?: string | null
+    monitored?: boolean
+    holdConditions?: { minSampleSize?: number; requiresApproval?: boolean }
+    actions: {
+      targetType: 'feature-rule'
+      targetId: string
+      patch: {
+        ruleId: string
+        coverage?: number | null
+        condition?: string | null
+        savedGroups?: { match: 'all' | 'none' | 'any'; ids: string[] }[] | null
+        prerequisites?: { id: string; condition: string }[] | null
+        allEnvironments?: boolean | null
+        environments?: string[] | null
+        enabled?: boolean | null
+        force?: unknown
+      }
+    }[]
+  }[]
+  endPatch?: {
+    coverage?: number
+    condition?: string
+    savedGroups?: { match: 'all' | 'none' | 'any'; ids: string[] }[]
+    prerequisites?: { id: string; condition: string }[]
+    allEnvironments?: boolean
+    environments?: string[]
+  }
+  official?: boolean
+  monitoringConfig?: {
+    datasourceId: string
+    guardrailMetricIds: string[]
+    signalMetricIds?: string[]
+    updateScheduleMinutes?: number | null
+    monitoringMode?: 'auto' | 'manual'
+    autoUpdate?: boolean
+    srmAction?: 'rollback' | 'hold' | 'warn'
+    noTrafficAction?: 'rollback' | 'hold' | 'warn'
+    noTrafficGracePeriodHours?: number | null
+    multipleExposureAction?: 'rollback' | 'hold' | 'warn'
+    exposureQuery: { id: string; identifierType: string | null }
+    exposureQueryId: string
+  } | null
+  lockdownConfig?: { mode: 'none' | 'locked' } | null
+  order: number
+}
+
+const PaginationFieldsSchema = z
+  .strictObject({
+    limit: z.int(),
+    offset: z.int(),
+    count: z.int(),
+    total: z.int(),
+    hasMore: z.boolean(),
+    nextOffset: z.union([z.int(), z.null().nullable()]),
+  })
+  .openapi({ required: ['limit', 'offset', 'count', 'total', 'hasMore', 'nextOffset'] })
+  .openapi('PaginationFields')
+
+const FeatureWithRevisionsV1Schema: z.ZodType<FeatureWithRevisionsV1Type> = FeatureV1Schema.and(
+  z
+    .strictObject({ revisions: z.array(FeatureRevisionV1Schema).exactOptional() })
+    .openapi({ required: [] }),
+).openapi('FeatureWithRevisionsV1')
+
+const FeatureWithRevisionsV2Schema: z.ZodType<FeatureWithRevisionsV2Type> = FeatureV2Schema.and(
   z
     .strictObject({ revisions: z.array(FeatureRevisionV2Schema).exactOptional() })
     .openapi({ required: [] }),
@@ -2904,211 +6346,6 @@ const ArchetypeSchema = z
   })
   .openapi('Archetype')
 
-const LookbackOverrideSchema = z
-  .strictObject({
-    type: z.enum(['date', 'window']),
-    value: z
-      .union([
-        z
-          .number()
-          .openapi({
-            description:
-              'For "window" type - non-negative numeric value (e.g. 7 for 7 days). For "date" type a date string.',
-          }),
-        z.iso
-          .datetime({ offset: true })
-          .openapi({
-            description:
-              'For "window" type - non-negative numeric value (e.g. 7 for 7 days). For "date" type a date string.',
-          }),
-      ])
-      .openapi({
-        description:
-          'For "window" type - non-negative numeric value (e.g. 7 for 7 days). For "date" type a date string.',
-      }),
-    valueUnit: z
-      .enum(['minutes', 'hours', 'days', 'weeks'])
-      .exactOptional()
-      .openapi({ description: 'Used when type is "window". Defaults to "days".' }),
-  })
-  .openapi({
-    description:
-      'Controls the lookback override for the experiment. For type "window", value must be a non-negative number and valueUnit is required.',
-    required: ['type', 'value'],
-  })
-  .openapi('LookbackOverride')
-
-const ExperimentDecisionFrameworkSettingsSchema = z
-  .strictObject({
-    decisionCriteriaId: z.string().exactOptional(),
-    decisionFrameworkMetricOverrides: z
-      .array(
-        z
-          .strictObject({
-            id: z.string().openapi({ description: 'ID of the metric to override settings for.' }),
-            targetMDE: z
-              .number()
-              .gt(0)
-              .exactOptional()
-              .openapi({
-                description:
-                  'The target relative MDE to use for the metric, expressed as proportions (e.g. use 0.1 for 10%). Must be greater than 0.',
-              }),
-          })
-          .openapi({ required: ['id'] }),
-      )
-      .exactOptional(),
-  })
-  .openapi({
-    description:
-      'Controls the decision framework and metric overrides for the experiment. Replaces the entire stored object on update (does not patch individual fields).',
-    required: [],
-  })
-  .openapi('ExperimentDecisionFrameworkSettings')
-
-const ExperimentMetricOverrideEntrySchema = z
-  .strictObject({
-    id: z.string().openapi({ description: 'ID of the metric to override settings for.' }),
-    windowType: z.enum(['conversion', 'lookback', '']).exactOptional(),
-    windowHours: z.number().exactOptional(),
-    delayHours: z.number().exactOptional(),
-    properPriorOverride: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Must be true for the override to take effect. If true, the other proper prior settings in this object will be used if present.',
-      }),
-    properPriorEnabled: z.boolean().exactOptional(),
-    properPriorMean: z.number().exactOptional(),
-    properPriorStdDev: z.number().exactOptional(),
-    regressionAdjustmentOverride: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Must be true for the override to take effect. If true, the other regression adjustment settings in this object will be used if present.',
-      }),
-    regressionAdjustmentEnabled: z.boolean().exactOptional(),
-    regressionAdjustmentDays: z.number().exactOptional(),
-  })
-  .openapi({
-    description:
-      'Per-metric analysis overrides stored on the experiment (matches internal metricOverrides).',
-    required: ['id'],
-  })
-  .openapi('ExperimentMetricOverrideEntry')
-
-const ExperimentMetricSchema = z
-  .strictObject({
-    metricId: z.string(),
-    overrides: z
-      .strictObject({
-        delayHours: z.number().exactOptional(),
-        windowHours: z.number().exactOptional(),
-        window: z.enum(['conversion', 'lookback', '']).exactOptional(),
-        properPriorOverride: z.boolean().exactOptional(),
-        properPriorEnabled: z.boolean().exactOptional(),
-        properPriorMean: z.number().exactOptional(),
-        properPriorStdDev: z.number().exactOptional(),
-        regressionAdjustmentOverride: z.boolean().exactOptional(),
-        regressionAdjustmentEnabled: z.boolean().exactOptional(),
-        regressionAdjustmentDays: z.number().exactOptional(),
-        winRiskThreshold: z
-          .number()
-          .exactOptional()
-          .openapi({ deprecated: true, description: 'No longer used. Never returned.' }),
-        loseRiskThreshold: z
-          .number()
-          .exactOptional()
-          .openapi({ deprecated: true, description: 'No longer used. Never returned.' }),
-      })
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: ['metricId', 'overrides'] })
-  .openapi('ExperimentMetric')
-
-const ExperimentAnalysisSettingsSchema = z
-  .strictObject({
-    datasourceId: z.string(),
-    assignmentQuery: z
-      .strictObject({
-        id: z
-          .string()
-          .openapi({ description: "The ID of one of the data source's assignment queries." }),
-        identifierType: z
-          .union([z.string(), z.null().nullable()])
-          .openapi({
-            description:
-              'The identifier type analyzed on. Null when none can be resolved: no assignment query is selected, or a record saved before identifier types were stored points at a query that no longer exists.',
-          }),
-      })
-      .openapi({
-        description: 'The assignment query, grouping its ID with the identifier type analyzed on.',
-        required: ['id', 'identifierType'],
-      }),
-    assignmentQueryId: z
-      .string()
-      .openapi({ description: 'Deprecated: use `assignmentQuery`.', deprecated: true }),
-    experimentId: z.string(),
-    segmentId: z.string(),
-    queryFilter: z.string(),
-    inProgressConversions: z.enum(['include', 'exclude']),
-    attributionModel: z
-      .enum(['firstExposure', 'experimentDuration', 'lookbackOverride'])
-      .openapi({
-        description:
-          'Setting attribution model to `"experimentDuration"` is the same as selecting "Ignore Conversion Windows" for the Conversion Window Override. Setting it to `"lookbackOverride"` requires a `lookbackOverride` object to be provided.',
-      }),
-    lookbackOverride: LookbackOverrideSchema.exactOptional(),
-    statsEngine: z.enum(['bayesian', 'frequentist']),
-    regressionAdjustmentEnabled: z.boolean().exactOptional(),
-    sequentialTestingEnabled: z.boolean().exactOptional(),
-    sequentialTestingTuningParameter: z.number().exactOptional(),
-    postStratificationEnabled: z
-      .union([
-        z.boolean().openapi({ description: 'When null, the organization default is used.' }),
-        z
-          .null()
-          .nullable()
-          .openapi({ description: 'When null, the organization default is used.' }),
-      ])
-      .exactOptional()
-      .openapi({ description: 'When null, the organization default is used.' }),
-    decisionFrameworkSettings: ExperimentDecisionFrameworkSettingsSchema.exactOptional().openapi({
-      description:
-        'Controls the decision framework and metric overrides for the experiment. Replaces the entire stored object on update (does not patch individual fields).',
-    }),
-    metricOverrides: z
-      .array(ExperimentMetricOverrideEntrySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Per-metric analysis overrides; also reflected in goals/secondaryMetrics/guardrails overrides when applicable. On create/update, this replaces the entire stored array (it does not patch individual entries).',
-      }),
-    goals: z.array(ExperimentMetricSchema),
-    secondaryMetrics: z.array(ExperimentMetricSchema),
-    guardrails: z.array(ExperimentMetricSchema),
-    activationMetric: ExperimentMetricSchema.exactOptional(),
-  })
-  .openapi({
-    required: [
-      'datasourceId',
-      'assignmentQuery',
-      'assignmentQueryId',
-      'experimentId',
-      'segmentId',
-      'queryFilter',
-      'inProgressConversions',
-      'attributionModel',
-      'statsEngine',
-      'goals',
-      'secondaryMetrics',
-      'guardrails',
-    ],
-  })
-  .openapi('ExperimentAnalysisSettings')
-
 const ScheduledStopPlanSchema = z
   .strictObject({
     mode: z.enum(['notify', 'auto-ship', 'force-ship', 'stop']),
@@ -3363,108 +6600,6 @@ const ExperimentSchema = z
   })
   .openapi('Experiment')
 
-const ExperimentResultsSchema = z
-  .strictObject({
-    id: z.string(),
-    dateUpdated: z.string(),
-    experimentId: z.string(),
-    phase: z.string(),
-    dateStart: z.string(),
-    dateEnd: z.string(),
-    dimension: z
-      .strictObject({
-        type: z.string(),
-        id: z.string().exactOptional(),
-        dimensions: z
-          .array(
-            z
-              .strictObject({ type: z.string(), id: z.string().exactOptional() })
-              .openapi({ required: ['type'] }),
-          )
-          .exactOptional(),
-      })
-      .openapi({ required: ['type'] }),
-    settings: ExperimentAnalysisSettingsSchema,
-    queryIds: z.array(z.string()),
-    results: z.array(
-      z
-        .strictObject({
-          dimension: z.string(),
-          totalUsers: z.number(),
-          checks: z.strictObject({ srm: z.number() }).openapi({ required: ['srm'] }),
-          metrics: z.array(
-            z
-              .strictObject({
-                metricId: z.string(),
-                metricName: z.string().exactOptional(),
-                variations: z.array(
-                  z
-                    .strictObject({
-                      variationId: z.string(),
-                      variationName: z.string().exactOptional(),
-                      users: z.number().exactOptional(),
-                      analyses: z.array(
-                        z
-                          .strictObject({
-                            engine: z.enum(['bayesian', 'frequentist']),
-                            numerator: z.number(),
-                            denominator: z.number(),
-                            mean: z.number(),
-                            stddev: z.number(),
-                            percentChange: z.number(),
-                            effectStandardError: z
-                              .number()
-                              .openapi({
-                                description:
-                                  'Standard error of the estimated effect (`percentChange`).',
-                              }),
-                            ciLow: z.number(),
-                            ciHigh: z.number(),
-                            pValue: z.number().exactOptional(),
-                            risk: z.number().exactOptional(),
-                            chanceToBeatControl: z.number().exactOptional(),
-                            errorMessage: z.string().exactOptional(),
-                          })
-                          .openapi({
-                            required: [
-                              'engine',
-                              'numerator',
-                              'denominator',
-                              'mean',
-                              'stddev',
-                              'percentChange',
-                              'effectStandardError',
-                              'ciLow',
-                              'ciHigh',
-                            ],
-                          }),
-                      ),
-                    })
-                    .openapi({ required: ['variationId', 'analyses'] }),
-                ),
-              })
-              .openapi({ required: ['metricId', 'variations'] }),
-          ),
-        })
-        .openapi({ required: ['dimension', 'totalUsers', 'checks', 'metrics'] }),
-    ),
-  })
-  .openapi({
-    required: [
-      'id',
-      'dateUpdated',
-      'experimentId',
-      'phase',
-      'dateStart',
-      'dateEnd',
-      'dimension',
-      'settings',
-      'queryIds',
-      'results',
-    ],
-  })
-  .openapi('ExperimentResults')
-
 const ExperimentWithEnhancedStatusSchema = z
   .strictObject({
     id: z.string(),
@@ -3704,6 +6839,96 @@ const ExperimentWithEnhancedStatusSchema = z
           .strictObject({
             status: z.enum(['Running', 'Stopped', 'Draft', 'Scheduled', 'Archived']),
             detailedStatus: z.string().exactOptional(),
+            needsAttention: z
+              .boolean()
+              .exactOptional()
+              .openapi({
+                description: 'Whether the app flags this experiment as needing attention.',
+              }),
+            decision: z
+              .strictObject({
+                category: z
+                  .enum(['ready-for-action', 'has-issue', 'collecting-data'])
+                  .openapi({
+                    description:
+                      'What `status` asks of you. `ready-for-action`: the results are ready to act on (`ship-now`, `rollback-now`, `ready-for-review`, `scheduled-end-review`). `has-issue`: something needs fixing before the results can be trusted (`unhealthy`, `data-incomplete`, `no-data`). `collecting-data`: keep the experiment running (`days-left`, `before-min-duration`).',
+                  }),
+                status: z
+                  .enum([
+                    'ship-now',
+                    'rollback-now',
+                    'ready-for-review',
+                    'scheduled-end-review',
+                    'days-left',
+                    'before-min-duration',
+                    'no-data',
+                    'unhealthy',
+                    'data-incomplete',
+                  ])
+                  .openapi({
+                    description:
+                      '`ship-now`, `rollback-now` and `ready-for-review` are recommendations from the Experiment Decision Framework and are only rendered if the Decision Framework is enabled for your organization. `unhealthy` means a health check is failing (see `healthIssues`). `data-incomplete` means some metrics could not be computed (see `erroredMetricIds`). `days-left` and `before-min-duration` mean the experiment should keep running. `scheduled-end-review` means the scheduled end date passed without a recommendation.',
+                  }),
+                reason: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'Explanation of the status, as shown in the app.' }),
+                daysLeft: z
+                  .union([z.number(), z.null().nullable()])
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'Days until the scheduled end date or, without one, until the experiment is expected to reach its target power. Set when `status` is `days-left`. null when the experiment is not expected to reach its target power at the current traffic.',
+                  }),
+                variations: z
+                  .array(
+                    z
+                      .strictObject({
+                        variationId: z.string(),
+                        action: z
+                          .union([z.enum(['ship', 'rollback', 'review']), z.null().nullable()])
+                          .openapi({
+                            description:
+                              'Action the decision criteria reached for this variation. null when no rule applied.',
+                          }),
+                      })
+                      .openapi({ required: ['variationId', 'action'] }),
+                  )
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'Variations the recommendation applies to. Set for `ship-now`, `rollback-now` and `ready-for-review`.',
+                  }),
+                healthIssues: z
+                  .array(
+                    z.enum([
+                      'sample-ratio-mismatch',
+                      'multiple-exposures',
+                      'low-power',
+                      'covariate-imbalance',
+                      'mixed-cluster-assignment',
+                      'units-in-multiple-clusters',
+                    ]),
+                  )
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'What is wrong with the experiment. Set when `status` is `unhealthy`. The results endpoint has the numbers behind each one under `result.health`: `sample-ratio-mismatch` in `srm`, `multiple-exposures` in `multipleExposures`, `low-power` in `power`, `covariate-imbalance` in `covariateImbalance`, `mixed-cluster-assignment` in `cluster.mixedAssignment` and `units-in-multiple-clusters` in `cluster.unitsInMultipleClusters`.',
+                  }),
+                erroredMetricIds: z
+                  .array(z.string())
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'Metrics that could not be computed. Set when `status` is `data-incomplete`.',
+                  }),
+              })
+              .exactOptional()
+              .openapi({
+                description:
+                  'The decision behind `detailedStatus` for a running experiment, based on the latest successful standard snapshot of the latest phase. Omitted when there is nothing to report yet.',
+                required: ['category', 'status'],
+              }),
           })
           .exactOptional()
           .openapi({ required: ['status'] }),
@@ -4065,6 +7290,21 @@ const DimensionSchema = z
     name: z.string(),
     description: z.string().max(10000).exactOptional(),
     query: z.string(),
+    timing: z
+      .enum(['none', 'rowTimestamp', 'validityRange'])
+      .exactOptional()
+      .openapi({
+        description:
+          "What the query returns and how the value at a unit's first exposure is resolved. `none` (default): one value per unit, resolved with MAX(value). `rowTimestamp`: timestamped rows; the query also returns a `timestamp` column and the latest row at or before first exposure is used. `validityRange`: validity ranges; the query also returns `start_timestamp` and `end_timestamp` (NULL = still valid) columns and the row valid at first exposure is used. Only supported for SQL Data Sources.",
+      }),
+    nullLabel: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({
+        description:
+          'Label used in experiment results for units with no dimension value. Leave empty to use the default null label.',
+      }),
     managedBy: z
       .enum(['', 'api', 'config'])
       .exactOptional()
@@ -4147,8 +7387,11 @@ const EnvironmentSchema = z
     defaultState: z.boolean(),
     projects: z.array(z.string()),
     parent: z.string().exactOptional(),
+    isProduction: z.boolean(),
   })
-  .openapi({ required: ['id', 'description', 'toggleOnList', 'defaultState', 'projects'] })
+  .openapi({
+    required: ['id', 'description', 'toggleOnList', 'defaultState', 'projects', 'isProduction'],
+  })
   .openapi('Environment')
 
 const AttributeSchema = z
@@ -4303,6 +7546,10 @@ const DataSourceSchema = z
                 "The column `sql` returns for each role, where it isn't the canonical name (`experiment_id`, `variation_id`, `timestamp`, `experiment_name`, `variation_name`, or the identifier type's own name). Roles not listed use the canonical name.",
               required: [],
             }),
+          error: z
+            .string()
+            .exactOptional()
+            .openapi({ description: 'Why the last validation of this query failed' }),
         })
         .openapi({
           required: [
@@ -4339,6 +7586,24 @@ const DataSourceSchema = z
           'extraUserIdProperty',
         ],
       }),
+    pipelineSettings: z
+      .strictObject({
+        allowWriting: z
+          .boolean()
+          .openapi({ description: 'Let GrowthBook write temporary tables to speed up analysis' }),
+        mode: z.enum(['ephemeral', 'incremental']),
+        writeDatabase: z.string().exactOptional(),
+        writeDataset: z.string().openapi({ description: 'Schema (or dataset) to write tables to' }),
+        unitsTableRetentionHours: z.number().gt(0),
+        unitsTableDeletion: z.boolean().exactOptional(),
+        includedExperimentIds: z.array(z.string()).exactOptional(),
+        excludedExperimentIds: z.array(z.string()).exactOptional(),
+        incrementalOptInExperimentIds: z.array(z.string()).exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: ['allowWriting', 'mode', 'writeDataset', 'unitsTableRetentionHours'] }),
+    maxConcurrentQueries: z.int().min(0).exactOptional(),
+    queryCacheTTLMins: z.int().min(0).exactOptional(),
   })
   .openapi({
     required: [
@@ -6415,6 +9680,7 @@ const FactMetricSchema = z
       'ratio',
       'dailyParticipation',
       'funnel',
+      'compound',
     ]),
     numerator: z
       .strictObject({
@@ -6712,6 +9978,79 @@ const FactMetricSchema = z
       .openapi({
         description: 'Funnel metric settings (required when metricType is "funnel")',
         required: ['steps'],
+      }),
+    compoundSettings: z
+      .strictObject({
+        components: z
+          .array(
+            z
+              .strictObject({
+                factTableId: z
+                  .string()
+                  .openapi({ description: 'The fact table this component draws events from' }),
+                rowFilters: z
+                  .array(
+                    z
+                      .strictObject({
+                        operator: z.enum([
+                          '=',
+                          '!=',
+                          '>',
+                          '<',
+                          '>=',
+                          '<=',
+                          'between',
+                          'not_between',
+                          'in',
+                          'not_in',
+                          'is_null',
+                          'not_null',
+                          'is_true',
+                          'is_false',
+                          'contains',
+                          'not_contains',
+                          'matches_pattern',
+                          'not_matches_pattern',
+                          'starts_with',
+                          'ends_with',
+                          'sql_expr',
+                          'saved_filter',
+                        ]),
+                        values: z
+                          .array(z.string())
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              'Not required for is_null, not_null, is_true, is_false operators. The between and not_between operators take at most two values, a lower and an upper bound in that order; leave a bound as an empty string for an open-ended range.',
+                          }),
+                        column: z
+                          .string()
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              'Required for all operators except sql_expr and saved_filter.',
+                          }),
+                      })
+                      .openapi({ required: ['operator'] }),
+                  )
+                  .openapi({
+                    description:
+                      'Filters that decide whether an event row counts for this component',
+                  }),
+              })
+              .openapi({ required: ['factTableId', 'rowFilters'] }),
+          )
+          .min(2)
+          .max(20)
+          .openapi({
+            description:
+              'A unit passes when it has at least one matching event for every component, in any order. Minimum 2 components required.',
+          }),
+      })
+      .exactOptional()
+      .openapi({
+        description: 'Compound metric settings (required when metricType is "compound")',
+        required: ['components'],
       }),
     cappingSettings: z
       .strictObject({
@@ -7021,7 +10360,11 @@ const QuerySchema = z
     queryType: z.string(),
     createdAt: z.string(),
     startedAt: z.string(),
+    finishedAt: z.union([z.string(), z.null().nullable()]),
     status: z.enum(['running', 'queued', 'failed', 'partially-succeeded', 'succeeded']),
+    error: z
+      .union([z.string(), z.null().nullable()])
+      .openapi({ description: 'Why the query failed' }),
     externalId: z.string(),
     dependencies: z.array(z.string()),
     runAtEnd: z.boolean(),
@@ -7036,7 +10379,9 @@ const QuerySchema = z
       'queryType',
       'createdAt',
       'startedAt',
+      'finishedAt',
       'status',
+      'error',
       'externalId',
       'dependencies',
       'runAtEnd',
@@ -7180,6 +10525,7 @@ const SettingsSchema = z
     banditScheduleUnit: z.enum(['hours', 'days']),
     banditBurnInValue: z.number(),
     banditBurnInUnit: z.enum(['hours', 'days']),
+    banditPeriodWeighting: z.boolean().exactOptional(),
     experimentMinLengthDays: z.number(),
     experimentMaxLengthDays: z.union([z.number(), z.null().nullable()]).exactOptional(),
     preferredEnvironment: z.union([z.string(), z.null().nullable()]).exactOptional(),
@@ -7295,6 +10641,8 @@ const ConfirmationSchema = z
             'rampSchedule.delete',
             'rampSchedule.other',
             'settings.approvals',
+            'settings.dataSources',
+            'settings.webhooks',
             'settings.other',
             'access.members',
             'access.teams',
@@ -7392,7 +10740,7 @@ const InformationSchemaTableSchema = z
   })
   .openapi('InformationSchemaTable')
 
-const RampScheduleSchema = z
+const RampScheduleSchema: z.ZodType<RampScheduleType> = z
   .strictObject({
     id: z.string().openapi({ description: 'Unique identifier (rs_ prefix)' }),
     dateCreated: z.iso.datetime({ offset: true }),
@@ -7895,7 +11243,7 @@ const MatchedRampScheduleSchema = z
   .openapi({ required: ['id', 'featureId', 'result'] })
   .openapi('MatchedRampSchedule')
 
-const ReportSchema = z
+const ReportSchema: z.ZodType<ReportType> = z
   .strictObject({
     id: z.string(),
     dateCreated: z.string(),
@@ -8209,7 +11557,140 @@ const NamespaceExperimentMemberSchema = z
   .openapi({ required: ['id', 'name', 'trackingKey', 'status', 'ranges'] })
   .openapi('NamespaceExperimentMember')
 
-const DashboardSchema = z
+const EventWebhookSchema = z
+  .strictObject({
+    id: z.string(),
+    name: z.string(),
+    url: z.string(),
+    enabled: z.boolean(),
+    events: z
+      .array(z.string())
+      .openapi({ description: 'Event names or wildcards such as "feature.*"' }),
+    projects: z.array(z.string()),
+    tags: z.array(z.string()),
+    environments: z.array(z.string()),
+    payloadType: z.enum(['raw', 'json', 'slack', 'discord']),
+    method: z.enum(['POST', 'PUT', 'PATCH']),
+    headers: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Only returned by GET' }),
+    timeoutSeconds: z
+      .union([z.int().min(1), z.null().nullable()])
+      .openapi({
+        description:
+          'Request timeout in seconds, up to the server maximum (120 unless configured). Null uses the default.',
+      }),
+    signingKey: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Used to verify the signature header on each request. Only returned by GET.',
+      }),
+    lastRunAt: z.union([z.iso.datetime({ offset: true }), z.null().nullable()]),
+    lastState: z.enum(['none', 'success', 'error']),
+    lastResponseBody: z.union([z.string(), z.null().nullable()]),
+    dateCreated: z.iso.datetime({ offset: true }),
+    dateUpdated: z.iso.datetime({ offset: true }),
+  })
+  .openapi({
+    required: [
+      'id',
+      'name',
+      'url',
+      'enabled',
+      'events',
+      'projects',
+      'tags',
+      'environments',
+      'payloadType',
+      'method',
+      'timeoutSeconds',
+      'lastRunAt',
+      'lastState',
+      'lastResponseBody',
+      'dateCreated',
+      'dateUpdated',
+    ],
+  })
+  .openapi('EventWebhook')
+
+const EventWebhookLogSchema = z
+  .strictObject({
+    id: z.string(),
+    event: z.string().exactOptional(),
+    url: z.string().exactOptional(),
+    method: z.enum(['POST', 'PUT', 'PATCH']).exactOptional(),
+    result: z.enum(['success', 'error']),
+    responseCode: z.union([z.number(), z.null().nullable()]),
+    responseBody: z.union([z.string(), z.null().nullable()]),
+    payload: z.record(z.string(), z.any()),
+    dateCreated: z.iso.datetime({ offset: true }),
+  })
+  .openapi({ required: ['id', 'result', 'responseCode', 'responseBody', 'payload', 'dateCreated'] })
+  .openapi('EventWebhookLog')
+
+const AuditSchema = z
+  .strictObject({
+    id: z.string(),
+    event: z.string().openapi({ description: 'e.g. "feature.update"' }),
+    entity: z
+      .strictObject({ object: z.string(), id: z.string(), name: z.string().exactOptional() })
+      .openapi({ required: ['object', 'id'] }),
+    parent: z
+      .strictObject({ object: z.string(), id: z.string() })
+      .exactOptional()
+      .openapi({ required: ['object', 'id'] }),
+    user: z
+      .strictObject({
+        id: z.string().exactOptional(),
+        email: z.string().exactOptional(),
+        name: z.string().exactOptional(),
+        apiKey: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Id of the API key that made the change' }),
+        requestedBy: z
+          .strictObject({ id: z.string(), name: z.string(), email: z.string() })
+          .exactOptional()
+          .openapi({
+            description: 'The member named with `X-GrowthBook-Requested-By`',
+            required: ['id', 'name', 'email'],
+          }),
+        assumedRole: z
+          .boolean()
+          .exactOptional()
+          .openapi({ description: "Whether the key assumed the named member's role" }),
+        system: z.boolean().exactOptional(),
+      })
+      .openapi({
+        description: 'Who made the change: a member, an API key, or the system',
+        required: [],
+      }),
+    reason: z.string().exactOptional(),
+    details: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'JSON-encoded, usually `pre`, `post` and `context`' }),
+    dateCreated: z.iso.datetime({ offset: true }),
+  })
+  .openapi({ required: ['id', 'event', 'entity', 'user', 'dateCreated'] })
+  .openapi('Audit')
+
+const EventSchema = z
+  .strictObject({
+    id: z.string(),
+    event: z.string().openapi({ description: 'e.g. "feature.updated"' }),
+    version: z.number().exactOptional().openapi({ description: 'Absent on legacy events' }),
+    data: z
+      .record(z.string(), z.any())
+      .openapi({ description: 'The same payload event webhooks receive' }),
+    dateCreated: z.iso.datetime({ offset: true }),
+  })
+  .openapi({ required: ['id', 'event', 'data', 'dateCreated'] })
+  .openapi('Event')
+
+const DashboardSchema: z.ZodType<DashboardType> = z
   .strictObject({
     id: z.string(),
     uid: z.string(),
@@ -9303,11 +12784,24 @@ const DashboardSchema = z
                     endDate: z.union([z.string(), z.null().nullable()]).exactOptional(),
                   })
                   .openapi({ required: ['predefined'] }),
-                showAs: z.enum(['total', 'per_unit']).exactOptional(),
+                showAs: z
+                  .enum(['total', 'per_unit'])
+                  .exactOptional()
+                  .openapi({
+                    description: 'Deprecated: use `showAs` on each metric value.',
+                    deprecated: true,
+                  }),
                 chartSettings: z
                   .strictObject({
                     categoryAxisLabel: z.string().exactOptional(),
                     valueAxisLabel: z.string().exactOptional(),
+                    anchorYAxisToZero: z
+                      .boolean()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                      }),
                   })
                   .exactOptional()
                   .openapi({ required: [] }),
@@ -9355,6 +12849,13 @@ const DashboardSchema = z
                           metricId: z.string(),
                           unit: z.union([z.string(), z.null().nullable()]),
                           denominatorUnit: z.union([z.string(), z.null().nullable()]),
+                          showAs: z
+                            .enum(['total', 'per_unit'])
+                            .exactOptional()
+                            .openapi({
+                              description:
+                                'How a mean metric renders: `total` sums the numerator, `per_unit` divides it by the unit count. Ignored for other metric types. Omit to use the default (`per_unit` for `max` and `count distinct` aggregations, otherwise `total`).',
+                            }),
                         })
                         .openapi({
                           required: [
@@ -9367,6 +12868,10 @@ const DashboardSchema = z
                           ],
                         }),
                     ),
+                    population: ExplorationPopulationSchema.exactOptional().openapi({
+                      description:
+                        "**Beta** — this field is new and may change in backwards-incompatible ways. A population applied to every metric in the request. Only proportion metrics on the population's Fact Table are supported; the request is rejected if any metric is incompatible.",
+                    }),
                   })
                   .openapi({ required: ['type', 'values'] }),
               })
@@ -9553,11 +13058,24 @@ const DashboardSchema = z
                     endDate: z.union([z.string(), z.null().nullable()]).exactOptional(),
                   })
                   .openapi({ required: ['predefined'] }),
-                showAs: z.enum(['total', 'per_unit']).exactOptional(),
+                showAs: z
+                  .enum(['total', 'per_unit'])
+                  .exactOptional()
+                  .openapi({
+                    description: 'Deprecated: use `showAs` on each metric value.',
+                    deprecated: true,
+                  }),
                 chartSettings: z
                   .strictObject({
                     categoryAxisLabel: z.string().exactOptional(),
                     valueAxisLabel: z.string().exactOptional(),
+                    anchorYAxisToZero: z
+                      .boolean()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                      }),
                   })
                   .exactOptional()
                   .openapi({ required: [] }),
@@ -9804,11 +13322,24 @@ const DashboardSchema = z
                     endDate: z.union([z.string(), z.null().nullable()]).exactOptional(),
                   })
                   .openapi({ required: ['predefined'] }),
-                showAs: z.enum(['total', 'per_unit']).exactOptional(),
+                showAs: z
+                  .enum(['total', 'per_unit'])
+                  .exactOptional()
+                  .openapi({
+                    description: 'Deprecated: use `showAs` on each metric value.',
+                    deprecated: true,
+                  }),
                 chartSettings: z
                   .strictObject({
                     categoryAxisLabel: z.string().exactOptional(),
                     valueAxisLabel: z.string().exactOptional(),
+                    anchorYAxisToZero: z
+                      .boolean()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                      }),
                   })
                   .exactOptional()
                   .openapi({ required: [] }),
@@ -10063,11 +13594,24 @@ const DashboardSchema = z
                     endDate: z.union([z.string(), z.null().nullable()]).exactOptional(),
                   })
                   .openapi({ required: ['predefined'] }),
-                showAs: z.enum(['total', 'per_unit']).exactOptional(),
+                showAs: z
+                  .enum(['total', 'per_unit'])
+                  .exactOptional()
+                  .openapi({
+                    description: 'Deprecated: use `showAs` on each metric value.',
+                    deprecated: true,
+                  }),
                 chartSettings: z
                   .strictObject({
                     categoryAxisLabel: z.string().exactOptional(),
                     valueAxisLabel: z.string().exactOptional(),
+                    anchorYAxisToZero: z
+                      .boolean()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                      }),
                   })
                   .exactOptional()
                   .openapi({ required: [] }),
@@ -10322,11 +13866,24 @@ const DashboardSchema = z
                     endDate: z.union([z.string(), z.null().nullable()]).exactOptional(),
                   })
                   .openapi({ required: ['predefined'] }),
-                showAs: z.enum(['total', 'per_unit']).exactOptional(),
+                showAs: z
+                  .enum(['total', 'per_unit'])
+                  .exactOptional()
+                  .openapi({
+                    description: 'Deprecated: use `showAs` on each metric value.',
+                    deprecated: true,
+                  }),
                 chartSettings: z
                   .strictObject({
                     categoryAxisLabel: z.string().exactOptional(),
                     valueAxisLabel: z.string().exactOptional(),
+                    anchorYAxisToZero: z
+                      .boolean()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                      }),
                   })
                   .exactOptional()
                   .openapi({ required: [] }),
@@ -10625,6 +14182,43 @@ const ContextualBanditQuerySchema = z
   })
   .openapi('ContextualBanditQuery')
 
+const InterleavingExposureQuerySchema = z
+  .strictObject({
+    id: z.string(),
+    dateCreated: z.iso.datetime({ offset: true }),
+    dateUpdated: z.iso.datetime({ offset: true }),
+    owner: z
+      .string()
+      .openapi({
+        description: 'The userId of the owner (or raw owner name/email for legacy records)',
+      }),
+    ownerEmail: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The email address of the owner, when the owner can be resolved to a known user.',
+      }),
+    datasourceId: z.string(),
+    name: z.string().min(1),
+    description: z.string().exactOptional(),
+    userIdTypes: z.array(z.string().min(1)).length(1),
+    query: z.string().min(1),
+  })
+  .openapi({
+    required: [
+      'id',
+      'dateCreated',
+      'dateUpdated',
+      'owner',
+      'datasourceId',
+      'name',
+      'userIdTypes',
+      'query',
+    ],
+  })
+  .openapi('InterleavingExposureQuery')
+
 const InterleavingSchema = z
   .strictObject({
     id: z.string(),
@@ -10654,17 +14248,37 @@ const InterleavingSchema = z
     trackingKey: z.string().openapi({ description: 'The `experiment_id` recorded in exposures' }),
     hashAttribute: z.string(),
     seed: z.string(),
-    variations: z.array(
-      z
-        .strictObject({
-          id: z.string(),
-          key: z.string(),
-          name: z.string(),
-          description: z.string().exactOptional(),
-          config: z.string().openapi({ description: "The ranker's config, as a JSON string" }),
-        })
-        .openapi({ required: ['id', 'key', 'name', 'config'] }),
-    ),
+    variations: z
+      .strictObject({
+        control: z
+          .strictObject({
+            id: z.string(),
+            key: z.string(),
+            name: z.string(),
+            description: z.string().exactOptional(),
+            config: z.string().openapi({ description: "The ranker's config, as a JSON string" }),
+          })
+          .openapi({
+            description: 'The default ranker.',
+            required: ['id', 'key', 'name', 'config'],
+          }),
+        treatment: z
+          .strictObject({
+            id: z.string(),
+            key: z.string(),
+            name: z.string(),
+            description: z.string().exactOptional(),
+            config: z.string().openapi({ description: "The ranker's config, as a JSON string" }),
+          })
+          .openapi({
+            description: 'The ranker being tested against control.',
+            required: ['id', 'key', 'name', 'config'],
+          }),
+      })
+      .openapi({
+        description: 'Exactly two rankers, by role.',
+        required: ['control', 'treatment'],
+      }),
     jsonSchema: z.union([
       z
         .strictObject({
@@ -10714,8 +14328,8 @@ const InterleavingSchema = z
         }),
       z.null().nullable(),
     ]),
-    datasource: z.string(),
-    interleavingQueryId: z.string(),
+    datasourceId: z.string(),
+    interleavingExposureQueryId: z.string(),
     userIdType: z.string(),
     metrics: z.array(
       z
@@ -10727,8 +14341,8 @@ const InterleavingSchema = z
                 z.strictObject({ type: z.literal('paired') }).openapi({ required: ['type'] }),
                 z
                   .strictObject({
-                    type: z.literal('ownership'),
-                    attribution: z.enum(['exposureCount', 'engagementSignal']),
+                    type: z.literal('preference'),
+                    attribution: z.literal('exposureCount'),
                   })
                   .openapi({ required: ['type', 'attribution'] }),
               ]),
@@ -10757,6 +14371,8 @@ const InterleavingSchema = z
       z.string(),
       z.strictObject({ enabled: z.boolean() }).openapi({ required: ['enabled'] }),
     ),
+    autoSnapshots: z.boolean().exactOptional(),
+    nextSnapshotAttempt: z.iso.datetime({ offset: true }).exactOptional(),
   })
   .openapi({
     required: [
@@ -10774,14 +14390,188 @@ const InterleavingSchema = z
       'seed',
       'variations',
       'jsonSchema',
-      'datasource',
-      'interleavingQueryId',
+      'datasourceId',
+      'interleavingExposureQueryId',
       'userIdType',
       'metrics',
       'environmentSettings',
     ],
   })
   .openapi('Interleaving')
+
+const InterleavingSnapshotSchema = z
+  .strictObject({
+    id: z.string(),
+    interleavingId: z.string(),
+    status: z.enum(['running', 'success', 'error']),
+    error: z.string().exactOptional(),
+    dateCreated: z.iso.datetime({ offset: true }),
+    runStarted: z.union([z.iso.datetime({ offset: true }), z.null().nullable()]),
+    settings: z
+      .strictObject({
+        trackingKey: z.string(),
+        datasourceId: z.string(),
+        interleavingExposureQueryId: z.string(),
+        userIdType: z.string(),
+        variations: z
+          .strictObject({
+            control: z
+              .strictObject({ id: z.string(), key: z.string().regex(/\S/), name: z.string() })
+              .openapi({ required: ['id', 'key', 'name'] }),
+            treatment: z
+              .strictObject({ id: z.string(), key: z.string().regex(/\S/), name: z.string() })
+              .openapi({ required: ['id', 'key', 'name'] }),
+          })
+          .openapi({ required: ['control', 'treatment'] }),
+        metrics: z.array(
+          z
+            .strictObject({
+              id: z.string(),
+              analyses: z
+                .array(
+                  z.union([
+                    z.strictObject({ type: z.literal('paired') }).openapi({ required: ['type'] }),
+                    z
+                      .strictObject({
+                        type: z.literal('preference'),
+                        attribution: z.literal('exposureCount'),
+                      })
+                      .openapi({ required: ['type', 'attribution'] }),
+                  ]),
+                )
+                .min(1),
+            })
+            .openapi({ required: ['id', 'analyses'] }),
+        ),
+        pValueThreshold: z.number(),
+        startDate: z.iso.datetime({ offset: true }),
+        endDate: z.iso.datetime({ offset: true }),
+      })
+      .openapi({
+        required: [
+          'trackingKey',
+          'datasourceId',
+          'interleavingExposureQueryId',
+          'userIdType',
+          'variations',
+          'metrics',
+          'pValueThreshold',
+          'startDate',
+          'endDate',
+        ],
+      }),
+    results: z
+      .array(
+        z
+          .strictObject({
+            metricId: z.string(),
+            analysis: z.union([
+              z.strictObject({ type: z.literal('paired') }).openapi({ required: ['type'] }),
+              z
+                .strictObject({
+                  type: z.literal('preference'),
+                  attribution: z.literal('exposureCount'),
+                })
+                .openapi({ required: ['type', 'attribution'] }),
+            ]),
+            users: z.number(),
+            denominator: z.number(),
+            control: z
+              .strictObject({ value: z.number(), cr: z.number() })
+              .openapi({ required: ['value', 'cr'] }),
+            treatment: z
+              .strictObject({ value: z.number(), cr: z.number() })
+              .openapi({ required: ['value', 'cr'] }),
+            test: z
+              .strictObject({
+                method: z
+                  .enum(['paired_delta_t', 'exact_binomial_sign'])
+                  .openapi({
+                    description:
+                      'Which test produced this result. paired_delta_t: paired delta-method t-test on per-user credited rates (paired analysis). exact_binomial_sign: exact binomial sign test over non-tied users with a Clopper-Pearson interval (preference analysis).',
+                  }),
+                expected: z.number(),
+                ci: z.array(z.unknown()).superRefine((arr, ctx) => {
+                  const Prefix = [
+                    z.union([z.number(), z.null().nullable()]),
+                    z.union([z.number(), z.null().nullable()]),
+                  ]
+                  for (const [i, Schema] of Prefix.slice(0, arr.length).entries()) {
+                    const result = Schema.safeParse(arr[i])
+                    if (!result.success) {
+                      for (const issue of result.error.issues) {
+                        ctx.addIssue({ ...issue, path: [i, ...issue.path] })
+                      }
+                    }
+                  }
+                }),
+                pValue: z.union([z.number(), z.null().nullable()]),
+                errorMessage: z.union([z.string(), z.null().nullable()]),
+                pValueErrorMessage: z.union([
+                  z.enum([
+                    'NUMERICAL_PVALUE_NOT_CONVERGED',
+                    'ALPHA_GREATER_THAN_0.5_FOR_SEQUENTIAL_ONE_SIDED_TEST',
+                  ]),
+                  z.null().nullable(),
+                ]),
+              })
+              .openapi({
+                required: [
+                  'method',
+                  'expected',
+                  'ci',
+                  'pValue',
+                  'errorMessage',
+                  'pValueErrorMessage',
+                ],
+              }),
+          })
+          .openapi({
+            required: [
+              'metricId',
+              'analysis',
+              'users',
+              'denominator',
+              'control',
+              'treatment',
+              'test',
+            ],
+          }),
+      )
+      .exactOptional()
+      .openapi({ description: 'Present once status is success' }),
+    usersExposed: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'Distinct units in the exposure query. Absent on snapshots run before this was recorded.',
+      }),
+  })
+  .openapi({
+    required: ['id', 'interleavingId', 'status', 'dateCreated', 'runStarted', 'settings'],
+  })
+  .openapi('InterleavingSnapshot')
+
+const InterleavingSnapshotStatusSchema = z
+  .strictObject({
+    id: z.string(),
+    status: z.enum(['running', 'success', 'error']),
+    error: z.string().exactOptional(),
+    dateCreated: z.iso.datetime({ offset: true }),
+    runStarted: z.union([z.iso.datetime({ offset: true }), z.null().nullable()]),
+    queries: z.array(
+      z
+        .strictObject({
+          query: z.string(),
+          status: z.enum(['queued', 'running', 'failed', 'partially-succeeded', 'succeeded']),
+          name: z.string(),
+        })
+        .openapi({ required: ['query', 'status', 'name'] }),
+    ),
+  })
+  .openapi({ required: ['id', 'status', 'dateCreated', 'runStarted', 'queries'] })
+  .openapi('InterleavingSnapshotStatus')
 
 const CustomFieldSchema = z
   .strictObject({
@@ -10991,6 +14781,8 @@ const ExperimentTemplateSchema = z
     exposureQueryId: z
       .string()
       .openapi({ description: 'Deprecated: use `exposureQuery`.', deprecated: true }),
+    isClusterExperiment: z.boolean().exactOptional(),
+    clusterSubUnitIdentifier: z.string().exactOptional(),
     hashAttribute: z.string().exactOptional(),
     fallbackAttribute: z.string().exactOptional(),
     disableStickyBucketing: z.boolean().exactOptional(),
@@ -11052,7 +14844,7 @@ const ExperimentTemplateSchema = z
   })
   .openapi('ExperimentTemplate')
 
-const AnalyticsExplorationSchema = z
+const AnalyticsExplorationSchema: z.ZodType<AnalyticsExplorationType> = z
   .strictObject({
     id: z.string(),
     dateCreated: z.iso.datetime({ offset: true }),
@@ -11079,6 +14871,13 @@ const AnalyticsExplorationSchema = z
                     .openapi({ required: ['metricId', 'numerator', 'denominator'] }),
                 )
                 .exactOptional(),
+              populationCount: z
+                .number()
+                .exactOptional()
+                .openapi({
+                  description:
+                    "**Beta** — this field is new and may change in backwards-incompatible ways. Number of units in the dataset's population for this row. Only present when the request has a population; each value's numerator and denominator keep their usual meaning, limited to population members.",
+                }),
               steps: z
                 .array(
                   z
@@ -11226,11 +15025,24 @@ const AnalyticsExplorationSchema = z
               endDate: z.union([z.string(), z.null().nullable()]).exactOptional(),
             })
             .openapi({ required: ['predefined'] }),
-          showAs: z.enum(['total', 'per_unit']).exactOptional(),
+          showAs: z
+            .enum(['total', 'per_unit'])
+            .exactOptional()
+            .openapi({
+              description: 'Deprecated: use `showAs` on each metric value.',
+              deprecated: true,
+            }),
           chartSettings: z
             .strictObject({
               categoryAxisLabel: z.string().exactOptional(),
               valueAxisLabel: z.string().exactOptional(),
+              anchorYAxisToZero: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                }),
             })
             .exactOptional()
             .openapi({ required: [] }),
@@ -11278,11 +15090,22 @@ const AnalyticsExplorationSchema = z
                     metricId: z.string(),
                     unit: z.union([z.string(), z.null().nullable()]),
                     denominatorUnit: z.union([z.string(), z.null().nullable()]),
+                    showAs: z
+                      .enum(['total', 'per_unit'])
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'How a mean metric renders: `total` sums the numerator, `per_unit` divides it by the unit count. Ignored for other metric types. Omit to use the default (`per_unit` for `max` and `count distinct` aggregations, otherwise `total`).',
+                      }),
                   })
                   .openapi({
                     required: ['name', 'rowFilters', 'type', 'metricId', 'unit', 'denominatorUnit'],
                   }),
               ),
+              population: ExplorationPopulationSchema.exactOptional().openapi({
+                description:
+                  "**Beta** — this field is new and may change in backwards-incompatible ways. A population applied to every metric in the request. Only proportion metrics on the population's Fact Table are supported; the request is rejected if any metric is incompatible.",
+              }),
             })
             .openapi({ required: ['type', 'values'] }),
         })
@@ -11394,11 +15217,24 @@ const AnalyticsExplorationSchema = z
               endDate: z.union([z.string(), z.null().nullable()]).exactOptional(),
             })
             .openapi({ required: ['predefined'] }),
-          showAs: z.enum(['total', 'per_unit']).exactOptional(),
+          showAs: z
+            .enum(['total', 'per_unit'])
+            .exactOptional()
+            .openapi({
+              description: 'Deprecated: use `showAs` on each metric value.',
+              deprecated: true,
+            }),
           chartSettings: z
             .strictObject({
               categoryAxisLabel: z.string().exactOptional(),
               valueAxisLabel: z.string().exactOptional(),
+              anchorYAxisToZero: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                }),
             })
             .exactOptional()
             .openapi({ required: [] }),
@@ -11563,11 +15399,24 @@ const AnalyticsExplorationSchema = z
               endDate: z.union([z.string(), z.null().nullable()]).exactOptional(),
             })
             .openapi({ required: ['predefined'] }),
-          showAs: z.enum(['total', 'per_unit']).exactOptional(),
+          showAs: z
+            .enum(['total', 'per_unit'])
+            .exactOptional()
+            .openapi({
+              description: 'Deprecated: use `showAs` on each metric value.',
+              deprecated: true,
+            }),
           chartSettings: z
             .strictObject({
               categoryAxisLabel: z.string().exactOptional(),
               valueAxisLabel: z.string().exactOptional(),
+              anchorYAxisToZero: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                }),
             })
             .exactOptional()
             .openapi({ required: [] }),
@@ -11740,11 +15589,24 @@ const AnalyticsExplorationSchema = z
               endDate: z.union([z.string(), z.null().nullable()]).exactOptional(),
             })
             .openapi({ required: ['predefined'] }),
-          showAs: z.enum(['total', 'per_unit']).exactOptional(),
+          showAs: z
+            .enum(['total', 'per_unit'])
+            .exactOptional()
+            .openapi({
+              description: 'Deprecated: use `showAs` on each metric value.',
+              deprecated: true,
+            }),
           chartSettings: z
             .strictObject({
               categoryAxisLabel: z.string().exactOptional(),
               valueAxisLabel: z.string().exactOptional(),
+              anchorYAxisToZero: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                }),
             })
             .exactOptional()
             .openapi({ required: [] }),
@@ -11915,11 +15777,24 @@ const AnalyticsExplorationSchema = z
               endDate: z.union([z.string(), z.null().nullable()]).exactOptional(),
             })
             .openapi({ required: ['predefined'] }),
-          showAs: z.enum(['total', 'per_unit']).exactOptional(),
+          showAs: z
+            .enum(['total', 'per_unit'])
+            .exactOptional()
+            .openapi({
+              description: 'Deprecated: use `showAs` on each metric value.',
+              deprecated: true,
+            }),
           chartSettings: z
             .strictObject({
               categoryAxisLabel: z.string().exactOptional(),
               valueAxisLabel: z.string().exactOptional(),
+              anchorYAxisToZero: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                }),
             })
             .exactOptional()
             .openapi({ required: [] }),
@@ -12095,11 +15970,24 @@ const AnalyticsExplorationSchema = z
               endDate: z.union([z.string(), z.null().nullable()]).exactOptional(),
             })
             .openapi({ required: ['predefined'] }),
-          showAs: z.enum(['total', 'per_unit']).exactOptional(),
+          showAs: z
+            .enum(['total', 'per_unit'])
+            .exactOptional()
+            .openapi({
+              description: 'Deprecated: use `showAs` on each metric value.',
+              deprecated: true,
+            }),
           chartSettings: z
             .strictObject({
               categoryAxisLabel: z.string().exactOptional(),
               valueAxisLabel: z.string().exactOptional(),
+              anchorYAxisToZero: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                }),
             })
             .exactOptional()
             .openapi({ required: [] }),
@@ -12194,7 +16082,7 @@ const AnalyticsExplorationSchema = z
   })
   .openapi('AnalyticsExploration')
 
-const RampScheduleTemplateSchema = z
+const RampScheduleTemplateSchema: z.ZodType<RampScheduleTemplateType> = z
   .strictObject({
     id: z.string(),
     dateCreated: z.iso.datetime({ offset: true }),
@@ -12822,6 +16710,86 @@ const PopulationSchema = z
     ],
   })
   .openapi('Population')
+
+const WebhookSecretSchema = z
+  .strictObject({
+    id: z.string(),
+    dateCreated: z.iso.datetime({ offset: true }),
+    dateUpdated: z.iso.datetime({ offset: true }),
+    key: z.string(),
+    description: z.string().exactOptional(),
+    allowedOrigins: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Origins the secret may be sent to. Empty allows any.' }),
+  })
+  .openapi({ required: ['id', 'dateCreated', 'dateUpdated', 'key'] })
+  .openapi('WebhookSecret')
+
+const SdkWebhookSchema = z
+  .strictObject({
+    id: z.string(),
+    dateCreated: z.iso.datetime({ offset: true }),
+    dateUpdated: z.iso.datetime({ offset: true }),
+    name: z.string(),
+    endpoint: z.string(),
+    sdkConnections: z.array(z.string()),
+    httpMethod: z.enum(['GET', 'PUT', 'POST', 'DELETE', 'PURGE', 'PATCH']),
+    payloadFormat: z.enum([
+      'standard',
+      'standard-no-payload',
+      'sdkPayload',
+      'edgeConfig',
+      'edgeConfigUnescaped',
+      'vercelNativeIntegration',
+      'none',
+    ]),
+    payloadKey: z.string().exactOptional(),
+    headers: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'JSON-encoded object of extra headers. Only returned by GET, to callers who can edit the webhook.',
+      }),
+    signingKey: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Used to verify the signature header. Only returned by GET, to callers who can edit the webhook.',
+      }),
+    lastSuccess: z.union([z.iso.datetime({ offset: true }), z.null().nullable()]),
+    error: z.string(),
+    consecutiveFailures: z.number(),
+    disabled: z
+      .boolean()
+      .openapi({ description: 'Set after repeated failures; changing the endpoint clears it' }),
+    timeoutSeconds: z
+      .union([z.int().min(1), z.null().nullable()])
+      .openapi({
+        description:
+          'Request timeout in seconds, up to the server maximum (120 unless configured). Null uses the default.',
+      }),
+  })
+  .openapi({
+    required: [
+      'id',
+      'dateCreated',
+      'dateUpdated',
+      'name',
+      'endpoint',
+      'sdkConnections',
+      'httpMethod',
+      'payloadFormat',
+      'lastSuccess',
+      'error',
+      'consecutiveFailures',
+      'disabled',
+      'timeoutSeconds',
+    ],
+  })
+  .openapi('SdkWebhook')
 
 const ConfirmationHeldSchema = z
   .strictObject({ confirmation: ConfirmationSchema, message: z.string() })
@@ -14796,20 +18764,14 @@ const ConfirmationHeldResponse = {
     'Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.',
   content: { 'application/json': { schema: ConfirmationHeldSchema } },
   headers: z.object({
-    Location: {
-      description: 'The confirmation to poll',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'The confirmation to poll', param: { required: false } }),
-    },
-    'Retry-After': {
-      description: 'Seconds to wait before polling',
-      schema: z
-        .int()
-        .exactOptional()
-        .openapi({ description: 'Seconds to wait before polling', param: { required: false } }),
-    },
+    Location: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The confirmation to poll', param: { required: false } }),
+    'Retry-After': z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Seconds to wait before polling', param: { required: false } }),
   }),
 }
 
@@ -15552,10 +19514,17 @@ const PhaseParamsSchema = z
     param: {
       name: 'phase',
       in: 'query',
-      description: '',
-      schema: { type: 'string' },
+      description:
+        'Phase index, defaulting to the latest phase. `experiment.enhancedStatus` describes the latest phase, so it is omitted for any other phase.',
+      schema: {
+        description:
+          'Phase index, defaulting to the latest phase. `experiment.enhancedStatus` describes the latest phase, so it is omitted for any other phase.',
+        type: 'string',
+      },
       required: false,
     },
+    description:
+      'Phase index, defaulting to the latest phase. `experiment.enhancedStatus` describes the latest phase, so it is omitted for any other phase.',
   })
 
 const DimensionParamsSchema = z
@@ -16232,6 +20201,207 @@ const ReasonParamsSchema = z
       required: false,
     },
     description: "Used when the body has no `reason`, for tools whose payload can't be changed.",
+  })
+
+const EntityTypeParamsSchema = z
+  .enum([
+    'agreement',
+    'approvalFlow',
+    'revision',
+    'aiPrompt',
+    'aiCredential',
+    'attribute',
+    'experiment',
+    'project',
+    'environment',
+    'feature',
+    'featureRevisionLog',
+    'urlRedirect',
+    'metric',
+    'metricAnalysis',
+    'metricGroup',
+    'populationData',
+    'population',
+    'datasource',
+    'comment',
+    'sdk-connection',
+    'user',
+    'organization',
+    'apiKey',
+    'oauthAuthCode',
+    'oauthGrant',
+    'oauthRefreshToken',
+    'installation',
+    'savedGroup',
+    'constant',
+    'config',
+    'segment',
+    'archetype',
+    'team',
+    'vercelNativeIntegration',
+    'factTable',
+    'customField',
+    'autoRun',
+    'experimentTemplate',
+    'safeRollout',
+    'decisionCriteria',
+    'execReport',
+    'holdout',
+    'savedQuery',
+    'dashboard',
+    'dashboardTemplate',
+    'incrementalRefresh',
+    'vector',
+    'customHook',
+    'ssoConnection',
+    'sqlResultChunk',
+    'rampSchedule',
+    'rampScheduleTemplate',
+    'learning',
+    'contextualBandit',
+    'interleaving',
+    'eventForwarderConfig',
+  ])
+  .openapi({
+    param: {
+      name: 'entityType',
+      in: 'query',
+      required: true,
+      description: '',
+      schema: {
+        type: 'string',
+        enum: [
+          'agreement',
+          'approvalFlow',
+          'revision',
+          'aiPrompt',
+          'aiCredential',
+          'attribute',
+          'experiment',
+          'project',
+          'environment',
+          'feature',
+          'featureRevisionLog',
+          'urlRedirect',
+          'metric',
+          'metricAnalysis',
+          'metricGroup',
+          'populationData',
+          'population',
+          'datasource',
+          'comment',
+          'sdk-connection',
+          'user',
+          'organization',
+          'apiKey',
+          'oauthAuthCode',
+          'oauthGrant',
+          'oauthRefreshToken',
+          'installation',
+          'savedGroup',
+          'constant',
+          'config',
+          'segment',
+          'archetype',
+          'team',
+          'vercelNativeIntegration',
+          'factTable',
+          'customField',
+          'autoRun',
+          'experimentTemplate',
+          'safeRollout',
+          'decisionCriteria',
+          'execReport',
+          'holdout',
+          'savedQuery',
+          'dashboard',
+          'dashboardTemplate',
+          'incrementalRefresh',
+          'vector',
+          'customHook',
+          'ssoConnection',
+          'sqlResultChunk',
+          'rampSchedule',
+          'rampScheduleTemplate',
+          'learning',
+          'contextualBandit',
+          'interleaving',
+          'eventForwarderConfig',
+        ],
+      },
+    },
+  })
+
+const EntityIdParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'entityId',
+      in: 'query',
+      description: 'Omit for every entity of this type',
+      schema: { description: 'Omit for every entity of this type', type: 'string' },
+      required: false,
+    },
+    description: 'Omit for every entity of this type',
+  })
+
+const BeforeParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'before',
+      in: 'query',
+      description:
+        "Only return entries older than this date-time. To page back, pass the previous page's `nextCursor` instead.",
+      schema: {
+        description:
+          "Only return entries older than this date-time. To page back, pass the previous page's `nextCursor` instead.",
+        type: 'string',
+      },
+      required: false,
+    },
+    description:
+      "Only return entries older than this date-time. To page back, pass the previous page's `nextCursor` instead.",
+  })
+
+const EventsParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'events',
+      in: 'query',
+      description:
+        'Comma-separated exact event names, e.g. "feature.updated". Wildcards like "feature.*" are not supported.',
+      schema: {
+        description:
+          'Comma-separated exact event names, e.g. "feature.updated". Wildcards like "feature.*" are not supported.',
+        type: 'string',
+      },
+      required: false,
+    },
+    description:
+      'Comma-separated exact event names, e.g. "feature.updated". Wildcards like "feature.*" are not supported.',
+  })
+
+const AfterParamsSchema = z.iso
+  .datetime({ offset: true })
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'after',
+      in: 'query',
+      description: 'Only events at or after this time',
+      schema: {
+        description: 'Only events at or after this time',
+        type: 'string',
+        format: 'date-time',
+      },
+      required: false,
+    },
+    description: 'Only events at or after this time',
   })
 
 const IndexParamsSchema = z
@@ -28542,6 +32712,20 @@ export const postV1ExperimentsRoute = createRoute({
                   description:
                     'Deprecated: use `assignmentQuery`. Rejected when selecting a different assignment query that declares several identifier types; set `assignmentQuery.identifierType` instead. Can only be set if a templateId is not provided.',
                 }),
+              isClusterExperiment: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description:
+                    "Run as a cluster-randomized experiment: randomize on the assignment query's identifier type (the cluster, e.g. region_id) while analyzing a nested sub-unit (clusterSubUnitIdentifier, e.g. user_id). The assignment query must declare both identifier types.",
+                }),
+              clusterSubUnitIdentifier: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The nested sub-unit identifier type analyzed within each cluster (e.g. user_id). Required when isClusterExperiment is true; must be declared by the assignment query and differ from its cluster identifier type.',
+                }),
               trackingKey: z
                 .string()
                 .openapi({
@@ -29143,6 +33327,20 @@ export const postV1ExperimentsIdRoute = createRoute({
                   deprecated: true,
                   description:
                     'Deprecated: use `assignmentQuery`. Rejected when selecting a different assignment query that declares several identifier types; set `assignmentQuery.identifierType` instead.',
+                }),
+              isClusterExperiment: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description:
+                    "Run as a cluster-randomized experiment: randomize on the assignment query's identifier type (the cluster, e.g. region_id) while analyzing a nested sub-unit (clusterSubUnitIdentifier, e.g. user_id). The assignment query must declare both identifier types.",
+                }),
+              clusterSubUnitIdentifier: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The nested sub-unit identifier type analyzed within each cluster (e.g. user_id). Required when isClusterExperiment is true; must be declared by the assignment query and differ from its cluster identifier type.',
                 }),
               trackingKey: z
                 .string()
@@ -29837,7 +34035,10 @@ export const getV1ExperimentsIdResultsRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .strictObject({ experiment: ExperimentSchema, result: ExperimentResultsSchema })
+            .strictObject({
+              experiment: ExperimentWithEnhancedStatusSchema,
+              result: ExperimentResultsSchema,
+            })
             .openapi({ required: ['experiment', 'result'] }),
         },
       },
@@ -30426,6 +34627,13 @@ export const postV1ExperimentsIdSnapshotRoute = createRoute({
                   description:
                     'Zero-based phase index to snapshot, where 0 is the first experiment phase. Defaults to the latest phase.',
                 }),
+              ignoreWarnings: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Set to true to acknowledge the warnings listed in a blocked response and continue. This covers experiment guards, locked dependents, and references affected by an archive. When the organization treats schema failures as warnings, it also covers schema and invariant warnings. It never bypasses a rejected Custom Hook. On revision publish endpoints, it can also force-publish an out-of-date draft when the caller has Bypass draft approvals access. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.',
+                }),
             })
             .openapi({ required: [] }),
         },
@@ -30441,6 +34649,7 @@ export const postV1ExperimentsIdSnapshotRoute = createRoute({
         },
       },
     },
+    202: ConfirmationHeldResponse,
     409: {
       description: 'Conflict',
       content: {
@@ -32982,6 +37191,21 @@ export const postV1DimensionsRoute = createRoute({
               query: z
                 .string()
                 .openapi({ description: 'SQL query or equivalent for the dimension' }),
+              timing: z
+                .enum(['none', 'rowTimestamp', 'validityRange'])
+                .exactOptional()
+                .openapi({
+                  description:
+                    "What the query returns and how the value at a unit's first exposure is resolved. `none` (default): one value per unit, resolved with MAX(value). `rowTimestamp`: timestamped rows; the query also returns a `timestamp` column and the latest row at or before first exposure is used. `validityRange`: validity ranges; the query also returns `start_timestamp` and `end_timestamp` (NULL = still valid) columns and the row valid at first exposure is used. Only supported for SQL Data Sources.",
+                }),
+              nullLabel: z
+                .string()
+                .max(100)
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Label used in experiment results for units with no dimension value. Leave empty to use the default null label.',
+                }),
               managedBy: z
                 .enum(['', 'api'])
                 .exactOptional()
@@ -33073,6 +37297,21 @@ export const postV1DimensionsIdRoute = createRoute({
                 .string()
                 .exactOptional()
                 .openapi({ description: 'SQL query or equivalent for the dimension' }),
+              timing: z
+                .enum(['none', 'rowTimestamp', 'validityRange'])
+                .exactOptional()
+                .openapi({
+                  description:
+                    "What the query returns and how the value at a unit's first exposure is resolved. `none` (default): one value per unit, resolved with MAX(value). `rowTimestamp`: timestamped rows; the query also returns a `timestamp` column and the latest row at or before first exposure is used. `validityRange`: validity ranges; the query also returns `start_timestamp` and `end_timestamp` (NULL = still valid) columns and the row valid at first exposure is used. Only supported for SQL Data Sources.",
+                }),
+              nullLabel: z
+                .string()
+                .max(100)
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Label used in experiment results for units with no dimension value. Leave empty to use the default null label.',
+                }),
               managedBy: z
                 .enum(['', 'api'])
                 .exactOptional()
@@ -33449,6 +37688,10 @@ export const postV1EnvironmentsRoute = createRoute({
                   description:
                     'An environment that the new environment should inherit feature rules from. Requires an enterprise license',
                 }),
+              isProduction: z
+                .boolean()
+                .exactOptional()
+                .openapi({ description: 'Whether this is a production environment' }),
             })
             .openapi({ required: ['id'] }),
         },
@@ -33503,6 +37746,10 @@ export const putV1EnvironmentsIdRoute = createRoute({
                   description:
                     'Limits which Projects can use this environment. Omit to keep the current list; send `[]` to allow all Projects.',
                 }),
+              isProduction: z
+                .boolean()
+                .exactOptional()
+                .openapi({ description: 'Whether this is a production environment' }),
             })
             .openapi({ required: [] }),
         },
@@ -34095,6 +38342,224 @@ export const getV1DataSourcesIdRoute = createRoute({
   },
 })
 
+export const postV1DataSourcesIdRoute = createRoute({
+  method: 'post',
+  path: '/v1/data-sources/{id}',
+  tags: ['data-sources'],
+  summary: 'Update a data source',
+  description:
+    'Fields left out keep their current values. To clear one, send an explicit empty value (`[]`, `""` or `false`). Connection settings are changed in the app.',
+  operationId: 'updateDataSource',
+  request: {
+    params: z.object({ id: IdParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({
+              name: z.string().min(1).exactOptional(),
+              description: z.string().max(10000).exactOptional(),
+              projectIds: z.array(z.string()).exactOptional(),
+              eventTracker: z
+                .enum([
+                  'segment',
+                  'snowplow',
+                  'jitsu',
+                  'freshpaint',
+                  'ga4',
+                  'fullstory',
+                  'matomo',
+                  'heap',
+                  'rudderstack',
+                  'amplitude',
+                  'mparticle',
+                  'mixpanel',
+                  'firebase',
+                  'keen',
+                  'clevertap',
+                  'langfuse',
+                  'phoenix',
+                  'eventForwarder',
+                  'custom',
+                ])
+                .exactOptional()
+                .openapi({ description: '`eventForwarder` is only accepted unchanged' }),
+              identifierTypes: z
+                .array(
+                  z
+                    .strictObject({
+                      id: z.string(),
+                      description: z.string().max(10000).exactOptional(),
+                    })
+                    .openapi({ required: ['id'] }),
+                )
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Replaces the list. An entry matching an existing id keeps its description if left out; send `""` to clear it.',
+                }),
+              assignmentQueries: z
+                .array(
+                  z
+                    .strictObject({
+                      id: z
+                        .string()
+                        .exactOptional()
+                        .openapi({ description: 'Omit to create a new query' }),
+                      name: z.string(),
+                      description: z.string().max(10000).exactOptional(),
+                      identifierTypes: z
+                        .array(z.string())
+                        .min(1)
+                        .exactOptional()
+                        .openapi({
+                          description: 'Required for a new query unless identifierType is set',
+                        }),
+                      identifierType: z
+                        .string()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'Deprecated: use identifierTypes, which wins if both are set',
+                          deprecated: true,
+                        }),
+                      sql: z.string(),
+                      includesNameColumns: z.boolean().exactOptional(),
+                      dimensionColumns: z.array(z.string()).exactOptional(),
+                      projects: z
+                        .array(z.string())
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            "Project IDs that can use this. An empty list means all Projects. Projects control access and availability, so don't use them as labels.",
+                        }),
+                      columnMapping: z
+                        .strictObject({
+                          experimentIdColumn: z.string().exactOptional(),
+                          variationIdColumn: z.string().exactOptional(),
+                          timestampColumn: z.string().exactOptional(),
+                          userIdColumns: z
+                            .record(z.string(), z.string())
+                            .exactOptional()
+                            .openapi({
+                              description: 'Column for each identifier type, keyed by type',
+                            }),
+                          experimentNameColumn: z.string().exactOptional(),
+                          variationNameColumn: z.string().exactOptional(),
+                        })
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'Columns `sql` returns under a non-canonical name, by role. Replaces the stored mapping; send `{}` to clear it.',
+                          required: [],
+                        }),
+                    })
+                    .openapi({ required: ['name', 'sql'] }),
+                )
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Replaces the list. An entry with an existing `id` keeps `description`, `identifierTypes`, `includesNameColumns`, `dimensionColumns`, `projects` and `columnMapping` if left out; clear the others with `""`, `false` or `[]`. Each query is validated against the warehouse.',
+                }),
+              identifierJoinQueries: z
+                .array(
+                  z
+                    .strictObject({ identifierTypes: z.array(z.string()), sql: z.string() })
+                    .openapi({ required: ['identifierTypes', 'sql'] }),
+                )
+                .exactOptional()
+                .openapi({ description: 'Replaces the list' }),
+              mixpanelSettings: z
+                .strictObject({
+                  viewedExperimentEventName: z.string().exactOptional(),
+                  experimentIdProperty: z.string().exactOptional(),
+                  variationIdProperty: z.string().exactOptional(),
+                  extraUserIdProperty: z.string().exactOptional(),
+                })
+                .exactOptional()
+                .openapi({ required: [] }),
+              pipelineSettings: z
+                .strictObject({
+                  allowWriting: z
+                    .boolean()
+                    .exactOptional()
+                    .openapi({
+                      description: 'Let GrowthBook write temporary tables to speed up analysis',
+                    }),
+                  mode: z.enum(['ephemeral', 'incremental']).exactOptional(),
+                  writeDatabase: z.string().exactOptional(),
+                  writeDataset: z
+                    .string()
+                    .exactOptional()
+                    .openapi({ description: 'Schema (or dataset) to write tables to' }),
+                  unitsTableRetentionHours: z.number().gt(0).exactOptional(),
+                  unitsTableDeletion: z.boolean().exactOptional(),
+                  includedExperimentIds: z
+                    .union([z.array(z.string()), z.null().nullable()])
+                    .exactOptional(),
+                  excludedExperimentIds: z.array(z.string()).exactOptional(),
+                  incrementalOptInExperimentIds: z.array(z.string()).exactOptional(),
+                })
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Merged into the stored settings: fields left out keep their values, but any change must leave `allowWriting`, `mode`, `writeDataset` and `unitsTableRetentionHours` set, with a non-empty `writeDataset` when `allowWriting` is true. Send `[]` to clear `excludedExperimentIds` or `incrementalOptInExperimentIds`, and `includedExperimentIds: null` to apply the mode to every experiment again (`[]` applies it to none).',
+                  required: [],
+                }),
+              maxConcurrentQueries: z.int().min(0).exactOptional(),
+              queryCacheTTLMins: z.int().min(0).exactOptional(),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'Resource created',
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({
+              dataSource: DataSourceSchema,
+              eventForwarderWarning: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description: 'Set if the update saved but syncing the Event Forwarder failed',
+                }),
+            })
+            .openapi({ required: ['dataSource'] }),
+        },
+      },
+    },
+    202: ConfirmationHeldResponse,
+  },
+})
+
+export const deleteV1DataSourcesIdRoute = createRoute({
+  method: 'delete',
+  path: '/v1/data-sources/{id}',
+  tags: ['data-sources'],
+  summary: 'Delete a data source',
+  description:
+    "Refused while it's the organization default, metrics, fact metrics, fact tables, segments or dimensions still use it, or it has an Event Forwarder.",
+  operationId: 'deleteDataSource',
+  request: { params: z.object({ id: IdParamsSchema }) },
+  responses: {
+    200: {
+      description: 'Resource deleted',
+      content: {
+        'application/json': {
+          schema: z.strictObject({ deletedId: z.string() }).openapi({ required: ['deletedId'] }),
+        },
+      },
+    },
+    202: ConfirmationHeldResponse,
+  },
+})
+
 export const getV1DataSourcesDataSourceIdInformationSchemaRoute = createRoute({
   method: 'get',
   path: '/v1/data-sources/{dataSourceId}/information-schema',
@@ -34115,6 +38580,28 @@ export const getV1DataSourcesDataSourceIdInformationSchemaRoute = createRoute({
         },
       },
     },
+  },
+})
+
+export const postV1DataSourcesIdInformationSchemaRefreshRoute = createRoute({
+  method: 'post',
+  path: '/v1/data-sources/{id}/information-schema/refresh',
+  tags: ['data-sources'],
+  summary: "Refresh a data source's information schema",
+  description:
+    "Queues a background job that re-reads the warehouse's tables, creating the schema if there isn't one yet. A table already read before is only re-read when its column count changed; refresh it on its own to pick up renamed or retyped columns.",
+  operationId: 'postDataSourceInformationSchemaRefresh',
+  request: { params: z.object({ id: IdParamsSchema }) },
+  responses: {
+    200: {
+      description: 'Resource created',
+      content: {
+        'application/json': {
+          schema: z.strictObject({ queued: z.literal(true) }).openapi({ required: ['queued'] }),
+        },
+      },
+    },
+    202: ConfirmationHeldResponse,
   },
 })
 
@@ -35187,7 +39674,6 @@ export const getV1SavedGroupsIdReferencesRoute = createRoute({
               savedGroups: z.array(SavedGroupsSchema),
             })
             .openapi({
-              id: 'SavedGroupReferences',
               required: [
                 'features',
                 'experiments',
@@ -37330,7 +41816,7 @@ export const getV1ConstantsKeyReferencesRoute = createRoute({
               ),
               constants: z.array(ConstantsSchema),
             })
-            .openapi({ id: 'ConstantReferences', required: ['features', 'constants'] }),
+            .openapi({ required: ['features', 'constants'] }),
         },
       },
     },
@@ -39309,7 +43795,7 @@ export const getV1ConfigsKeyReferencesRoute = createRoute({
                   .openapi({ required: ['id', 'key', 'name'] }),
               ),
             })
-            .openapi({ id: 'ConfigReferences', required: ['features', 'constants'] }),
+            .openapi({ required: ['features', 'constants'] }),
         },
       },
     },
@@ -39350,7 +43836,7 @@ export const getV1ConfigsKeyKeyUsageRoute = createRoute({
               familyKeys: z.array(z.string()),
               implementations: z.array(ImplementationsSchema),
             })
-            .openapi({ id: 'ConfigKeyUsage', required: ['familyKeys', 'implementations'] }),
+            .openapi({ required: ['familyKeys', 'implementations'] }),
         },
       },
     },
@@ -39406,10 +43892,7 @@ export const getV1ConfigsKeyLineageRoute = createRoute({
                     'Every config in the family (root plus all descendants), breadth-first.',
                 }),
             })
-            .openapi({
-              id: 'ConfigLineage',
-              required: ['root', 'target', 'ancestors', 'descendants', 'nodes'],
-            }),
+            .openapi({ required: ['root', 'target', 'ancestors', 'descendants', 'nodes'] }),
         },
       },
     },
@@ -39482,10 +43965,7 @@ export const postV1ConfigsKeySchemaVerifyRoute = createRoute({
                 }),
               warnings: z.array(ConfigSchemaWarningSchema).exactOptional(),
             })
-            .openapi({
-              id: 'ConfigSchemaVerify',
-              required: ['inSync', 'fingerprint', 'incomingFingerprint'],
-            }),
+            .openapi({ required: ['inSync', 'fingerprint', 'incomingFingerprint'] }),
         },
       },
     },
@@ -39559,10 +44039,7 @@ export const getV1ConfigsKeySchemaRoute = createRoute({
                 .boolean()
                 .openapi({ description: 'Whether the config family permits extra keys.' }),
             })
-            .openapi({
-              id: 'ConfigSchemaExport',
-              required: ['schema', 'effective', 'additionalProperties'],
-            }),
+            .openapi({ required: ['schema', 'effective', 'additionalProperties'] }),
         },
       },
     },
@@ -43567,6 +48044,7 @@ export const postV1FactMetricsRoute = createRoute({
                 'ratio',
                 'dailyParticipation',
                 'funnel',
+                'compound',
               ]),
               numerator: z
                 .union([
@@ -43911,6 +48389,81 @@ export const postV1FactMetricsRoute = createRoute({
                   description: 'Funnel metric settings (required when metricType is "funnel")',
                   required: ['steps'],
                 }),
+              compoundSettings: z
+                .strictObject({
+                  components: z
+                    .array(
+                      z
+                        .strictObject({
+                          factTableId: z
+                            .string()
+                            .openapi({
+                              description: 'The fact table this component draws events from',
+                            }),
+                          rowFilters: z
+                            .array(
+                              z
+                                .strictObject({
+                                  operator: z.enum([
+                                    '=',
+                                    '!=',
+                                    '>',
+                                    '<',
+                                    '>=',
+                                    '<=',
+                                    'between',
+                                    'not_between',
+                                    'in',
+                                    'not_in',
+                                    'is_null',
+                                    'not_null',
+                                    'is_true',
+                                    'is_false',
+                                    'contains',
+                                    'not_contains',
+                                    'matches_pattern',
+                                    'not_matches_pattern',
+                                    'starts_with',
+                                    'ends_with',
+                                    'sql_expr',
+                                    'saved_filter',
+                                  ]),
+                                  values: z
+                                    .array(z.string())
+                                    .exactOptional()
+                                    .openapi({
+                                      description:
+                                        'Not required for is_null, not_null, is_true, is_false operators. The between and not_between operators take at most two values, a lower and an upper bound in that order; leave a bound as an empty string for an open-ended range.',
+                                    }),
+                                  column: z
+                                    .string()
+                                    .exactOptional()
+                                    .openapi({
+                                      description:
+                                        'Required for all operators except sql_expr and saved_filter.',
+                                    }),
+                                })
+                                .openapi({ required: ['operator'] }),
+                            )
+                            .openapi({
+                              description:
+                                'Filters that decide whether an event row counts for this component',
+                            }),
+                        })
+                        .openapi({ required: ['factTableId', 'rowFilters'] }),
+                    )
+                    .min(2)
+                    .max(20)
+                    .openapi({
+                      description:
+                        'A unit passes when it has at least one matching event for every component, in any order. Minimum 2 components required.',
+                    }),
+                })
+                .exactOptional()
+                .openapi({
+                  description: 'Compound metric settings (required when metricType is "compound")',
+                  required: ['components'],
+                }),
               cappingSettings: z
                 .strictObject({
                   type: z.enum(['none', 'absolute', 'percentile']),
@@ -44220,6 +48773,7 @@ export const postV1FactMetricsIdRoute = createRoute({
                   'ratio',
                   'dailyParticipation',
                   'funnel',
+                  'compound',
                 ])
                 .exactOptional(),
               numerator: z
@@ -44564,6 +49118,81 @@ export const postV1FactMetricsIdRoute = createRoute({
                 .openapi({
                   description: 'Funnel metric settings (required when metricType is "funnel")',
                   required: ['steps'],
+                }),
+              compoundSettings: z
+                .strictObject({
+                  components: z
+                    .array(
+                      z
+                        .strictObject({
+                          factTableId: z
+                            .string()
+                            .openapi({
+                              description: 'The fact table this component draws events from',
+                            }),
+                          rowFilters: z
+                            .array(
+                              z
+                                .strictObject({
+                                  operator: z.enum([
+                                    '=',
+                                    '!=',
+                                    '>',
+                                    '<',
+                                    '>=',
+                                    '<=',
+                                    'between',
+                                    'not_between',
+                                    'in',
+                                    'not_in',
+                                    'is_null',
+                                    'not_null',
+                                    'is_true',
+                                    'is_false',
+                                    'contains',
+                                    'not_contains',
+                                    'matches_pattern',
+                                    'not_matches_pattern',
+                                    'starts_with',
+                                    'ends_with',
+                                    'sql_expr',
+                                    'saved_filter',
+                                  ]),
+                                  values: z
+                                    .array(z.string())
+                                    .exactOptional()
+                                    .openapi({
+                                      description:
+                                        'Not required for is_null, not_null, is_true, is_false operators. The between and not_between operators take at most two values, a lower and an upper bound in that order; leave a bound as an empty string for an open-ended range.',
+                                    }),
+                                  column: z
+                                    .string()
+                                    .exactOptional()
+                                    .openapi({
+                                      description:
+                                        'Required for all operators except sql_expr and saved_filter.',
+                                    }),
+                                })
+                                .openapi({ required: ['operator'] }),
+                            )
+                            .openapi({
+                              description:
+                                'Filters that decide whether an event row counts for this component',
+                            }),
+                        })
+                        .openapi({ required: ['factTableId', 'rowFilters'] }),
+                    )
+                    .min(2)
+                    .max(20)
+                    .openapi({
+                      description:
+                        'A unit passes when it has at least one matching event for every component, in any order. Minimum 2 components required.',
+                    }),
+                })
+                .exactOptional()
+                .openapi({
+                  description: 'Compound metric settings (required when metricType is "compound")',
+                  required: ['components'],
                 }),
               cappingSettings: z
                 .strictObject({
@@ -45139,6 +49768,7 @@ export const postV1BulkImportFactsRoute = createRoute({
                             'ratio',
                             'dailyParticipation',
                             'funnel',
+                            'compound',
                           ]),
                           numerator: z
                             .union([
@@ -45499,6 +50129,83 @@ export const postV1BulkImportFactsRoute = createRoute({
                               description:
                                 'Funnel metric settings (required when metricType is "funnel")',
                               required: ['steps'],
+                            }),
+                          compoundSettings: z
+                            .strictObject({
+                              components: z
+                                .array(
+                                  z
+                                    .strictObject({
+                                      factTableId: z
+                                        .string()
+                                        .openapi({
+                                          description:
+                                            'The fact table this component draws events from',
+                                        }),
+                                      rowFilters: z
+                                        .array(
+                                          z
+                                            .strictObject({
+                                              operator: z.enum([
+                                                '=',
+                                                '!=',
+                                                '>',
+                                                '<',
+                                                '>=',
+                                                '<=',
+                                                'between',
+                                                'not_between',
+                                                'in',
+                                                'not_in',
+                                                'is_null',
+                                                'not_null',
+                                                'is_true',
+                                                'is_false',
+                                                'contains',
+                                                'not_contains',
+                                                'matches_pattern',
+                                                'not_matches_pattern',
+                                                'starts_with',
+                                                'ends_with',
+                                                'sql_expr',
+                                                'saved_filter',
+                                              ]),
+                                              values: z
+                                                .array(z.string())
+                                                .exactOptional()
+                                                .openapi({
+                                                  description:
+                                                    'Not required for is_null, not_null, is_true, is_false operators. The between and not_between operators take at most two values, a lower and an upper bound in that order; leave a bound as an empty string for an open-ended range.',
+                                                }),
+                                              column: z
+                                                .string()
+                                                .exactOptional()
+                                                .openapi({
+                                                  description:
+                                                    'Required for all operators except sql_expr and saved_filter.',
+                                                }),
+                                            })
+                                            .openapi({ required: ['operator'] }),
+                                        )
+                                        .openapi({
+                                          description:
+                                            'Filters that decide whether an event row counts for this component',
+                                        }),
+                                    })
+                                    .openapi({ required: ['factTableId', 'rowFilters'] }),
+                                )
+                                .min(2)
+                                .max(20)
+                                .openapi({
+                                  description:
+                                    'A unit passes when it has at least one matching event for every component, in any order. Minimum 2 components required.',
+                                }),
+                            })
+                            .exactOptional()
+                            .openapi({
+                              description:
+                                'Compound metric settings (required when metricType is "compound")',
+                              required: ['components'],
                             }),
                           cappingSettings: z
                             .strictObject({
@@ -46023,6 +50730,64 @@ export const getV1QueriesIdRoute = createRoute({
   },
 })
 
+export const getV1DataSourcesIdQueriesRoute = createRoute({
+  method: 'get',
+  path: '/v1/data-sources/{id}/queries',
+  tags: ['queries'],
+  summary: "Get a data source's 50 most recent queries",
+  operationId: 'listDataSourceQueries',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: 'The data source id',
+            schema: { description: 'The data source id', type: 'string' },
+          },
+          description: 'The data source id',
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({ queries: z.array(QuerySchema) })
+            .openapi({ required: ['queries'] }),
+        },
+      },
+    },
+  },
+})
+
+export const postV1QueriesIdCancelRoute = createRoute({
+  method: 'post',
+  path: '/v1/queries/{id}/cancel',
+  tags: ['queries'],
+  summary: 'Cancel a running query',
+  description:
+    'Also asks the warehouse to stop it where the integration supports that. Needs permission to run queries on the data source.',
+  operationId: 'postQueryCancel',
+  request: { params: z.object({ id: IdParamsSchema }) },
+  responses: {
+    200: {
+      description: 'Resource created',
+      content: {
+        'application/json': {
+          schema: z.strictObject({ query: QuerySchema }).openapi({ required: ['query'] }),
+        },
+      },
+    },
+    202: ConfirmationHeldResponse,
+  },
+})
+
 export const getV1SettingsRoute = createRoute({
   method: 'get',
   path: '/v1/settings',
@@ -46151,7 +50916,7 @@ export const getV1InformationSchemaTablesTableIdRoute = createRoute({
   tags: ['data-sources'],
   summary: 'Get a single Information Schema Table by id',
   description:
-    'Returns cached metadata for a specific table in the Data Source, including columns and their data types. Not all data source types support information schemas.',
+    'Returns cached metadata for a specific table in the Data Source, including columns and their data types. The first request for a table listed in the information schema reads its columns from the warehouse, which needs permission to run queries. Not all data source types support information schemas.',
   operationId: 'getInformationSchemaTable',
   request: { params: z.object({ tableId: TableIdParamsSchema }) },
   responses: {
@@ -46165,6 +50930,44 @@ export const getV1InformationSchemaTablesTableIdRoute = createRoute({
         },
       },
     },
+  },
+})
+
+export const postV1InformationSchemaTablesTableIdRefreshRoute = createRoute({
+  method: 'post',
+  path: '/v1/information-schema-tables/{tableId}/refresh',
+  tags: ['information-schema-tables'],
+  summary: "Refresh one table's columns",
+  description:
+    "Re-reads the table's columns from the warehouse and returns the updated table. A failed read returns an error and leaves the stored columns as they were.",
+  operationId: 'postInformationSchemaTableRefresh',
+  request: {
+    params: z.object({
+      tableId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'tableId',
+            in: 'path',
+            required: true,
+            description: '',
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Resource created',
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({ informationSchemaTable: InformationSchemaTableSchema })
+            .openapi({ required: ['informationSchemaTable'] }),
+        },
+      },
+    },
+    202: ConfirmationHeldResponse,
   },
 })
 
@@ -47443,7 +52246,6 @@ export const postV1RampSchedulesIdActionsSetMonitoringModeRoute = createRoute({
                 }),
             })
             .openapi({
-              id: 'RampSchedule',
               required: [
                 'id',
                 'dateCreated',
@@ -47772,7 +52574,6 @@ export const postV1RampSchedulesIdActionsSetAutoUpdateRoute = createRoute({
                 }),
             })
             .openapi({
-              id: 'RampSchedule',
               required: [
                 'id',
                 'dateCreated',
@@ -48146,7 +52947,6 @@ export const putV1RampSchedulesIdMonitoringRoute = createRoute({
                 }),
             })
             .openapi({
-              id: 'RampSchedule',
               required: [
                 'id',
                 'dateCreated',
@@ -48468,7 +53268,6 @@ export const putV1RampSchedulesIdLockdownRoute = createRoute({
                 }),
             })
             .openapi({
-              id: 'RampSchedule',
               required: [
                 'id',
                 'dateCreated',
@@ -49924,6 +54723,431 @@ export const postV1NamespacesIdRotateSeedRoute = createRoute({
   },
 })
 
+export const getV1EventWebhooksRoute = createRoute({
+  method: 'get',
+  path: '/v1/event-webhooks',
+  tags: ['event-webhooks'],
+  summary: 'Get all event webhooks',
+  operationId: 'listEventWebhooks',
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({ eventWebhooks: z.array(EventWebhookSchema) })
+            .openapi({ required: ['eventWebhooks'] }),
+        },
+      },
+    },
+  },
+})
+
+export const postV1EventWebhooksRoute = createRoute({
+  method: 'post',
+  path: '/v1/event-webhooks',
+  tags: ['event-webhooks'],
+  summary: 'Create an event webhook',
+  description:
+    'The URL and header values can reference webhook secrets as `{{ KEY }}`, which are filled in at send time.',
+  operationId: 'postEventWebhook',
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({
+              events: z.array(z.string()).min(1),
+              projects: z.array(z.string()).exactOptional(),
+              tags: z.array(z.string()).exactOptional(),
+              environments: z.array(z.string()).exactOptional(),
+              url: z.url(),
+              name: z.string().min(2),
+              enabled: z.boolean(),
+              payloadType: z.enum(['raw', 'json', 'slack', 'discord']),
+              method: z.enum(['POST', 'PUT', 'PATCH']).exactOptional(),
+              headers: z.record(z.string(), z.string()).exactOptional(),
+              timeoutSeconds: z
+                .union([z.int().min(1), z.null().nullable()])
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Request timeout in seconds, up to the server maximum (120 unless configured). Null uses the default.',
+                }),
+            })
+            .openapi({ required: ['events', 'url', 'name', 'enabled', 'payloadType'] }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'Resource created',
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({ eventWebhook: EventWebhookSchema })
+            .openapi({ required: ['eventWebhook'] }),
+        },
+      },
+    },
+    202: ConfirmationHeldResponse,
+  },
+})
+
+export const getV1EventWebhooksIdRoute = createRoute({
+  method: 'get',
+  path: '/v1/event-webhooks/{id}',
+  tags: ['event-webhooks'],
+  summary: 'Get a single event webhook',
+  operationId: 'getEventWebhook',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: '',
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({ eventWebhook: EventWebhookSchema })
+            .openapi({ required: ['eventWebhook'] }),
+        },
+      },
+    },
+  },
+})
+
+export const putV1EventWebhooksIdRoute = createRoute({
+  method: 'put',
+  path: '/v1/event-webhooks/{id}',
+  tags: ['event-webhooks'],
+  summary: 'Update an event webhook',
+  operationId: 'putEventWebhook',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: '',
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({
+              events: z.array(z.string()).min(1).exactOptional(),
+              projects: z.array(z.string()).exactOptional(),
+              tags: z.array(z.string()).exactOptional(),
+              environments: z.array(z.string()).exactOptional(),
+              url: z.url().exactOptional(),
+              name: z.string().min(2).exactOptional(),
+              enabled: z.boolean().exactOptional(),
+              payloadType: z.enum(['raw', 'json', 'slack', 'discord']).exactOptional(),
+              method: z.enum(['POST', 'PUT', 'PATCH']).exactOptional(),
+              headers: z.record(z.string(), z.string()).exactOptional(),
+              timeoutSeconds: z
+                .union([z.int().min(1), z.null().nullable()])
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Request timeout in seconds, up to the server maximum (120 unless configured). Null uses the default.',
+                }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'Resource updated',
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({ eventWebhook: EventWebhookSchema })
+            .openapi({ required: ['eventWebhook'] }),
+        },
+      },
+    },
+    202: ConfirmationHeldResponse,
+  },
+})
+
+export const deleteV1EventWebhooksIdRoute = createRoute({
+  method: 'delete',
+  path: '/v1/event-webhooks/{id}',
+  tags: ['event-webhooks'],
+  summary: 'Delete an event webhook',
+  operationId: 'deleteEventWebhook',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: '',
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Resource deleted',
+      content: {
+        'application/json': {
+          schema: z.strictObject({ deletedId: z.string() }).openapi({ required: ['deletedId'] }),
+        },
+      },
+    },
+    202: ConfirmationHeldResponse,
+  },
+})
+
+export const getV1EventWebhooksIdLogsRoute = createRoute({
+  method: 'get',
+  path: '/v1/event-webhooks/{id}/logs',
+  tags: ['event-webhooks'],
+  summary: 'Get the 50 most recent deliveries for an event webhook',
+  operationId: 'listEventWebhookLogs',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: '',
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({ logs: z.array(EventWebhookLogSchema) })
+            .openapi({ required: ['logs'] }),
+        },
+      },
+    },
+  },
+})
+
+export const postV1EventWebhooksIdTestRoute = createRoute({
+  method: 'post',
+  path: '/v1/event-webhooks/{id}/test',
+  tags: ['event-webhooks'],
+  summary: 'Send a test event to an event webhook',
+  description: "Delivery is asynchronous; check the webhook's logs for the result.",
+  operationId: 'postEventWebhookTest',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: '',
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Resource created',
+      content: {
+        'application/json': {
+          schema: z.strictObject({ queued: z.literal(true) }).openapi({ required: ['queued'] }),
+        },
+      },
+    },
+    202: ConfirmationHeldResponse,
+  },
+})
+
+export const getV1AuditsRoute = createRoute({
+  method: 'get',
+  path: '/v1/audits',
+  tags: ['audits'],
+  summary: 'Get audit history for an entity or entity type',
+  description:
+    "Includes changes to child entities (e.g. a feature's revisions). Newest first. Requires permission to view audit logs.",
+  operationId: 'listAudits',
+  request: {
+    query: z.object({
+      entityType: EntityTypeParamsSchema,
+      entityId: EntityIdParamsSchema,
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(1).max(100),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'limit',
+            in: 'query',
+            description: 'Defaults to 50',
+            schema: { description: 'Defaults to 50', type: 'integer', minimum: 1, maximum: 100 },
+            required: false,
+          },
+          description: 'Defaults to 50',
+        }),
+      before: BeforeParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({
+              audits: z.array(AuditSchema),
+              nextCursor: z
+                .union([z.string(), z.null().nullable()])
+                .openapi({
+                  description:
+                    'Pass as `before` to get the next page. Null when there are no older entries',
+                }),
+            })
+            .openapi({ required: ['audits', 'nextCursor'] }),
+        },
+      },
+    },
+  },
+})
+
+export const getV1EventsRoute = createRoute({
+  method: 'get',
+  path: '/v1/events',
+  tags: ['audits'],
+  summary: "Get the organization's event log",
+  description:
+    'The events that drive event webhooks and notifications. Newest first. Requires permission to view audit logs.',
+  operationId: 'listEvents',
+  request: {
+    query: z.object({
+      events: EventsParamsSchema,
+      after: AfterParamsSchema,
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(1).max(100),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'limit',
+            in: 'query',
+            description: 'Defaults to 50',
+            schema: { description: 'Defaults to 50', type: 'integer', minimum: 1, maximum: 100 },
+            required: false,
+          },
+          description: 'Defaults to 50',
+        }),
+      before: BeforeParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({
+              events: z.array(EventSchema),
+              nextCursor: z
+                .union([z.string(), z.null().nullable()])
+                .openapi({
+                  description:
+                    'Pass as `before` to get the next page. Null when there are no older entries',
+                }),
+            })
+            .openapi({ required: ['events', 'nextCursor'] }),
+        },
+      },
+    },
+  },
+})
+
+export const getV1EventsIdRoute = createRoute({
+  method: 'get',
+  path: '/v1/events/{id}',
+  tags: ['audits'],
+  summary: 'Get a single event',
+  operationId: 'getEvent',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: '',
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z.strictObject({ event: EventSchema }).openapi({ required: ['event'] }),
+        },
+      },
+    },
+  },
+})
+
 export const postV1TransformCopyRoute = createRoute({
   method: 'post',
   path: '/v1/transform-copy',
@@ -51180,11 +56404,24 @@ export const putV1DashboardsIdRoute = createRoute({
                                     .exactOptional(),
                                 })
                                 .openapi({ required: ['predefined'] }),
-                              showAs: z.enum(['total', 'per_unit']).exactOptional(),
+                              showAs: z
+                                .enum(['total', 'per_unit'])
+                                .exactOptional()
+                                .openapi({
+                                  description: 'Deprecated: use `showAs` on each metric value.',
+                                  deprecated: true,
+                                }),
                               chartSettings: z
                                 .strictObject({
                                   categoryAxisLabel: z.string().exactOptional(),
                                   valueAxisLabel: z.string().exactOptional(),
+                                  anchorYAxisToZero: z
+                                    .boolean()
+                                    .exactOptional()
+                                    .openapi({
+                                      description:
+                                        'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                                    }),
                                 })
                                 .exactOptional()
                                 .openapi({ required: [] }),
@@ -51232,6 +56469,13 @@ export const putV1DashboardsIdRoute = createRoute({
                                         metricId: z.string(),
                                         unit: z.union([z.string(), z.null().nullable()]),
                                         denominatorUnit: z.union([z.string(), z.null().nullable()]),
+                                        showAs: z
+                                          .enum(['total', 'per_unit'])
+                                          .exactOptional()
+                                          .openapi({
+                                            description:
+                                              'How a mean metric renders: `total` sums the numerator, `per_unit` divides it by the unit count. Ignored for other metric types. Omit to use the default (`per_unit` for `max` and `count distinct` aggregations, otherwise `total`).',
+                                          }),
                                       })
                                       .openapi({
                                         required: [
@@ -51244,6 +56488,10 @@ export const putV1DashboardsIdRoute = createRoute({
                                         ],
                                       }),
                                   ),
+                                  population: ExplorationPopulationSchema.exactOptional().openapi({
+                                    description:
+                                      "**Beta** — this field is new and may change in backwards-incompatible ways. A population applied to every metric in the request. Only proportion metrics on the population's Fact Table are supported; the request is rejected if any metric is incompatible.",
+                                  }),
                                 })
                                 .openapi({ required: ['type', 'values'] }),
                             })
@@ -51463,11 +56711,24 @@ export const putV1DashboardsIdRoute = createRoute({
                                     .exactOptional(),
                                 })
                                 .openapi({ required: ['predefined'] }),
-                              showAs: z.enum(['total', 'per_unit']).exactOptional(),
+                              showAs: z
+                                .enum(['total', 'per_unit'])
+                                .exactOptional()
+                                .openapi({
+                                  description: 'Deprecated: use `showAs` on each metric value.',
+                                  deprecated: true,
+                                }),
                               chartSettings: z
                                 .strictObject({
                                   categoryAxisLabel: z.string().exactOptional(),
                                   valueAxisLabel: z.string().exactOptional(),
+                                  anchorYAxisToZero: z
+                                    .boolean()
+                                    .exactOptional()
+                                    .openapi({
+                                      description:
+                                        'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                                    }),
                                 })
                                 .exactOptional()
                                 .openapi({ required: [] }),
@@ -51747,11 +57008,24 @@ export const putV1DashboardsIdRoute = createRoute({
                                     .exactOptional(),
                                 })
                                 .openapi({ required: ['predefined'] }),
-                              showAs: z.enum(['total', 'per_unit']).exactOptional(),
+                              showAs: z
+                                .enum(['total', 'per_unit'])
+                                .exactOptional()
+                                .openapi({
+                                  description: 'Deprecated: use `showAs` on each metric value.',
+                                  deprecated: true,
+                                }),
                               chartSettings: z
                                 .strictObject({
                                   categoryAxisLabel: z.string().exactOptional(),
                                   valueAxisLabel: z.string().exactOptional(),
+                                  anchorYAxisToZero: z
+                                    .boolean()
+                                    .exactOptional()
+                                    .openapi({
+                                      description:
+                                        'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                                    }),
                                 })
                                 .exactOptional()
                                 .openapi({ required: [] }),
@@ -52046,11 +57320,24 @@ export const putV1DashboardsIdRoute = createRoute({
                                     .exactOptional(),
                                 })
                                 .openapi({ required: ['predefined'] }),
-                              showAs: z.enum(['total', 'per_unit']).exactOptional(),
+                              showAs: z
+                                .enum(['total', 'per_unit'])
+                                .exactOptional()
+                                .openapi({
+                                  description: 'Deprecated: use `showAs` on each metric value.',
+                                  deprecated: true,
+                                }),
                               chartSettings: z
                                 .strictObject({
                                   categoryAxisLabel: z.string().exactOptional(),
                                   valueAxisLabel: z.string().exactOptional(),
+                                  anchorYAxisToZero: z
+                                    .boolean()
+                                    .exactOptional()
+                                    .openapi({
+                                      description:
+                                        'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                                    }),
                                 })
                                 .exactOptional()
                                 .openapi({ required: [] }),
@@ -52349,11 +57636,24 @@ export const putV1DashboardsIdRoute = createRoute({
                                     .exactOptional(),
                                 })
                                 .openapi({ required: ['predefined'] }),
-                              showAs: z.enum(['total', 'per_unit']).exactOptional(),
+                              showAs: z
+                                .enum(['total', 'per_unit'])
+                                .exactOptional()
+                                .openapi({
+                                  description: 'Deprecated: use `showAs` on each metric value.',
+                                  deprecated: true,
+                                }),
                               chartSettings: z
                                 .strictObject({
                                   categoryAxisLabel: z.string().exactOptional(),
                                   valueAxisLabel: z.string().exactOptional(),
+                                  anchorYAxisToZero: z
+                                    .boolean()
+                                    .exactOptional()
+                                    .openapi({
+                                      description:
+                                        'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                                    }),
                                 })
                                 .exactOptional()
                                 .openapi({ required: [] }),
@@ -53450,11 +58750,24 @@ export const putV1DashboardsIdRoute = createRoute({
                                     .exactOptional(),
                                 })
                                 .openapi({ required: ['predefined'] }),
-                              showAs: z.enum(['total', 'per_unit']).exactOptional(),
+                              showAs: z
+                                .enum(['total', 'per_unit'])
+                                .exactOptional()
+                                .openapi({
+                                  description: 'Deprecated: use `showAs` on each metric value.',
+                                  deprecated: true,
+                                }),
                               chartSettings: z
                                 .strictObject({
                                   categoryAxisLabel: z.string().exactOptional(),
                                   valueAxisLabel: z.string().exactOptional(),
+                                  anchorYAxisToZero: z
+                                    .boolean()
+                                    .exactOptional()
+                                    .openapi({
+                                      description:
+                                        'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                                    }),
                                 })
                                 .exactOptional()
                                 .openapi({ required: [] }),
@@ -53502,6 +58815,13 @@ export const putV1DashboardsIdRoute = createRoute({
                                         metricId: z.string(),
                                         unit: z.union([z.string(), z.null().nullable()]),
                                         denominatorUnit: z.union([z.string(), z.null().nullable()]),
+                                        showAs: z
+                                          .enum(['total', 'per_unit'])
+                                          .exactOptional()
+                                          .openapi({
+                                            description:
+                                              'How a mean metric renders: `total` sums the numerator, `per_unit` divides it by the unit count. Ignored for other metric types. Omit to use the default (`per_unit` for `max` and `count distinct` aggregations, otherwise `total`).',
+                                          }),
                                       })
                                       .openapi({
                                         required: [
@@ -53514,6 +58834,10 @@ export const putV1DashboardsIdRoute = createRoute({
                                         ],
                                       }),
                                   ),
+                                  population: ExplorationPopulationSchema.exactOptional().openapi({
+                                    description:
+                                      "**Beta** — this field is new and may change in backwards-incompatible ways. A population applied to every metric in the request. Only proportion metrics on the population's Fact Table are supported; the request is rejected if any metric is incompatible.",
+                                  }),
                                 })
                                 .openapi({ required: ['type', 'values'] }),
                             })
@@ -53730,11 +59054,24 @@ export const putV1DashboardsIdRoute = createRoute({
                                     .exactOptional(),
                                 })
                                 .openapi({ required: ['predefined'] }),
-                              showAs: z.enum(['total', 'per_unit']).exactOptional(),
+                              showAs: z
+                                .enum(['total', 'per_unit'])
+                                .exactOptional()
+                                .openapi({
+                                  description: 'Deprecated: use `showAs` on each metric value.',
+                                  deprecated: true,
+                                }),
                               chartSettings: z
                                 .strictObject({
                                   categoryAxisLabel: z.string().exactOptional(),
                                   valueAxisLabel: z.string().exactOptional(),
+                                  anchorYAxisToZero: z
+                                    .boolean()
+                                    .exactOptional()
+                                    .openapi({
+                                      description:
+                                        'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                                    }),
                                 })
                                 .exactOptional()
                                 .openapi({ required: [] }),
@@ -54011,11 +59348,24 @@ export const putV1DashboardsIdRoute = createRoute({
                                     .exactOptional(),
                                 })
                                 .openapi({ required: ['predefined'] }),
-                              showAs: z.enum(['total', 'per_unit']).exactOptional(),
+                              showAs: z
+                                .enum(['total', 'per_unit'])
+                                .exactOptional()
+                                .openapi({
+                                  description: 'Deprecated: use `showAs` on each metric value.',
+                                  deprecated: true,
+                                }),
                               chartSettings: z
                                 .strictObject({
                                   categoryAxisLabel: z.string().exactOptional(),
                                   valueAxisLabel: z.string().exactOptional(),
+                                  anchorYAxisToZero: z
+                                    .boolean()
+                                    .exactOptional()
+                                    .openapi({
+                                      description:
+                                        'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                                    }),
                                 })
                                 .exactOptional()
                                 .openapi({ required: [] }),
@@ -54307,11 +59657,24 @@ export const putV1DashboardsIdRoute = createRoute({
                                     .exactOptional(),
                                 })
                                 .openapi({ required: ['predefined'] }),
-                              showAs: z.enum(['total', 'per_unit']).exactOptional(),
+                              showAs: z
+                                .enum(['total', 'per_unit'])
+                                .exactOptional()
+                                .openapi({
+                                  description: 'Deprecated: use `showAs` on each metric value.',
+                                  deprecated: true,
+                                }),
                               chartSettings: z
                                 .strictObject({
                                   categoryAxisLabel: z.string().exactOptional(),
                                   valueAxisLabel: z.string().exactOptional(),
+                                  anchorYAxisToZero: z
+                                    .boolean()
+                                    .exactOptional()
+                                    .openapi({
+                                      description:
+                                        'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                                    }),
                                 })
                                 .exactOptional()
                                 .openapi({ required: [] }),
@@ -54607,11 +59970,24 @@ export const putV1DashboardsIdRoute = createRoute({
                                     .exactOptional(),
                                 })
                                 .openapi({ required: ['predefined'] }),
-                              showAs: z.enum(['total', 'per_unit']).exactOptional(),
+                              showAs: z
+                                .enum(['total', 'per_unit'])
+                                .exactOptional()
+                                .openapi({
+                                  description: 'Deprecated: use `showAs` on each metric value.',
+                                  deprecated: true,
+                                }),
                               chartSettings: z
                                 .strictObject({
                                   categoryAxisLabel: z.string().exactOptional(),
                                   valueAxisLabel: z.string().exactOptional(),
+                                  anchorYAxisToZero: z
+                                    .boolean()
+                                    .exactOptional()
+                                    .openapi({
+                                      description:
+                                        'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                                    }),
                                 })
                                 .exactOptional()
                                 .openapi({ required: [] }),
@@ -55876,11 +61252,24 @@ export const postV1DashboardsRoute = createRoute({
                               endDate: z.union([z.string(), z.null().nullable()]).exactOptional(),
                             })
                             .openapi({ required: ['predefined'] }),
-                          showAs: z.enum(['total', 'per_unit']).exactOptional(),
+                          showAs: z
+                            .enum(['total', 'per_unit'])
+                            .exactOptional()
+                            .openapi({
+                              description: 'Deprecated: use `showAs` on each metric value.',
+                              deprecated: true,
+                            }),
                           chartSettings: z
                             .strictObject({
                               categoryAxisLabel: z.string().exactOptional(),
                               valueAxisLabel: z.string().exactOptional(),
+                              anchorYAxisToZero: z
+                                .boolean()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                                }),
                             })
                             .exactOptional()
                             .openapi({ required: [] }),
@@ -55928,6 +61317,13 @@ export const postV1DashboardsRoute = createRoute({
                                     metricId: z.string(),
                                     unit: z.union([z.string(), z.null().nullable()]),
                                     denominatorUnit: z.union([z.string(), z.null().nullable()]),
+                                    showAs: z
+                                      .enum(['total', 'per_unit'])
+                                      .exactOptional()
+                                      .openapi({
+                                        description:
+                                          'How a mean metric renders: `total` sums the numerator, `per_unit` divides it by the unit count. Ignored for other metric types. Omit to use the default (`per_unit` for `max` and `count distinct` aggregations, otherwise `total`).',
+                                      }),
                                   })
                                   .openapi({
                                     required: [
@@ -55940,6 +61336,10 @@ export const postV1DashboardsRoute = createRoute({
                                     ],
                                   }),
                               ),
+                              population: ExplorationPopulationSchema.exactOptional().openapi({
+                                description:
+                                  "**Beta** — this field is new and may change in backwards-incompatible ways. A population applied to every metric in the request. Only proportion metrics on the population's Fact Table are supported; the request is rejected if any metric is incompatible.",
+                              }),
                             })
                             .openapi({ required: ['type', 'values'] }),
                         })
@@ -56146,11 +61546,24 @@ export const postV1DashboardsRoute = createRoute({
                               endDate: z.union([z.string(), z.null().nullable()]).exactOptional(),
                             })
                             .openapi({ required: ['predefined'] }),
-                          showAs: z.enum(['total', 'per_unit']).exactOptional(),
+                          showAs: z
+                            .enum(['total', 'per_unit'])
+                            .exactOptional()
+                            .openapi({
+                              description: 'Deprecated: use `showAs` on each metric value.',
+                              deprecated: true,
+                            }),
                           chartSettings: z
                             .strictObject({
                               categoryAxisLabel: z.string().exactOptional(),
                               valueAxisLabel: z.string().exactOptional(),
+                              anchorYAxisToZero: z
+                                .boolean()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                                }),
                             })
                             .exactOptional()
                             .openapi({ required: [] }),
@@ -56417,11 +61830,24 @@ export const postV1DashboardsRoute = createRoute({
                               endDate: z.union([z.string(), z.null().nullable()]).exactOptional(),
                             })
                             .openapi({ required: ['predefined'] }),
-                          showAs: z.enum(['total', 'per_unit']).exactOptional(),
+                          showAs: z
+                            .enum(['total', 'per_unit'])
+                            .exactOptional()
+                            .openapi({
+                              description: 'Deprecated: use `showAs` on each metric value.',
+                              deprecated: true,
+                            }),
                           chartSettings: z
                             .strictObject({
                               categoryAxisLabel: z.string().exactOptional(),
                               valueAxisLabel: z.string().exactOptional(),
+                              anchorYAxisToZero: z
+                                .boolean()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                                }),
                             })
                             .exactOptional()
                             .openapi({ required: [] }),
@@ -56703,11 +62129,24 @@ export const postV1DashboardsRoute = createRoute({
                               endDate: z.union([z.string(), z.null().nullable()]).exactOptional(),
                             })
                             .openapi({ required: ['predefined'] }),
-                          showAs: z.enum(['total', 'per_unit']).exactOptional(),
+                          showAs: z
+                            .enum(['total', 'per_unit'])
+                            .exactOptional()
+                            .openapi({
+                              description: 'Deprecated: use `showAs` on each metric value.',
+                              deprecated: true,
+                            }),
                           chartSettings: z
                             .strictObject({
                               categoryAxisLabel: z.string().exactOptional(),
                               valueAxisLabel: z.string().exactOptional(),
+                              anchorYAxisToZero: z
+                                .boolean()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                                }),
                             })
                             .exactOptional()
                             .openapi({ required: [] }),
@@ -56983,11 +62422,24 @@ export const postV1DashboardsRoute = createRoute({
                               endDate: z.union([z.string(), z.null().nullable()]).exactOptional(),
                             })
                             .openapi({ required: ['predefined'] }),
-                          showAs: z.enum(['total', 'per_unit']).exactOptional(),
+                          showAs: z
+                            .enum(['total', 'per_unit'])
+                            .exactOptional()
+                            .openapi({
+                              description: 'Deprecated: use `showAs` on each metric value.',
+                              deprecated: true,
+                            }),
                           chartSettings: z
                             .strictObject({
                               categoryAxisLabel: z.string().exactOptional(),
                               valueAxisLabel: z.string().exactOptional(),
+                              anchorYAxisToZero: z
+                                .boolean()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                                }),
                             })
                             .exactOptional()
                             .openapi({ required: [] }),
@@ -58183,11 +63635,24 @@ export const postV2DashboardsRoute = createRoute({
                               endDate: z.union([z.string(), z.null().nullable()]).exactOptional(),
                             })
                             .openapi({ required: ['predefined'] }),
-                          showAs: z.enum(['total', 'per_unit']).exactOptional(),
+                          showAs: z
+                            .enum(['total', 'per_unit'])
+                            .exactOptional()
+                            .openapi({
+                              description: 'Deprecated: use `showAs` on each metric value.',
+                              deprecated: true,
+                            }),
                           chartSettings: z
                             .strictObject({
                               categoryAxisLabel: z.string().exactOptional(),
                               valueAxisLabel: z.string().exactOptional(),
+                              anchorYAxisToZero: z
+                                .boolean()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                                }),
                             })
                             .exactOptional()
                             .openapi({ required: [] }),
@@ -58235,6 +63700,13 @@ export const postV2DashboardsRoute = createRoute({
                                     metricId: z.string(),
                                     unit: z.union([z.string(), z.null().nullable()]),
                                     denominatorUnit: z.union([z.string(), z.null().nullable()]),
+                                    showAs: z
+                                      .enum(['total', 'per_unit'])
+                                      .exactOptional()
+                                      .openapi({
+                                        description:
+                                          'How a mean metric renders: `total` sums the numerator, `per_unit` divides it by the unit count. Ignored for other metric types. Omit to use the default (`per_unit` for `max` and `count distinct` aggregations, otherwise `total`).',
+                                      }),
                                   })
                                   .openapi({
                                     required: [
@@ -58247,6 +63719,10 @@ export const postV2DashboardsRoute = createRoute({
                                     ],
                                   }),
                               ),
+                              population: ExplorationPopulationSchema.exactOptional().openapi({
+                                description:
+                                  "**Beta** — this field is new and may change in backwards-incompatible ways. A population applied to every metric in the request. Only proportion metrics on the population's Fact Table are supported; the request is rejected if any metric is incompatible.",
+                              }),
                             })
                             .openapi({ required: ['type', 'values'] }),
                         })
@@ -58453,11 +63929,24 @@ export const postV2DashboardsRoute = createRoute({
                               endDate: z.union([z.string(), z.null().nullable()]).exactOptional(),
                             })
                             .openapi({ required: ['predefined'] }),
-                          showAs: z.enum(['total', 'per_unit']).exactOptional(),
+                          showAs: z
+                            .enum(['total', 'per_unit'])
+                            .exactOptional()
+                            .openapi({
+                              description: 'Deprecated: use `showAs` on each metric value.',
+                              deprecated: true,
+                            }),
                           chartSettings: z
                             .strictObject({
                               categoryAxisLabel: z.string().exactOptional(),
                               valueAxisLabel: z.string().exactOptional(),
+                              anchorYAxisToZero: z
+                                .boolean()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                                }),
                             })
                             .exactOptional()
                             .openapi({ required: [] }),
@@ -58724,11 +64213,24 @@ export const postV2DashboardsRoute = createRoute({
                               endDate: z.union([z.string(), z.null().nullable()]).exactOptional(),
                             })
                             .openapi({ required: ['predefined'] }),
-                          showAs: z.enum(['total', 'per_unit']).exactOptional(),
+                          showAs: z
+                            .enum(['total', 'per_unit'])
+                            .exactOptional()
+                            .openapi({
+                              description: 'Deprecated: use `showAs` on each metric value.',
+                              deprecated: true,
+                            }),
                           chartSettings: z
                             .strictObject({
                               categoryAxisLabel: z.string().exactOptional(),
                               valueAxisLabel: z.string().exactOptional(),
+                              anchorYAxisToZero: z
+                                .boolean()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                                }),
                             })
                             .exactOptional()
                             .openapi({ required: [] }),
@@ -59010,11 +64512,24 @@ export const postV2DashboardsRoute = createRoute({
                               endDate: z.union([z.string(), z.null().nullable()]).exactOptional(),
                             })
                             .openapi({ required: ['predefined'] }),
-                          showAs: z.enum(['total', 'per_unit']).exactOptional(),
+                          showAs: z
+                            .enum(['total', 'per_unit'])
+                            .exactOptional()
+                            .openapi({
+                              description: 'Deprecated: use `showAs` on each metric value.',
+                              deprecated: true,
+                            }),
                           chartSettings: z
                             .strictObject({
                               categoryAxisLabel: z.string().exactOptional(),
                               valueAxisLabel: z.string().exactOptional(),
+                              anchorYAxisToZero: z
+                                .boolean()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                                }),
                             })
                             .exactOptional()
                             .openapi({ required: [] }),
@@ -59290,11 +64805,24 @@ export const postV2DashboardsRoute = createRoute({
                               endDate: z.union([z.string(), z.null().nullable()]).exactOptional(),
                             })
                             .openapi({ required: ['predefined'] }),
-                          showAs: z.enum(['total', 'per_unit']).exactOptional(),
+                          showAs: z
+                            .enum(['total', 'per_unit'])
+                            .exactOptional()
+                            .openapi({
+                              description: 'Deprecated: use `showAs` on each metric value.',
+                              deprecated: true,
+                            }),
                           chartSettings: z
                             .strictObject({
                               categoryAxisLabel: z.string().exactOptional(),
                               valueAxisLabel: z.string().exactOptional(),
+                              anchorYAxisToZero: z
+                                .boolean()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                                }),
                             })
                             .exactOptional()
                             .openapi({ required: [] }),
@@ -60379,6 +65907,215 @@ export const postV1ContextualBanditQueriesRoute = createRoute({
   },
 })
 
+export const getV1InterleavingExposureQueriesIdRoute = createRoute({
+  method: 'get',
+  path: '/v1/interleaving-exposure-queries/{id}',
+  tags: ['InterleavingExposureQueries'],
+  summary: 'Get a single interleavingExposureQuery',
+  operationId: 'getInterleavingExposureQuery',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: '',
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({ interleavingExposureQuery: InterleavingExposureQuerySchema })
+            .openapi({ required: ['interleavingExposureQuery'] }),
+        },
+      },
+    },
+  },
+})
+
+export const putV1InterleavingExposureQueriesIdRoute = createRoute({
+  method: 'put',
+  path: '/v1/interleaving-exposure-queries/{id}',
+  tags: ['InterleavingExposureQueries'],
+  summary: 'Update a single interleavingExposureQuery',
+  operationId: 'updateInterleavingExposureQuery',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: '',
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({
+              owner: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The userId or email address of the owner. If an email address is provided, it will be used to look up the userId of the matching organization member. If an ID is provided, it will be validated as existing in the organization.',
+                }),
+              name: z.string().min(1).exactOptional(),
+              description: z.string().exactOptional(),
+              userIdTypes: z.array(z.string().min(1)).length(1).exactOptional(),
+              query: z.string().min(1).exactOptional(),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'Resource updated',
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({ interleavingExposureQuery: InterleavingExposureQuerySchema })
+            .openapi({ required: ['interleavingExposureQuery'] }),
+        },
+      },
+    },
+    202: ConfirmationHeldResponse,
+  },
+})
+
+export const deleteV1InterleavingExposureQueriesIdRoute = createRoute({
+  method: 'delete',
+  path: '/v1/interleaving-exposure-queries/{id}',
+  tags: ['InterleavingExposureQueries'],
+  summary: 'Delete a single interleavingExposureQuery',
+  operationId: 'deleteInterleavingExposureQuery',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: '',
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Resource deleted',
+      content: {
+        'application/json': {
+          schema: z.strictObject({ deletedId: z.string() }).openapi({ required: ['deletedId'] }),
+        },
+      },
+    },
+    202: ConfirmationHeldResponse,
+  },
+})
+
+export const getV1InterleavingExposureQueriesRoute = createRoute({
+  method: 'get',
+  path: '/v1/interleaving-exposure-queries',
+  tags: ['InterleavingExposureQueries'],
+  summary: 'Get all interleavingExposureQueries',
+  operationId: 'listInterleavingExposureQueries',
+  request: {
+    query: z.object({
+      datasourceId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'datasourceId',
+            in: 'query',
+            description: '',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({ interleavingExposureQueries: z.array(InterleavingExposureQuerySchema) })
+            .openapi({ required: ['interleavingExposureQueries'] }),
+        },
+      },
+    },
+  },
+})
+
+export const postV1InterleavingExposureQueriesRoute = createRoute({
+  method: 'post',
+  path: '/v1/interleaving-exposure-queries',
+  tags: ['InterleavingExposureQueries'],
+  summary: 'Create a single interleavingExposureQuery',
+  operationId: 'createInterleavingExposureQuery',
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({
+              owner: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    "The userId or email address of the owner. If an email address is provided, it will be used to look up the userId of the matching organization member. If an ID is provided, it will be validated as existing in the organization. When omitted, it defaults to the requesting member: a personal access token's owner, or the member an organization API key assumes. An organization API key acting as itself leaves it empty.",
+                }),
+              datasourceId: z.string(),
+              name: z.string().min(1),
+              description: z.string().exactOptional(),
+              userIdTypes: z.array(z.string().min(1)).length(1),
+              query: z.string().min(1),
+            })
+            .openapi({ required: ['datasourceId', 'name', 'userIdTypes', 'query'] }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'Resource created',
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({ interleavingExposureQuery: InterleavingExposureQuerySchema })
+            .openapi({ required: ['interleavingExposureQuery'] }),
+        },
+      },
+    },
+    202: ConfirmationHeldResponse,
+  },
+})
+
 export const getV1InterleavingsIdRoute = createRoute({
   method: 'get',
   path: '/v1/interleavings/{id}',
@@ -60456,55 +66193,58 @@ export const putV1InterleavingsIdRoute = createRoute({
                 .boolean()
                 .exactOptional()
                 .openapi({
-                  description: 'Stop a running interleaving experiment before archiving it.',
+                  description:
+                    'Archiving removes a running interleaving experiment from the SDK payload, so its rankers stop serving immediately.',
                 }),
-              trackingKey: z.string().exactOptional(),
-              hashAttribute: z.string().exactOptional(),
-              seed: z.string().exactOptional(),
-              variations: z
-                .array(z.unknown())
-                .superRefine((arr, ctx) => {
-                  const Prefix = [
-                    z
-                      .strictObject({
-                        key: z.string().regex(/\S/),
-                        name: z.string(),
-                        description: z.string().max(10000).exactOptional(),
-                        config: z
-                          .string()
-                          .openapi({
-                            description:
-                              "The ranker's config, as a JSON string. Passed to `getList` in the SDK.",
-                          }),
-                      })
-                      .openapi({ required: ['key', 'name', 'config'] }),
-                    z
-                      .strictObject({
-                        key: z.string().regex(/\S/),
-                        name: z.string(),
-                        description: z.string().max(10000).exactOptional(),
-                        config: z
-                          .string()
-                          .openapi({
-                            description:
-                              "The ranker's config, as a JSON string. Passed to `getList` in the SDK.",
-                          }),
-                      })
-                      .openapi({ required: ['key', 'name', 'config'] }),
-                  ]
-                  for (const [i, Schema] of Prefix.slice(0, arr.length).entries()) {
-                    const result = Schema.safeParse(arr[i])
-                    if (!result.success) {
-                      for (const issue of result.error.issues) {
-                        ctx.addIssue({ ...issue, path: [i, ...issue.path] })
-                      }
-                    }
-                  }
-                })
+              trackingKey: z
+                .string()
                 .exactOptional()
                 .openapi({
                   description:
-                    'Replaces both rankers. Each keeps its id by position, so the first entry updates the first ranker.',
+                    'The `experiment_id` recorded in exposures. Must be unique across the organization. Changing it on a running experiment means earlier exposures are no longer counted.',
+                }),
+              hashAttribute: z.string().exactOptional(),
+              seed: z.string().exactOptional(),
+              variations: z
+                .strictObject({
+                  control: z
+                    .strictObject({
+                      key: z.string().regex(/\S/),
+                      name: z.string(),
+                      description: z.string().max(10000).exactOptional(),
+                      config: z
+                        .string()
+                        .openapi({
+                          description:
+                            "The ranker's config, as a JSON string. Passed to `getList` in the SDK.",
+                        }),
+                    })
+                    .openapi({
+                      description:
+                        'The default ranker. Users who are not exposed to interleaved rankings get its list.',
+                      required: ['key', 'name', 'config'],
+                    }),
+                  treatment: z
+                    .strictObject({
+                      key: z.string().regex(/\S/),
+                      name: z.string(),
+                      description: z.string().max(10000).exactOptional(),
+                      config: z
+                        .string()
+                        .openapi({
+                          description:
+                            "The ranker's config, as a JSON string. Passed to `getList` in the SDK.",
+                        }),
+                    })
+                    .openapi({
+                      description: 'The ranker being tested against control.',
+                      required: ['key', 'name', 'config'],
+                    }),
+                })
+                .exactOptional()
+                .openapi({
+                  description: 'Replaces both rankers. Each keeps its id.',
+                  required: ['control', 'treatment'],
                 }),
               jsonSchema: z
                 .union([
@@ -60564,8 +66304,8 @@ export const putV1InterleavingsIdRoute = createRoute({
                   z.null().nullable(),
                 ])
                 .exactOptional(),
-              datasource: z.string().exactOptional(),
-              interleavingQueryId: z.string().exactOptional(),
+              datasourceId: z.string().exactOptional(),
+              interleavingExposureQueryId: z.string().exactOptional(),
               userIdType: z.string().exactOptional(),
               metrics: z
                 .array(
@@ -60580,8 +66320,8 @@ export const putV1InterleavingsIdRoute = createRoute({
                               .openapi({ required: ['type'] }),
                             z
                               .strictObject({
-                                type: z.literal('ownership'),
-                                attribution: z.enum(['exposureCount', 'engagementSignal']),
+                                type: z.literal('preference'),
+                                attribution: z.literal('exposureCount'),
                               })
                               .openapi({ required: ['type', 'attribution'] }),
                           ]),
@@ -60631,6 +66371,42 @@ export const putV1InterleavingsIdRoute = createRoute({
           schema: z
             .strictObject({ interleaving: InterleavingSchema })
             .openapi({ required: ['interleaving'] }),
+        },
+      },
+    },
+    202: ConfirmationHeldResponse,
+  },
+})
+
+export const deleteV1InterleavingsIdRoute = createRoute({
+  method: 'delete',
+  path: '/v1/interleavings/{id}',
+  tags: ['Interleavings'],
+  summary: 'Delete a single interleaving',
+  description:
+    'Permanently deletes an interleaving experiment and its results snapshots. Archive instead to keep the results.',
+  operationId: 'deleteInterleaving',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: '',
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Resource deleted',
+      content: {
+        'application/json': {
+          schema: z.strictObject({ deletedId: z.string() }).openapi({ required: ['deletedId'] }),
         },
       },
     },
@@ -60738,58 +66514,55 @@ export const postV1InterleavingsRoute = createRoute({
                 .regex(/^[a-zA-Z0-9_.:\|\-]+$/)
                 .openapi({
                   description:
-                    "The key your code passes to `interleave()` as `key`. Can't be changed later. Several experiments may share a key so you can iterate without changing code, but only one of them can be running in a given environment, and each needs its own `trackingKey`.",
+                    "The key your code passes to `interleave()` as `key`. Can't be changed later. Several experiments may share a key so you can iterate without changing code, but only one of them can be running in a given environment.",
                 }),
               trackingKey: z
                 .string()
                 .exactOptional()
                 .openapi({
-                  description: 'The `experiment_id` recorded in exposures. Defaults to `key`.',
+                  description:
+                    'The `experiment_id` recorded in exposures. Leave this unset: it is generated from `key`, with a `_v1` style suffix when another experiment already uses it. Tracking keys must be unique across the organization, so supplying one that is taken is rejected.',
                 }),
               hashAttribute: z.string().exactOptional(),
               variations: z
-                .array(z.unknown())
-                .superRefine((arr, ctx) => {
-                  const Prefix = [
-                    z
-                      .strictObject({
-                        key: z.string().regex(/\S/),
-                        name: z.string(),
-                        description: z.string().max(10000).exactOptional(),
-                        config: z
-                          .string()
-                          .openapi({
-                            description:
-                              "The ranker's config, as a JSON string. Passed to `getList` in the SDK.",
-                          }),
-                      })
-                      .openapi({ required: ['key', 'name', 'config'] }),
-                    z
-                      .strictObject({
-                        key: z.string().regex(/\S/),
-                        name: z.string(),
-                        description: z.string().max(10000).exactOptional(),
-                        config: z
-                          .string()
-                          .openapi({
-                            description:
-                              "The ranker's config, as a JSON string. Passed to `getList` in the SDK.",
-                          }),
-                      })
-                      .openapi({ required: ['key', 'name', 'config'] }),
-                  ]
-                  for (const [i, Schema] of Prefix.slice(0, arr.length).entries()) {
-                    const result = Schema.safeParse(arr[i])
-                    if (!result.success) {
-                      for (const issue of result.error.issues) {
-                        ctx.addIssue({ ...issue, path: [i, ...issue.path] })
-                      }
-                    }
-                  }
+                .strictObject({
+                  control: z
+                    .strictObject({
+                      key: z.string().regex(/\S/),
+                      name: z.string(),
+                      description: z.string().max(10000).exactOptional(),
+                      config: z
+                        .string()
+                        .openapi({
+                          description:
+                            "The ranker's config, as a JSON string. Passed to `getList` in the SDK.",
+                        }),
+                    })
+                    .openapi({
+                      description:
+                        'The default ranker. Users who are not exposed to interleaved rankings get its list.',
+                      required: ['key', 'name', 'config'],
+                    }),
+                  treatment: z
+                    .strictObject({
+                      key: z.string().regex(/\S/),
+                      name: z.string(),
+                      description: z.string().max(10000).exactOptional(),
+                      config: z
+                        .string()
+                        .openapi({
+                          description:
+                            "The ranker's config, as a JSON string. Passed to `getList` in the SDK.",
+                        }),
+                    })
+                    .openapi({
+                      description: 'The ranker being tested against control.',
+                      required: ['key', 'name', 'config'],
+                    }),
                 })
                 .openapi({
-                  description:
-                    "Exactly two rankers. Users who are not exposed to interleaved rankings get the first ranker's list.",
+                  description: 'Exactly two rankers, by role.',
+                  required: ['control', 'treatment'],
                 }),
               jsonSchema: z
                 .strictObject({
@@ -60838,9 +66611,9 @@ export const postV1InterleavingsRoute = createRoute({
                     "Validation schema to stage on the draft. The server sets `date`, so don't send it.",
                   required: ['schemaType', 'schema', 'simple', 'enabled'],
                 }),
-              datasource: z.string(),
-              interleavingQueryId: z.string(),
-              userIdType: z.string(),
+              datasourceId: z.string().exactOptional(),
+              interleavingExposureQueryId: z.string().exactOptional(),
+              userIdType: z.string().exactOptional(),
               metrics: z
                 .array(
                   z
@@ -60854,8 +66627,8 @@ export const postV1InterleavingsRoute = createRoute({
                               .openapi({ required: ['type'] }),
                             z
                               .strictObject({
-                                type: z.literal('ownership'),
-                                attribution: z.enum(['exposureCount', 'engagementSignal']),
+                                type: z.literal('preference'),
+                                attribution: z.literal('exposureCount'),
                               })
                               .openapi({ required: ['type', 'attribution'] }),
                           ]),
@@ -60891,16 +66664,7 @@ export const postV1InterleavingsRoute = createRoute({
                 )
                 .exactOptional(),
             })
-            .openapi({
-              required: [
-                'name',
-                'key',
-                'variations',
-                'datasource',
-                'interleavingQueryId',
-                'userIdType',
-              ],
-            }),
+            .openapi({ required: ['name', 'key', 'variations'] }),
         },
       },
       required: true,
@@ -60996,6 +66760,246 @@ export const postV1InterleavingsIdStopRoute = createRoute({
       },
     },
     202: ConfirmationHeldResponse,
+  },
+})
+
+export const postV1InterleavingsIdRefreshRoute = createRoute({
+  method: 'post',
+  path: '/v1/interleavings/{id}/refresh',
+  tags: ['Interleavings'],
+  summary: 'Refresh interleaving experiment results',
+  description:
+    'Creates a results snapshot and starts its metric queries against the Data Source. The experiment must have been started and have at least one metric. Queries run asynchronously; poll the snapshot until its `status` is `success` or `error`.',
+  operationId: 'refreshInterleaving',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: 'The interleaving experiment id',
+            schema: { description: 'The interleaving experiment id', type: 'string' },
+          },
+          description: 'The interleaving experiment id',
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Resource created',
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({ snapshot: InterleavingSnapshotSchema })
+            .openapi({ required: ['snapshot'] }),
+        },
+      },
+    },
+  },
+})
+
+export const getV1InterleavingsIdResultsRoute = createRoute({
+  method: 'get',
+  path: '/v1/interleavings/{id}/results',
+  tags: ['Interleavings'],
+  summary: 'Get the latest interleaving experiment results',
+  description:
+    'Returns the most recent successful `snapshot` and the status-only `latest` run. Poll `latest` while a refresh is in progress; `snapshot` remains null until a run succeeds.',
+  operationId: 'getInterleavingResults',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: 'The interleaving experiment id',
+            schema: { description: 'The interleaving experiment id', type: 'string' },
+          },
+          description: 'The interleaving experiment id',
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({
+              snapshot: z
+                .union([
+                  InterleavingSnapshotSchema.openapi({ title: 'Interleaving Snapshot' }),
+                  z.null().nullable(),
+                ])
+                .openapi({
+                  description:
+                    'The most recent snapshot that succeeded, so results stay readable while a newer run is in flight. null until the first run succeeds.',
+                }),
+              latest: z
+                .union([
+                  InterleavingSnapshotStatusSchema.openapi({
+                    title: 'Interleaving Snapshot Status',
+                  }),
+                  z.null().nullable(),
+                ])
+                .openapi({
+                  description:
+                    'Status of the most recent snapshot in any state. Poll this to follow a run; it matches `snapshot` once that run succeeds. null until the first refresh.',
+                }),
+            })
+            .openapi({ required: ['snapshot', 'latest'] }),
+        },
+      },
+    },
+  },
+})
+
+export const getV1InterleavingsIdStatusRoute = createRoute({
+  method: 'get',
+  path: '/v1/interleavings/{id}/status',
+  tags: ['Interleavings'],
+  summary: 'Get interleaving experiment run status',
+  description:
+    'Just the status of the most recent results run (id, status, queries, timestamps). A lightweight alternative to the full results endpoint, intended for polling while a run is in progress.',
+  operationId: 'getInterleavingStatus',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: 'The interleaving experiment id',
+            schema: { description: 'The interleaving experiment id', type: 'string' },
+          },
+          description: 'The interleaving experiment id',
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({
+              latest: z
+                .union([
+                  InterleavingSnapshotStatusSchema.openapi({
+                    title: 'Interleaving Snapshot Status',
+                  }),
+                  z.null().nullable(),
+                ])
+                .openapi({ description: 'null until the first refresh' }),
+            })
+            .openapi({ required: ['latest'] }),
+        },
+      },
+    },
+  },
+})
+
+export const getV1InterleavingsIdSnapshotsRoute = createRoute({
+  method: 'get',
+  path: '/v1/interleavings/{id}/snapshots',
+  tags: ['Interleavings'],
+  summary: 'List interleaving experiment results snapshots',
+  description: 'Newest snapshot first, regardless of status.',
+  operationId: 'listInterleavingSnapshots',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: 'The interleaving experiment id',
+            schema: { description: 'The interleaving experiment id', type: 'string' },
+          },
+          description: 'The interleaving experiment id',
+        }),
+    }),
+    query: z.object({
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().gt(0).max(100),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'limit',
+            in: 'query',
+            description: '',
+            schema: { type: 'integer', exclusiveMinimum: 0, maximum: 100 },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({ snapshots: z.array(InterleavingSnapshotSchema) })
+            .openapi({ required: ['snapshots'] }),
+        },
+      },
+    },
+  },
+})
+
+export const getV1InterleavingsIdSnapshotsSnapshotIdRoute = createRoute({
+  method: 'get',
+  path: '/v1/interleavings/{id}/snapshots/{snapshotId}',
+  tags: ['Interleavings'],
+  summary: 'Get an interleaving experiment results snapshot',
+  operationId: 'getInterleavingSnapshot',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: 'The interleaving experiment id',
+            schema: { description: 'The interleaving experiment id', type: 'string' },
+          },
+          description: 'The interleaving experiment id',
+        }),
+      snapshotId: SnapshotIdParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({ snapshot: InterleavingSnapshotSchema })
+            .openapi({ required: ['snapshot'] }),
+        },
+      },
+    },
   },
 })
 
@@ -62013,6 +68017,8 @@ export const putV1ExperimentTemplatesIdRoute = createRoute({
                   description:
                     'Deprecated: use `exposureQuery`. Rejected when selecting a different assignment query that declares several identifier types; set `exposureQuery.identifierType` instead.',
                 }),
+              isClusterExperiment: z.boolean().exactOptional(),
+              clusterSubUnitIdentifier: z.string().exactOptional(),
               hashAttribute: z.string().exactOptional(),
               fallbackAttribute: z.string().exactOptional(),
               disableStickyBucketing: z.boolean().exactOptional(),
@@ -62231,6 +68237,8 @@ export const postV1ExperimentTemplatesRoute = createRoute({
                   description:
                     'Deprecated: use `exposureQuery`. Rejected when selecting a different assignment query that declares several identifier types; set `exposureQuery.identifierType` instead.',
                 }),
+              isClusterExperiment: z.boolean().exactOptional(),
+              clusterSubUnitIdentifier: z.string().exactOptional(),
               hashAttribute: z.string().exactOptional(),
               fallbackAttribute: z.string().exactOptional(),
               disableStickyBucketing: z.boolean().exactOptional(),
@@ -62389,6 +68397,8 @@ export const postV1ExperimentTemplatesBulkImportRoute = createRoute({
                             description:
                               'Deprecated: use `exposureQuery`. Rejected when selecting a different assignment query that declares several identifier types; set `exposureQuery.identifierType` instead.',
                           }),
+                        isClusterExperiment: z.boolean().exactOptional(),
+                        clusterSubUnitIdentifier: z.string().exactOptional(),
                         hashAttribute: z.string().exactOptional(),
                         fallbackAttribute: z.string().exactOptional(),
                         disableStickyBucketing: z.boolean().exactOptional(),
@@ -62589,11 +68599,24 @@ export const postV1ProductAnalyticsMetricExplorationRoute = createRoute({
                   endDate: z.union([z.string(), z.null().nullable()]).exactOptional(),
                 })
                 .openapi({ required: ['predefined'] }),
-              showAs: z.enum(['total', 'per_unit']).exactOptional(),
+              showAs: z
+                .enum(['total', 'per_unit'])
+                .exactOptional()
+                .openapi({
+                  description: 'Deprecated: use `showAs` on each metric value.',
+                  deprecated: true,
+                }),
               chartSettings: z
                 .strictObject({
                   categoryAxisLabel: z.string().exactOptional(),
                   valueAxisLabel: z.string().exactOptional(),
+                  anchorYAxisToZero: z
+                    .boolean()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({ required: [] }),
@@ -62641,6 +68664,13 @@ export const postV1ProductAnalyticsMetricExplorationRoute = createRoute({
                         metricId: z.string(),
                         unit: z.union([z.string(), z.null().nullable()]),
                         denominatorUnit: z.union([z.string(), z.null().nullable()]),
+                        showAs: z
+                          .enum(['total', 'per_unit'])
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              'How a mean metric renders: `total` sums the numerator, `per_unit` divides it by the unit count. Ignored for other metric types. Omit to use the default (`per_unit` for `max` and `count distinct` aggregations, otherwise `total`).',
+                          }),
                       })
                       .openapi({
                         required: [
@@ -62653,6 +68683,10 @@ export const postV1ProductAnalyticsMetricExplorationRoute = createRoute({
                         ],
                       }),
                   ),
+                  population: ExplorationPopulationSchema.exactOptional().openapi({
+                    description:
+                      "**Beta** — this field is new and may change in backwards-incompatible ways. A population applied to every metric in the request. Only proportion metrics on the population's Fact Table are supported; the request is rejected if any metric is incompatible.",
+                  }),
                 })
                 .openapi({ required: ['type', 'values'] }),
             })
@@ -62701,6 +68735,13 @@ export const postV1ProductAnalyticsMetricExplorationRoute = createRoute({
                                     }),
                                 )
                                 .exactOptional(),
+                              populationCount: z
+                                .number()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    "**Beta** — this field is new and may change in backwards-incompatible ways. Number of units in the dataset's population for this row. Only present when the request has a population; each value's numerator and denominator keep their usual meaning, limited to population members.",
+                                }),
                               steps: z
                                 .array(
                                   z
@@ -62883,11 +68924,24 @@ export const postV1ProductAnalyticsMetricExplorationRoute = createRoute({
                             endDate: z.union([z.string(), z.null().nullable()]).exactOptional(),
                           })
                           .openapi({ required: ['predefined'] }),
-                        showAs: z.enum(['total', 'per_unit']).exactOptional(),
+                        showAs: z
+                          .enum(['total', 'per_unit'])
+                          .exactOptional()
+                          .openapi({
+                            description: 'Deprecated: use `showAs` on each metric value.',
+                            deprecated: true,
+                          }),
                         chartSettings: z
                           .strictObject({
                             categoryAxisLabel: z.string().exactOptional(),
                             valueAxisLabel: z.string().exactOptional(),
+                            anchorYAxisToZero: z
+                              .boolean()
+                              .exactOptional()
+                              .openapi({
+                                description:
+                                  'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                              }),
                           })
                           .exactOptional()
                           .openapi({ required: [] }),
@@ -62935,6 +68989,13 @@ export const postV1ProductAnalyticsMetricExplorationRoute = createRoute({
                                   metricId: z.string(),
                                   unit: z.union([z.string(), z.null().nullable()]),
                                   denominatorUnit: z.union([z.string(), z.null().nullable()]),
+                                  showAs: z
+                                    .enum(['total', 'per_unit'])
+                                    .exactOptional()
+                                    .openapi({
+                                      description:
+                                        'How a mean metric renders: `total` sums the numerator, `per_unit` divides it by the unit count. Ignored for other metric types. Omit to use the default (`per_unit` for `max` and `count distinct` aggregations, otherwise `total`).',
+                                    }),
                                 })
                                 .openapi({
                                   required: [
@@ -62947,6 +69008,10 @@ export const postV1ProductAnalyticsMetricExplorationRoute = createRoute({
                                   ],
                                 }),
                             ),
+                            population: ExplorationPopulationSchema.exactOptional().openapi({
+                              description:
+                                "**Beta** — this field is new and may change in backwards-incompatible ways. A population applied to every metric in the request. Only proportion metrics on the population's Fact Table are supported; the request is rejected if any metric is incompatible.",
+                            }),
                           })
                           .openapi({ required: ['type', 'values'] }),
                       })
@@ -63115,11 +69180,24 @@ export const postV1ProductAnalyticsFactTableExplorationRoute = createRoute({
                   endDate: z.union([z.string(), z.null().nullable()]).exactOptional(),
                 })
                 .openapi({ required: ['predefined'] }),
-              showAs: z.enum(['total', 'per_unit']).exactOptional(),
+              showAs: z
+                .enum(['total', 'per_unit'])
+                .exactOptional()
+                .openapi({
+                  description: 'Deprecated: use `showAs` on each metric value.',
+                  deprecated: true,
+                }),
               chartSettings: z
                 .strictObject({
                   categoryAxisLabel: z.string().exactOptional(),
                   valueAxisLabel: z.string().exactOptional(),
+                  anchorYAxisToZero: z
+                    .boolean()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({ required: [] }),
@@ -63228,6 +69306,13 @@ export const postV1ProductAnalyticsFactTableExplorationRoute = createRoute({
                                     }),
                                 )
                                 .exactOptional(),
+                              populationCount: z
+                                .number()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    "**Beta** — this field is new and may change in backwards-incompatible ways. Number of units in the dataset's population for this row. Only present when the request has a population; each value's numerator and denominator keep their usual meaning, limited to population members.",
+                                }),
                               steps: z
                                 .array(
                                   z
@@ -63410,11 +69495,24 @@ export const postV1ProductAnalyticsFactTableExplorationRoute = createRoute({
                             endDate: z.union([z.string(), z.null().nullable()]).exactOptional(),
                           })
                           .openapi({ required: ['predefined'] }),
-                        showAs: z.enum(['total', 'per_unit']).exactOptional(),
+                        showAs: z
+                          .enum(['total', 'per_unit'])
+                          .exactOptional()
+                          .openapi({
+                            description: 'Deprecated: use `showAs` on each metric value.',
+                            deprecated: true,
+                          }),
                         chartSettings: z
                           .strictObject({
                             categoryAxisLabel: z.string().exactOptional(),
                             valueAxisLabel: z.string().exactOptional(),
+                            anchorYAxisToZero: z
+                              .boolean()
+                              .exactOptional()
+                              .openapi({
+                                description:
+                                  'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                              }),
                           })
                           .exactOptional()
                           .openapi({ required: [] }),
@@ -63643,11 +69741,24 @@ export const postV1ProductAnalyticsDataSourceExplorationRoute = createRoute({
                   endDate: z.union([z.string(), z.null().nullable()]).exactOptional(),
                 })
                 .openapi({ required: ['predefined'] }),
-              showAs: z.enum(['total', 'per_unit']).exactOptional(),
+              showAs: z
+                .enum(['total', 'per_unit'])
+                .exactOptional()
+                .openapi({
+                  description: 'Deprecated: use `showAs` on each metric value.',
+                  deprecated: true,
+                }),
               chartSettings: z
                 .strictObject({
                   categoryAxisLabel: z.string().exactOptional(),
                   valueAxisLabel: z.string().exactOptional(),
+                  anchorYAxisToZero: z
+                    .boolean()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({ required: [] }),
@@ -63764,6 +69875,13 @@ export const postV1ProductAnalyticsDataSourceExplorationRoute = createRoute({
                                     }),
                                 )
                                 .exactOptional(),
+                              populationCount: z
+                                .number()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    "**Beta** — this field is new and may change in backwards-incompatible ways. Number of units in the dataset's population for this row. Only present when the request has a population; each value's numerator and denominator keep their usual meaning, limited to population members.",
+                                }),
                               steps: z
                                 .array(
                                   z
@@ -63946,11 +70064,24 @@ export const postV1ProductAnalyticsDataSourceExplorationRoute = createRoute({
                             endDate: z.union([z.string(), z.null().nullable()]).exactOptional(),
                           })
                           .openapi({ required: ['predefined'] }),
-                        showAs: z.enum(['total', 'per_unit']).exactOptional(),
+                        showAs: z
+                          .enum(['total', 'per_unit'])
+                          .exactOptional()
+                          .openapi({
+                            description: 'Deprecated: use `showAs` on each metric value.',
+                            deprecated: true,
+                          }),
                         chartSettings: z
                           .strictObject({
                             categoryAxisLabel: z.string().exactOptional(),
                             valueAxisLabel: z.string().exactOptional(),
+                            anchorYAxisToZero: z
+                              .boolean()
+                              .exactOptional()
+                              .openapi({
+                                description:
+                                  'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                              }),
                           })
                           .exactOptional()
                           .openapi({ required: [] }),
@@ -64194,11 +70325,24 @@ export const postV1ProductAnalyticsSqlExplorationRoute = createRoute({
                   endDate: z.union([z.string(), z.null().nullable()]).exactOptional(),
                 })
                 .openapi({ required: ['predefined'] }),
-              showAs: z.enum(['total', 'per_unit']).exactOptional(),
+              showAs: z
+                .enum(['total', 'per_unit'])
+                .exactOptional()
+                .openapi({
+                  description: 'Deprecated: use `showAs` on each metric value.',
+                  deprecated: true,
+                }),
               chartSettings: z
                 .strictObject({
                   categoryAxisLabel: z.string().exactOptional(),
                   valueAxisLabel: z.string().exactOptional(),
+                  anchorYAxisToZero: z
+                    .boolean()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({ required: [] }),
@@ -64313,6 +70457,13 @@ export const postV1ProductAnalyticsSqlExplorationRoute = createRoute({
                                     }),
                                 )
                                 .exactOptional(),
+                              populationCount: z
+                                .number()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    "**Beta** — this field is new and may change in backwards-incompatible ways. Number of units in the dataset's population for this row. Only present when the request has a population; each value's numerator and denominator keep their usual meaning, limited to population members.",
+                                }),
                               steps: z
                                 .array(
                                   z
@@ -64495,11 +70646,24 @@ export const postV1ProductAnalyticsSqlExplorationRoute = createRoute({
                             endDate: z.union([z.string(), z.null().nullable()]).exactOptional(),
                           })
                           .openapi({ required: ['predefined'] }),
-                        showAs: z.enum(['total', 'per_unit']).exactOptional(),
+                        showAs: z
+                          .enum(['total', 'per_unit'])
+                          .exactOptional()
+                          .openapi({
+                            description: 'Deprecated: use `showAs` on each metric value.',
+                            deprecated: true,
+                          }),
                         chartSettings: z
                           .strictObject({
                             categoryAxisLabel: z.string().exactOptional(),
                             valueAxisLabel: z.string().exactOptional(),
+                            anchorYAxisToZero: z
+                              .boolean()
+                              .exactOptional()
+                              .openapi({
+                                description:
+                                  'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                              }),
                           })
                           .exactOptional()
                           .openapi({ required: [] }),
@@ -64736,11 +70900,24 @@ export const postV1ProductAnalyticsFunnelExplorationRoute = createRoute({
                   endDate: z.union([z.string(), z.null().nullable()]).exactOptional(),
                 })
                 .openapi({ required: ['predefined'] }),
-              showAs: z.enum(['total', 'per_unit']).exactOptional(),
+              showAs: z
+                .enum(['total', 'per_unit'])
+                .exactOptional()
+                .openapi({
+                  description: 'Deprecated: use `showAs` on each metric value.',
+                  deprecated: true,
+                }),
               chartSettings: z
                 .strictObject({
                   categoryAxisLabel: z.string().exactOptional(),
                   valueAxisLabel: z.string().exactOptional(),
+                  anchorYAxisToZero: z
+                    .boolean()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({ required: [] }),
@@ -64853,6 +71030,13 @@ export const postV1ProductAnalyticsFunnelExplorationRoute = createRoute({
                                     }),
                                 )
                                 .exactOptional(),
+                              populationCount: z
+                                .number()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    "**Beta** — this field is new and may change in backwards-incompatible ways. Number of units in the dataset's population for this row. Only present when the request has a population; each value's numerator and denominator keep their usual meaning, limited to population members.",
+                                }),
                               steps: z
                                 .array(
                                   z
@@ -65035,11 +71219,24 @@ export const postV1ProductAnalyticsFunnelExplorationRoute = createRoute({
                             endDate: z.union([z.string(), z.null().nullable()]).exactOptional(),
                           })
                           .openapi({ required: ['predefined'] }),
-                        showAs: z.enum(['total', 'per_unit']).exactOptional(),
+                        showAs: z
+                          .enum(['total', 'per_unit'])
+                          .exactOptional()
+                          .openapi({
+                            description: 'Deprecated: use `showAs` on each metric value.',
+                            deprecated: true,
+                          }),
                         chartSettings: z
                           .strictObject({
                             categoryAxisLabel: z.string().exactOptional(),
                             valueAxisLabel: z.string().exactOptional(),
+                            anchorYAxisToZero: z
+                              .boolean()
+                              .exactOptional()
+                              .openapi({
+                                description:
+                                  'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                              }),
                           })
                           .exactOptional()
                           .openapi({ required: [] }),
@@ -65274,11 +71471,24 @@ export const postV1ProductAnalyticsJourneyExplorationRoute = createRoute({
                   endDate: z.union([z.string(), z.null().nullable()]).exactOptional(),
                 })
                 .openapi({ required: ['predefined'] }),
-              showAs: z.enum(['total', 'per_unit']).exactOptional(),
+              showAs: z
+                .enum(['total', 'per_unit'])
+                .exactOptional()
+                .openapi({
+                  description: 'Deprecated: use `showAs` on each metric value.',
+                  deprecated: true,
+                }),
               chartSettings: z
                 .strictObject({
                   categoryAxisLabel: z.string().exactOptional(),
                   valueAxisLabel: z.string().exactOptional(),
+                  anchorYAxisToZero: z
+                    .boolean()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({ required: [] }),
@@ -65398,6 +71608,13 @@ export const postV1ProductAnalyticsJourneyExplorationRoute = createRoute({
                                     }),
                                 )
                                 .exactOptional(),
+                              populationCount: z
+                                .number()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    "**Beta** — this field is new and may change in backwards-incompatible ways. Number of units in the dataset's population for this row. Only present when the request has a population; each value's numerator and denominator keep their usual meaning, limited to population members.",
+                                }),
                               steps: z
                                 .array(
                                   z
@@ -65580,11 +71797,24 @@ export const postV1ProductAnalyticsJourneyExplorationRoute = createRoute({
                             endDate: z.union([z.string(), z.null().nullable()]).exactOptional(),
                           })
                           .openapi({ required: ['predefined'] }),
-                        showAs: z.enum(['total', 'per_unit']).exactOptional(),
+                        showAs: z
+                          .enum(['total', 'per_unit'])
+                          .exactOptional()
+                          .openapi({
+                            description: 'Deprecated: use `showAs` on each metric value.',
+                            deprecated: true,
+                          }),
                         chartSettings: z
                           .strictObject({
                             categoryAxisLabel: z.string().exactOptional(),
                             valueAxisLabel: z.string().exactOptional(),
+                            anchorYAxisToZero: z
+                              .boolean()
+                              .exactOptional()
+                              .openapi({
+                                description:
+                                  'Line charts only: whether the y-axis starts at 0. Defaults to true.',
+                              }),
                           })
                           .exactOptional()
                           .openapi({ required: [] }),
@@ -68133,7 +74363,6 @@ export const postV1AutoRunsIdArtifactsRoute = createRoute({
                 }),
             })
             .openapi({
-              id: 'AutoRun',
               required: [
                 'id',
                 'dateCreated',
@@ -68509,6 +74738,366 @@ export const deleteV1PopulationsIdRoute = createRoute({
       content: {
         'application/json': {
           schema: z.strictObject({ deletedId: z.string() }).openapi({ required: ['deletedId'] }),
+        },
+      },
+    },
+    202: ConfirmationHeldResponse,
+  },
+})
+
+export const getV1WebhookSecretsIdRoute = createRoute({
+  method: 'get',
+  path: '/v1/webhook-secrets/{id}',
+  tags: ['WebhookSecrets'],
+  summary: 'Get a single webhookSecret',
+  operationId: 'getWebhookSecret',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: '',
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({ webhookSecret: WebhookSecretSchema })
+            .openapi({ required: ['webhookSecret'] }),
+        },
+      },
+    },
+  },
+})
+
+export const deleteV1WebhookSecretsIdRoute = createRoute({
+  method: 'delete',
+  path: '/v1/webhook-secrets/{id}',
+  tags: ['WebhookSecrets'],
+  summary: 'Delete a single webhookSecret',
+  operationId: 'deleteWebhookSecret',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: '',
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Resource deleted',
+      content: {
+        'application/json': {
+          schema: z.strictObject({ deletedId: z.string() }).openapi({ required: ['deletedId'] }),
+        },
+      },
+    },
+    202: ConfirmationHeldResponse,
+  },
+})
+
+export const getV1WebhookSecretsRoute = createRoute({
+  method: 'get',
+  path: '/v1/webhook-secrets',
+  tags: ['WebhookSecrets'],
+  summary: 'Get all webhookSecrets',
+  operationId: 'listWebhookSecrets',
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({ webhookSecrets: z.array(WebhookSecretSchema) })
+            .openapi({ required: ['webhookSecrets'] }),
+        },
+      },
+    },
+  },
+})
+
+export const getV1SdkConnectionsIdWebhooksRoute = createRoute({
+  method: 'get',
+  path: '/v1/sdk-connections/{id}/webhooks',
+  tags: ['SdkWebhooks'],
+  summary: 'Get the webhooks for an SDK Connection',
+  operationId: 'listSdkConnectionWebhooks',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: 'The SDK Connection id',
+            schema: { description: 'The SDK Connection id', type: 'string' },
+          },
+          description: 'The SDK Connection id',
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({ sdkWebhooks: z.array(SdkWebhookSchema) })
+            .openapi({ required: ['sdkWebhooks'] }),
+        },
+      },
+    },
+  },
+})
+
+export const postV1SdkConnectionsIdWebhooksRoute = createRoute({
+  method: 'post',
+  path: '/v1/sdk-connections/{id}/webhooks',
+  tags: ['SdkWebhooks'],
+  summary: 'Add a webhook to an SDK Connection',
+  description:
+    "Called whenever the connection's payload changes. `httpMethod` defaults to POST. More than one webhook per organization requires a paid plan.",
+  operationId: 'postSdkConnectionWebhook',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: 'The SDK Connection id',
+            schema: { description: 'The SDK Connection id', type: 'string' },
+          },
+          description: 'The SDK Connection id',
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({
+              name: z.string(),
+              endpoint: z.url(),
+              httpMethod: z
+                .enum(['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'PURGE'])
+                .exactOptional(),
+              payloadFormat: z
+                .enum([
+                  'standard',
+                  'standard-no-payload',
+                  'sdkPayload',
+                  'edgeConfig',
+                  'edgeConfigUnescaped',
+                  'none',
+                ])
+                .exactOptional(),
+              payloadKey: z.string().exactOptional(),
+              headers: z
+                .string()
+                .exactOptional()
+                .openapi({ description: 'JSON-encoded object, e.g. "{\\"X-Token\\": \\"abc\\"}"' }),
+              timeoutSeconds: z
+                .union([z.int().min(1), z.null().nullable()])
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Request timeout in seconds, up to the server maximum (120 unless configured). Null uses the default.',
+                }),
+            })
+            .openapi({ required: ['name', 'endpoint'] }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'Resource created',
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({ sdkWebhook: SdkWebhookSchema })
+            .openapi({ required: ['sdkWebhook'] }),
+        },
+      },
+    },
+    202: ConfirmationHeldResponse,
+  },
+})
+
+export const putV1SdkWebhooksIdRoute = createRoute({
+  method: 'put',
+  path: '/v1/sdk-webhooks/{id}',
+  tags: ['SdkWebhooks'],
+  summary: 'Update an SDK webhook',
+  description:
+    "The webhook fires once after an update. Webhooks managed by the Vercel integration can't be changed.",
+  operationId: 'putSdkWebhook',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: '',
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({
+              name: z.string().exactOptional(),
+              endpoint: z.url().exactOptional(),
+              httpMethod: z
+                .enum(['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'PURGE'])
+                .exactOptional(),
+              payloadFormat: z
+                .enum([
+                  'standard',
+                  'standard-no-payload',
+                  'sdkPayload',
+                  'edgeConfig',
+                  'edgeConfigUnescaped',
+                  'vercelNativeIntegration',
+                  'none',
+                ])
+                .exactOptional()
+                .openapi({
+                  description:
+                    '`vercelNativeIntegration` is accepted only on webhooks that already use it',
+                }),
+              payloadKey: z.string().exactOptional(),
+              headers: z
+                .string()
+                .exactOptional()
+                .openapi({ description: 'JSON-encoded object, e.g. "{\\"X-Token\\": \\"abc\\"}"' }),
+              timeoutSeconds: z
+                .union([z.int().min(1), z.null().nullable()])
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Request timeout in seconds, up to the server maximum (120 unless configured). Null uses the default.',
+                }),
+              sdkConnections: z
+                .array(z.string())
+                .min(1)
+                .exactOptional()
+                .openapi({ description: 'Replaces the SDK Connections this webhook fires for' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'Resource updated',
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({ sdkWebhook: SdkWebhookSchema })
+            .openapi({ required: ['sdkWebhook'] }),
+        },
+      },
+    },
+    202: ConfirmationHeldResponse,
+  },
+})
+
+export const deleteV1SdkWebhooksIdRoute = createRoute({
+  method: 'delete',
+  path: '/v1/sdk-webhooks/{id}',
+  tags: ['SdkWebhooks'],
+  summary: 'Delete an SDK webhook',
+  description: "Webhooks managed by the Vercel integration can't be deleted here.",
+  operationId: 'deleteSdkWebhook',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: '',
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Resource deleted',
+      content: {
+        'application/json': {
+          schema: z.strictObject({ deletedId: z.string() }).openapi({ required: ['deletedId'] }),
+        },
+      },
+    },
+    202: ConfirmationHeldResponse,
+  },
+})
+
+export const postV1SdkWebhooksIdTestRoute = createRoute({
+  method: 'post',
+  path: '/v1/sdk-webhooks/{id}/test',
+  tags: ['SdkWebhooks'],
+  summary: 'Fire an SDK webhook now',
+  description: 'Returns the webhook with the outcome in `error` / `lastSuccess`.',
+  operationId: 'postSdkWebhookTest',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: '',
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Resource created',
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({ sdkWebhook: SdkWebhookSchema })
+            .openapi({ required: ['sdkWebhook'] }),
         },
       },
     },

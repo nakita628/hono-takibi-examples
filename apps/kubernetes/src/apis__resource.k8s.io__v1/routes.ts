@@ -1,231 +1,12 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const IoK8sApiCoreV1NodeSelectorRequirementSchema = z
-  .object({
-    key: z
-      .string()
-      .default('')
-      .openapi({ description: 'key is the label key that the selector applies to.' }),
-    operator: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.",
-      }),
-    values: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-  })
-  .openapi({
-    description:
-      'A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.',
-    required: ['key', 'operator'],
-  })
-  .openapi('IoK8sApiCoreV1NodeSelectorRequirement')
-
-const IoK8sApiCoreV1NodeSelectorTermSchema = z
-  .object({
-    matchExpressions: z
-      .array(IoK8sApiCoreV1NodeSelectorRequirementSchema)
-      .exactOptional()
-      .openapi({
-        description: "matchExpressions is a list of node selector requirements by node's labels.",
-        'x-kubernetes-list-type': 'atomic',
-      }),
-    matchFields: z
-      .array(IoK8sApiCoreV1NodeSelectorRequirementSchema)
-      .exactOptional()
-      .openapi({
-        description: "matchFields is a list of node selector requirements by node's fields.",
-        'x-kubernetes-list-type': 'atomic',
-      }),
-  })
-  .openapi({
-    description:
-      'A null or empty node selector term matches no objects. The requirements of them are ANDed. The TopologySelectorTerm type implements a subset of the NodeSelectorTerm.',
-    'x-kubernetes-map-type': 'atomic',
-    required: [],
-  })
-  .openapi('IoK8sApiCoreV1NodeSelectorTerm')
-
-const IoK8sApiCoreV1NodeSelectorSchema = z
-  .object({
-    nodeSelectorTerms: z
-      .array(IoK8sApiCoreV1NodeSelectorTermSchema)
-      .openapi({
-        description:
-          'nodeSelectorTerms is a list of node selector terms. The terms are ORed. Required. A list of node selector terms. The terms are ORed.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-  })
-  .openapi({
-    description:
-      'A node selector represents the union of the results of one or more label queries over a set of nodes; that is, it represents the OR of the selectors represented by the node selector terms.',
-    required: ['nodeSelectorTerms'],
-    'x-kubernetes-map-type': 'atomic',
-  })
-  .openapi('IoK8sApiCoreV1NodeSelector')
-
-const IoK8sApimachineryPkgApisMetaV1TimeSchema = z.iso
-  .datetime({ offset: true })
-  .openapi({
-    description:
-      'Time is a wrapper around time.Time which supports correct marshaling to YAML and JSON.  Wrappers are provided for many of the factory methods that the time package offers.',
-  })
-  .openapi('IoK8sApimachineryPkgApisMetaV1Time')
-
-const IoK8sApimachineryPkgApisMetaV1ConditionSchema = z
-  .object({
-    lastTransitionTime: IoK8sApimachineryPkgApisMetaV1TimeSchema.openapi({
-      description:
-        'lastTransitionTime is the last time the condition transitioned from one status to another. This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.',
-    }),
-    message: z
-      .string()
-      .default('')
-      .exactOptional()
-      .openapi({
-        description:
-          'message is a human readable message indicating details about the transition. This may be an empty string.',
-      }),
-    observedGeneration: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'observedGeneration represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date with respect to the current state of the instance.',
-      }),
-    reason: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          "reason contains a programmatic identifier indicating the reason for the condition's last transition. Producers of specific condition types may define expected values and meanings for this field, and whether the values are considered a guaranteed API. The value should be a CamelCase string. This field may not be empty.",
-      }),
-    status: z
-      .string()
-      .default('')
-      .openapi({ description: 'status of the condition, one of True, False, Unknown.' }),
-    type: z
-      .string()
-      .default('')
-      .openapi({ description: 'type of condition in CamelCase or in foo.example.com/CamelCase.' }),
-  })
-  .openapi({
-    description:
-      'Condition contains details for one aspect of the current state of this API Resource.',
-    required: ['type', 'status', 'lastTransitionTime', 'reason'],
-  })
-  .openapi('IoK8sApimachineryPkgApisMetaV1Condition')
-
 const IoK8sApimachineryPkgRuntimeRawExtensionSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'RawExtension is used to hold extensions in external versions.\n\nTo use this, make a field which has RawExtension as its type in your external, versioned struct, and Object in your internal struct. You also need to register your various plugin types.\n\n// Internal package:\n\n\ttype MyAPIObject struct {\n\t\truntime.TypeMeta `json:""`\n\t\tMyPlugin runtime.Object `json:"myPlugin"`\n\t}\n\n\ttype PluginA struct {\n\t\tAOption string `json:"aOption"`\n\t}\n\n// External package:\n\n\ttype MyAPIObject struct {\n\t\truntime.TypeMeta `json:""`\n\t\tMyPlugin runtime.RawExtension `json:"myPlugin"`\n\t}\n\n\ttype PluginA struct {\n\t\tAOption string `json:"aOption"`\n\t}\n\n// On the wire, the JSON will look something like this:\n\n\t{\n\t\t"kind":"MyAPIObject",\n\t\t"apiVersion":"v1",\n\t\t"myPlugin": {\n\t\t\t"kind":"PluginA",\n\t\t\t"aOption":"foo",\n\t\t},\n\t}\n\nSo what happens? Decode first uses json or yaml to unmarshal the serialized data into your external MyAPIObject. That causes the raw JSON to be stored, but not unpacked. The next step is to copy (using pkg/conversion) into the internal struct. The runtime package\'s DefaultScheme has conversion functions installed which will unpack the JSON stored in RawExtension, turning it into the correct object type, and storing it in the Object. (TODO: In the case where the object is of an unknown type, a runtime.Unknown object will be created and stored.)',
   })
   .openapi('IoK8sApimachineryPkgRuntimeRawExtension')
-
-const IoK8sApiResourceV1NetworkDeviceDataSchema = z
-  .object({
-    hardwareAddress: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "hardwareAddress represents the hardware address (e.g. MAC Address) of the device's network interface.\n\nMust not be longer than 128 bytes.",
-      }),
-    interfaceName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'interfaceName specifies the name of the network interface associated with the allocated device. This might be the name of a physical or virtual network interface being configured in the pod.\n\nMust not be longer than 256 bytes.',
-      }),
-    ips: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'ips lists the network addresses assigned to the device\'s network interface. This can include both IPv4 and IPv6 addresses. The IPs are in the CIDR notation, which includes both the address and the associated subnet mask. e.g.: "192.0.2.5/24" for IPv4 and "2001:db8::5/64" for IPv6.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-  })
-  .openapi({
-    description:
-      'NetworkDeviceData provides network-related details for the allocated device. This information may be filled by drivers or other components to configure or identify the device within a network context.',
-    required: [],
-  })
-  .openapi('IoK8sApiResourceV1NetworkDeviceData')
-
-const IoK8sApiResourceV1AllocatedDeviceStatusSchema = z
-  .object({
-    conditions: z
-      .array(IoK8sApimachineryPkgApisMetaV1ConditionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "Conditions contains the latest observation of the device's state. If the device has been configured according to the class and claim config references, the `Ready` condition should be True.\n\nMust not contain more than 8 entries.",
-        'x-kubernetes-list-map-keys': ['type'],
-        'x-kubernetes-list-type': 'map',
-      }),
-    data: IoK8sApimachineryPkgRuntimeRawExtensionSchema.exactOptional().openapi({
-      description:
-        'Data contains arbitrary driver-specific data.\n\nThe length of the raw data must be smaller or equal to 10 Ki.',
-    }),
-    device: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          "Device references one device instance via its name in the driver's resource pool. It must be a DNS label.",
-      }),
-    driver: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'Driver specifies the name of the DRA driver whose kubelet plugin should be invoked to process the allocation once the claim is needed on a node.\n\nMust be a DNS subdomain and should end with a DNS domain owned by the vendor of the driver. It should use only lower case characters.',
-      }),
-    networkData: IoK8sApiResourceV1NetworkDeviceDataSchema.exactOptional().openapi({
-      description: 'NetworkData contains network-related information specific to the device.',
-    }),
-    pool: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'This name together with the driver name and the device name field identify which device was allocated (`<driver name>/<pool name>/<device name>`).\n\nMust not be longer than 253 characters and may contain one or more DNS sub-domains separated by slashes.',
-      }),
-    shareID: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'ShareID uniquely identifies an individual allocation share of the device.',
-      }),
-  })
-  .openapi({
-    description:
-      'AllocatedDeviceStatus contains the status of an allocated device, if the driver chooses to report it. This may include driver-specific information.\n\nThe combination of Driver, Pool, Device, and ShareID must match the corresponding key in Status.Allocation.Devices.',
-    required: ['driver', 'pool', 'device'],
-  })
-  .openapi('IoK8sApiResourceV1AllocatedDeviceStatus')
 
 const IoK8sApiResourceV1OpaqueDeviceConfigurationSchema = z
   .object({
@@ -248,7 +29,7 @@ const IoK8sApiResourceV1OpaqueDeviceConfigurationSchema = z
   })
   .openapi('IoK8sApiResourceV1OpaqueDeviceConfiguration')
 
-const IoK8sApiResourceV1DeviceAllocationConfigurationSchema = z
+const IoK8sApiResourceV1DeviceClaimConfigurationSchema = z
   .object({
     opaque: IoK8sApiResourceV1OpaqueDeviceConfigurationSchema.exactOptional().openapi({
       description: 'opaque provides driver-specific configuration parameters.',
@@ -258,30 +39,119 @@ const IoK8sApiResourceV1DeviceAllocationConfigurationSchema = z
       .exactOptional()
       .openapi({
         description:
-          'requests lists the names of requests where the configuration applies. If empty, its applies to all requests.\n\nReferences to subrequests must include the name of the main request and may include the subrequest using the format <main request>[/<subrequest>]. If just the main request is given, the configuration applies to all subrequests.',
+          'requests lists the names of requests where the configuration applies. If empty, it applies to all requests.\n\nReferences to subrequests must include the name of the main request and may include the subrequest using the format <main request>[/<subrequest>]. If just the main request is given, the configuration applies to all subrequests.',
         'x-kubernetes-list-type': 'atomic',
-      }),
-    source: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'source records whether the configuration comes from a class and thus is not something that a normal user would have been able to set or from a claim.',
       }),
   })
   .openapi({
-    description: 'DeviceAllocationConfiguration gets embedded in an AllocationResult.',
-    required: ['source'],
+    description: 'DeviceClaimConfiguration is used for configuration parameters in DeviceClaim.',
+    required: [],
   })
-  .openapi('IoK8sApiResourceV1DeviceAllocationConfiguration')
+  .openapi('IoK8sApiResourceV1DeviceClaimConfiguration')
+
+const IoK8sApiResourceV1DeviceConstraintSchema = z
+  .object({
+    distinctAttribute: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'distinctAttribute requires that all devices in question have this attribute and that its type and value are unique across those devices.\n\nWhen the DRAListTypeAttributes feature gate is enabled, comparison uses set semantics (i.e., element order and duplicates are ignored): list-valued attributes must be pairwise disjoint across devices. Scalar values are treated as singleton sets for backward compatibility.\n\nThis acts as the inverse of MatchAttribute.\n\nThis constraint is used to avoid allocating multiple requests to the same device by ensuring attribute-level differentiation.\n\nThis is useful for scenarios where resource requests must be fulfilled by separate physical devices. For example, a container requests two network interfaces that must be allocated from two different physical NICs.',
+      }),
+    matchAttribute: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'matchAttribute requires that all devices in question have this attribute and that its type and value are the same across those devices.\n\nFor example, if you specified "dra.example.com/numa" (a hypothetical example!), then only devices in the same NUMA node will be chosen. A device which does not have that attribute will not be chosen. All devices should use a value of the same type for this attribute because that is part of its specification, but if one device doesn\'t, then it also will not be chosen.\n\nWhen the DRAListTypeAttributes feature gate is enabled, comparison uses set semantics(i.e., element order and duplicates are ignored): list-valued attributes match when the intersection across all devices is non-empty. Scalar values are treated as single-element lists for backward compatibility.\n\nMust include the domain qualifier.',
+      }),
+    requests: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'requests is a list of the one or more requests in this claim which must co-satisfy this constraint. If a request is fulfilled by multiple devices, then all of the devices must satisfy the constraint. If this is not specified, this constraint applies to all requests in this claim.\n\nReferences to subrequests must include the name of the main request and may include the subrequest using the format <main request>[/<subrequest>]. If just the main request is given, the constraint applies to all subrequests.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+  })
+  .openapi({
+    description: 'DeviceConstraint must have exactly one field set besides Requests.',
+    required: [],
+  })
+  .openapi('IoK8sApiResourceV1DeviceConstraint')
 
 const IoK8sApimachineryPkgApiResourceQuantitySchema = z
   .xor([z.string(), z.number()])
   .openapi({
     description:
-      'Quantity is a fixed-point representation of a number. It provides convenient marshaling/unmarshaling in JSON and YAML, in addition to String() and AsInt64() accessors.\n\nThe serialization format is:\n\n- `<quantity>`: `<signedNumber><suffix>`\n\n- `<digit>`: `0 | 1 | ... | 9`\n\n- `<digits>`: `<digit> | <digit><digits>`\n\n- `<number>`: `<digits> | <digits>.<digits> | <digits>. | .<digits>`\n\n- `<sign>`: `"+" | "-"`\n\n- `<signedNumber>`: `<number> | <sign><number>`\n\n- `<signedDigits>`: `<digits> | <sign><digits>`\n\n- `<suffix>`: `<binarySI> | <decimalExponent> | <decimalSI>`\n\n- `<binarySI>`: `Ki | Mi | Gi | Ti | Pi | Ei`\n\n- `<decimalSI>`: `n | u | m | "" | k | M | G | T | P | E`\n\n- `<decimalExponent>`: `"e" <signedDigits> | "E" <signedDigits>`\n\nNote that `<suffix>` may be empty, from the `""` case in `<decimalSI>`. For `<binarySI>`, 1024 = 1Ki but 1000 = 1k; I didn\'t choose the capitalization. See http://physics.nist.gov/cuu/Units/binary.html.\n\nA decimal quantity is not capped at 2^63-1 in magnitude, and no quantity is limited to three decimal places: "18446744073709551616" keeps its value, and "1.2345" keeps its precision (String reports it as "1234500u"). Parsing does cap a binarySI quantity, silently, at 2^63-1: "8Ei" parses as 2^63-1. Parsing also preserves a value only down to nano, rounding a finer non-zero value away from zero, so "0.9n" becomes "1n". The int64 accessors round and may overflow on top of that: see Value, MilliValue and ScaledValue.\n\nWhen a Quantity is parsed from a string, it will remember the type of suffix it had, and will use the same type again when it is serialized.\n\nBefore serializing, Quantity will be put in "canonical form". This means that Exponent/suffix will be adjusted up or down (with a corresponding increase or decrease in Mantissa) such that:\n\n- No precision is lost\n\n- No fractional digits will be emitted\n\n- The exponent (or suffix) is as large as possible.\n\nThe sign will be omitted unless the number is negative.\n\nExamples:\n\n- 1.5 will be serialized as "1500m"\n\n- 1.5Gi will be serialized as "1536Mi"\n\nNote that the quantity will NEVER be internally represented by a floating point number. That is the whole point of this exercise.\n\nNon-canonical values will still parse as long as they are well formed, but will be re-emitted in their canonical form. (So always use canonical form, or don\'t diff.)\n\nThis format is intended to make it difficult to use these numbers without writing some sort of special handling code in the hopes that that will cause implementors to also use a fixed point implementation.',
+      'Quantity is a fixed-point representation of a number. It provides convenient marshaling/unmarshaling in JSON and YAML, in addition to String() and AsInt64() accessors.\n\nThe serialization format is:\n\n- `<quantity>`: `<signedNumber><suffix>`\n\n- `<digit>`: `0 | 1 | ... | 9`\n\n- `<digits>`: `<digit> | <digit><digits>`\n\n- `<number>`: `<digits> | <digits>.<digits> | <digits>. | .<digits>`\n\n- `<sign>`: `"+" | "-"`\n\n- `<signedNumber>`: `<number> | <sign><number>`\n\n- `<signedDigits>`: `<digits> | <sign><digits>`\n\n- `<suffix>`: `<binarySI> | <decimalExponent> | <decimalSI>`\n\n- `<binarySI>`: `Ki | Mi | Gi | Ti | Pi | Ei`\n\n- `<decimalSI>`: `n | u | m | "" | k | M | G | T | P | E`\n\n- `<decimalExponent>`: `"e" <signedDigits> | "E" <signedDigits>`\n\nNote that `<suffix>` may be empty, from the `""` case in `<decimalSI>`. For `<binarySI>`, 1024 = 1Ki but 1000 = 1k; I didn\'t choose the capitalization. See http://physics.nist.gov/cuu/Units/binary.html.\n\nA decimal quantity is not capped at 2^63-1 in magnitude, and no quantity is limited to three decimal places: "18446744073709551616" keeps its value, and "1.2345" keeps its precision (String reports it as "1234500u"). Parsing does cap a binarySI quantity, silently, at 2^63-1: "8Ei" parses as 2^63-1. Parsing keeps at most 29 significant digits, enough for any int64 value at nano precision, and rounds any precision beyond this away from zero. Parsing also preserves a value only down to nano, rounding a finer non-zero value away from zero, so "0.9n" becomes "1n". Parsing saturates the exponent to [-2147483647, 2147483647] after accounting for any digits after the decimal point, so "0.01e2147483649" keeps its value but "1e4294967297" parses as 1e2147483647. The int64 accessors round and may overflow on top of that: see Value, MilliValue and ScaledValue.\n\nWhen a Quantity is parsed from a string, it will remember the type of suffix it had, and will use the same type again when it is serialized.\n\nBefore serializing, Quantity will be put in "canonical form". This means that Exponent/suffix will be adjusted up or down (with a corresponding increase or decrease in Mantissa) such that:\n\n- No precision is lost\n\n- No fractional digits will be emitted\n\n- The exponent (or suffix) is as large as possible.\n\nThe sign will be omitted unless the number is negative.\n\nExamples:\n\n- 1.5 will be serialized as "1500m"\n\n- 1.5Gi will be serialized as "1536Mi"\n\nNote that the quantity will NEVER be internally represented by a floating point number. That is the whole point of this exercise.\n\nNon-canonical values will still parse as long as they are well formed, but will be re-emitted in their canonical form. (So always use canonical form, or don\'t diff.)\n\nThis format is intended to make it difficult to use these numbers without writing some sort of special handling code in the hopes that that will cause implementors to also use a fixed point implementation.',
   })
   .openapi('IoK8sApimachineryPkgApiResourceQuantity')
+
+const IoK8sApiResourceV1CapacityRequirementsSchema = z
+  .object({
+    requests: z
+      .record(z.string(), IoK8sApimachineryPkgApiResourceQuantitySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'requests represent individual device resource requests for distinct resources, all of which must be provided by the device.\n\nThis value is used as an additional filtering condition against the available capacity on the device. This is semantically equivalent to a CEL selector with `device.capacity[<domain>].<name>.compareTo(quantity(<request quantity>)) >= 0`. For example, device.capacity[\'test-driver.cdi.k8s.io\'].counters.compareTo(quantity(\'2\')) >= 0.\n\nThe domain prefix can be omitted, in which case it defaults to the driver of the device under evaluation. For example, "bandwidth: 1Gi" is equivalent to "<driver>/bandwidth: 1Gi" for a device published by driver "<driver>", regardless of which other, differently-domained "bandwidth" capacities that device might also have. To request one of those, the domain must be given explicitly, for example "example.com/bandwidth". Requesting the same driver capacity with and without the driver name as domain, for example "bandwidth: 1Gi" and "<driver>/bandwidth: 2Gi", is ambiguous and causes scheduling to fail with an error. For the sake of consistency there\'s no exception for such a conflict where the value is the same - that is still an error.\n\nWhen a requestPolicy is defined, the requested amount is adjusted upward to the nearest valid value based on the policy. If the requested amount cannot be adjusted to a valid value—because it exceeds what the requestPolicy allows— the device is considered ineligible for allocation.\n\nFor any capacity that is not explicitly requested: - If no requestPolicy is set, the default consumed capacity is equal to the full device capacity\n  (i.e., the whole device is claimed).\n- If a requestPolicy is set, the default consumed capacity is determined according to that policy.\n\nIf the device allows multiple allocation, the aggregated amount across all requests must not exceed the capacity value. The consumed capacity, which may be adjusted based on the requestPolicy if defined, is recorded in the resource claim\'s status.devices[*].consumedCapacity field.\n\nRequests may have at most 32 entries. The values must not be negative.',
+      }),
+  })
+  .openapi({
+    description:
+      'CapacityRequirements defines the capacity requirements for a specific device request.',
+    required: [],
+  })
+  .openapi('IoK8sApiResourceV1CapacityRequirements')
+
+const IoK8sApiResourceV1DeviceDerivedAttributeSchema = z
+  .object({
+    expression: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'expression is a CEL expression evaluated against each candidate device. The expression must evaluate to a primitive scalar (string, integer, boolean, or semver) or a list of these scalars ([]string, []int64, []bool, []semver) to act as a virtual grouping key. Any other return type is an error and causes CEL evaluation for the device to fail.\n\nThe expression\'s input is an object named "device", which carries the same properties as in a CELDeviceSelector.\n\nWhen pod scheduling encounters CEL runtime errors (such as looking up an attribute that isn\'t defined) for some devices, it will abort allocation and fail scheduling for the Pod. Surfacing evaluation errors immediately prevents silent topology matching failures that are extremely hard to detect. A robust expression should, for example, check for the existence of attributes before referencing them to avoid runtime evaluation errors.\n\nThe expression gets evaluated after a device has passed the other selector expressions for the request in which this expression is used. This allows writing expressions that are tailored towards the specific devices being requested (for example, by assuming the device is from a certain vendor and skipping those checks).\n\nThe length of the expression must be smaller or equal to 10 Ki. The cost of evaluating it is also limited based on the estimated number of logical steps; the combined cost of all derived attributes in a claim is capped by a shared CEL cost budget.',
+      }),
+    name: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'name is the identifier for this derived attribute, used in constraints.\n\nIt must be a DNS subdomain followed by a slash ("/") followed by a C identifier (e.g. "example.com/numaNode" or "derived/numaNode").\n\nIf the chosen name matches an existing physical attribute from a driver, the derived attribute\'s expression will shadow the physical attribute, and its evaluated value will be used in constraints instead. When the goal is to define a derived attribute that is only used within the ResourceClaim and not meant to shadow an existing attribute, use a domain prefix that no DRA driver should be using (e.g. "derived/myAttribute").\n\nIt is not valid to define a derived attribute that isn\'t used in at least one constraint.',
+      }),
+  })
+  .openapi({
+    description: 'DeviceDerivedAttribute defines a derived attribute computed via CEL.',
+    required: ['name', 'expression'],
+  })
+  .openapi('IoK8sApiResourceV1DeviceDerivedAttribute')
+
+const IoK8sApiResourceV1CELDeviceSelectorSchema = z
+  .object({
+    expression: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'expression is a CEL expression which evaluates a single device. It must evaluate to true when the device under consideration satisfies the desired criteria, and false when it does not. Any other result is an error and causes allocation of devices to abort.\n\nThe expression\'s input is an object named "device", which carries the following properties:\n - driver (string): the name of the driver which defines this device.\n - attributes (map[string]object): the device\'s attributes, grouped by prefix\n   (e.g. device.attributes["dra.example.com"] evaluates to an object with all\n   of the attributes which were prefixed by "dra.example.com").\n - capacity (map[string]object): the device\'s capacities, grouped by prefix.\n - allowMultipleAllocations (bool): the allowMultipleAllocations property of the device\n   (v1.34+ with the DRAConsumableCapacity feature enabled).\n\nExample: Consider a device with driver="dra.example.com", which exposes two attributes named "model" and "ext.example.com/family" and which exposes one capacity named "modules". This input to this expression would have the following fields:\n\n    device.driver\n    device.attributes["dra.example.com"].model\n    device.attributes["ext.example.com"].family\n    device.capacity["dra.example.com"].modules\n\nThe device.driver field can be used to check for a specific driver, either as a high-level precondition (i.e. you only want to consider devices from this driver) or as part of a multi-clause expression that is meant to consider devices from different drivers.\n\nThe value type of each attribute is defined by the device definition, and users who write these expressions must consult the documentation for their specific drivers. The value type of each capacity is Quantity.\n\nIf an unknown prefix is used as a lookup in either device.attributes or device.capacity, an empty map will be returned. Any reference to an unknown field will cause an evaluation error and allocation to abort.\n\nA robust expression should check for the existence of attributes before referencing them.\n\nCommon errors: - "no such key": Use optional chaining (.? followed by orValue())\n  or guarding the check with has() for optional fields.\n  See CEL Optional Types for details:\n  https://pkg.go.dev/github.com/google/cel-go@v0.17.4/cel#OptionalTypes\n\nFor more CEL expression syntax and examples, see: https://kubernetes.io/docs/reference/using-api/cel/\n\nFor ease of use, the cel.bind() function is enabled, and can be used to simplify expressions that access multiple attributes with the same domain. For example:\n\n    cel.bind(dra, device.attributes["dra.example.com"], dra.someBool && dra.anotherBool)\n\nWhen the DRAListTypeAttributes feature gate is enabled, the includes() helper is available and it can work for both scalar and list-type attributes. It was introduced to support smooth migration from scalar attributes to list-type attributes while keeping CEL expressions simple. For example:\n\n    device.attributes["dra.example.com"].models.includes("some-model")\n\nThe length of the expression must be smaller or equal to 10 Ki. The cost of evaluating it is also limited based on the estimated number of logical steps.',
+      }),
+  })
+  .openapi({
+    description: 'CELDeviceSelector contains a CEL expression for selecting a device.',
+    required: ['expression'],
+  })
+  .openapi('IoK8sApiResourceV1CELDeviceSelector')
+
+const IoK8sApiResourceV1DeviceSelectorSchema = z
+  .object({
+    cel: IoK8sApiResourceV1CELDeviceSelectorSchema.exactOptional().openapi({
+      description: 'cel contains a CEL expression for selecting a device.',
+    }),
+  })
+  .openapi({ description: 'DeviceSelector must have exactly one field set.', required: [] })
+  .openapi('IoK8sApiResourceV1DeviceSelector')
 
 const IoK8sApiResourceV1DeviceTolerationSchema = z
   .object({
@@ -338,656 +208,6 @@ const IoK8sApiResourceV1DeviceTolerationSchema = z
     required: [],
   })
   .openapi('IoK8sApiResourceV1DeviceToleration')
-
-const IoK8sApiResourceV1DeviceRequestAllocationResultSchema = z
-  .object({
-    adminAccess: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'adminAccess indicates that this device was allocated for administrative access. See the corresponding request field for a definition of mode.\n\nAdmin access is disabled if this field is unset or set to false, otherwise it is enabled.',
-      }),
-    bindingConditions: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'bindingConditions contains a copy of the BindingConditions from the corresponding ResourceSlice at the time of allocation.\n\nThis is a beta field and requires enabling the DRADeviceBindingConditions and DRAResourceClaimDeviceStatus feature gates.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-    bindingFailureConditions: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'bindingFailureConditions contains a copy of the BindingFailureConditions from the corresponding ResourceSlice at the time of allocation.\n\nThis is a beta field and requires enabling the DRADeviceBindingConditions and DRAResourceClaimDeviceStatus feature gates.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-    consumedCapacity: z
-      .record(z.string(), IoK8sApimachineryPkgApiResourceQuantitySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "consumedCapacity tracks the amount of capacity consumed per device as part of the claim request. The consumed amount may differ from the requested amount: it is rounded up to the nearest valid value based on the device’s requestPolicy if applicable (i.e., may not be less than the requested amount).\n\nThe total consumed capacity for each device must not exceed the DeviceCapacity's Value.\n\nThis field is populated only for devices that allow multiple allocations. All capacity entries are included, even if the consumed amount is zero. The domain prefix in the capacity name may be omitted if it is the same as the driver name.\n\nConsumedCapacity may have at most 32 entries. The values must not be negative.",
-      }),
-    device: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          "device references one device instance via its name in the driver's resource pool. It must be a DNS label.",
-      }),
-    driver: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'driver specifies the name of the DRA driver whose kubelet plugin should be invoked to process the allocation once the claim is needed on a node.\n\nMust be a DNS subdomain and should end with a DNS domain owned by the vendor of the driver. It should use only lower case characters.',
-      }),
-    pool: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'pool specifies the name together with the driver name and the device name field identify which device was allocated (`<driver name>/<pool name>/<device name>`).\n\nMust not be longer than 253 characters and may contain one or more DNS sub-domains separated by slashes.',
-      }),
-    request: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'request is the name of the request in the claim which caused this device to be allocated. If it references a subrequest in the firstAvailable list on a DeviceRequest, this field must include both the name of the main request and the subrequest using the format <main request>/<subrequest>.\n\nMultiple devices may have been allocated per request.',
-      }),
-    shareID: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'shareID uniquely identifies an individual allocation share of the device, used when the device supports multiple simultaneous allocations. It serves as an additional map key to differentiate concurrent shares of the same device.',
-      }),
-    skipNodeOperations: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'skipNodeOperations lists node-local resource operations (gRPC calls) that will be skipped for this allocated device when determining whether operations are necessary on the node. If all allocated devices for a driver in a claim skip an operation, that gRPC call will be skipped. It is a copy of the ResourceSlice.spec.skipNodeOperations value at the time when the device was allocated.',
-        'x-kubernetes-list-type': 'set',
-      }),
-    tolerations: z
-      .array(IoK8sApiResourceV1DeviceTolerationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'tolerations is a copy of all tolerations specified in the request at the time when the device got allocated.\n\nThe maximum number of tolerations is 16.\n\nThis is a beta field and requires enabling the DRADeviceTaints feature gate.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-  })
-  .openapi({
-    description: 'DeviceRequestAllocationResult contains the allocation result for one request.',
-    required: ['request', 'driver', 'pool', 'device'],
-  })
-  .openapi('IoK8sApiResourceV1DeviceRequestAllocationResult')
-
-const IoK8sApiResourceV1DeviceAllocationResultSchema = z
-  .object({
-    config: z
-      .array(IoK8sApiResourceV1DeviceAllocationConfigurationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'config is a combination of all the claim and class configuration parameters. Drivers can distinguish between those based on a flag.\n\nThis includes configuration parameters for drivers which have no allocated devices in the result because it is up to the drivers which configuration parameters they support. They can silently ignore unknown configuration parameters.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-    results: z
-      .array(IoK8sApiResourceV1DeviceRequestAllocationResultSchema)
-      .exactOptional()
-      .openapi({
-        description: 'results lists all allocated devices.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-  })
-  .openapi({
-    description: 'DeviceAllocationResult is the result of allocating devices.',
-    required: [],
-  })
-  .openapi('IoK8sApiResourceV1DeviceAllocationResult')
-
-const IoK8sApiResourceV1AllocationResultSchema = z
-  .object({
-    allocationTimestamp: IoK8sApimachineryPkgApisMetaV1TimeSchema.exactOptional().openapi({
-      description:
-        'allocationTimestamp stores the time when the resources were allocated. This field is not guaranteed to be set, in which case that time is unknown.\n\nThis is a beta field and requires enabling the DRADeviceBindingConditions and DRAResourceClaimDeviceStatus feature gate.',
-    }),
-    devices: IoK8sApiResourceV1DeviceAllocationResultSchema.default({})
-      .exactOptional()
-      .openapi({ description: 'devices is the result of allocating devices.' }),
-    nodeSelector: IoK8sApiCoreV1NodeSelectorSchema.exactOptional().openapi({
-      description:
-        'nodeSelector defines where the allocated resources are available. If unset, they are available everywhere.',
-    }),
-  })
-  .openapi({
-    description: 'AllocationResult contains attributes of an allocated resource.',
-    required: [],
-  })
-  .openapi('IoK8sApiResourceV1AllocationResult')
-
-const IoK8sApiResourceV1CELDeviceSelectorSchema = z
-  .object({
-    expression: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'expression is a CEL expression which evaluates a single device. It must evaluate to true when the device under consideration satisfies the desired criteria, and false when it does not. Any other result is an error and causes allocation of devices to abort.\n\nThe expression\'s input is an object named "device", which carries the following properties:\n - driver (string): the name of the driver which defines this device.\n - attributes (map[string]object): the device\'s attributes, grouped by prefix\n   (e.g. device.attributes["dra.example.com"] evaluates to an object with all\n   of the attributes which were prefixed by "dra.example.com").\n - capacity (map[string]object): the device\'s capacities, grouped by prefix.\n - allowMultipleAllocations (bool): the allowMultipleAllocations property of the device\n   (v1.34+ with the DRAConsumableCapacity feature enabled).\n\nExample: Consider a device with driver="dra.example.com", which exposes two attributes named "model" and "ext.example.com/family" and which exposes one capacity named "modules". This input to this expression would have the following fields:\n\n    device.driver\n    device.attributes["dra.example.com"].model\n    device.attributes["ext.example.com"].family\n    device.capacity["dra.example.com"].modules\n\nThe device.driver field can be used to check for a specific driver, either as a high-level precondition (i.e. you only want to consider devices from this driver) or as part of a multi-clause expression that is meant to consider devices from different drivers.\n\nThe value type of each attribute is defined by the device definition, and users who write these expressions must consult the documentation for their specific drivers. The value type of each capacity is Quantity.\n\nIf an unknown prefix is used as a lookup in either device.attributes or device.capacity, an empty map will be returned. Any reference to an unknown field will cause an evaluation error and allocation to abort.\n\nA robust expression should check for the existence of attributes before referencing them.\n\nCommon errors: - "no such key": Use optional chaining (.? followed by orValue())\n  or guarding the check with has() for optional fields.\n  See CEL Optional Types for details:\n  https://pkg.go.dev/github.com/google/cel-go@v0.17.4/cel#OptionalTypes\n\nFor more CEL expression syntax and examples, see: https://kubernetes.io/docs/reference/using-api/cel/\n\nFor ease of use, the cel.bind() function is enabled, and can be used to simplify expressions that access multiple attributes with the same domain. For example:\n\n    cel.bind(dra, device.attributes["dra.example.com"], dra.someBool && dra.anotherBool)\n\nWhen the DRAListTypeAttributes feature gate is enabled, the includes() helper is available and it can work for both scalar and list-type attributes. It was introduced to support smooth migration from scalar attributes to list-type attributes while keeping CEL expressions simple. For example:\n\n    device.attributes["dra.example.com"].models.includes("some-model")\n\nThe length of the expression must be smaller or equal to 10 Ki. The cost of evaluating it is also limited based on the estimated number of logical steps.',
-      }),
-  })
-  .openapi({
-    description: 'CELDeviceSelector contains a CEL expression for selecting a device.',
-    required: ['expression'],
-  })
-  .openapi('IoK8sApiResourceV1CELDeviceSelector')
-
-const IoK8sApiResourceV1CapacityRequestPolicyRangeSchema = z
-  .object({
-    max: IoK8sApimachineryPkgApiResourceQuantitySchema.exactOptional().openapi({
-      description:
-        'max defines the upper limit for capacity that can be requested.\n\nMax must be less than or equal to the capacity value. Min and requestPolicy.default must be less than or equal to the maximum.',
-    }),
-    min: IoK8sApimachineryPkgApiResourceQuantitySchema.openapi({
-      description:
-        'min specifies the minimum capacity allowed for a consumption request.\n\nMin must be greater than or equal to zero, and less than or equal to the capacity value. requestPolicy.default must be more than or equal to the minimum.',
-    }),
-    step: IoK8sApimachineryPkgApiResourceQuantitySchema.exactOptional().openapi({
-      description:
-        'step defines the step size between valid capacity amounts within the range.\n\nMax (if set) and requestPolicy.default must be a multiple of Step. Min + Step must be less than or equal to the capacity value.',
-    }),
-  })
-  .openapi({
-    description:
-      'CapacityRequestPolicyRange defines a valid range for consumable capacity values.\n\nIf the DRAFractionalCapacityRange feature gate is enabled and at least one of Min, Max, or Step is a fractional quantity (i.e. its value is not an integer), milli-unit arithmetic is used instead, supporting values with up to 3 decimal places (e.g. 100m = 0.1). The largest supported value then is 1000 times smaller compared to using 64-bit integers. Otherwise, all comparisons use 64-bit integer arithmetic via resource.Quantity.Value().\n\n  - If the requested amount is less than Min, it is rounded up to the Min value.\n  - If Step is set and the requested amount is between Min and Max but not aligned with Step,\n    it will be rounded up to the next value equal to Min + (n * Step).\n  - If Step is not set, the requested amount is used as-is if it falls within the range Min to Max (if set).\n  - If the requested or rounded amount exceeds Max (if set), the request does not satisfy the policy,\n    and the device cannot be allocated.',
-    required: ['min'],
-  })
-  .openapi('IoK8sApiResourceV1CapacityRequestPolicyRange')
-
-const IoK8sApiResourceV1CapacityRequestPolicySchema = z
-  .object({
-    default: IoK8sApimachineryPkgApiResourceQuantitySchema.exactOptional().openapi({
-      description:
-        "default specifies how much of this capacity is consumed by a request that does not contain an entry for it in DeviceRequest's Capacity.",
-    }),
-    validRange: IoK8sApiResourceV1CapacityRequestPolicyRangeSchema.exactOptional().openapi({
-      description:
-        "validRange defines an acceptable quantity value range in consuming requests.\n\nIf this field is set, Default must be defined and it must fall within the defined ValidRange.\n\nIf the requested amount does not fall within the defined range, the request violates the policy, and this device cannot be allocated.\n\nIf the request doesn't contain this capacity entry, Default value is used.",
-    }),
-    validValues: z
-      .array(IoK8sApimachineryPkgApiResourceQuantitySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'validValues defines a set of acceptable quantity values in consuming requests.\n\nMust not contain more than 10 entries. Must be sorted in ascending order.\n\nIf this field is set, Default must be defined and it must be included in ValidValues list.\n\nIf the requested amount does not match any valid value but smaller than some valid values, the scheduler calculates the smallest valid value that is greater than or equal to the request. That is: min(ceil(requestedValue) ∈ validValues), where requestedValue ≤ max(validValues).\n\nIf the requested amount exceeds all valid values, the request violates the policy, and this device cannot be allocated.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-  })
-  .openapi({
-    description:
-      'CapacityRequestPolicy defines how requests consume device capacity.\n\nMust not set more than one ValidRequestValues.',
-    required: [],
-  })
-  .openapi('IoK8sApiResourceV1CapacityRequestPolicy')
-
-const IoK8sApiResourceV1CapacityRequirementsSchema = z
-  .object({
-    requests: z
-      .record(z.string(), IoK8sApimachineryPkgApiResourceQuantitySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'requests represent individual device resource requests for distinct resources, all of which must be provided by the device.\n\nThis value is used as an additional filtering condition against the available capacity on the device. This is semantically equivalent to a CEL selector with `device.capacity[<domain>].<name>.compareTo(quantity(<request quantity>)) >= 0`. For example, device.capacity[\'test-driver.cdi.k8s.io\'].counters.compareTo(quantity(\'2\')) >= 0.\n\nThe domain prefix can be omitted, in which case it defaults to the driver of the device under evaluation. For example, "bandwidth: 1Gi" is equivalent to "<driver>/bandwidth: 1Gi" for a device published by driver "<driver>", regardless of which other, differently-domained "bandwidth" capacities that device might also have. To request one of those, the domain must be given explicitly, for example "example.com/bandwidth". Requesting the same driver capacity with and without the driver name as domain, for example "bandwidth: 1Gi" and "<driver>/bandwidth: 2Gi", is ambiguous and causes scheduling to fail with an error. For the sake of consistency there\'s no exception for such a conflict where the value is the same - that is still an error.\n\nWhen a requestPolicy is defined, the requested amount is adjusted upward to the nearest valid value based on the policy. If the requested amount cannot be adjusted to a valid value—because it exceeds what the requestPolicy allows— the device is considered ineligible for allocation.\n\nFor any capacity that is not explicitly requested: - If no requestPolicy is set, the default consumed capacity is equal to the full device capacity\n  (i.e., the whole device is claimed).\n- If a requestPolicy is set, the default consumed capacity is determined according to that policy.\n\nIf the device allows multiple allocation, the aggregated amount across all requests must not exceed the capacity value. The consumed capacity, which may be adjusted based on the requestPolicy if defined, is recorded in the resource claim\'s status.devices[*].consumedCapacity field.\n\nRequests may have at most 32 entries. The values must not be negative.',
-      }),
-  })
-  .openapi({
-    description:
-      'CapacityRequirements defines the capacity requirements for a specific device request.',
-    required: [],
-  })
-  .openapi('IoK8sApiResourceV1CapacityRequirements')
-
-const IoK8sApiResourceV1CounterSchema = z
-  .object({
-    value: IoK8sApimachineryPkgApiResourceQuantitySchema.openapi({
-      description: 'value defines how much of a certain device counter is available.',
-    }),
-  })
-  .openapi({
-    description: 'Counter describes a quantity associated with a device.',
-    required: ['value'],
-  })
-  .openapi('IoK8sApiResourceV1Counter')
-
-const IoK8sApiResourceV1CounterSetSchema = z
-  .object({
-    counters: z
-      .record(z.string(), IoK8sApiResourceV1CounterSchema)
-      .openapi({
-        description:
-          'counters defines the set of counters for this CounterSet The name of each counter must be unique in that set and must be a DNS label.\n\nThe maximum number of counters is 32.',
-      }),
-    name: z
-      .string()
-      .default('')
-      .openapi({
-        description: 'name defines the name of the counter set. It must be a DNS label.',
-      }),
-  })
-  .openapi({
-    description:
-      'CounterSet defines a named set of counters that are available to be used by devices defined in the ResourcePool.\n\nThe counters are not allocatable by themselves, but can be referenced by devices. When a device is allocated, the portion of counters it uses will no longer be available for use by other devices.',
-    required: ['name', 'counters'],
-  })
-  .openapi('IoK8sApiResourceV1CounterSet')
-
-const IoK8sApiResourceV1DeviceAttributeSchema = z
-  .object({
-    bool: z.boolean().exactOptional().openapi({ description: 'bool is a true/false value.' }),
-    bools: z
-      .array(z.boolean())
-      .exactOptional()
-      .openapi({
-        description: 'bools is a non-empty list of true/false values.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-    int: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: 'int is a number.' }),
-    ints: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'ints is a non-empty list of numbers.\n\nThis is an alpha field and requires enabling the DRAListTypeAttributes feature gate.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-    string: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'string is a string. Must not be longer than 64 characters.' }),
-    strings: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'strings is a non-empty list of strings. Each string must not be longer than 64 characters.\n\nThis is an alpha field and requires enabling the DRAListTypeAttributes feature gate.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-    version: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'version is a semantic version according to semver.org spec 2.0.0. Must not be longer than 64 characters.',
-      }),
-    versions: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'versions is a non-empty list of semantic versions according to semver.org spec 2.0.0. Each version string must not be longer than 64 characters.\n\nThis is an alpha field and requires enabling the DRAListTypeAttributes feature gate.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-  })
-  .openapi({ description: 'DeviceAttribute must have exactly one field set.', required: [] })
-  .openapi('IoK8sApiResourceV1DeviceAttribute')
-
-const IoK8sApiResourceV1DeviceCapacitySchema = z
-  .object({
-    requestPolicy: IoK8sApiResourceV1CapacityRequestPolicySchema.exactOptional().openapi({
-      description:
-        "requestPolicy defines how this DeviceCapacity must be consumed when the device is allowed to be shared by multiple allocations.\n\nThe Device must have allowMultipleAllocations set to true in order to set a requestPolicy.\n\nIf unset, capacity requests are unconstrained: requests can consume any amount of capacity, as long as the total consumed across all allocations does not exceed the device's defined capacity. If request is also unset, default is the full capacity value.",
-    }),
-    value: IoK8sApimachineryPkgApiResourceQuantitySchema.openapi({
-      description:
-        'value defines how much of a certain capacity that device has.\n\nThis field reflects the fixed total capacity and does not change. The consumed amount is tracked separately by scheduler and does not affect this value.',
-    }),
-  })
-  .openapi({
-    description: 'DeviceCapacity describes a quantity associated with a device.',
-    required: ['value'],
-  })
-  .openapi('IoK8sApiResourceV1DeviceCapacity')
-
-const IoK8sApiResourceV1DeviceCounterConsumptionSchema = z
-  .object({
-    compatibilityGroups: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'compatibilityGroups is a list of opaque group names for this counter set consumption.\n\nDevices that consume counters from the same counter set may only be allocated at the same time ("co-allocated") if they all share at least one common group: the intersection of the CompatibilityGroups of all co-allocated devices on that counter set must be non-empty. Devices that consume from different counter sets are never compared via this field.\n\nAn unset field, an explicit nil, and an empty list are equivalent and mean "no groups": such a device is only co-allocatable with sibling devices on the same counter set that also have no groups, and is never co-allocatable with a device that declares one or more groups.\n\nGroup names are opaque and meaningful only within the publishing driver\'s pool.\n\nThe maximum number of groups is 2, and the names must be unique.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-    counterSet: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'counterSet is the name of the set from which the counters defined will be consumed.',
-      }),
-    counters: z
-      .record(z.string(), IoK8sApiResourceV1CounterSchema)
-      .openapi({
-        description:
-          'counters defines the counters that will be consumed by the device.\n\nThe maximum number of counters is 32.',
-      }),
-  })
-  .openapi({
-    description:
-      'DeviceCounterConsumption defines a set of counters that a device will consume from a CounterSet.',
-    required: ['counterSet', 'counters'],
-  })
-  .openapi('IoK8sApiResourceV1DeviceCounterConsumption')
-
-const IoK8sApiResourceV1NodeAllocatableMappingSchema = z
-  .object({
-    capacityKey: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'capacityKey references a capacity name defined as a key in the `spec.devices[*].capacity` map. When this field is set, the value associated with this key in the `status.allocation.devices.results[*].consumedCapacity` map (for a specific claim allocation) determines the base quantity for the node allocatable resource. `capacityMultiplier` must also be set and is multiplied with the base quantity.\n\nFor example, if `spec.devices[*].capacity` has an entry "dra.example.com/memory": "128Gi", and this field is set to "dra.example.com/memory", then for a claim allocation that consumes { "dra.example.com/memory": "4Gi" } the base quantity for the node allocatable resource mapping will be "4Gi". The final node allocatable resource amount is `consumedCapacity[capacityKey]` * `capacityMultiplier`.\n\nIn this example, "dra.example.com/memory" is a fictional standardized capacity name. For driver-specific capacities the driver name can be omitted. As defined for consumedCapacity, the capacity consumption may be recorded there with or without the driver name.',
-      }),
-    capacityMultiplier: IoK8sApimachineryPkgApiResourceQuantitySchema.exactOptional().openapi({
-      description:
-        'capacityMultiplier is used as a multiplier for the allocated capacity consumed. It is only valid if `capacityKey` is set. The final node allocatable resource amount is `consumedCapacity[capacityKey]` * `capacityMultiplier`. For example, if a Device\'s capacity "dra.example.com/cores" is consumed, and each "core" provides 2 "cpu"s, the mapping would be: {ResourceName: "cpu", capacityKey: "dra.example.com/cores", capacityMultiplier: "2"}. If a claim consumes 8 "dra.example.com/cores", the CPU footprint is 8 * 2 = 16.',
-    }),
-    deviceMultiplier: IoK8sApimachineryPkgApiResourceQuantitySchema.exactOptional().openapi({
-      description:
-        'deviceMultiplier is used as a multiplier for the allocated device count in the claim. The final node allocatable resource amount is `deviceCount` * `deviceMultiplier`. For example, a DRA driver representing each cache complex (CCX) as a device would have {ResourceName: "cpu", deviceMultiplier: "8"} in its `nodeAllocatableResources`. If 2 devices (CCX) are allocated to the claim, 2 * 8 = 16 CPUs would be considered as allocated. It is only valid when `capacityKey` and `capacityMultiplier` are not set.',
-    }),
-  })
-  .openapi({
-    description:
-      'NodeAllocatableMapping defines how a DRA allocation directly translates into a node allocatable resource quantity. The mapping can be derived from either the count of allocated devices (via deviceMultiplier) or the specific capacity consumed (via capacityKey and capacityMultiplier). These options are mutually exclusive. Kubelet adds this mapped resource quantity from claim to both requests and limits at the pod-level cgroup, and to limits at the container-level cgroup for each container referencing the claim.',
-    required: [],
-  })
-  .openapi('IoK8sApiResourceV1NodeAllocatableMapping')
-
-const IoK8sApiResourceV1NodeAllocatableOverheadSchema = z
-  .object({
-    perContainer: IoK8sApimachineryPkgApiResourceQuantitySchema.exactOptional().openapi({
-      description:
-        "perContainer is applied per container reference to the claim. This models overhead scaling linearly with the number of containers actively using the device. When both PerPod and PerContainer are specified, the total overhead allocated for each pod referencing the claim is computed as: Quantity = PerPod + (PerContainer * NumReferences) Kubelet accounts for this overhead in cgroups: - Pod-level cgroup (requests and limits): Kubelet adds PerPod + (PerContainer * NumReferences). - Container-level cgroup (limits only): Kubelet adds PerPod + PerContainer for each referencing container. This allows any single container to access the pod-level overhead, while the parent cgroup caps the total usage to account for PerPod exactly once. PerContainer overhead of a claim referenced by a non-restartable init container is counted towards the pod's peak resource calculation (see Pod `spec.initContainers`), not for the pod's entire duration.",
-    }),
-    perPod: IoK8sApimachineryPkgApiResourceQuantitySchema.exactOptional().openapi({
-      description:
-        'perPod is overhead applied once per pod referencing the claim on this node. This is a flat overhead incurred for every pod referencing the claim.',
-    }),
-  })
-  .openapi({
-    description:
-      'NodeAllocatableOverhead defines auxiliary resource overheads incurred when allocating a device. Overheads can be specified as a fixed cost per pod referencing the claim, a variable cost per container reference, or both. Kubelet accounts for this overhead by adding it to both the pod-level and container-level cgroups of referencing containers.',
-    required: [],
-  })
-  .openapi('IoK8sApiResourceV1NodeAllocatableOverhead')
-
-const IoK8sApiResourceV1NodeAllocatableResourceSchema = z
-  .object({
-    mapping: IoK8sApiResourceV1NodeAllocatableMappingSchema.exactOptional().openapi({
-      description:
-        'mapping is used when the device directly models a node allocatable resource like standard CPU or memory (e.g., with a CPU DRA driver). The calculated quantity is accounted for exactly once per claim instance on the node. To prevent node cgroup isolation friction, the scheduler explicitly blocks sharing mapped device claims across multiple pods.',
-    }),
-    overhead: IoK8sApiResourceV1NodeAllocatableOverheadSchema.exactOptional().openapi({
-      description:
-        "overhead contains fields for modeling auxiliary overhead incurred on node allocatable resources when allocating devices that are not themselves modeling a node allocatable resource (e.g., host memory overhead for GPUs). Sharing overhead-mapped claims across multiple pods is allowed. The node allocatable overhead is accounted for individually for each pod referencing the claim. Overhead is always subtracted from the node's allocatable capacity for the resource, even when mapping is specified for the same resource. Eg: If a device models memory capacity per socket as a consumable capacity pool via Mapping (with CapacityKey), any overhead specified for the same resource will be subtracted from the node's general allocatable capacity and not from the per-socket capacity pool in Mapping.",
-    }),
-  })
-  .openapi({
-    description:
-      'NodeAllocatableResource defines the translation between the DRA device/capacity units requested to the corresponding quantity of the node allocatable resource. At least one of Mapping or Overhead must be specified. Not specifying either is an invalid configuration.',
-    required: [],
-  })
-  .openapi('IoK8sApiResourceV1NodeAllocatableResource')
-
-const IoK8sApiResourceV1DeviceTaintSchema = z
-  .object({
-    effect: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'effect is the effect of the taint on claims that do not tolerate the taint and through such claims on the pods using them.\n\nValid effects are None, NoSchedule and NoExecute. PreferNoSchedule as used for nodes is not valid here. More effects may get added in the future. Consumers must treat unknown effects like None.',
-      }),
-    key: z
-      .string()
-      .default('')
-      .openapi({
-        description: 'key is the taint key to be applied to a device. Must be a label name.',
-      }),
-    timeAdded: IoK8sApimachineryPkgApisMetaV1TimeSchema.exactOptional().openapi({
-      description:
-        'timeAdded represents the time at which the taint was added or (only in a DeviceTaintRule) the effect was modified. Added automatically during create or update if not set.\n\nIn addition, in a DeviceTaintRule a value provided during an update gets replaced with the current time if the provided value is the same as the old one and the new effect is different. Changing the key and/or value while keeping the effect unchanged is possible and does not update the time stamp because the eviction which uses it is either already started (NoExecute) or not started yet (NoEffect, NoSchedule).',
-    }),
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'value is the taint value corresponding to the taint key. Must be a label value.',
-      }),
-  })
-  .openapi({
-    description:
-      'The device this taint is attached to has the "effect" on any claim which does not tolerate the taint and, through the claim, to pods using the claim.',
-    required: ['key', 'effect'],
-  })
-  .openapi('IoK8sApiResourceV1DeviceTaint')
-
-const IoK8sApiResourceV1DeviceSchema = z
-  .object({
-    allNodes: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'allNodes indicates that all nodes have access to the device.\n\nMust only be set if Spec.PerDeviceNodeSelection is set to true. At most one of NodeName, NodeSelector and AllNodes can be set.',
-      }),
-    allowMultipleAllocations: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'allowMultipleAllocations marks whether the device is allowed to be allocated to multiple DeviceRequests.\n\nIf AllowMultipleAllocations is set to true, the device can be allocated more than once, and all of its capacity is consumable, regardless of whether the requestPolicy is defined or not.',
-      }),
-    attributes: z
-      .record(z.string(), IoK8sApiResourceV1DeviceAttributeSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'attributes defines the set of attributes for this device. The name of each attribute must be unique in that set.\n\nThe maximum number of attributes and capacities combined is 32.',
-      }),
-    bindingConditions: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'bindingConditions defines the conditions for proceeding with binding. All of these conditions must be set in the per-device status conditions with a value of True to proceed with binding the pod to the node while scheduling the pod.\n\nThe maximum number of binding conditions is 4.\n\nThe conditions must be a valid condition type string.\n\nThis is a beta field and requires enabling the DRADeviceBindingConditions and DRAResourceClaimDeviceStatus feature gates.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-    bindingFailureConditions: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'bindingFailureConditions defines the conditions for binding failure. They may be set in the per-device status conditions. If any is set to "True", a binding failure occurred.\n\nThe maximum number of binding failure conditions is 4.\n\nThe conditions must be a valid condition type string.\n\nThis is a beta field and requires enabling the DRADeviceBindingConditions and DRAResourceClaimDeviceStatus feature gates.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-    bindsToNode: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'bindsToNode indicates if the usage of an allocation involving this device has to be limited to exactly the node that was chosen when allocating the claim. If set to true, the scheduler will set the ResourceClaim.Status.Allocation.NodeSelector to match the node where the allocation was made.\n\nThis is a beta field and requires enabling the DRADeviceBindingConditions and DRAResourceClaimDeviceStatus feature gates.',
-      }),
-    capacity: z
-      .record(z.string(), IoK8sApiResourceV1DeviceCapacitySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'capacity defines the set of capacities for this device. The name of each capacity must be unique in that set.\n\nThe maximum number of attributes and capacities combined is 32.',
-      }),
-    consumesCounters: z
-      .array(IoK8sApiResourceV1DeviceCounterConsumptionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'consumesCounters defines a list of references to sharedCounters and the set of counters that the device will consume from those counter sets.\n\nThere can only be a single entry per counterSet.\n\nThe maximum number of device counter consumptions per device is 2.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-    name: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'name is unique identifier among all devices managed by the driver in the pool. It must be a DNS label.',
-      }),
-    nodeAllocatableResources: z
-      .record(z.string(), IoK8sApiResourceV1NodeAllocatableResourceSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'nodeAllocatableResources defines the mapping of node resources that are managed by the DRA driver exposing this device. This includes resources currently reported in v1.Node `status.allocatable` that are not extended resources (see https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#extended-resources). Examples include "cpu", "memory", "ephemeral-storage", and hugepages. In addition to standard requests made through the Pod `spec`, these resources can also be requested through claims and allocated by the DRA driver. For example, a CPU DRA driver might allocate exclusive CPUs or auxiliary node memory dependencies of an accelerator device. The keys of this map are the node-allocatable resource names (e.g., "cpu", "memory"). Extended resource names are not permitted as keys.',
-      }),
-    nodeName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'nodeName identifies the node where the device is available.\n\nMust only be set if Spec.PerDeviceNodeSelection is set to true. At most one of NodeName, NodeSelector and AllNodes can be set.',
-      }),
-    nodeSelector: IoK8sApiCoreV1NodeSelectorSchema.exactOptional().openapi({
-      description:
-        'nodeSelector defines the nodes where the device is available.\n\nMust use exactly one term.\n\nMust only be set if Spec.PerDeviceNodeSelection is set to true. At most one of NodeName, NodeSelector and AllNodes can be set.',
-    }),
-    taints: z
-      .array(IoK8sApiResourceV1DeviceTaintSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'taints if specified, these are the driver-defined taints.\n\nThe maximum number of taints is 16. If taints are set for any device in a ResourceSlice, then the maximum number of allowed devices per ResourceSlice is 64 instead of 128.\n\nThis is a beta field and requires enabling the DRADeviceTaints feature gate.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-  })
-  .openapi({
-    description:
-      'Device represents one individual hardware instance that can be selected based on its attributes. Besides the name, exactly one field must be set.',
-    required: ['name'],
-  })
-  .openapi('IoK8sApiResourceV1Device')
-
-const IoK8sApiResourceV1DeviceClaimConfigurationSchema = z
-  .object({
-    opaque: IoK8sApiResourceV1OpaqueDeviceConfigurationSchema.exactOptional().openapi({
-      description: 'opaque provides driver-specific configuration parameters.',
-    }),
-    requests: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'requests lists the names of requests where the configuration applies. If empty, it applies to all requests.\n\nReferences to subrequests must include the name of the main request and may include the subrequest using the format <main request>[/<subrequest>]. If just the main request is given, the configuration applies to all subrequests.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-  })
-  .openapi({
-    description: 'DeviceClaimConfiguration is used for configuration parameters in DeviceClaim.',
-    required: [],
-  })
-  .openapi('IoK8sApiResourceV1DeviceClaimConfiguration')
-
-const IoK8sApiResourceV1DeviceConstraintSchema = z
-  .object({
-    distinctAttribute: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'distinctAttribute requires that all devices in question have this attribute and that its type and value are unique across those devices.\n\nWhen the DRAListTypeAttributes feature gate is enabled, comparison uses set semantics (i.e., element order and duplicates are ignored): list-valued attributes must be pairwise disjoint across devices. Scalar values are treated as singleton sets for backward compatibility.\n\nThis acts as the inverse of MatchAttribute.\n\nThis constraint is used to avoid allocating multiple requests to the same device by ensuring attribute-level differentiation.\n\nThis is useful for scenarios where resource requests must be fulfilled by separate physical devices. For example, a container requests two network interfaces that must be allocated from two different physical NICs.',
-      }),
-    matchAttribute: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'matchAttribute requires that all devices in question have this attribute and that its type and value are the same across those devices.\n\nFor example, if you specified "dra.example.com/numa" (a hypothetical example!), then only devices in the same NUMA node will be chosen. A device which does not have that attribute will not be chosen. All devices should use a value of the same type for this attribute because that is part of its specification, but if one device doesn\'t, then it also will not be chosen.\n\nWhen the DRAListTypeAttributes feature gate is enabled, comparison uses set semantics(i.e., element order and duplicates are ignored): list-valued attributes match when the intersection across all devices is non-empty. Scalar values are treated as single-element lists for backward compatibility.\n\nMust include the domain qualifier.',
-      }),
-    requests: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'requests is a list of the one or more requests in this claim which must co-satisfy this constraint. If a request is fulfilled by multiple devices, then all of the devices must satisfy the constraint. If this is not specified, this constraint applies to all requests in this claim.\n\nReferences to subrequests must include the name of the main request and may include the subrequest using the format <main request>[/<subrequest>]. If just the main request is given, the constraint applies to all subrequests.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-  })
-  .openapi({
-    description: 'DeviceConstraint must have exactly one field set besides Requests.',
-    required: [],
-  })
-  .openapi('IoK8sApiResourceV1DeviceConstraint')
-
-const IoK8sApiResourceV1DeviceDerivedAttributeSchema = z
-  .object({
-    expression: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'expression is a CEL expression evaluated against each candidate device. The expression must evaluate to a primitive scalar (string, integer, boolean, or semver) or a list of these scalars ([]string, []int64, []bool, []semver) to act as a virtual grouping key. Any other return type is an error and causes CEL evaluation for the device to fail.\n\nThe expression\'s input is an object named "device", which carries the same properties as in a CELDeviceSelector.\n\nWhen pod scheduling encounters CEL runtime errors (such as looking up an attribute that isn\'t defined) for some devices, it will abort allocation and fail scheduling for the Pod. Surfacing evaluation errors immediately prevents silent topology matching failures that are extremely hard to detect. A robust expression should, for example, check for the existence of attributes before referencing them to avoid runtime evaluation errors.\n\nThe expression gets evaluated after a device has passed the other selector expressions for the request in which this expression is used. This allows writing expressions that are tailored towards the specific devices being requested (for example, by assuming the device is from a certain vendor and skipping those checks).\n\nThe length of the expression must be smaller or equal to 10 Ki. The cost of evaluating it is also limited based on the estimated number of logical steps; the combined cost of all derived attributes in a claim is capped by a shared CEL cost budget.',
-      }),
-    name: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'name is the identifier for this derived attribute, used in constraints.\n\nIt must be a DNS subdomain followed by a slash ("/") followed by a C identifier (e.g. "example.com/numaNode" or "derived/numaNode").\n\nIf the chosen name matches an existing physical attribute from a driver, the derived attribute\'s expression will shadow the physical attribute, and its evaluated value will be used in constraints instead. When the goal is to define a derived attribute that is only used within the ResourceClaim and not meant to shadow an existing attribute, use a domain prefix that no DRA driver should be using (e.g. "derived/myAttribute").\n\nIt is not valid to define a derived attribute that isn\'t used in at least one constraint.',
-      }),
-  })
-  .openapi({
-    description: 'DeviceDerivedAttribute defines a derived attribute computed via CEL.',
-    required: ['name', 'expression'],
-  })
-  .openapi('IoK8sApiResourceV1DeviceDerivedAttribute')
-
-const IoK8sApiResourceV1DeviceSelectorSchema = z
-  .object({
-    cel: IoK8sApiResourceV1CELDeviceSelectorSchema.exactOptional().openapi({
-      description: 'cel contains a CEL expression for selecting a device.',
-    }),
-  })
-  .openapi({ description: 'DeviceSelector must have exactly one field set.', required: [] })
-  .openapi('IoK8sApiResourceV1DeviceSelector')
 
 const IoK8sApiResourceV1ExactDeviceRequestSchema = z
   .object({
@@ -1169,41 +389,22 @@ const IoK8sApiResourceV1DeviceRequestSchema = z
   })
   .openapi('IoK8sApiResourceV1DeviceRequest')
 
-const IoK8sApiResourceV1DeviceClaimSchema = z
-  .object({
-    config: z
-      .array(IoK8sApiResourceV1DeviceClaimConfigurationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'config holds configuration for multiple potential drivers which could satisfy requests in this claim. It is ignored while allocating the claim.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-    constraints: z
-      .array(IoK8sApiResourceV1DeviceConstraintSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'constraints must be satisfied by the set of devices that get allocated for the claim.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-    requests: z
-      .array(IoK8sApiResourceV1DeviceRequestSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'requests represent individual requests for distinct devices which must all be satisfied. If empty, nothing needs to be allocated.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-  })
+type IoK8sApiResourceV1DeviceClaimType = {
+  config?: z.infer<typeof IoK8sApiResourceV1DeviceClaimConfigurationSchema>[]
+  constraints?: z.infer<typeof IoK8sApiResourceV1DeviceConstraintSchema>[]
+  requests?: z.infer<typeof IoK8sApiResourceV1DeviceRequestSchema>[]
+}
+
+const IoK8sApimachineryPkgApisMetaV1TimeSchema = z.iso
+  .datetime({ offset: true })
   .openapi({
-    description: 'DeviceClaim defines how to request devices with a ResourceClaim.',
-    required: [],
+    description:
+      'Time is a wrapper around time.Time which supports correct marshaling to YAML and JSON.  Wrappers are provided for many of the factory methods that the time package offers.',
   })
-  .openapi('IoK8sApiResourceV1DeviceClaim')
+  .openapi('IoK8sApimachineryPkgApisMetaV1Time')
 
 const IoK8sApimachineryPkgApisMetaV1FieldsV1Schema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       "FieldsV1 stores a set of fields in a data structure like a Trie, in JSON format.\n\nEach key is either a '.' representing the field itself, and will always map to an empty set, or a string representing a sub-field or item. The string will follow one of these four formats: 'f:<name>', where <name> is the name of a field in a struct, or key in a map 'v:<value>', where <value> is the exact json formatted value of a list item 'i:<index>', where <index> is position of a item in a list 'k:<keys>', where <keys> is a map of  a list item's key fields to their unique values If a key maps to an empty Fields value, the field that key represents is part of the set.\n\nThe exact format is defined in sigs.k8s.io/structured-merge-diff",
@@ -1440,49 +641,509 @@ const IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema = z
   })
   .openapi('IoK8sApimachineryPkgApisMetaV1ObjectMeta')
 
-const IoK8sApiResourceV1DeviceClassConfigurationSchema = z
+const IoK8sApiResourceV1DeviceClaimSchema: z.ZodType<IoK8sApiResourceV1DeviceClaimType> = z
+  .object({
+    config: z
+      .array(IoK8sApiResourceV1DeviceClaimConfigurationSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'config holds configuration for multiple potential drivers which could satisfy requests in this claim. It is ignored while allocating the claim.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+    constraints: z
+      .array(IoK8sApiResourceV1DeviceConstraintSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'constraints must be satisfied by the set of devices that get allocated for the claim.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+    requests: z
+      .array(IoK8sApiResourceV1DeviceRequestSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'requests represent individual requests for distinct devices which must all be satisfied. If empty, nothing needs to be allocated.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+  })
+  .openapi({
+    description: 'DeviceClaim defines how to request devices with a ResourceClaim.',
+    required: [],
+  })
+  .openapi('IoK8sApiResourceV1DeviceClaim')
+
+type IoK8sApiResourceV1ResourceClaimSpecType = {
+  devices?: z.infer<typeof IoK8sApiResourceV1DeviceClaimSchema>
+}
+
+const IoK8sApiResourceV1ResourceClaimSpecSchema: z.ZodType<IoK8sApiResourceV1ResourceClaimSpecType> =
+  z
+    .object({
+      devices: IoK8sApiResourceV1DeviceClaimSchema.default({})
+        .exactOptional()
+        .openapi({ description: 'devices defines how to request devices.' }),
+    })
+    .openapi({
+      description:
+        'ResourceClaimSpec defines what is being requested in a ResourceClaim and how to configure it.',
+      required: [],
+    })
+    .openapi('IoK8sApiResourceV1ResourceClaimSpec')
+
+const IoK8sApiResourceV1DeviceAllocationConfigurationSchema = z
   .object({
     opaque: IoK8sApiResourceV1OpaqueDeviceConfigurationSchema.exactOptional().openapi({
       description: 'opaque provides driver-specific configuration parameters.',
     }),
-  })
-  .openapi({ description: 'DeviceClassConfiguration is used in DeviceClass.', required: [] })
-  .openapi('IoK8sApiResourceV1DeviceClassConfiguration')
-
-const IoK8sApiResourceV1DeviceClassSpecSchema = z
-  .object({
-    config: z
-      .array(IoK8sApiResourceV1DeviceClassConfigurationSchema)
+    requests: z
+      .array(z.string())
       .exactOptional()
       .openapi({
         description:
-          'config defines configuration parameters that apply to each device that is claimed via this class. Some classses may potentially be satisfied by multiple drivers, so each instance of a vendor configuration applies to exactly one driver.\n\nThey are passed to the driver, but are not considered while allocating the claim.',
+          'requests lists the names of requests where the configuration applies. If empty, its applies to all requests.\n\nReferences to subrequests must include the name of the main request and may include the subrequest using the format <main request>[/<subrequest>]. If just the main request is given, the configuration applies to all subrequests.',
         'x-kubernetes-list-type': 'atomic',
       }),
-    extendedResourceName: z
+    source: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'source records whether the configuration comes from a class and thus is not something that a normal user would have been able to set or from a claim.',
+      }),
+  })
+  .openapi({
+    description: 'DeviceAllocationConfiguration gets embedded in an AllocationResult.',
+    required: ['source'],
+  })
+  .openapi('IoK8sApiResourceV1DeviceAllocationConfiguration')
+
+const IoK8sApiResourceV1DeviceRequestAllocationResultSchema = z
+  .object({
+    adminAccess: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'adminAccess indicates that this device was allocated for administrative access. See the corresponding request field for a definition of mode.\n\nAdmin access is disabled if this field is unset or set to false, otherwise it is enabled.',
+      }),
+    bindingConditions: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'bindingConditions contains a copy of the BindingConditions from the corresponding ResourceSlice at the time of allocation.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+    bindingFailureConditions: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'bindingFailureConditions contains a copy of the BindingFailureConditions from the corresponding ResourceSlice at the time of allocation.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+    consumedCapacity: z
+      .record(z.string(), IoK8sApimachineryPkgApiResourceQuantitySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "consumedCapacity tracks the amount of capacity consumed per device as part of the claim request. The consumed amount may differ from the requested amount: it is rounded up to the nearest valid value based on the device’s requestPolicy if applicable (i.e., may not be less than the requested amount).\n\nThe total consumed capacity for each device must not exceed the DeviceCapacity's Value.\n\nThis field is populated only for devices that allow multiple allocations. All capacity entries are included, even if the consumed amount is zero. The domain prefix in the capacity name may be omitted if it is the same as the driver name.\n\nConsumedCapacity may have at most 32 entries. The values must not be negative.",
+      }),
+    device: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          "device references one device instance via its name in the driver's resource pool. It must be a DNS label.",
+      }),
+    driver: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'driver specifies the name of the DRA driver whose kubelet plugin should be invoked to process the allocation once the claim is needed on a node.\n\nMust be a DNS subdomain and should end with a DNS domain owned by the vendor of the driver. It should use only lower case characters.',
+      }),
+    pool: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'pool specifies the name together with the driver name and the device name field identify which device was allocated (`<driver name>/<pool name>/<device name>`).\n\nMust not be longer than 253 characters and may contain one or more DNS sub-domains separated by slashes.',
+      }),
+    request: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'request is the name of the request in the claim which caused this device to be allocated. If it references a subrequest in the firstAvailable list on a DeviceRequest, this field must include both the name of the main request and the subrequest using the format <main request>/<subrequest>.\n\nMultiple devices may have been allocated per request.',
+      }),
+    shareID: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          "extendedResourceName is the extended resource name for the devices of this class. The devices of this class can be used to satisfy a pod's extended resource requests. It has the same format as the name of a pod's extended resource. It should be unique among all the device classes in a cluster. If two device classes have the same name, then the class created later is picked to satisfy a pod's extended resource requests. If two classes are created at the same time, then the name of the class lexicographically sorted first is picked.",
+          'shareID uniquely identifies an individual allocation share of the device, used when the device supports multiple simultaneous allocations. It serves as an additional map key to differentiate concurrent shares of the same device.',
       }),
-    selectors: z
-      .array(IoK8sApiResourceV1DeviceSelectorSchema)
+    skipNodeOperations: z
+      .array(z.string())
       .exactOptional()
       .openapi({
         description:
-          'selectors is the list of device selectors. Each selector must be satisfied by a device which is claimed via this class.',
+          'skipNodeOperations lists node-local resource operations (gRPC calls) that will be skipped for this allocated device when determining whether operations are necessary on the node. If all allocated devices for a driver in a claim skip an operation, that gRPC call will be skipped. It is a copy of the ResourceSlice.spec.skipNodeOperations value at the time when the device was allocated.',
+        'x-kubernetes-list-type': 'set',
+      }),
+    tolerations: z
+      .array(IoK8sApiResourceV1DeviceTolerationSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'tolerations is a copy of all tolerations specified in the request at the time when the device got allocated.\n\nThe maximum number of tolerations is 16.\n\nThis is a beta field and requires enabling the DRADeviceTaints feature gate.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+  })
+  .openapi({
+    description: 'DeviceRequestAllocationResult contains the allocation result for one request.',
+    required: ['request', 'driver', 'pool', 'device'],
+  })
+  .openapi('IoK8sApiResourceV1DeviceRequestAllocationResult')
+
+const IoK8sApiResourceV1DeviceAllocationResultSchema = z
+  .object({
+    config: z
+      .array(IoK8sApiResourceV1DeviceAllocationConfigurationSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'config is a combination of all the claim and class configuration parameters. Drivers can distinguish between those based on a flag.\n\nThis includes configuration parameters for drivers which have no allocated devices in the result because it is up to the drivers which configuration parameters they support. They can silently ignore unknown configuration parameters.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+    results: z
+      .array(IoK8sApiResourceV1DeviceRequestAllocationResultSchema)
+      .exactOptional()
+      .openapi({
+        description: 'results lists all allocated devices.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+  })
+  .openapi({
+    description: 'DeviceAllocationResult is the result of allocating devices.',
+    required: [],
+  })
+  .openapi('IoK8sApiResourceV1DeviceAllocationResult')
+
+const IoK8sApiCoreV1NodeSelectorRequirementSchema = z
+  .object({
+    key: z
+      .string()
+      .default('')
+      .openapi({ description: 'key is the label key that the selector applies to.' }),
+    operator: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.",
+      }),
+    values: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.',
         'x-kubernetes-list-type': 'atomic',
       }),
   })
   .openapi({
     description:
-      'DeviceClassSpec is used in a [DeviceClass] to define what can be allocated and how to configure it.',
+      'A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.',
+    required: ['key', 'operator'],
+  })
+  .openapi('IoK8sApiCoreV1NodeSelectorRequirement')
+
+const IoK8sApiCoreV1NodeSelectorTermSchema = z
+  .object({
+    matchExpressions: z
+      .array(IoK8sApiCoreV1NodeSelectorRequirementSchema)
+      .exactOptional()
+      .openapi({
+        description: "matchExpressions is a list of node selector requirements by node's labels.",
+        'x-kubernetes-list-type': 'atomic',
+      }),
+    matchFields: z
+      .array(IoK8sApiCoreV1NodeSelectorRequirementSchema)
+      .exactOptional()
+      .openapi({
+        description: "matchFields is a list of node selector requirements by node's fields.",
+        'x-kubernetes-list-type': 'atomic',
+      }),
+  })
+  .openapi({
+    description:
+      'A null or empty node selector term matches no objects. The requirements of them are ANDed. The TopologySelectorTerm type implements a subset of the NodeSelectorTerm.',
+    'x-kubernetes-map-type': 'atomic',
     required: [],
   })
-  .openapi('IoK8sApiResourceV1DeviceClassSpec')
+  .openapi('IoK8sApiCoreV1NodeSelectorTerm')
 
-const IoK8sApiResourceV1DeviceClassSchema = z
+const IoK8sApiCoreV1NodeSelectorSchema = z
+  .object({
+    nodeSelectorTerms: z
+      .array(IoK8sApiCoreV1NodeSelectorTermSchema)
+      .openapi({
+        description:
+          'nodeSelectorTerms is a list of node selector terms. The terms are ORed. Required. A list of node selector terms. The terms are ORed.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+  })
+  .openapi({
+    description:
+      'A node selector represents the union of the results of one or more label queries over a set of nodes; that is, it represents the OR of the selectors represented by the node selector terms.',
+    required: ['nodeSelectorTerms'],
+    'x-kubernetes-map-type': 'atomic',
+  })
+  .openapi('IoK8sApiCoreV1NodeSelector')
+
+const IoK8sApiResourceV1AllocationResultSchema = z
+  .object({
+    allocationTimestamp: IoK8sApimachineryPkgApisMetaV1TimeSchema.exactOptional().openapi({
+      description:
+        'allocationTimestamp stores the time when the resources were allocated. This field is not guaranteed to be set, in which case that time is unknown.',
+    }),
+    devices: IoK8sApiResourceV1DeviceAllocationResultSchema.default({})
+      .exactOptional()
+      .openapi({ description: 'devices is the result of allocating devices.' }),
+    nodeSelector: IoK8sApiCoreV1NodeSelectorSchema.exactOptional().openapi({
+      description:
+        'nodeSelector defines where the allocated resources are available. If unset, they are available everywhere.',
+    }),
+  })
+  .openapi({
+    description: 'AllocationResult contains attributes of an allocated resource.',
+    required: [],
+  })
+  .openapi('IoK8sApiResourceV1AllocationResult')
+
+const IoK8sApimachineryPkgApisMetaV1ConditionSchema = z
+  .object({
+    lastTransitionTime: IoK8sApimachineryPkgApisMetaV1TimeSchema.openapi({
+      description:
+        'lastTransitionTime is the last time the condition transitioned from one status to another. This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.',
+    }),
+    message: z
+      .string()
+      .default('')
+      .exactOptional()
+      .openapi({
+        description:
+          'message is a human readable message indicating details about the transition. This may be an empty string.',
+      }),
+    observedGeneration: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'observedGeneration represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date with respect to the current state of the instance.',
+      }),
+    reason: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          "reason contains a programmatic identifier indicating the reason for the condition's last transition. Producers of specific condition types may define expected values and meanings for this field, and whether the values are considered a guaranteed API. The value should be a CamelCase string. This field may not be empty.",
+      }),
+    status: z
+      .string()
+      .default('')
+      .openapi({ description: 'status of the condition, one of True, False, Unknown.' }),
+    type: z
+      .string()
+      .default('')
+      .openapi({ description: 'type of condition in CamelCase or in foo.example.com/CamelCase.' }),
+  })
+  .openapi({
+    description:
+      'Condition contains details for one aspect of the current state of this API Resource.',
+    required: ['type', 'status', 'lastTransitionTime', 'reason'],
+  })
+  .openapi('IoK8sApimachineryPkgApisMetaV1Condition')
+
+const IoK8sApiResourceV1NetworkDeviceDataSchema = z
+  .object({
+    hardwareAddress: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "hardwareAddress represents the hardware address (e.g. MAC Address) of the device's network interface.\n\nMust not be longer than 128 bytes.",
+      }),
+    interfaceName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'interfaceName specifies the name of the network interface associated with the allocated device. This might be the name of a physical or virtual network interface being configured in the pod.\n\nMust not be longer than 256 bytes.',
+      }),
+    ips: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'ips lists the network addresses assigned to the device\'s network interface. This can include both IPv4 and IPv6 addresses. The IPs are in the CIDR notation, which includes both the address and the associated subnet mask. e.g.: "192.0.2.5/24" for IPv4 and "2001:db8::5/64" for IPv6.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+  })
+  .openapi({
+    description:
+      'NetworkDeviceData provides network-related details for the allocated device. This information may be filled by drivers or other components to configure or identify the device within a network context.',
+    required: [],
+  })
+  .openapi('IoK8sApiResourceV1NetworkDeviceData')
+
+const IoK8sApiResourceV1AllocatedDeviceStatusSchema = z
+  .object({
+    conditions: z
+      .array(IoK8sApimachineryPkgApisMetaV1ConditionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "Conditions contains the latest observation of the device's state. If the device has been configured according to the class and claim config references, the `Ready` condition should be True.\n\nMust not contain more than 8 entries.",
+        'x-kubernetes-list-map-keys': ['type'],
+        'x-kubernetes-list-type': 'map',
+      }),
+    data: IoK8sApimachineryPkgRuntimeRawExtensionSchema.exactOptional().openapi({
+      description:
+        'Data contains arbitrary driver-specific data.\n\nThe length of the raw data must be smaller or equal to 10 Ki.',
+    }),
+    device: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          "Device references one device instance via its name in the driver's resource pool. It must be a DNS label.",
+      }),
+    driver: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'Driver specifies the name of the DRA driver whose kubelet plugin should be invoked to process the allocation once the claim is needed on a node.\n\nMust be a DNS subdomain and should end with a DNS domain owned by the vendor of the driver. It should use only lower case characters.',
+      }),
+    networkData: IoK8sApiResourceV1NetworkDeviceDataSchema.exactOptional().openapi({
+      description: 'NetworkData contains network-related information specific to the device.',
+    }),
+    pool: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'This name together with the driver name and the device name field identify which device was allocated (`<driver name>/<pool name>/<device name>`).\n\nMust not be longer than 253 characters and may contain one or more DNS sub-domains separated by slashes.',
+      }),
+    shareID: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'ShareID uniquely identifies an individual allocation share of the device.',
+      }),
+  })
+  .openapi({
+    description:
+      'AllocatedDeviceStatus contains the status of an allocated device, if the driver chooses to report it. This may include driver-specific information.\n\nThe combination of Driver, Pool, Device, and ShareID must match the corresponding key in Status.Allocation.Devices.',
+    required: ['driver', 'pool', 'device'],
+  })
+  .openapi('IoK8sApiResourceV1AllocatedDeviceStatus')
+
+const IoK8sApiResourceV1ResourceClaimConsumerReferenceSchema = z
+  .object({
+    apiGroup: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'apiGroup is the group for the resource being referenced. It is empty for the core API. This matches the group in the APIVersion that is used when creating the resources.',
+      }),
+    name: z
+      .string()
+      .default('')
+      .openapi({ description: 'name is the name of resource being referenced.' }),
+    resource: z
+      .string()
+      .default('')
+      .openapi({
+        description: 'resource is the type of resource being referenced, for example "pods".',
+      }),
+    uid: z
+      .string()
+      .default('')
+      .openapi({ description: 'uid identifies exactly one incarnation of the resource.' }),
+  })
+  .openapi({
+    description:
+      'ResourceClaimConsumerReference contains enough information to let you locate the consumer of a ResourceClaim. The user must be a resource in the same namespace as the ResourceClaim.',
+    required: ['resource', 'name', 'uid'],
+  })
+  .openapi('IoK8sApiResourceV1ResourceClaimConsumerReference')
+
+type IoK8sApiResourceV1ResourceClaimStatusType = {
+  allocation?: z.infer<typeof IoK8sApiResourceV1AllocationResultSchema>
+  devices?: z.infer<typeof IoK8sApiResourceV1AllocatedDeviceStatusSchema>[]
+  reservedFor?: z.infer<typeof IoK8sApiResourceV1ResourceClaimConsumerReferenceSchema>[]
+}
+
+const IoK8sApiResourceV1ResourceClaimStatusSchema: z.ZodType<IoK8sApiResourceV1ResourceClaimStatusType> =
+  z
+    .object({
+      allocation: IoK8sApiResourceV1AllocationResultSchema.exactOptional().openapi({
+        description: 'allocation is set once the claim has been allocated successfully.',
+      }),
+      devices: z
+        .array(IoK8sApiResourceV1AllocatedDeviceStatusSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'devices contains the status of each device allocated for this claim, as reported by the driver. This can include driver-specific information. Entries are owned by their respective drivers.',
+          'x-kubernetes-list-map-keys': ['driver', 'device', 'pool', 'shareID'],
+          'x-kubernetes-list-type': 'map',
+        }),
+      reservedFor: z
+        .array(IoK8sApiResourceV1ResourceClaimConsumerReferenceSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'reservedFor indicates which entities are currently allowed to use the claim. A Pod which references a ResourceClaim which is not reserved for that Pod will not be started. A claim that is in use or might be in use because it has been reserved must not get deallocated.\n\nIn a cluster with multiple scheduler instances, two pods might get scheduled concurrently by different schedulers. When they reference the same ResourceClaim which already has reached its maximum number of consumers, only one pod can be scheduled.\n\nBoth schedulers try to add their pod to the claim.status.reservedFor field, but only the update that reaches the API server first gets stored. The other one fails with an error and the scheduler which issued it knows that it must put the pod back into the queue, waiting for the ResourceClaim to become usable again.\n\nThere can be at most 256 such reservations. This may get increased in the future, but not reduced.',
+          'x-kubernetes-list-map-keys': ['uid'],
+          'x-kubernetes-list-type': 'map',
+          'x-kubernetes-patch-merge-key': 'uid',
+          'x-kubernetes-patch-strategy': 'merge',
+        }),
+    })
+    .openapi({
+      description:
+        'ResourceClaimStatus tracks whether the resource has been allocated and what the result of that was.',
+      required: [],
+    })
+    .openapi('IoK8sApiResourceV1ResourceClaimStatus')
+
+type IoK8sApiResourceV1ResourceClaimType = {
+  apiVersion?: string
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema>
+  spec?: z.infer<typeof IoK8sApiResourceV1ResourceClaimSpecSchema>
+  status?: z.infer<typeof IoK8sApiResourceV1ResourceClaimStatusSchema>
+}
+
+const IoK8sApiResourceV1ResourceClaimSchema: z.ZodType<IoK8sApiResourceV1ResourceClaimType> = z
   .object({
     apiVersion: z
       .string()
@@ -1500,23 +1161,29 @@ const IoK8sApiResourceV1DeviceClassSchema = z
       }),
     metadata: IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema.default({})
       .exactOptional()
-      .openapi({ description: "metadata is the standard object's metadata." }),
-    spec: IoK8sApiResourceV1DeviceClassSpecSchema.default({})
+      .openapi({ description: 'metadata is the standard object metadata.' }),
+    spec: IoK8sApiResourceV1ResourceClaimSpecSchema.default({})
       .exactOptional()
       .openapi({
         description:
-          'spec defines what can be allocated and how to configure it.\n\nThis is mutable. Consumers have to be prepared for classes changing at any time, either because they get updated or replaced. Claim allocations are done once based on whatever was set in classes at the time of allocation.\n\nChanging the spec automatically increments the metadata.generation number.',
+          'spec describes what is being requested and how to configure it. The spec is immutable.',
+      }),
+    status: IoK8sApiResourceV1ResourceClaimStatusSchema.default({})
+      .exactOptional()
+      .openapi({
+        description:
+          'status describes whether the claim is ready to use and what has been allocated.',
       }),
   })
   .openapi({
     description:
-      'DeviceClass is a vendor- or admin-provided resource that contains device configuration and selectors. It can be referenced in the device requests of a claim to apply these presets. Cluster scoped.',
+      'ResourceClaim describes a request for access to resources in the cluster, for use by workloads. For example, if a workload needs an accelerator device with specific properties, this is how that request is expressed. The status stanza tracks whether this claim has been satisfied and what specific resources have been allocated.',
     'x-kubernetes-group-version-kind': [
-      { group: 'resource.k8s.io', kind: 'DeviceClass', version: 'v1' },
+      { group: 'resource.k8s.io', kind: 'ResourceClaim', version: 'v1' },
     ],
     required: [],
   })
-  .openapi('IoK8sApiResourceV1DeviceClass')
+  .openapi('IoK8sApiResourceV1ResourceClaim')
 
 const IoK8sApimachineryPkgApisMetaV1ShardInfoSchema = z
   .object({
@@ -1587,414 +1254,468 @@ const IoK8sApimachineryPkgApisMetaV1ListMetaSchema = z
   })
   .openapi('IoK8sApimachineryPkgApisMetaV1ListMeta')
 
-const IoK8sApiResourceV1DeviceClassListSchema = z
-  .object({
-    apiVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
-      }),
-    items: z
-      .array(IoK8sApiResourceV1DeviceClassSchema)
-      .openapi({ description: 'Items is the list of resource classes.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
-      .exactOptional()
-      .openapi({ description: 'Standard list metadata' }),
-  })
-  .openapi({
-    description: 'DeviceClassList is a collection of classes.',
-    required: ['items'],
-    'x-kubernetes-group-version-kind': [
-      { group: 'resource.k8s.io', kind: 'DeviceClassList', version: 'v1' },
-    ],
-  })
-  .openapi('IoK8sApiResourceV1DeviceClassList')
+type IoK8sApiResourceV1ResourceClaimListType = {
+  apiVersion?: string
+  items: z.infer<typeof IoK8sApiResourceV1ResourceClaimSchema>[]
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ListMetaSchema>
+}
 
-const IoK8sApiResourceV1DeviceTaintSelectorSchema = z
-  .object({
-    device: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'device represents the name of the device. If device is set, only devices with that name are selected. This field corresponds to slice.spec.devices[].name.\n\nSetting also driver and pool may be required to avoid ambiguity, but is not required.',
-      }),
-    driver: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'driver is the driver name. If driver is set, only devices from that driver are selected. This fields corresponds to slice.spec.driver.',
-      }),
-    pool: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'pool is the pool name. If pool is set, only devices in that pool are selected.\n\nAlso setting the driver name may be useful to avoid ambiguity when different drivers use the same pool name, but this is not required because selecting pools from different drivers may also be useful, for example when drivers with node-local devices use the node name as their pool name.',
-      }),
-  })
-  .openapi({
-    description:
-      'DeviceTaintSelector defines which device(s) a DeviceTaintRule applies to. The empty selector matches all devices. Without a selector, no devices are matched.',
-    required: [],
-  })
-  .openapi('IoK8sApiResourceV1DeviceTaintSelector')
+type IoK8sApiResourceV1ResourceClaimTemplateSpecType = {
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema>
+  spec?: z.infer<typeof IoK8sApiResourceV1ResourceClaimSpecSchema>
+}
 
-const IoK8sApiResourceV1DeviceTaintRuleSpecSchema = z
-  .object({
-    deviceSelector: IoK8sApiResourceV1DeviceTaintSelectorSchema.exactOptional().openapi({
+const IoK8sApiResourceV1ResourceClaimTemplateSpecSchema: z.ZodType<IoK8sApiResourceV1ResourceClaimTemplateSpecType> =
+  z
+    .object({
+      metadata: IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema.default({})
+        .exactOptional()
+        .openapi({
+          description:
+            'metadata may contain labels and annotations that will be copied into the ResourceClaim when creating it. No other fields are allowed and will be rejected during validation.',
+        }),
+      spec: IoK8sApiResourceV1ResourceClaimSpecSchema.default({})
+        .exactOptional()
+        .openapi({
+          description:
+            'spec for the ResourceClaim. The entire content is copied unchanged into the ResourceClaim that gets created from this template. The same fields as in a ResourceClaim are also valid here.',
+        }),
+    })
+    .openapi({
       description:
-        'deviceSelector defines which device(s) the taint is applied to. All selector criteria must be satisfied for a device to match. The empty selector matches all devices. Without a selector, no devices are matches.',
-    }),
-    taint: IoK8sApiResourceV1DeviceTaintSchema.default({}).openapi({
-      description: 'taint is the taint that gets applied to matching devices.',
-    }),
-  })
-  .openapi({
-    description: 'DeviceTaintRuleSpec specifies the selector and one taint.',
-    required: ['taint'],
-  })
-  .openapi('IoK8sApiResourceV1DeviceTaintRuleSpec')
+        'ResourceClaimTemplateSpec contains the metadata and fields for a ResourceClaim.',
+      required: [],
+    })
+    .openapi('IoK8sApiResourceV1ResourceClaimTemplateSpec')
 
-const IoK8sApiResourceV1DeviceTaintRuleStatusSchema = z
+type IoK8sApiResourceV1ResourceClaimTemplateType = {
+  apiVersion?: string
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema>
+  spec?: z.infer<typeof IoK8sApiResourceV1ResourceClaimTemplateSpecSchema>
+}
+
+const IoK8sApiResourceV1ResourceClaimTemplateSchema: z.ZodType<IoK8sApiResourceV1ResourceClaimTemplateType> =
+  z
+    .object({
+      apiVersion: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+        }),
+      kind: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+        }),
+      metadata: IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema.default({})
+        .exactOptional()
+        .openapi({ description: "metadata is the standard object's metadata." }),
+      spec: IoK8sApiResourceV1ResourceClaimTemplateSpecSchema.default({})
+        .exactOptional()
+        .openapi({
+          description:
+            'spec describes the ResourceClaim that is to be generated.\n\nThis field is immutable. A ResourceClaim will get created by the control plane for a Pod when needed and then not get updated anymore.',
+        }),
+    })
+    .openapi({
+      description: 'ResourceClaimTemplate is used to produce ResourceClaim objects.',
+      'x-kubernetes-group-version-kind': [
+        { group: 'resource.k8s.io', kind: 'ResourceClaimTemplate', version: 'v1' },
+      ],
+      required: [],
+    })
+    .openapi('IoK8sApiResourceV1ResourceClaimTemplate')
+
+type IoK8sApiResourceV1ResourceClaimTemplateListType = {
+  apiVersion?: string
+  items: z.infer<typeof IoK8sApiResourceV1ResourceClaimTemplateSchema>[]
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ListMetaSchema>
+}
+
+const IoK8sApiResourceV1DeviceAttributeSchema = z
   .object({
-    conditions: z
-      .array(IoK8sApimachineryPkgApisMetaV1ConditionSchema)
+    bool: z.boolean().exactOptional().openapi({ description: 'bool is a true/false value.' }),
+    bools: z
+      .array(z.boolean())
+      .exactOptional()
+      .openapi({
+        description: 'bools is a non-empty list of true/false values.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+    int: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'int is a number.' }),
+    ints: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
       .exactOptional()
       .openapi({
         description:
-          "conditions provide information about the state of the DeviceTaintRule and the cluster at some point in time, in a machine-readable and human-readable format.\n\nThe following condition is currently defined as part of this API, more may get added: - Type: EvictionInProgress - Status: True if there are currently pods which need to be evicted, False otherwise\n  (includes the effects which don't cause eviction).\n- Reason: not specified, may change - Message: includes information about number of pending pods and already evicted pods\n  in a human-readable format, updated periodically, may change\n\nFor `effect: None`, the condition above gets set once for each change to the spec, with the message containing information about what would happen if the effect was `NoExecute`. This feedback can be used to decide whether changing the effect to `NoExecute` will work as intended. It only gets set once to avoid having to constantly update the status.\n\nMust have 8 or fewer entries.",
-        'x-kubernetes-list-map-keys': ['type'],
-        'x-kubernetes-list-type': 'map',
-        'x-kubernetes-patch-merge-key': 'type',
-        'x-kubernetes-patch-strategy': 'merge',
+          'ints is a non-empty list of numbers.\n\nThis is an alpha field and requires enabling the DRAListTypeAttributes feature gate.',
+        'x-kubernetes-list-type': 'atomic',
       }),
-  })
-  .openapi({
-    description: 'DeviceTaintRuleStatus provides information about an on-going pod eviction.',
-    required: [],
-  })
-  .openapi('IoK8sApiResourceV1DeviceTaintRuleStatus')
-
-const IoK8sApiResourceV1DeviceTaintRuleSchema = z
-  .object({
-    apiVersion: z
+    string: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'string is a string. Must not be longer than 64 characters.' }),
+    strings: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'strings is a non-empty list of strings. Each string must not be longer than 64 characters.\n\nThis is an alpha field and requires enabling the DRAListTypeAttributes feature gate.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+    version: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+          'version is a semantic version according to semver.org spec 2.0.0. Must not be longer than 64 characters.',
       }),
-    kind: z
-      .string()
+    versions: z
+      .array(z.string())
       .exactOptional()
       .openapi({
         description:
-          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+          'versions is a non-empty list of semantic versions according to semver.org spec 2.0.0. Each version string must not be longer than 64 characters.\n\nThis is an alpha field and requires enabling the DRAListTypeAttributes feature gate.',
+        'x-kubernetes-list-type': 'atomic',
       }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema.default({})
-      .exactOptional()
-      .openapi({ description: "metadata is the standard object's metadata." }),
-    spec: IoK8sApiResourceV1DeviceTaintRuleSpecSchema.default({}).openapi({
+  })
+  .openapi({ description: 'DeviceAttribute must have exactly one field set.', required: [] })
+  .openapi('IoK8sApiResourceV1DeviceAttribute')
+
+const IoK8sApiResourceV1CapacityRequestPolicyRangeSchema = z
+  .object({
+    max: IoK8sApimachineryPkgApiResourceQuantitySchema.exactOptional().openapi({
       description:
-        'spec specifies the selector and one taint.\n\nChanging the spec automatically increments the metadata.generation number.',
+        'max defines the upper limit for capacity that can be requested.\n\nMax must be less than or equal to the capacity value. Min and requestPolicy.default must be less than or equal to the maximum.',
     }),
-    status: IoK8sApiResourceV1DeviceTaintRuleStatusSchema.default({})
+    min: IoK8sApimachineryPkgApiResourceQuantitySchema.openapi({
+      description:
+        'min specifies the minimum capacity allowed for a consumption request.\n\nMin must be greater than or equal to zero, and less than or equal to the capacity value. requestPolicy.default must be more than or equal to the minimum.',
+    }),
+    step: IoK8sApimachineryPkgApiResourceQuantitySchema.exactOptional().openapi({
+      description:
+        'step defines the step size between valid capacity amounts within the range.\n\nMax (if set) and requestPolicy.default must be a multiple of Step. Min + Step must be less than or equal to the capacity value.',
+    }),
+  })
+  .openapi({
+    description:
+      'CapacityRequestPolicyRange defines a valid range for consumable capacity values.\n\nIf the DRAFractionalCapacityRange feature gate is enabled and at least one of Min, Max, or Step is a fractional quantity (i.e. its value is not an integer), milli-unit arithmetic is used instead, supporting values with up to 3 decimal places (e.g. 100m = 0.1). The largest supported value then is 1000 times smaller compared to using 64-bit integers. Otherwise, all comparisons use 64-bit integer arithmetic via resource.Quantity.Value().\n\n  - If the requested amount is less than Min, it is rounded up to the Min value.\n  - If Step is set and the requested amount is between Min and Max but not aligned with Step,\n    it will be rounded up to the next value equal to Min + (n * Step).\n  - If Step is not set, the requested amount is used as-is if it falls within the range Min to Max (if set).\n  - If the requested or rounded amount exceeds Max (if set), the request does not satisfy the policy,\n    and the device cannot be allocated.',
+    required: ['min'],
+  })
+  .openapi('IoK8sApiResourceV1CapacityRequestPolicyRange')
+
+const IoK8sApiResourceV1CapacityRequestPolicySchema = z
+  .object({
+    default: IoK8sApimachineryPkgApiResourceQuantitySchema.exactOptional().openapi({
+      description:
+        "default specifies how much of this capacity is consumed by a request that does not contain an entry for it in DeviceRequest's Capacity.",
+    }),
+    validRange: IoK8sApiResourceV1CapacityRequestPolicyRangeSchema.exactOptional().openapi({
+      description:
+        "validRange defines an acceptable quantity value range in consuming requests.\n\nIf this field is set, Default must be defined and it must fall within the defined ValidRange.\n\nIf the requested amount does not fall within the defined range, the request violates the policy, and this device cannot be allocated.\n\nIf the request doesn't contain this capacity entry, Default value is used.",
+    }),
+    validValues: z
+      .array(IoK8sApimachineryPkgApiResourceQuantitySchema)
       .exactOptional()
       .openapi({
-        description: 'status provides information about what was requested in the spec.',
+        description:
+          'validValues defines a set of acceptable quantity values in consuming requests.\n\nMust not contain more than 10 entries. Must be sorted in ascending order.\n\nIf this field is set, Default must be defined and it must be included in ValidValues list.\n\nIf the requested amount does not match any valid value but smaller than some valid values, the scheduler calculates the smallest valid value that is greater than or equal to the request. That is: min(ceil(requestedValue) ∈ validValues), where requestedValue ≤ max(validValues).\n\nIf the requested amount exceeds all valid values, the request violates the policy, and this device cannot be allocated.',
+        'x-kubernetes-list-type': 'atomic',
       }),
   })
   .openapi({
     description:
-      'DeviceTaintRule adds one taint to all devices which match the selector. This has the same effect as if the taint was specified directly in the ResourceSlice by the DRA driver.',
-    required: ['spec'],
-    'x-kubernetes-group-version-kind': [
-      { group: 'resource.k8s.io', kind: 'DeviceTaintRule', version: 'v1' },
-    ],
-  })
-  .openapi('IoK8sApiResourceV1DeviceTaintRule')
-
-const IoK8sApiResourceV1DeviceTaintRuleListSchema = z
-  .object({
-    apiVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
-      }),
-    items: z
-      .array(IoK8sApiResourceV1DeviceTaintRuleSchema)
-      .openapi({ description: 'Items is the list of DeviceTaintRules.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
-      .exactOptional()
-      .openapi({ description: 'Standard list metadata' }),
-  })
-  .openapi({
-    description: 'DeviceTaintRuleList is a collection of DeviceTaintRules.',
-    required: ['items'],
-    'x-kubernetes-group-version-kind': [
-      { group: 'resource.k8s.io', kind: 'DeviceTaintRuleList', version: 'v1' },
-    ],
-  })
-  .openapi('IoK8sApiResourceV1DeviceTaintRuleList')
-
-const IoK8sApiResourceV1ResourceClaimSpecSchema = z
-  .object({
-    devices: IoK8sApiResourceV1DeviceClaimSchema.default({})
-      .exactOptional()
-      .openapi({ description: 'devices defines how to request devices.' }),
-  })
-  .openapi({
-    description:
-      'ResourceClaimSpec defines what is being requested in a ResourceClaim and how to configure it.',
+      'CapacityRequestPolicy defines how requests consume device capacity.\n\nMust not set more than one ValidRequestValues.',
     required: [],
   })
-  .openapi('IoK8sApiResourceV1ResourceClaimSpec')
+  .openapi('IoK8sApiResourceV1CapacityRequestPolicy')
 
-const IoK8sApiResourceV1ResourceClaimConsumerReferenceSchema = z
+const IoK8sApiResourceV1DeviceCapacitySchema = z
   .object({
-    apiGroup: z
+    requestPolicy: IoK8sApiResourceV1CapacityRequestPolicySchema.exactOptional().openapi({
+      description:
+        "requestPolicy defines how this DeviceCapacity must be consumed when the device is allowed to be shared by multiple allocations.\n\nThe Device must have allowMultipleAllocations set to true in order to set a requestPolicy.\n\nIf unset, capacity requests are unconstrained: requests can consume any amount of capacity, as long as the total consumed across all allocations does not exceed the device's defined capacity. If request is also unset, default is the full capacity value.",
+    }),
+    value: IoK8sApimachineryPkgApiResourceQuantitySchema.openapi({
+      description:
+        'value defines how much of a certain capacity that device has.\n\nThis field reflects the fixed total capacity and does not change. The consumed amount is tracked separately by scheduler and does not affect this value.',
+    }),
+  })
+  .openapi({
+    description: 'DeviceCapacity describes a quantity associated with a device.',
+    required: ['value'],
+  })
+  .openapi('IoK8sApiResourceV1DeviceCapacity')
+
+const IoK8sApiResourceV1CounterSchema = z
+  .object({
+    value: IoK8sApimachineryPkgApiResourceQuantitySchema.openapi({
+      description: 'value defines how much of a certain device counter is available.',
+    }),
+  })
+  .openapi({
+    description: 'Counter describes a quantity associated with a device.',
+    required: ['value'],
+  })
+  .openapi('IoK8sApiResourceV1Counter')
+
+const IoK8sApiResourceV1DeviceCounterConsumptionSchema = z
+  .object({
+    compatibilityGroups: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'compatibilityGroups is a list of opaque group names for this counter set consumption.\n\nDevices that consume counters from the same counter set may only be allocated at the same time ("co-allocated") if they all share at least one common group: the intersection of the CompatibilityGroups of all co-allocated devices on that counter set must be non-empty. Devices that consume from different counter sets are never compared via this field.\n\nAn unset field, an explicit nil, and an empty list are equivalent and mean "no groups": such a device is only co-allocatable with sibling devices on the same counter set that also have no groups, and is never co-allocatable with a device that declares one or more groups.\n\nGroup names are opaque and meaningful only within the publishing driver\'s pool.\n\nThe maximum number of groups is 2, and the names must be unique.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+    counterSet: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'counterSet is the name of the set from which the counters defined will be consumed.',
+      }),
+    counters: z
+      .record(z.string(), IoK8sApiResourceV1CounterSchema)
+      .openapi({
+        description:
+          'counters defines the counters that will be consumed by the device.\n\nThe maximum number of counters is 32.',
+      }),
+  })
+  .openapi({
+    description:
+      'DeviceCounterConsumption defines a set of counters that a device will consume from a CounterSet.',
+    required: ['counterSet', 'counters'],
+  })
+  .openapi('IoK8sApiResourceV1DeviceCounterConsumption')
+
+const IoK8sApiResourceV1NodeAllocatableMappingSchema = z
+  .object({
+    capacityKey: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'apiGroup is the group for the resource being referenced. It is empty for the core API. This matches the group in the APIVersion that is used when creating the resources.',
+          'capacityKey references a capacity name defined as a key in the `spec.devices[*].capacity` map. When this field is set, the value associated with this key in the `status.allocation.devices.results[*].consumedCapacity` map (for a specific claim allocation) determines the base quantity for the node allocatable resource. `capacityMultiplier` must also be set and is multiplied with the base quantity.\n\nFor example, if `spec.devices[*].capacity` has an entry "dra.example.com/memory": "128Gi", and this field is set to "dra.example.com/memory", then for a claim allocation that consumes { "dra.example.com/memory": "4Gi" } the base quantity for the node allocatable resource mapping will be "4Gi". The final node allocatable resource amount is `consumedCapacity[capacityKey]` * `capacityMultiplier`.\n\nIn this example, "dra.example.com/memory" is a fictional standardized capacity name. For driver-specific capacities the driver name can be omitted. As defined for consumedCapacity, the capacity consumption may be recorded there with or without the driver name.',
+      }),
+    capacityMultiplier: IoK8sApimachineryPkgApiResourceQuantitySchema.exactOptional().openapi({
+      description:
+        'capacityMultiplier is used as a multiplier for the allocated capacity consumed. It is only valid if `capacityKey` is set. The final node allocatable resource amount is `consumedCapacity[capacityKey]` * `capacityMultiplier`. For example, if a Device\'s capacity "dra.example.com/cores" is consumed, and each "core" provides 2 "cpu"s, the mapping would be: {ResourceName: "cpu", capacityKey: "dra.example.com/cores", capacityMultiplier: "2"}. If a claim consumes 8 "dra.example.com/cores", the CPU footprint is 8 * 2 = 16.',
+    }),
+    deviceMultiplier: IoK8sApimachineryPkgApiResourceQuantitySchema.exactOptional().openapi({
+      description:
+        'deviceMultiplier is used as a multiplier for the allocated device count in the claim. The final node allocatable resource amount is `deviceCount` * `deviceMultiplier`. For example, a DRA driver representing each cache complex (CCX) as a device would have {ResourceName: "cpu", deviceMultiplier: "8"} in its `nodeAllocatableResources`. If 2 devices (CCX) are allocated to the claim, 2 * 8 = 16 CPUs would be considered as allocated. It is only valid when `capacityKey` and `capacityMultiplier` are not set.',
+    }),
+  })
+  .openapi({
+    description:
+      'NodeAllocatableMapping defines how a DRA allocation directly translates into a node allocatable resource quantity. The mapping can be derived from either the count of allocated devices (via deviceMultiplier) or the specific capacity consumed (via capacityKey and capacityMultiplier). These options are mutually exclusive. Kubelet adds this mapped resource quantity from claim to both requests and limits at the pod-level cgroup, and to limits at the container-level cgroup for each container referencing the claim.',
+    required: [],
+  })
+  .openapi('IoK8sApiResourceV1NodeAllocatableMapping')
+
+const IoK8sApiResourceV1NodeAllocatableOverheadSchema = z
+  .object({
+    perContainer: IoK8sApimachineryPkgApiResourceQuantitySchema.exactOptional().openapi({
+      description:
+        "perContainer is applied per container reference to the claim. This models overhead scaling linearly with the number of containers actively using the device. When both PerPod and PerContainer are specified, the total overhead allocated for each pod referencing the claim is computed as: Quantity = PerPod + (PerContainer * NumReferences) Kubelet accounts for this overhead in cgroups: - Pod-level cgroup (requests and limits): Kubelet adds PerPod + (PerContainer * NumReferences). - Container-level cgroup (limits only): Kubelet adds PerPod + PerContainer for each referencing container. This allows any single container to access the pod-level overhead, while the parent cgroup caps the total usage to account for PerPod exactly once. PerContainer overhead of a claim referenced by a non-restartable init container is counted towards the pod's peak resource calculation (see Pod `spec.initContainers`), not for the pod's entire duration.",
+    }),
+    perPod: IoK8sApimachineryPkgApiResourceQuantitySchema.exactOptional().openapi({
+      description:
+        'perPod is overhead applied once per pod referencing the claim on this node. This is a flat overhead incurred for every pod referencing the claim.',
+    }),
+  })
+  .openapi({
+    description:
+      'NodeAllocatableOverhead defines auxiliary resource overheads incurred when allocating a device. Overheads can be specified as a fixed cost per pod referencing the claim, a variable cost per container reference, or both. Kubelet accounts for this overhead by adding it to both the pod-level and container-level cgroups of referencing containers.',
+    required: [],
+  })
+  .openapi('IoK8sApiResourceV1NodeAllocatableOverhead')
+
+const IoK8sApiResourceV1NodeAllocatableResourceSchema = z
+  .object({
+    mapping: IoK8sApiResourceV1NodeAllocatableMappingSchema.exactOptional().openapi({
+      description:
+        'mapping is used when the device directly models a node allocatable resource like standard CPU or memory (e.g., with a CPU DRA driver). The calculated quantity is accounted for exactly once per claim instance on the node. To prevent node cgroup isolation friction, the scheduler explicitly blocks sharing mapped device claims across multiple pods.',
+    }),
+    overhead: IoK8sApiResourceV1NodeAllocatableOverheadSchema.exactOptional().openapi({
+      description:
+        "overhead contains fields for modeling auxiliary overhead incurred on node allocatable resources when allocating devices that are not themselves modeling a node allocatable resource (e.g., host memory overhead for GPUs). Sharing overhead-mapped claims across multiple pods is allowed. The node allocatable overhead is accounted for individually for each pod referencing the claim. Overhead is always subtracted from the node's allocatable capacity for the resource, even when mapping is specified for the same resource. Eg: If a device models memory capacity per socket as a consumable capacity pool via Mapping (with CapacityKey), any overhead specified for the same resource will be subtracted from the node's general allocatable capacity and not from the per-socket capacity pool in Mapping.",
+    }),
+  })
+  .openapi({
+    description:
+      'NodeAllocatableResource defines the translation between the DRA device/capacity units requested to the corresponding quantity of the node allocatable resource. At least one of Mapping or Overhead must be specified. Not specifying either is an invalid configuration.',
+    required: [],
+  })
+  .openapi('IoK8sApiResourceV1NodeAllocatableResource')
+
+const IoK8sApiResourceV1DeviceTaintSchema = z
+  .object({
+    effect: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'effect is the effect of the taint on claims that do not tolerate the taint and through such claims on the pods using them.\n\nValid effects are None, NoSchedule and NoExecute. PreferNoSchedule as used for nodes is not valid here. More effects may get added in the future. Consumers must treat unknown effects like None.',
+      }),
+    key: z
+      .string()
+      .default('')
+      .openapi({
+        description: 'key is the taint key to be applied to a device. Must be a label name.',
+      }),
+    timeAdded: IoK8sApimachineryPkgApisMetaV1TimeSchema.exactOptional().openapi({
+      description:
+        'timeAdded represents the time at which the taint was added or (only in a DeviceTaintRule) the effect was modified. Added automatically during create or update if not set.\n\nIn addition, in a DeviceTaintRule a value provided during an update gets replaced with the current time if the provided value is the same as the old one and the new effect is different. Changing the key and/or value while keeping the effect unchanged is possible and does not update the time stamp because the eviction which uses it is either already started (NoExecute) or not started yet (NoEffect, NoSchedule).',
+    }),
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'value is the taint value corresponding to the taint key. Must be a label value.',
+      }),
+  })
+  .openapi({
+    description:
+      'The device this taint is attached to has the "effect" on any claim which does not tolerate the taint and, through the claim, to pods using the claim.',
+    required: ['key', 'effect'],
+  })
+  .openapi('IoK8sApiResourceV1DeviceTaint')
+
+const IoK8sApiResourceV1DeviceSchema = z
+  .object({
+    allNodes: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'allNodes indicates that all nodes have access to the device.\n\nMust only be set if Spec.PerDeviceNodeSelection is set to true. At most one of NodeName, NodeSelector and AllNodes can be set.',
+      }),
+    allowMultipleAllocations: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'allowMultipleAllocations marks whether the device is allowed to be allocated to multiple DeviceRequests.\n\nIf AllowMultipleAllocations is set to true, the device can be allocated more than once, and all of its capacity is consumable, regardless of whether the requestPolicy is defined or not.',
+      }),
+    attributes: z
+      .record(z.string(), IoK8sApiResourceV1DeviceAttributeSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'attributes defines the set of attributes for this device. The name of each attribute must be unique in that set.\n\nThe maximum number of attributes and capacities combined is 32.',
+      }),
+    bindingConditions: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'bindingConditions defines the conditions for proceeding with binding. All of these conditions must be set in the per-device status conditions with a value of True to proceed with binding the pod to the node while scheduling the pod.\n\nThe maximum number of binding conditions is 4.\n\nThe conditions must be a valid condition type string.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+    bindingFailureConditions: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'bindingFailureConditions defines the conditions for binding failure. They may be set in the per-device status conditions. If any is set to "True", a binding failure occurred.\n\nThe maximum number of binding failure conditions is 4.\n\nThe conditions must be a valid condition type string.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+    bindsToNode: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'bindsToNode indicates if the usage of an allocation involving this device has to be limited to exactly the node that was chosen when allocating the claim. If set to true, the scheduler will set the ResourceClaim.Status.Allocation.NodeSelector to match the node where the allocation was made.',
+      }),
+    capacity: z
+      .record(z.string(), IoK8sApiResourceV1DeviceCapacitySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'capacity defines the set of capacities for this device. The name of each capacity must be unique in that set.\n\nThe maximum number of attributes and capacities combined is 32.',
+      }),
+    consumesCounters: z
+      .array(IoK8sApiResourceV1DeviceCounterConsumptionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'consumesCounters defines a list of references to sharedCounters and the set of counters that the device will consume from those counter sets.\n\nThere can only be a single entry per counterSet.\n\nThe maximum number of device counter consumptions per device is 2.',
+        'x-kubernetes-list-type': 'atomic',
       }),
     name: z
       .string()
       .default('')
-      .openapi({ description: 'name is the name of resource being referenced.' }),
-    resource: z
-      .string()
-      .default('')
       .openapi({
-        description: 'resource is the type of resource being referenced, for example "pods".',
+        description:
+          'name is unique identifier among all devices managed by the driver in the pool. It must be a DNS label.',
       }),
-    uid: z
+    nodeAllocatableResources: z
+      .record(z.string(), IoK8sApiResourceV1NodeAllocatableResourceSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'nodeAllocatableResources defines the mapping of node resources that are managed by the DRA driver exposing this device. This includes resources currently reported in v1.Node `status.allocatable` that are not extended resources (see https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#extended-resources). Examples include "cpu", "memory", "ephemeral-storage", and hugepages. In addition to standard requests made through the Pod `spec`, these resources can also be requested through claims and allocated by the DRA driver. For example, a CPU DRA driver might allocate exclusive CPUs or auxiliary node memory dependencies of an accelerator device. The keys of this map are the node-allocatable resource names (e.g., "cpu", "memory"). Extended resource names are not permitted as keys.',
+      }),
+    nodeName: z
       .string()
-      .default('')
-      .openapi({ description: 'uid identifies exactly one incarnation of the resource.' }),
-  })
-  .openapi({
-    description:
-      'ResourceClaimConsumerReference contains enough information to let you locate the consumer of a ResourceClaim. The user must be a resource in the same namespace as the ResourceClaim.',
-    required: ['resource', 'name', 'uid'],
-  })
-  .openapi('IoK8sApiResourceV1ResourceClaimConsumerReference')
-
-const IoK8sApiResourceV1ResourceClaimStatusSchema = z
-  .object({
-    allocation: IoK8sApiResourceV1AllocationResultSchema.exactOptional().openapi({
-      description: 'allocation is set once the claim has been allocated successfully.',
+      .exactOptional()
+      .openapi({
+        description:
+          'nodeName identifies the node where the device is available.\n\nMust only be set if Spec.PerDeviceNodeSelection is set to true. At most one of NodeName, NodeSelector and AllNodes can be set.',
+      }),
+    nodeSelector: IoK8sApiCoreV1NodeSelectorSchema.exactOptional().openapi({
+      description:
+        'nodeSelector defines the nodes where the device is available.\n\nMust use exactly one term.\n\nMust only be set if Spec.PerDeviceNodeSelection is set to true. At most one of NodeName, NodeSelector and AllNodes can be set.',
     }),
-    devices: z
-      .array(IoK8sApiResourceV1AllocatedDeviceStatusSchema)
+    taints: z
+      .array(IoK8sApiResourceV1DeviceTaintSchema)
       .exactOptional()
       .openapi({
         description:
-          'devices contains the status of each device allocated for this claim, as reported by the driver. This can include driver-specific information. Entries are owned by their respective drivers.',
-        'x-kubernetes-list-map-keys': ['driver', 'device', 'pool', 'shareID'],
-        'x-kubernetes-list-type': 'map',
-      }),
-    reservedFor: z
-      .array(IoK8sApiResourceV1ResourceClaimConsumerReferenceSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'reservedFor indicates which entities are currently allowed to use the claim. A Pod which references a ResourceClaim which is not reserved for that Pod will not be started. A claim that is in use or might be in use because it has been reserved must not get deallocated.\n\nIn a cluster with multiple scheduler instances, two pods might get scheduled concurrently by different schedulers. When they reference the same ResourceClaim which already has reached its maximum number of consumers, only one pod can be scheduled.\n\nBoth schedulers try to add their pod to the claim.status.reservedFor field, but only the update that reaches the API server first gets stored. The other one fails with an error and the scheduler which issued it knows that it must put the pod back into the queue, waiting for the ResourceClaim to become usable again.\n\nThere can be at most 256 such reservations. This may get increased in the future, but not reduced.',
-        'x-kubernetes-list-map-keys': ['uid'],
-        'x-kubernetes-list-type': 'map',
-        'x-kubernetes-patch-merge-key': 'uid',
-        'x-kubernetes-patch-strategy': 'merge',
+          'taints if specified, these are the driver-defined taints.\n\nThe maximum number of taints is 16. If taints are set for any device in a ResourceSlice, then the maximum number of allowed devices per ResourceSlice is 64 instead of 128.\n\nThis is a beta field and requires enabling the DRADeviceTaints feature gate.',
+        'x-kubernetes-list-type': 'atomic',
       }),
   })
   .openapi({
     description:
-      'ResourceClaimStatus tracks whether the resource has been allocated and what the result of that was.',
-    required: [],
+      'Device represents one individual hardware instance that can be selected based on its attributes. Besides the name, exactly one field must be set.',
+    required: ['name'],
   })
-  .openapi('IoK8sApiResourceV1ResourceClaimStatus')
-
-const IoK8sApiResourceV1ResourceClaimSchema = z
-  .object({
-    apiVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema.default({})
-      .exactOptional()
-      .openapi({ description: 'metadata is the standard object metadata.' }),
-    spec: IoK8sApiResourceV1ResourceClaimSpecSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          'spec describes what is being requested and how to configure it. The spec is immutable.',
-      }),
-    status: IoK8sApiResourceV1ResourceClaimStatusSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          'status describes whether the claim is ready to use and what has been allocated.',
-      }),
-  })
-  .openapi({
-    description:
-      'ResourceClaim describes a request for access to resources in the cluster, for use by workloads. For example, if a workload needs an accelerator device with specific properties, this is how that request is expressed. The status stanza tracks whether this claim has been satisfied and what specific resources have been allocated.',
-    'x-kubernetes-group-version-kind': [
-      { group: 'resource.k8s.io', kind: 'ResourceClaim', version: 'v1' },
-    ],
-    required: [],
-  })
-  .openapi('IoK8sApiResourceV1ResourceClaim')
-
-const IoK8sApiResourceV1ResourceClaimListSchema = z
-  .object({
-    apiVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
-      }),
-    items: z
-      .array(IoK8sApiResourceV1ResourceClaimSchema)
-      .openapi({ description: 'Items is the list of resource claims.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
-      .exactOptional()
-      .openapi({ description: 'Standard list metadata' }),
-  })
-  .openapi({
-    description: 'ResourceClaimList is a collection of claims.',
-    required: ['items'],
-    'x-kubernetes-group-version-kind': [
-      { group: 'resource.k8s.io', kind: 'ResourceClaimList', version: 'v1' },
-    ],
-  })
-  .openapi('IoK8sApiResourceV1ResourceClaimList')
-
-const IoK8sApiResourceV1ResourceClaimTemplateSpecSchema = z
-  .object({
-    metadata: IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          'metadata may contain labels and annotations that will be copied into the ResourceClaim when creating it. No other fields are allowed and will be rejected during validation.',
-      }),
-    spec: IoK8sApiResourceV1ResourceClaimSpecSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          'spec for the ResourceClaim. The entire content is copied unchanged into the ResourceClaim that gets created from this template. The same fields as in a ResourceClaim are also valid here.',
-      }),
-  })
-  .openapi({
-    description: 'ResourceClaimTemplateSpec contains the metadata and fields for a ResourceClaim.',
-    required: [],
-  })
-  .openapi('IoK8sApiResourceV1ResourceClaimTemplateSpec')
-
-const IoK8sApiResourceV1ResourceClaimTemplateSchema = z
-  .object({
-    apiVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema.default({})
-      .exactOptional()
-      .openapi({ description: "metadata is the standard object's metadata." }),
-    spec: IoK8sApiResourceV1ResourceClaimTemplateSpecSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          'spec describes the ResourceClaim that is to be generated.\n\nThis field is immutable. A ResourceClaim will get created by the control plane for a Pod when needed and then not get updated anymore.',
-      }),
-  })
-  .openapi({
-    description: 'ResourceClaimTemplate is used to produce ResourceClaim objects.',
-    'x-kubernetes-group-version-kind': [
-      { group: 'resource.k8s.io', kind: 'ResourceClaimTemplate', version: 'v1' },
-    ],
-    required: [],
-  })
-  .openapi('IoK8sApiResourceV1ResourceClaimTemplate')
-
-const IoK8sApiResourceV1ResourceClaimTemplateListSchema = z
-  .object({
-    apiVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
-      }),
-    items: z
-      .array(IoK8sApiResourceV1ResourceClaimTemplateSchema)
-      .openapi({ description: 'Items is the list of resource claim templates.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
-      .exactOptional()
-      .openapi({ description: 'Standard list metadata' }),
-  })
-  .openapi({
-    description: 'ResourceClaimTemplateList is a collection of claim templates.',
-    required: ['items'],
-    'x-kubernetes-group-version-kind': [
-      { group: 'resource.k8s.io', kind: 'ResourceClaimTemplateList', version: 'v1' },
-    ],
-  })
-  .openapi('IoK8sApiResourceV1ResourceClaimTemplateList')
+  .openapi('IoK8sApiResourceV1Device')
 
 const IoK8sApiResourceV1ResourcePoolSchema = z
   .object({
@@ -2048,83 +1769,127 @@ const IoK8sApiResourceV1ResourcePoolSchema = z
   })
   .openapi('IoK8sApiResourceV1ResourcePool')
 
-const IoK8sApiResourceV1ResourceSliceSpecSchema = z
+const IoK8sApiResourceV1CounterSetSchema = z
   .object({
-    allNodes: z
-      .boolean()
-      .exactOptional()
+    counters: z
+      .record(z.string(), IoK8sApiResourceV1CounterSchema)
       .openapi({
         description:
-          'allNodes indicates that all nodes have access to the resources in the pool.\n\nExactly one of NodeName, NodeSelector, AllNodes, and PerDeviceNodeSelection must be set.',
+          'counters defines the set of counters for this CounterSet The name of each counter must be unique in that set and must be a DNS label.\n\nThe maximum number of counters is 32.',
       }),
-    devices: z
-      .array(IoK8sApiResourceV1DeviceSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'devices lists some or all of the devices in this pool.\n\nMust not have more than 128 entries. If any device uses taints or consumes counters the limit is 64.\n\nOnly one of Devices and SharedCounters can be set in a ResourceSlice.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-    driver: z
+    name: z
       .string()
       .default('')
       .openapi({
-        description:
-          'driver identifies the DRA driver providing the capacity information. A field selector can be used to list only ResourceSlice objects with a certain driver name.\n\nMust be a DNS subdomain and should end with a DNS domain owned by the vendor of the driver. It should use only lower case characters. This field is immutable.',
-      }),
-    nodeName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'nodeName identifies the node which provides the resources in this pool. A field selector can be used to list only ResourceSlice objects belonging to a certain node.\n\nThis field can be used to limit access from nodes to ResourceSlices with the same node name. It also indicates to autoscalers that adding new nodes of the same type as some old node might also make new resources available.\n\nExactly one of NodeName, NodeSelector, AllNodes, and PerDeviceNodeSelection must be set. This field is immutable.',
-      }),
-    nodeSelector: IoK8sApiCoreV1NodeSelectorSchema.exactOptional().openapi({
-      description:
-        'nodeSelector defines which nodes have access to the resources in the pool, when that pool is not limited to a single node.\n\nMust use exactly one term.\n\nExactly one of NodeName, NodeSelector, AllNodes, and PerDeviceNodeSelection must be set.',
-    }),
-    partitionTypeAttribute: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'partitionTypeAttribute names a string device attribute (by fully qualified name, e.g. "gpu.example.com/profile") whose value labels each device with its partition type, such as "Full" or "Half" for a MIG-style GPU.\n\nWhen set, every partitionable device in the slice must carry the attribute and devices sharing a value must share the same ConsumesCounters cost.',
-      }),
-    perDeviceNodeSelection: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'perDeviceNodeSelection defines whether the access from nodes to resources in the pool is set on the ResourceSlice level or on each device. If it is set to true, every device defined the ResourceSlice must specify this individually.\n\nExactly one of NodeName, NodeSelector, AllNodes, and PerDeviceNodeSelection must be set.',
-      }),
-    pool: IoK8sApiResourceV1ResourcePoolSchema.default({}).openapi({
-      description: 'pool describes the pool that this ResourceSlice belongs to.',
-    }),
-    sharedCounters: z
-      .array(IoK8sApiResourceV1CounterSetSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'sharedCounters defines a list of counter sets, each of which has a name and a list of counters available.\n\nThe names of the counter sets must be unique in the ResourcePool.\n\nOnly one of Devices and SharedCounters can be set in a ResourceSlice.\n\nThe maximum number of counter sets is 8.',
-        'x-kubernetes-list-type': 'atomic',
-      }),
-    skipNodeOperations: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'skipNodeOperations lists node-local resource operations (gRPC calls) that will be skipped for the devices in this slice when determining whether operations are necessary on the node. If all allocated devices for a driver in a claim skip an operation, that gRPC call will be skipped. Valid values are:\n\n- "NodePrepareResources": NodePrepareResources gRPC calls are skipped. This\n  value cannot be specified unless "NodeUnprepareResources" is also listed\n  (or "*" is specified).\n- "NodeUnprepareResources": NodeUnprepareResources gRPC calls are skipped. - "*": All node-local resource operations are skipped.\n\nOther values may be added in the future. The kubelet must ignore unknown values.',
-        'x-kubernetes-list-type': 'set',
+        description: 'name defines the name of the counter set. It must be a DNS label.',
       }),
   })
   .openapi({
     description:
-      'ResourceSliceSpec contains the information published by the driver in one ResourceSlice.',
-    required: ['driver', 'pool'],
+      'CounterSet defines a named set of counters that are available to be used by devices defined in the ResourcePool.\n\nThe counters are not allocatable by themselves, but can be referenced by devices. When a device is allocated, the portion of counters it uses will no longer be available for use by other devices.',
+    required: ['name', 'counters'],
   })
-  .openapi('IoK8sApiResourceV1ResourceSliceSpec')
+  .openapi('IoK8sApiResourceV1CounterSet')
 
-const IoK8sApiResourceV1ResourceSliceSchema = z
+type IoK8sApiResourceV1ResourceSliceSpecType = {
+  allNodes?: boolean
+  devices?: z.infer<typeof IoK8sApiResourceV1DeviceSchema>[]
+  driver: string
+  nodeName?: string
+  nodeSelector?: z.infer<typeof IoK8sApiCoreV1NodeSelectorSchema>
+  partitionTypeAttribute?: string
+  perDeviceNodeSelection?: boolean
+  pool: z.infer<typeof IoK8sApiResourceV1ResourcePoolSchema>
+  sharedCounters?: z.infer<typeof IoK8sApiResourceV1CounterSetSchema>[]
+  skipNodeOperations?: string[]
+}
+
+const IoK8sApiResourceV1ResourceSliceSpecSchema: z.ZodType<IoK8sApiResourceV1ResourceSliceSpecType> =
+  z
+    .object({
+      allNodes: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'allNodes indicates that all nodes have access to the resources in the pool.\n\nExactly one of NodeName, NodeSelector, AllNodes, and PerDeviceNodeSelection must be set.',
+        }),
+      devices: z
+        .array(IoK8sApiResourceV1DeviceSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'devices lists some or all of the devices in this pool.\n\nMust not have more than 128 entries. If any device uses taints or consumes counters the limit is 64.\n\nOnly one of Devices and SharedCounters can be set in a ResourceSlice.',
+          'x-kubernetes-list-type': 'atomic',
+        }),
+      driver: z
+        .string()
+        .default('')
+        .openapi({
+          description:
+            'driver identifies the DRA driver providing the capacity information. A field selector can be used to list only ResourceSlice objects with a certain driver name.\n\nMust be a DNS subdomain and should end with a DNS domain owned by the vendor of the driver. It should use only lower case characters. This field is immutable.',
+        }),
+      nodeName: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'nodeName identifies the node which provides the resources in this pool. A field selector can be used to list only ResourceSlice objects belonging to a certain node.\n\nThis field can be used to limit access from nodes to ResourceSlices with the same node name. It also indicates to autoscalers that adding new nodes of the same type as some old node might also make new resources available.\n\nExactly one of NodeName, NodeSelector, AllNodes, and PerDeviceNodeSelection must be set. This field is immutable.',
+        }),
+      nodeSelector: IoK8sApiCoreV1NodeSelectorSchema.exactOptional().openapi({
+        description:
+          'nodeSelector defines which nodes have access to the resources in the pool, when that pool is not limited to a single node.\n\nMust use exactly one term.\n\nExactly one of NodeName, NodeSelector, AllNodes, and PerDeviceNodeSelection must be set.',
+      }),
+      partitionTypeAttribute: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'partitionTypeAttribute names a string device attribute (by fully qualified name, e.g. "gpu.example.com/profile") whose value labels each device with its partition type, such as "Full" or "Half" for a MIG-style GPU.\n\nWhen set, every partitionable device in the slice must carry the attribute and devices sharing a value must share the same ConsumesCounters cost.',
+        }),
+      perDeviceNodeSelection: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'perDeviceNodeSelection defines whether the access from nodes to resources in the pool is set on the ResourceSlice level or on each device. If it is set to true, every device defined the ResourceSlice must specify this individually.\n\nExactly one of NodeName, NodeSelector, AllNodes, and PerDeviceNodeSelection must be set.',
+        }),
+      pool: IoK8sApiResourceV1ResourcePoolSchema.openapi({
+        description: 'pool describes the pool that this ResourceSlice belongs to.',
+        default: {},
+      }),
+      sharedCounters: z
+        .array(IoK8sApiResourceV1CounterSetSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'sharedCounters defines a list of counter sets, each of which has a name and a list of counters available.\n\nThe names of the counter sets must be unique in the ResourcePool.\n\nOnly one of Devices and SharedCounters can be set in a ResourceSlice.\n\nThe maximum number of counter sets is 8.',
+          'x-kubernetes-list-type': 'atomic',
+        }),
+      skipNodeOperations: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            'skipNodeOperations lists node-local resource operations (gRPC calls) that will be skipped for the devices in this slice when determining whether operations are necessary on the node. If all allocated devices for a driver in a claim skip an operation, that gRPC call will be skipped. Valid values are:\n\n- "NodePrepareResources": NodePrepareResources gRPC calls are skipped. This\n  value cannot be specified unless "NodeUnprepareResources" is also listed\n  (or "*" is specified).\n- "NodeUnprepareResources": NodeUnprepareResources gRPC calls are skipped. - "*": All node-local resource operations are skipped.\n\nOther values may be added in the future. The kubelet must ignore unknown values.',
+          'x-kubernetes-list-type': 'set',
+        }),
+    })
+    .openapi({
+      description:
+        'ResourceSliceSpec contains the information published by the driver in one ResourceSlice.',
+      required: ['driver', 'pool'],
+    })
+    .openapi('IoK8sApiResourceV1ResourceSliceSpec')
+
+type IoK8sApiResourceV1ResourceSliceType = {
+  apiVersion?: string
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema>
+  spec: z.infer<typeof IoK8sApiResourceV1ResourceSliceSpecSchema>
+}
+
+const IoK8sApiResourceV1ResourceSliceSchema: z.ZodType<IoK8sApiResourceV1ResourceSliceType> = z
   .object({
     apiVersion: z
       .string()
@@ -2143,9 +1908,10 @@ const IoK8sApiResourceV1ResourceSliceSchema = z
     metadata: IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema.default({})
       .exactOptional()
       .openapi({ description: "metadata is the standard object's metadata." }),
-    spec: IoK8sApiResourceV1ResourceSliceSpecSchema.default({}).openapi({
+    spec: IoK8sApiResourceV1ResourceSliceSpecSchema.openapi({
       description:
         'spec contains the information published by the driver.\n\nChanging the spec automatically increments the metadata.generation number.',
+      default: {},
     }),
   })
   .openapi({
@@ -2158,7 +1924,97 @@ const IoK8sApiResourceV1ResourceSliceSchema = z
   })
   .openapi('IoK8sApiResourceV1ResourceSlice')
 
-const IoK8sApiResourceV1ResourceSliceListSchema = z
+type IoK8sApiResourceV1ResourceSliceListType = {
+  apiVersion?: string
+  items: z.infer<typeof IoK8sApiResourceV1ResourceSliceSchema>[]
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ListMetaSchema>
+}
+
+const IoK8sApiResourceV1DeviceClassConfigurationSchema = z
+  .object({
+    opaque: IoK8sApiResourceV1OpaqueDeviceConfigurationSchema.exactOptional().openapi({
+      description: 'opaque provides driver-specific configuration parameters.',
+    }),
+  })
+  .openapi({ description: 'DeviceClassConfiguration is used in DeviceClass.', required: [] })
+  .openapi('IoK8sApiResourceV1DeviceClassConfiguration')
+
+const IoK8sApiResourceV1DeviceClassSpecSchema = z
+  .object({
+    config: z
+      .array(IoK8sApiResourceV1DeviceClassConfigurationSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'config defines configuration parameters that apply to each device that is claimed via this class. Some classses may potentially be satisfied by multiple drivers, so each instance of a vendor configuration applies to exactly one driver.\n\nThey are passed to the driver, but are not considered while allocating the claim.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+    extendedResourceCapacityRequests:
+      IoK8sApiResourceV1CapacityRequirementsSchema.exactOptional().openapi({
+        description:
+          'extendedResourceCapacityRequests defines the fixed capacity amounts that the scheduler requests on every ResourceClaim it synthesizes to satisfy the extended resource of this class.\n\nThe value is copied, unmodified, onto the capacity of each device request synthesized for this class, so it has the same semantics as DeviceRequest.capacity: it applies to each device allocation. A pod requesting more than one device through the extended resource gets that capacity once per device, not once per pod.\n\nThe devices selected by this class must advertise the referenced capacities. Otherwise the extended resource requests cannot be satisfied, the same way as with a selector that matches no devices.\n\nThis is an alpha field and requires enabling the DRAExtendedResourceCapacity feature gate, which depends on DRAConsumableCapacity.',
+      }),
+    extendedResourceName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "extendedResourceName is the extended resource name for the devices of this class. The devices of this class can be used to satisfy a pod's extended resource requests. It has the same format as the name of a pod's extended resource. It should be unique among all the device classes in a cluster. If two device classes have the same name, then the class created later is picked to satisfy a pod's extended resource requests. If two classes are created at the same time, then the name of the class lexicographically sorted first is picked.",
+      }),
+    selectors: z
+      .array(IoK8sApiResourceV1DeviceSelectorSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'selectors is the list of device selectors. Each selector must be satisfied by a device which is claimed via this class.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+  })
+  .openapi({
+    description:
+      'DeviceClassSpec is used in a [DeviceClass] to define what can be allocated and how to configure it.',
+    required: [],
+  })
+  .openapi('IoK8sApiResourceV1DeviceClassSpec')
+
+const IoK8sApiResourceV1DeviceClassSchema = z
+  .object({
+    apiVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+      }),
+    metadata: IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema.default({})
+      .exactOptional()
+      .openapi({ description: "metadata is the standard object's metadata." }),
+    spec: IoK8sApiResourceV1DeviceClassSpecSchema.default({})
+      .exactOptional()
+      .openapi({
+        description:
+          'spec defines what can be allocated and how to configure it.\n\nThis is mutable. Consumers have to be prepared for classes changing at any time, either because they get updated or replaced. Claim allocations are done once based on whatever was set in classes at the time of allocation.\n\nChanging the spec automatically increments the metadata.generation number.',
+      }),
+  })
+  .openapi({
+    description:
+      'DeviceClass is a vendor- or admin-provided resource that contains device configuration and selectors. It can be referenced in the device requests of a claim to apply these presets. Cluster scoped.',
+    'x-kubernetes-group-version-kind': [
+      { group: 'resource.k8s.io', kind: 'DeviceClass', version: 'v1' },
+    ],
+    required: [],
+  })
+  .openapi('IoK8sApiResourceV1DeviceClass')
+
+const IoK8sApiResourceV1DeviceClassListSchema = z
   .object({
     apiVersion: z
       .string()
@@ -2168,8 +2024,8 @@ const IoK8sApiResourceV1ResourceSliceListSchema = z
           'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
       }),
     items: z
-      .array(IoK8sApiResourceV1ResourceSliceSchema)
-      .openapi({ description: 'Items is the list of resource ResourceSlices.' }),
+      .array(IoK8sApiResourceV1DeviceClassSchema)
+      .openapi({ description: 'Items is the list of resource classes.' }),
     kind: z
       .string()
       .exactOptional()
@@ -2182,13 +2038,259 @@ const IoK8sApiResourceV1ResourceSliceListSchema = z
       .openapi({ description: 'Standard list metadata' }),
   })
   .openapi({
-    description: 'ResourceSliceList is a collection of ResourceSlices.',
+    description: 'DeviceClassList is a collection of classes.',
     required: ['items'],
     'x-kubernetes-group-version-kind': [
-      { group: 'resource.k8s.io', kind: 'ResourceSliceList', version: 'v1' },
+      { group: 'resource.k8s.io', kind: 'DeviceClassList', version: 'v1' },
     ],
   })
-  .openapi('IoK8sApiResourceV1ResourceSliceList')
+  .openapi('IoK8sApiResourceV1DeviceClassList')
+
+const IoK8sApiResourceV1DeviceTaintSelectorSchema = z
+  .object({
+    all: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'all explicitly selects every device from every driver in the cluster when set to true. It must not be combined with driver, pool, or device: those must all be unset when all is true.\n\nLeaving driver, pool, and device all unset also selects every device, for historical reasons, but doing so without setting all is deprecated and may be rejected in a future release. Set all explicitly instead.',
+      }),
+    device: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'device represents the name of the device. If device is set, only devices with that name are selected. This field corresponds to slice.spec.devices[].name.\n\nSetting also driver and pool may be required to avoid ambiguity, but is not required.',
+      }),
+    driver: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'driver is the driver name. If driver is set, only devices from that driver are selected. This fields corresponds to slice.spec.driver.',
+      }),
+    pool: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'pool is the pool name. If pool is set, only devices in that pool are selected.\n\nAlso setting the driver name may be useful to avoid ambiguity when different drivers use the same pool name, but this is not required because selecting pools from different drivers may also be useful, for example when drivers with node-local devices use the node name as their pool name.',
+      }),
+  })
+  .openapi({
+    description:
+      'DeviceTaintSelector defines which device(s) a DeviceTaintRule applies to. The empty selector matches all devices. Without a selector, no devices are matched.',
+    required: [],
+  })
+  .openapi('IoK8sApiResourceV1DeviceTaintSelector')
+
+const IoK8sApiResourceV1DeviceTaintRuleSpecSchema = z
+  .object({
+    deviceSelector: IoK8sApiResourceV1DeviceTaintSelectorSchema.exactOptional().openapi({
+      description:
+        'deviceSelector defines which device(s) the taint is applied to. All selector criteria must be satisfied for a device to match. The empty selector matches all devices. Without a selector, no devices are matches.',
+    }),
+    taint: IoK8sApiResourceV1DeviceTaintSchema.openapi({
+      description: 'taint is the taint that gets applied to matching devices.',
+      default: {},
+    }),
+  })
+  .openapi({
+    description: 'DeviceTaintRuleSpec specifies the selector and one taint.',
+    required: ['taint'],
+  })
+  .openapi('IoK8sApiResourceV1DeviceTaintRuleSpec')
+
+const IoK8sApiResourceV1DeviceTaintRuleStatusSchema = z
+  .object({
+    conditions: z
+      .array(IoK8sApimachineryPkgApisMetaV1ConditionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "conditions provide information about the state of the DeviceTaintRule and the cluster at some point in time, in a machine-readable and human-readable format.\n\nThe following condition is currently defined as part of this API, more may get added: - Type: EvictionInProgress - Status: True if there are currently pods which need to be evicted, False otherwise\n  (includes the effects which don't cause eviction).\n- Reason: not specified, may change - Message: includes information about number of pending pods and already evicted pods\n  in a human-readable format, updated periodically, may change\n\nFor `effect: None`, the condition above gets set once for each change to the spec, with the message containing information about what would happen if the effect was `NoExecute`. This feedback can be used to decide whether changing the effect to `NoExecute` will work as intended. It only gets set once to avoid having to constantly update the status.\n\nMust have 8 or fewer entries.",
+        'x-kubernetes-list-map-keys': ['type'],
+        'x-kubernetes-list-type': 'map',
+        'x-kubernetes-patch-merge-key': 'type',
+        'x-kubernetes-patch-strategy': 'merge',
+      }),
+  })
+  .openapi({
+    description: 'DeviceTaintRuleStatus provides information about an on-going pod eviction.',
+    required: [],
+  })
+  .openapi('IoK8sApiResourceV1DeviceTaintRuleStatus')
+
+const IoK8sApiResourceV1DeviceTaintRuleSchema = z
+  .object({
+    apiVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+      }),
+    metadata: IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema.default({})
+      .exactOptional()
+      .openapi({ description: "metadata is the standard object's metadata." }),
+    spec: IoK8sApiResourceV1DeviceTaintRuleSpecSchema.openapi({
+      description:
+        'spec specifies the selector and one taint.\n\nChanging the spec automatically increments the metadata.generation number.',
+      default: {},
+    }),
+    status: IoK8sApiResourceV1DeviceTaintRuleStatusSchema.default({})
+      .exactOptional()
+      .openapi({
+        description: 'status provides information about what was requested in the spec.',
+      }),
+  })
+  .openapi({
+    description:
+      'DeviceTaintRule adds one taint to all devices which match the selector. This has the same effect as if the taint was specified directly in the ResourceSlice by the DRA driver.',
+    required: ['spec'],
+    'x-kubernetes-group-version-kind': [
+      { group: 'resource.k8s.io', kind: 'DeviceTaintRule', version: 'v1' },
+    ],
+  })
+  .openapi('IoK8sApiResourceV1DeviceTaintRule')
+
+const IoK8sApiResourceV1DeviceTaintRuleListSchema = z
+  .object({
+    apiVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+      }),
+    items: z
+      .array(IoK8sApiResourceV1DeviceTaintRuleSchema)
+      .openapi({ description: 'Items is the list of DeviceTaintRules.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+      }),
+    metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
+      .exactOptional()
+      .openapi({ description: 'Standard list metadata' }),
+  })
+  .openapi({
+    description: 'DeviceTaintRuleList is a collection of DeviceTaintRules.',
+    required: ['items'],
+    'x-kubernetes-group-version-kind': [
+      { group: 'resource.k8s.io', kind: 'DeviceTaintRuleList', version: 'v1' },
+    ],
+  })
+  .openapi('IoK8sApiResourceV1DeviceTaintRuleList')
+
+const IoK8sApiResourceV1ResourceClaimListSchema: z.ZodType<IoK8sApiResourceV1ResourceClaimListType> =
+  z
+    .object({
+      apiVersion: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+        }),
+      items: z
+        .array(IoK8sApiResourceV1ResourceClaimSchema)
+        .openapi({ description: 'Items is the list of resource claims.' }),
+      kind: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+        }),
+      metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
+        .exactOptional()
+        .openapi({ description: 'Standard list metadata' }),
+    })
+    .openapi({
+      description: 'ResourceClaimList is a collection of claims.',
+      required: ['items'],
+      'x-kubernetes-group-version-kind': [
+        { group: 'resource.k8s.io', kind: 'ResourceClaimList', version: 'v1' },
+      ],
+    })
+    .openapi('IoK8sApiResourceV1ResourceClaimList')
+
+const IoK8sApiResourceV1ResourceClaimTemplateListSchema: z.ZodType<IoK8sApiResourceV1ResourceClaimTemplateListType> =
+  z
+    .object({
+      apiVersion: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+        }),
+      items: z
+        .array(IoK8sApiResourceV1ResourceClaimTemplateSchema)
+        .openapi({ description: 'Items is the list of resource claim templates.' }),
+      kind: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+        }),
+      metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
+        .exactOptional()
+        .openapi({ description: 'Standard list metadata' }),
+    })
+    .openapi({
+      description: 'ResourceClaimTemplateList is a collection of claim templates.',
+      required: ['items'],
+      'x-kubernetes-group-version-kind': [
+        { group: 'resource.k8s.io', kind: 'ResourceClaimTemplateList', version: 'v1' },
+      ],
+    })
+    .openapi('IoK8sApiResourceV1ResourceClaimTemplateList')
+
+const IoK8sApiResourceV1ResourceSliceListSchema: z.ZodType<IoK8sApiResourceV1ResourceSliceListType> =
+  z
+    .object({
+      apiVersion: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+        }),
+      items: z
+        .array(IoK8sApiResourceV1ResourceSliceSchema)
+        .openapi({ description: 'Items is the list of resource ResourceSlices.' }),
+      kind: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+        }),
+      metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
+        .exactOptional()
+        .openapi({ description: 'Standard list metadata' }),
+    })
+    .openapi({
+      description: 'ResourceSliceList is a collection of ResourceSlices.',
+      required: ['items'],
+      'x-kubernetes-group-version-kind': [
+        { group: 'resource.k8s.io', kind: 'ResourceSliceList', version: 'v1' },
+      ],
+    })
+    .openapi('IoK8sApiResourceV1ResourceSliceList')
 
 const IoK8sApimachineryPkgApisMetaV1APIResourceSchema = z
   .object({
@@ -2393,7 +2495,7 @@ const IoK8sApimachineryPkgApisMetaV1DeleteOptionsSchema = z
   .openapi('IoK8sApimachineryPkgApisMetaV1DeleteOptions')
 
 const IoK8sApimachineryPkgApisMetaV1PatchSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Patch is provided to give a concrete name and type to the Kubernetes PATCH request body.',

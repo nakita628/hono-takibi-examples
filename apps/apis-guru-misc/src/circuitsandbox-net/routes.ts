@@ -780,7 +780,7 @@ const FlaggedItemsResultSchema = z
   .openapi({ required: [] })
   .openapi('FlaggedItemsResult')
 
-const GetSpacesResultSchema = z.object({}).openapi('GetSpacesResult')
+const GetSpacesResultSchema = z.looseObject({}).openapi('GetSpacesResult')
 
 const IncomingWebhookSchema = z
   .object({
@@ -914,7 +914,7 @@ const ParticipantSchema = z
   .openapi({ required: [] })
   .openapi('Participant')
 
-const ParticipantAddResultSchema = z.object({}).openapi('ParticipantAddResult')
+const ParticipantAddResultSchema = z.looseObject({}).openapi('ParticipantAddResult')
 
 const ParticipantSearchResultSchema = z
   .object({
@@ -1019,7 +1019,7 @@ const ParticipantSearchResultLargeSchema = z
   .openapi({ required: [] })
   .openapi('ParticipantSearchResultLarge')
 
-const ParticipantSpaceWrapperSchema = z.object({}).openapi('ParticipantSpaceWrapper')
+const ParticipantSpaceWrapperSchema = z.looseObject({}).openapi('ParticipantSpaceWrapper')
 
 const ParticipantsImportDataResultSchema = z
   .object({
@@ -7410,7 +7410,7 @@ export const getTelephonyTelephonyConversationIdJournalRoute = createRoute({
               : val,
           z.number().min(0).max(9223372036854776000),
         )
-        .default(0n)
+        .default(0)
         .exactOptional()
         .openapi({
           param: {

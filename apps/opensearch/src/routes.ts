@@ -311,7 +311,7 @@ const CommonFieldSchema: z.ZodType<CommonFieldType> = z
 
 type CommonFieldsType = z.infer<typeof CommonFieldSchema> | z.infer<typeof CommonFieldSchema>[]
 
-type CommonFieldValueType = boolean | ({ [key: string]: unknown } | null) | number | string
+type CommonFieldValueType = boolean | null | number | string
 
 const CommonFieldValueSchema: z.ZodType<CommonFieldValueType> = z
   .union([z.boolean(), z.null().nullable(), z.number(), z.string()])
@@ -1260,7 +1260,7 @@ const CommonAggregationsBucketAggregationBaseSchema: z.ZodType<CommonAggregation
         .refine(
           (val) =>
             !z
-              .object({ aggregations: z.object({}), aggs: z.object({}) })
+              .object({ aggregations: z.looseObject({}), aggs: z.looseObject({}) })
               .openapi({ required: ['aggregations', 'aggs'] })
               .safeParse(val).success,
         ),
@@ -1435,7 +1435,7 @@ const CommonAggregationsCardinalityAggregateSchema: z.ZodType<CommonAggregations
 
 const CommonAggregationsChildrenAggregateSchema: z.ZodType<CommonAggregationsChildrenAggregateType> =
   z
-    .lazy(() => CommonAggregationsSingleBucketAggregateBaseSchema.and(z.object({})))
+    .lazy(() => CommonAggregationsSingleBucketAggregateBaseSchema.and(z.looseObject({})))
     .openapi('CommonAggregationsChildrenAggregate')
 
 const CommonAggregationsCompositeAggregateSchema: z.ZodType<CommonAggregationsCompositeAggregateType> =
@@ -1476,7 +1476,7 @@ const CommonAggregationsDerivativeAggregateSchema: z.ZodType<CommonAggregationsD
 const CommonAggregationsDoubleTermsAggregateSchema: z.ZodType<CommonAggregationsDoubleTermsAggregateType> =
   z
     .lazy(() =>
-      CommonAggregationsTermsAggregateBaseDoubleTermsBucketSchema.and(z.object({})).openapi({
+      CommonAggregationsTermsAggregateBaseDoubleTermsBucketSchema.and(z.looseObject({})).openapi({
         description:
           'Result of a `terms` aggregation when the field is some kind of decimal number like a float, double, or distance.',
       }),
@@ -1589,7 +1589,7 @@ type CommonAggregationsExtendedStatsAggregateType = z.infer<
 > & { [key: string]: unknown }
 
 const CommonAggregationsExtendedStatsAggregateSchema: z.ZodType<CommonAggregationsExtendedStatsAggregateType> =
-  CommonAggregationsExtendedStatsAggregateBaseSchema.and(z.object({})).openapi(
+  CommonAggregationsExtendedStatsAggregateBaseSchema.and(z.looseObject({})).openapi(
     'CommonAggregationsExtendedStatsAggregate',
   )
 
@@ -1603,7 +1603,7 @@ const CommonAggregationsExtendedStatsBucketAggregateSchema: z.ZodType<CommonAggr
   )
 
 const CommonAggregationsFilterAggregateSchema: z.ZodType<CommonAggregationsFilterAggregateType> = z
-  .lazy(() => CommonAggregationsSingleBucketAggregateBaseSchema.and(z.object({})))
+  .lazy(() => CommonAggregationsSingleBucketAggregateBaseSchema.and(z.looseObject({})))
   .openapi('CommonAggregationsFilterAggregate')
 
 const CommonAggregationsFiltersAggregateSchema: z.ZodType<CommonAggregationsFiltersAggregateType> =
@@ -1769,7 +1769,7 @@ const CommonAggregationsGeoTileGridAggregateSchema: z.ZodType<CommonAggregations
     .openapi('CommonAggregationsGeoTileGridAggregate')
 
 const CommonAggregationsGlobalAggregateSchema: z.ZodType<CommonAggregationsGlobalAggregateType> = z
-  .lazy(() => CommonAggregationsSingleBucketAggregateBaseSchema.and(z.object({})))
+  .lazy(() => CommonAggregationsSingleBucketAggregateBaseSchema.and(z.looseObject({})))
   .openapi('CommonAggregationsGlobalAggregate')
 
 const CommonAggregationsKeyedPercentilesSchema = z
@@ -1827,19 +1827,19 @@ const CommonAggregationsIpRangeAggregateSchema: z.ZodType<CommonAggregationsIpRa
 const CommonAggregationsLongRareTermsAggregateSchema: z.ZodType<CommonAggregationsLongRareTermsAggregateType> =
   z
     .lazy(() =>
-      CommonAggregationsMultiBucketAggregateBaseLongRareTermsBucketSchema.and(z.object({})).openapi(
-        {
-          description:
-            'Result of the `rare_terms` aggregation when the field is some kind of whole number like a integer, long, or a date.',
-        },
-      ),
+      CommonAggregationsMultiBucketAggregateBaseLongRareTermsBucketSchema.and(
+        z.looseObject({}),
+      ).openapi({
+        description:
+          'Result of the `rare_terms` aggregation when the field is some kind of whole number like a integer, long, or a date.',
+      }),
     )
     .openapi('CommonAggregationsLongRareTermsAggregate')
 
 const CommonAggregationsLongTermsAggregateSchema: z.ZodType<CommonAggregationsLongTermsAggregateType> =
   z
     .lazy(() =>
-      CommonAggregationsTermsAggregateBaseLongTermsBucketSchema.and(z.object({})).openapi({
+      CommonAggregationsTermsAggregateBaseLongTermsBucketSchema.and(z.looseObject({})).openapi({
         description:
           'Result of a `terms` aggregation when the field is some kind of whole number like a integer, long, or a date.',
       }),
@@ -1930,7 +1930,7 @@ const CommonAggregationsMinAggregateSchema: z.ZodType<CommonAggregationsMinAggre
 
 const CommonAggregationsMissingAggregateSchema: z.ZodType<CommonAggregationsMissingAggregateType> =
   z
-    .lazy(() => CommonAggregationsSingleBucketAggregateBaseSchema.and(z.object({})))
+    .lazy(() => CommonAggregationsSingleBucketAggregateBaseSchema.and(z.looseObject({})))
     .openapi('CommonAggregationsMissingAggregate')
 
 const CommonAggregationsMultiTermsAggregateSchema: z.ZodType<CommonAggregationsMultiTermsAggregateType> =
@@ -1939,11 +1939,11 @@ const CommonAggregationsMultiTermsAggregateSchema: z.ZodType<CommonAggregationsM
     .openapi('CommonAggregationsMultiTermsAggregate')
 
 const CommonAggregationsNestedAggregateSchema: z.ZodType<CommonAggregationsNestedAggregateType> = z
-  .lazy(() => CommonAggregationsSingleBucketAggregateBaseSchema.and(z.object({})))
+  .lazy(() => CommonAggregationsSingleBucketAggregateBaseSchema.and(z.looseObject({})))
   .openapi('CommonAggregationsNestedAggregate')
 
 const CommonAggregationsParentAggregateSchema: z.ZodType<CommonAggregationsParentAggregateType> = z
-  .lazy(() => CommonAggregationsSingleBucketAggregateBaseSchema.and(z.object({})))
+  .lazy(() => CommonAggregationsSingleBucketAggregateBaseSchema.and(z.looseObject({})))
   .openapi('CommonAggregationsParentAggregate')
 
 type CommonAggregationsPercentilesBucketAggregateType = z.infer<
@@ -1973,12 +1973,12 @@ const CommonAggregationsRateAggregateSchema: z.ZodType<CommonAggregationsRateAgg
 
 const CommonAggregationsReverseNestedAggregateSchema: z.ZodType<CommonAggregationsReverseNestedAggregateType> =
   z
-    .lazy(() => CommonAggregationsSingleBucketAggregateBaseSchema.and(z.object({})))
+    .lazy(() => CommonAggregationsSingleBucketAggregateBaseSchema.and(z.looseObject({})))
     .openapi('CommonAggregationsReverseNestedAggregate')
 
 const CommonAggregationsSamplerAggregateSchema: z.ZodType<CommonAggregationsSamplerAggregateType> =
   z
-    .lazy(() => CommonAggregationsSingleBucketAggregateBaseSchema.and(z.object({})))
+    .lazy(() => CommonAggregationsSingleBucketAggregateBaseSchema.and(z.looseObject({})))
     .openapi('CommonAggregationsSamplerAggregate')
 
 type CommonAggregationsScriptedMetricAggregateType = z.infer<
@@ -2038,7 +2038,7 @@ type CommonAggregationsStatsAggregateType = z.infer<
 > & { [key: string]: unknown }
 
 const CommonAggregationsStatsAggregateSchema: z.ZodType<CommonAggregationsStatsAggregateType> =
-  CommonAggregationsStatsAggregateBaseSchema.and(z.object({})).openapi(
+  CommonAggregationsStatsAggregateBaseSchema.and(z.looseObject({})).openapi(
     'CommonAggregationsStatsAggregate',
   )
 
@@ -2053,7 +2053,7 @@ const CommonAggregationsStringRareTermsAggregateSchema: z.ZodType<CommonAggregat
   z
     .lazy(() =>
       CommonAggregationsMultiBucketAggregateBaseStringRareTermsBucketSchema.and(
-        z.object({}),
+        z.looseObject({}),
       ).openapi({
         description: 'Result of the `rare_terms` aggregation when the field is a string.',
       }),
@@ -2063,7 +2063,7 @@ const CommonAggregationsStringRareTermsAggregateSchema: z.ZodType<CommonAggregat
 const CommonAggregationsStringTermsAggregateSchema: z.ZodType<CommonAggregationsStringTermsAggregateType> =
   z
     .lazy(() =>
-      CommonAggregationsTermsAggregateBaseStringTermsBucketSchema.and(z.object({})).openapi({
+      CommonAggregationsTermsAggregateBaseStringTermsBucketSchema.and(z.looseObject({})).openapi({
         description: 'Result of a `terms` aggregation when the field is a string.',
       }),
     )
@@ -2096,7 +2096,7 @@ const CommonAggregationsTDigestPercentileRanksAggregateSchema: z.ZodType<CommonA
 
 type CommonAggregationsTTestAggregateType = z.infer<
   typeof CommonAggregationsAggregateBaseSchema
-> & { value: number | ({ [key: string]: unknown } | null); value_as_string?: string }
+> & { value: number | null; value_as_string?: string }
 
 const CommonAggregationsTTestAggregateSchema: z.ZodType<CommonAggregationsTTestAggregateType> =
   CommonAggregationsAggregateBaseSchema.and(
@@ -2167,7 +2167,9 @@ const CommonAggregationsTopHitsAggregateSchema: z.ZodType<CommonAggregationsTopH
 const CommonAggregationsUnsignedLongTermsAggregateSchema: z.ZodType<CommonAggregationsUnsignedLongTermsAggregateType> =
   z
     .lazy(() =>
-      CommonAggregationsTermsAggregateBaseUnsignedLongTermsBucketSchema.and(z.object({})).openapi({
+      CommonAggregationsTermsAggregateBaseUnsignedLongTermsBucketSchema.and(
+        z.looseObject({}),
+      ).openapi({
         description:
           'Result of a `terms` aggregation when the field is an `unsigned_long` (64-bit unsigned integer).\nOpenSearch stores `unsigned_long` values as Long or BigInteger internally. In JSON responses,\nbucket keys are represented as numbers, which may lose precision for values larger than 2^53--1\ndue to IEEE 754 double precision limitations. In protocol buffer representations, keys are\nmanually defined as uint64 to preserve the full 64-bit unsigned range. Use `key_as_string` in\nbuckets for exact string representation of large unsigned long values.',
       }),
@@ -2219,7 +2221,7 @@ const CommonAggregationsMultiBucketAggregateBaseSchema: z.ZodType<CommonAggregat
   ).openapi('CommonAggregationsMultiBucketAggregateBase')
 
 const CommonVoidSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'The absence of any type. This is commonly used in APIs that don\'t return a body.\n\nAlthough "void" is generally used for a unit type that has only one value, this is interpreted as\nthe bottom type, which has no value. Most languages have a unit type, but few have a bottom type.\n\nSee https://en.m.wikipedia.org/wiki/Unit_type and https://en.m.wikipedia.org/wiki/Bottom_type.',
@@ -2242,7 +2244,7 @@ type CommonAggregationsUnmappedRareTermsAggregateType = z.infer<
 > & { [key: string]: unknown }
 
 const CommonAggregationsUnmappedRareTermsAggregateSchema: z.ZodType<CommonAggregationsUnmappedRareTermsAggregateType> =
-  CommonAggregationsMultiBucketAggregateBaseVoidSchema.and(z.object({}))
+  CommonAggregationsMultiBucketAggregateBaseVoidSchema.and(z.looseObject({}))
     .openapi({
       description:
         'Result of a `rare_terms` aggregation when the field is unmapped. `buckets` is always empty.',
@@ -2351,7 +2353,7 @@ type CommonAggregationsUnmappedTermsAggregateType = z.infer<
 > & { [key: string]: unknown }
 
 const CommonAggregationsUnmappedTermsAggregateSchema: z.ZodType<CommonAggregationsUnmappedTermsAggregateType> =
-  CommonAggregationsTermsAggregateBaseVoidSchema.and(z.object({}))
+  CommonAggregationsTermsAggregateBaseVoidSchema.and(z.looseObject({}))
     .openapi({
       description:
         'Result of a `terms` aggregation when the field is unmapped. `buckets` is always empty.',
@@ -2499,7 +2501,7 @@ type CommonAggregationsAverageAggregationType = z.infer<
 > & { [key: string]: unknown }
 
 const CommonAggregationsAverageAggregationSchema: z.ZodType<CommonAggregationsAverageAggregationType> =
-  CommonAggregationsFormatMetricAggregationBaseSchema.and(z.object({})).openapi(
+  CommonAggregationsFormatMetricAggregationBaseSchema.and(z.looseObject({})).openapi(
     'CommonAggregationsAverageAggregation',
   )
 
@@ -2545,7 +2547,7 @@ type CommonAggregationsAverageBucketAggregationType = z.infer<
 > & { [key: string]: unknown }
 
 const CommonAggregationsAverageBucketAggregationSchema: z.ZodType<CommonAggregationsAverageBucketAggregationType> =
-  CommonAggregationsPipelineAggregationBaseSchema.and(z.object({})).openapi(
+  CommonAggregationsPipelineAggregationBaseSchema.and(z.looseObject({})).openapi(
     'CommonAggregationsAverageBucketAggregation',
   )
 
@@ -2671,7 +2673,7 @@ type CommonAggregationsCumulativeCardinalityAggregationType = z.infer<
 > & { [key: string]: unknown }
 
 const CommonAggregationsCumulativeCardinalityAggregationSchema: z.ZodType<CommonAggregationsCumulativeCardinalityAggregationType> =
-  CommonAggregationsPipelineAggregationBaseSchema.and(z.object({})).openapi(
+  CommonAggregationsPipelineAggregationBaseSchema.and(z.looseObject({})).openapi(
     'CommonAggregationsCumulativeCardinalityAggregation',
   )
 
@@ -2680,7 +2682,7 @@ type CommonAggregationsCumulativeSumAggregationType = z.infer<
 > & { [key: string]: unknown }
 
 const CommonAggregationsCumulativeSumAggregationSchema: z.ZodType<CommonAggregationsCumulativeSumAggregationType> =
-  CommonAggregationsPipelineAggregationBaseSchema.and(z.object({})).openapi(
+  CommonAggregationsPipelineAggregationBaseSchema.and(z.looseObject({})).openapi(
     'CommonAggregationsCumulativeSumAggregation',
   )
 
@@ -2711,7 +2713,7 @@ type CommonAggregationsDerivativeAggregationType = z.infer<
 > & { [key: string]: unknown }
 
 const CommonAggregationsDerivativeAggregationSchema: z.ZodType<CommonAggregationsDerivativeAggregationType> =
-  CommonAggregationsPipelineAggregationBaseSchema.and(z.object({})).openapi(
+  CommonAggregationsPipelineAggregationBaseSchema.and(z.looseObject({})).openapi(
     'CommonAggregationsDerivativeAggregation',
   )
 
@@ -2965,7 +2967,7 @@ type CommonAggregationsMaxBucketAggregationType = z.infer<
 > & { [key: string]: unknown }
 
 const CommonAggregationsMaxBucketAggregationSchema: z.ZodType<CommonAggregationsMaxBucketAggregationType> =
-  CommonAggregationsPipelineAggregationBaseSchema.and(z.object({})).openapi(
+  CommonAggregationsPipelineAggregationBaseSchema.and(z.looseObject({})).openapi(
     'CommonAggregationsMaxBucketAggregation',
   )
 
@@ -3004,7 +3006,7 @@ type CommonAggregationsMinBucketAggregationType = z.infer<
 > & { [key: string]: unknown }
 
 const CommonAggregationsMinBucketAggregationSchema: z.ZodType<CommonAggregationsMinBucketAggregationType> =
-  CommonAggregationsPipelineAggregationBaseSchema.and(z.object({})).openapi(
+  CommonAggregationsPipelineAggregationBaseSchema.and(z.looseObject({})).openapi(
     'CommonAggregationsMinBucketAggregation',
   )
 
@@ -3031,7 +3033,7 @@ const CommonAggregationsMovingAverageAggregationBaseSchema =
   ).openapi('CommonAggregationsMovingAverageAggregationBase')
 
 const CommonEmptyObjectSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'An empty object with no properties.' })
   .openapi('CommonEmptyObject')
 
@@ -3480,7 +3482,7 @@ type CommonAggregationsStatsAggregationType = z.infer<
 > & { [key: string]: unknown }
 
 const CommonAggregationsStatsAggregationSchema: z.ZodType<CommonAggregationsStatsAggregationType> =
-  CommonAggregationsFormatMetricAggregationBaseSchema.and(z.object({})).openapi(
+  CommonAggregationsFormatMetricAggregationBaseSchema.and(z.looseObject({})).openapi(
     'CommonAggregationsStatsAggregation',
   )
 
@@ -3489,7 +3491,7 @@ type CommonAggregationsStatsBucketAggregationType = z.infer<
 > & { [key: string]: unknown }
 
 const CommonAggregationsStatsBucketAggregationSchema: z.ZodType<CommonAggregationsStatsBucketAggregationType> =
-  CommonAggregationsPipelineAggregationBaseSchema.and(z.object({})).openapi(
+  CommonAggregationsPipelineAggregationBaseSchema.and(z.looseObject({})).openapi(
     'CommonAggregationsStatsBucketAggregation',
   )
 
@@ -3498,7 +3500,7 @@ type CommonAggregationsSumAggregationType = z.infer<
 > & { [key: string]: unknown }
 
 const CommonAggregationsSumAggregationSchema: z.ZodType<CommonAggregationsSumAggregationType> =
-  CommonAggregationsFormatMetricAggregationBaseSchema.and(z.object({})).openapi(
+  CommonAggregationsFormatMetricAggregationBaseSchema.and(z.looseObject({})).openapi(
     'CommonAggregationsSumAggregation',
   )
 
@@ -3507,7 +3509,7 @@ type CommonAggregationsSumBucketAggregationType = z.infer<
 > & { [key: string]: unknown }
 
 const CommonAggregationsSumBucketAggregationSchema: z.ZodType<CommonAggregationsSumBucketAggregationType> =
-  CommonAggregationsPipelineAggregationBaseSchema.and(z.object({})).openapi(
+  CommonAggregationsPipelineAggregationBaseSchema.and(z.looseObject({})).openapi(
     'CommonAggregationsSumBucketAggregation',
   )
 
@@ -3639,7 +3641,13 @@ const CommonAggregationsTopHitsAggregationSchema: z.ZodType<CommonAggregationsTo
       .openapi({ required: [] }),
   ).openapi('CommonAggregationsTopHitsAggregation')
 
-const CommonAggregationsTestPopulationSchema = z
+type CommonAggregationsTestPopulationType = {
+  field: z.infer<typeof CommonFieldSchema>
+  script?: z.infer<typeof CommonScriptSchema>
+  filter?: z.infer<typeof CommonQueryDslQueryContainerSchema>
+}
+
+const CommonAggregationsTestPopulationSchema: z.ZodType<CommonAggregationsTestPopulationType> = z
   .object({
     field: CommonFieldSchema,
     script: CommonScriptSchema.exactOptional(),
@@ -3678,7 +3686,7 @@ type CommonAggregationsValueCountAggregationType = z.infer<
 > & { [key: string]: unknown }
 
 const CommonAggregationsValueCountAggregationSchema: z.ZodType<CommonAggregationsValueCountAggregationType> =
-  CommonAggregationsFormattableMetricAggregationSchema.and(z.object({})).openapi(
+  CommonAggregationsFormattableMetricAggregationSchema.and(z.looseObject({})).openapi(
     'CommonAggregationsValueCountAggregation',
   )
 
@@ -4089,6 +4097,12 @@ type CommonAggregationsBucketAggregationBaseType = {
   aggs?: { [key: string]: z.infer<typeof CommonAggregationsAggregationContainerSchema> }
 }
 
+type CommonAggregationsBucketsQueryContainerType = z.infer<typeof CommonAggregationsBucketsSchema> &
+  (
+    | { [key: string]: z.infer<typeof CommonQueryDslQueryContainerSchema> }
+    | z.infer<typeof CommonQueryDslQueryContainerSchema>[]
+  )
+
 const CommonAggregationsSingleBucketAggregateBaseSchema: z.ZodType<CommonAggregationsSingleBucketAggregateBaseType> =
   z
     .lazy(() =>
@@ -4145,6 +4159,9 @@ const CommonAggregationsSingleBucketAggregateBaseSchema: z.ZodType<CommonAggrega
               const o = ctx.value
               if (typeof o !== 'object' || o === null || Array.isArray(o)) return
               const e = new Set()
+              for (const k of ['meta']) {
+                e.add(k)
+              }
               for (const k of ['doc_count']) {
                 e.add(k)
               }
@@ -4156,7 +4173,29 @@ const CommonAggregationsSingleBucketAggregateBaseSchema: z.ZodType<CommonAggrega
                 const result = Schema.safeParse(val)
                 if (!result.success) {
                   for (const issue of result.error.issues) {
-                    ctx.issues.push({ ...issue, path: [k, ...issue.path], input: issue.input })
+                    if (issue.code === 'invalid_type') {
+                      ctx.issues.push({ ...issue, path: [k, ...issue.path], input: issue.input })
+                    } else if (issue.code === 'too_big') {
+                      ctx.issues.push({ ...issue, path: [k, ...issue.path], input: issue.input })
+                    } else if (issue.code === 'too_small') {
+                      ctx.issues.push({ ...issue, path: [k, ...issue.path], input: issue.input })
+                    } else if (issue.code === 'invalid_format') {
+                      ctx.issues.push({ ...issue, path: [k, ...issue.path], input: issue.input })
+                    } else if (issue.code === 'not_multiple_of') {
+                      ctx.issues.push({ ...issue, path: [k, ...issue.path], input: issue.input })
+                    } else if (issue.code === 'unrecognized_keys') {
+                      ctx.issues.push({ ...issue, path: [k, ...issue.path], input: issue.input })
+                    } else if (issue.code === 'invalid_union') {
+                      ctx.issues.push({ ...issue, path: [k, ...issue.path], input: issue.input })
+                    } else if (issue.code === 'invalid_key') {
+                      ctx.issues.push({ ...issue, path: [k, ...issue.path], input: issue.input })
+                    } else if (issue.code === 'invalid_element') {
+                      ctx.issues.push({ ...issue, path: [k, ...issue.path], input: issue.input })
+                    } else if (issue.code === 'invalid_value') {
+                      ctx.issues.push({ ...issue, path: [k, ...issue.path], input: issue.input })
+                    } else if (issue.code === 'custom') {
+                      ctx.issues.push({ ...issue, path: [k, ...issue.path], input: issue.input })
+                    }
                   }
                 }
               }
@@ -4236,7 +4275,7 @@ const CommonAggregationsCompositeValuesSourceSchema = z
   .openapi('CommonAggregationsCompositeValuesSource')
 
 const CommonAggregationsCompositeTermsAggregationSourceSchema =
-  CommonAggregationsCompositeValuesSourceSchema.and(z.object({})).openapi(
+  CommonAggregationsCompositeValuesSourceSchema.and(z.looseObject({})).openapi(
     'CommonAggregationsCompositeTermsAggregationSource',
   )
 
@@ -4421,7 +4460,7 @@ type CommonAggregationsDateHistogramBucketType = z.infer<
 
 const CommonAggregationsRangeAggregateBaseSchema: z.ZodType<CommonAggregationsRangeAggregateBaseType> =
   z
-    .lazy(() => CommonAggregationsMultiBucketAggregateBaseRangeBucketSchema.and(z.object({})))
+    .lazy(() => CommonAggregationsMultiBucketAggregateBaseRangeBucketSchema.and(z.looseObject({})))
     .openapi('CommonAggregationsRangeAggregateBase')
 
 type CommonAggregationsDateRangeAggregateType = z.infer<
@@ -4606,12 +4645,13 @@ type CommonAggregationsFiltersAggregateType = z.infer<
   typeof CommonAggregationsMultiBucketAggregateBaseFiltersBucketSchema
 >
 
-const CommonAggregationsBucketsQueryContainerSchema = CommonAggregationsBucketsSchema.and(
-  z.xor([
-    z.record(z.string(), CommonQueryDslQueryContainerSchema).openapi({ title: 'keyed' }),
-    z.array(CommonQueryDslQueryContainerSchema).openapi({ title: 'array' }),
-  ]),
-).openapi('CommonAggregationsBucketsQueryContainer')
+const CommonAggregationsBucketsQueryContainerSchema: z.ZodType<CommonAggregationsBucketsQueryContainerType> =
+  CommonAggregationsBucketsSchema.and(
+    z.xor([
+      z.record(z.string(), CommonQueryDslQueryContainerSchema).openapi({ title: 'keyed' }),
+      z.array(CommonQueryDslQueryContainerSchema).openapi({ title: 'array' }),
+    ]),
+  ).openapi('CommonAggregationsBucketsQueryContainer')
 
 type CommonAggregationsFiltersAggregationFieldsType = {
   filters?: z.infer<typeof CommonAggregationsBucketsQueryContainerSchema>
@@ -4856,7 +4896,7 @@ type CommonAggregationsGlobalAggregateType = z.infer<
 type CommonAggregationsGlobalAggregationFieldsType = { [key: string]: unknown }
 
 const CommonAggregationsGlobalAggregationFieldsSchema: z.ZodType<CommonAggregationsGlobalAggregationFieldsType> =
-  z.object({}).openapi('CommonAggregationsGlobalAggregationFields')
+  z.looseObject({}).openapi('CommonAggregationsGlobalAggregationFields')
 
 type CommonAggregationsGlobalAggregationType = z.infer<
   typeof CommonAggregationsBucketAggregationBaseSchema
@@ -5161,7 +5201,7 @@ type CommonAggregationsMultiBucketAggregateBaseDateHistogramBucketType = z.infer
 }
 
 const CommonAggregationsFiltersBucketSchema: z.ZodType<CommonAggregationsFiltersBucketType> = z
-  .lazy(() => CommonAggregationsMultiBucketBaseSchema.and(z.object({})))
+  .lazy(() => CommonAggregationsMultiBucketBaseSchema.and(z.looseObject({})))
   .openapi('CommonAggregationsFiltersBucket')
 
 type CommonAggregationsMultiBucketAggregateBaseFiltersBucketType = z.infer<
@@ -5870,7 +5910,7 @@ const CommonAggregationsMutualInformationHeuristicSchema = z
   .openapi('CommonAggregationsMutualInformationHeuristic')
 
 const CommonAggregationsPercentageScoreHeuristicSchema = z
-  .object({})
+  .looseObject({})
   .openapi('CommonAggregationsPercentageScoreHeuristic')
 
 const CommonAggregationsScriptedHeuristicSchema = z
@@ -6850,7 +6890,7 @@ const CommonMappingPropertySchema: z.ZodType<CommonMappingPropertyType> = z
         CommonMappingKnnVectorPropertySchema,
         CommonMappingIcuCollationKeywordPropertySchema,
       ])
-      .openapi({ discriminator: { propertyName: 'type', 'x-default': 'object' } }),
+      .openapi({ discriminator: { propertyName: 'type' } }),
   )
   .openapi('CommonMappingProperty')
 
@@ -7753,6 +7793,104 @@ type CommonMappingTokenCountPropertyType = z.infer<
   null_value?: number
   enable_position_increments?: boolean
   type: 'token_count'
+}
+
+const CommonMappingAllFieldSchema = z
+  .object({
+    analyzer: z.string(),
+    enabled: z.boolean(),
+    omit_norms: z.boolean(),
+    search_analyzer: z.string(),
+    similarity: z.string(),
+    store: z.boolean(),
+    store_term_vector_offsets: z.boolean(),
+    store_term_vector_payloads: z.boolean(),
+    store_term_vector_positions: z.boolean(),
+    store_term_vectors: z.boolean(),
+  })
+  .openapi({
+    required: [
+      'analyzer',
+      'enabled',
+      'omit_norms',
+      'search_analyzer',
+      'similarity',
+      'store',
+      'store_term_vector_offsets',
+      'store_term_vector_payloads',
+      'store_term_vector_positions',
+      'store_term_vectors',
+    ],
+  })
+  .openapi('CommonMappingAllField')
+
+const CommonMappingMatchTypeSchema = z.enum(['regex', 'simple']).openapi('CommonMappingMatchType')
+
+const CommonMappingDynamicTemplateSchema = z
+  .object({
+    mapping: CommonMappingPropertySchema.exactOptional(),
+    match: z.string().exactOptional(),
+    match_mapping_type: z.string().exactOptional(),
+    match_pattern: CommonMappingMatchTypeSchema.exactOptional(),
+    path_match: z.string().exactOptional(),
+    path_unmatch: z.string().exactOptional(),
+    unmatch: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CommonMappingDynamicTemplate')
+
+const CommonMappingFieldNamesFieldSchema = z
+  .object({ enabled: z.boolean() })
+  .openapi({ required: ['enabled'] })
+  .openapi('CommonMappingFieldNamesField')
+
+const CommonMappingIndexFieldSchema = z
+  .object({ enabled: z.boolean() })
+  .openapi({ required: ['enabled'] })
+  .openapi('CommonMappingIndexField')
+
+const CommonMappingRoutingFieldSchema = z
+  .object({ required: z.boolean() })
+  .openapi({ required: ['required'] })
+  .openapi('CommonMappingRoutingField')
+
+const CommonMappingSizeFieldSchema = z
+  .object({ enabled: z.boolean() })
+  .openapi({ required: ['enabled'] })
+  .openapi('CommonMappingSizeField')
+
+const CommonMappingSourceFieldSchema = z
+  .object({
+    compress: z.boolean().exactOptional(),
+    compress_threshold: z.string().exactOptional(),
+    enabled: z.boolean().exactOptional(),
+    excludes: z.array(z.string()).exactOptional(),
+    includes: z.array(z.string()).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CommonMappingSourceField')
+
+const CommonMappingDataStreamTimestampSchema = z
+  .object({ enabled: z.boolean() })
+  .openapi({ required: ['enabled'] })
+  .openapi('CommonMappingDataStreamTimestamp')
+
+type CommonMappingTypeMappingType = {
+  all_field?: z.infer<typeof CommonMappingAllFieldSchema>
+  date_detection?: boolean
+  dynamic?: z.infer<typeof CommonMappingDynamicMappingSchema>
+  dynamic_date_formats?: string[]
+  dynamic_templates?: { [key: string]: z.infer<typeof CommonMappingDynamicTemplateSchema> }[]
+  _field_names?: z.infer<typeof CommonMappingFieldNamesFieldSchema>
+  index_field?: z.infer<typeof CommonMappingIndexFieldSchema>
+  _meta?: z.infer<typeof CommonMetadataSchema>
+  numeric_detection?: boolean
+  properties?: { [key: string]: z.infer<typeof CommonMappingPropertySchema> }
+  _routing?: z.infer<typeof CommonMappingRoutingFieldSchema>
+  _size?: z.infer<typeof CommonMappingSizeFieldSchema>
+  _source?: z.infer<typeof CommonMappingSourceFieldSchema>
+  enabled?: boolean
+  _data_stream_timestamp?: z.infer<typeof CommonMappingDataStreamTimestampSchema>
 }
 
 const CommonUlongSchema: z.ZodType<CommonUlongType> = z
@@ -8719,7 +8857,7 @@ type CommonQueryDslParentIdQueryType = z.infer<typeof CommonQueryDslQueryBaseSch
 }
 
 type CommonQueryDslPercolateQueryType = z.infer<typeof CommonQueryDslQueryBaseSchema> & {
-  document?: { [key: string]: unknown }
+  document?: unknown
   documents?: unknown[]
   field: z.infer<typeof CommonFieldSchema>
   id?: z.infer<typeof CommonIdSchema>
@@ -9294,7 +9432,7 @@ const CommonQueryDslMatchQuerySchema: z.ZodType<CommonQueryDslMatchQueryType> = 
   .openapi('CommonQueryDslMatchQuery')
 
 const CommonQueryDslMatchAllQuerySchema: z.ZodType<CommonQueryDslMatchAllQueryType> =
-  CommonQueryDslQueryBaseSchema.and(z.object({})).openapi('CommonQueryDslMatchAllQuery')
+  CommonQueryDslQueryBaseSchema.and(z.looseObject({})).openapi('CommonQueryDslMatchAllQuery')
 
 const CommonQueryDslMatchBoolPrefixQuerySchema: z.ZodType<CommonQueryDslMatchBoolPrefixQueryType> =
   z
@@ -9347,7 +9485,7 @@ const CommonQueryDslMatchBoolPrefixQuerySchema: z.ZodType<CommonQueryDslMatchBoo
     .openapi('CommonQueryDslMatchBoolPrefixQuery')
 
 const CommonQueryDslMatchNoneQuerySchema: z.ZodType<CommonQueryDslMatchNoneQueryType> =
-  CommonQueryDslQueryBaseSchema.and(z.object({})).openapi('CommonQueryDslMatchNoneQuery')
+  CommonQueryDslQueryBaseSchema.and(z.looseObject({})).openapi('CommonQueryDslMatchNoneQuery')
 
 const CommonQueryDslMatchPhraseQuerySchema: z.ZodType<CommonQueryDslMatchPhraseQueryType> = z
   .xor([
@@ -9910,7 +10048,7 @@ const CommonQueryDslRangeQuerySchema: z.ZodType<CommonQueryDslRangeQueryType> = 
   .openapi('CommonQueryDslRangeQuery')
 
 const CommonQueryDslRankFeatureFunctionSchema = z
-  .object({})
+  .looseObject({})
   .openapi('CommonQueryDslRankFeatureFunction')
 
 const CommonQueryDslRankFeatureFunctionSaturationSchema =
@@ -9937,7 +10075,7 @@ const CommonQueryDslRankFeatureFunctionLogarithmSchema =
   ).openapi('CommonQueryDslRankFeatureFunctionLogarithm')
 
 const CommonQueryDslRankFeatureFunctionLinearSchema = CommonQueryDslRankFeatureFunctionSchema.and(
-  z.object({}),
+  z.looseObject({}),
 ).openapi('CommonQueryDslRankFeatureFunctionLinear')
 
 const CommonQueryDslRankFeatureFunctionSigmoidSchema = CommonQueryDslRankFeatureFunctionSchema.and(
@@ -10647,10 +10785,1360 @@ type CommonQueryDslSpanWithinQueryType = z.infer<typeof CommonQueryDslQueryBaseS
   little: z.infer<typeof CommonQueryDslSpanQuerySchema>
 }
 
+const CommonSequenceNumberSchema: z.ZodType<CommonSequenceNumberType> = z
+  .preprocess(
+    (val) =>
+      typeof val === 'number' && Number.isSafeInteger(val)
+        ? BigInt(val)
+        : typeof val === 'string' && /^-?\d+$/.test(val)
+          ? BigInt(val)
+          : val,
+    z.int64(),
+  )
+  .openapi({
+    type: 'integer',
+    format: 'int64',
+    description: 'The sequence number of the document.',
+  })
+  .openapi('CommonSequenceNumber')
+
+const CommonUintSchema = z.int().openapi('CommonUint')
+
+const CommonShardFailureSchema = z
+  .object({
+    index: CommonIndexNameSchema.exactOptional(),
+    node: z.string().exactOptional(),
+    reason: CommonErrorCauseSchema,
+    shard: z.int(),
+    status: z.string().exactOptional(),
+    primary: z.boolean(),
+  })
+  .openapi({ required: ['primary', 'reason', 'shard'] })
+  .openapi('CommonShardFailure')
+
+const CommonShardInfoSchema = z
+  .object({
+    failed: CommonUintSchema,
+    successful: CommonUintSchema,
+    total: CommonUintSchema,
+    failures: z.array(CommonShardFailureSchema).exactOptional(),
+  })
+  .openapi({ required: ['failed', 'successful', 'total'] })
+  .openapi('CommonShardInfo')
+
+const CommonInlineGetDictUserDefinedSchema = z
+  .object({
+    fields: z
+      .record(z.string(), z.looseObject({}))
+      .exactOptional()
+      .openapi({ description: 'The fields retrieved from the document.' }),
+    found: z.boolean().openapi({ description: 'Whether the document was found.' }),
+    _seq_no: CommonSequenceNumberSchema.exactOptional(),
+    _primary_term: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The primary term of the document.',
+      }),
+    _routing: CommonRoutingSchema.exactOptional(),
+    _source: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ 'x-protobuf-data-type': 'bytes', description: 'The source of the document.' }),
+  })
+  .catchall(z.looseObject({}).openapi({ title: 'metadata_fields' }))
+  .openapi({
+    description: 'The inline get operation results for user-defined dictionaries.',
+    required: ['found'],
+  })
+  .openapi('CommonInlineGetDictUserDefined')
+
+const CoreBulkResponseItemSchema = z
+  .object({
+    _type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The document type.', 'x-version-removed': '2.0' }),
+    _id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The document ID associated with the operation.' }),
+    _index: z
+      .string()
+      .openapi({
+        description:
+          'The name of the index associated with the operation.\nIf the operation targets a data stream, this is the backing index into which the document was written.',
+      }),
+    status: z.int32().openapi({ description: 'HTTP status code returned for the operation.' }),
+    error: CommonErrorCauseSchema.exactOptional(),
+    _primary_term: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The primary term assigned to the document for the operation.',
+      }),
+    result: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Result of the operation.\nSuccessful values are `created`, `deleted`, and `updated`.',
+      }),
+    _seq_no: CommonSequenceNumberSchema.exactOptional(),
+    _shards: CommonShardInfoSchema.exactOptional(),
+    _version: CommonVersionNumberSchema.exactOptional(),
+    forced_refresh: z.boolean().exactOptional(),
+    get: CommonInlineGetDictUserDefinedSchema.exactOptional(),
+  })
+  .openapi({ required: ['_index', 'status'] })
+  .openapi('CoreBulkResponseItem')
+
+type CoreBulkItemType = {
+  index?: z.infer<typeof CoreBulkResponseItemSchema>
+  create?: z.infer<typeof CoreBulkResponseItemSchema>
+  update?: z.infer<typeof CoreBulkResponseItemSchema>
+  delete?: z.infer<typeof CoreBulkResponseItemSchema>
+}
+
+const CoreBulkItemSchema: z.ZodType<CoreBulkItemType> = z
+  .object({
+    index: CoreBulkResponseItemSchema.exactOptional(),
+    create: CoreBulkResponseItemSchema.exactOptional(),
+    update: CoreBulkResponseItemSchema.exactOptional(),
+    delete: CoreBulkResponseItemSchema.exactOptional(),
+  })
+  .refine((val) => Object.keys(val).length >= 1)
+  .refine((val) => Object.keys(val).length <= 1)
+  .openapi({ required: [] })
+  .openapi('CoreBulkItem')
+
+type CoreBulkBulkResponseType = {
+  errors: boolean
+  items: z.infer<typeof CoreBulkItemSchema>[]
+  took: bigint
+  ingest_took?: bigint
+}
+
 type CoreExplainExplanationType = {
   description: string
   details?: CoreExplainExplanationType[]
   value: number
+}
+
+const CoreSearchFieldCollapseSchema: z.ZodType<CoreSearchFieldCollapseType> = z
+  .lazy(() =>
+    z
+      .object({
+        field: CommonFieldSchema,
+        inner_hits: z
+          .xor([CoreSearchInnerHitsSchema, z.array(CoreSearchInnerHitsSchema)])
+          .exactOptional()
+          .openapi({ description: 'The number of inner hits and their sort order.' }),
+        max_concurrent_group_searches: z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of concurrent requests that are allowed to be retrieved by the `inner_hits` parameter per group.',
+          }),
+      })
+      .openapi({ required: ['field'] }),
+  )
+  .openapi('CoreSearchFieldCollapse')
+
+const CommonQueryDslFieldAndFormatSchema: z.ZodType<CommonQueryDslFieldAndFormatType> = z
+  .xor([
+    CommonFieldSchema.openapi({ title: 'field' }),
+    z
+      .object({
+        field: CommonFieldSchema,
+        format: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Format in which the values are returned.' }),
+      })
+      .openapi({ required: ['field'] }),
+  ])
+  .openapi('CommonQueryDslFieldAndFormat')
+
+const CoreSearchScoreModeSchema = z
+  .enum(['avg', 'max', 'min', 'multiply', 'total'])
+  .openapi('CoreSearchScoreMode')
+
+type CoreSearchRescoreQueryType = {
+  rescore_query: z.infer<typeof CommonQueryDslQueryContainerSchema>
+  query_weight?: number
+  rescore_query_weight?: number
+  score_mode?: z.infer<typeof CoreSearchScoreModeSchema>
+}
+
+const CoreSearchRescoreQuerySchema: z.ZodType<CoreSearchRescoreQueryType> = z
+  .object({
+    rescore_query: CommonQueryDslQueryContainerSchema,
+    query_weight: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The relative importance of the original query as compared to the rescore query.',
+      }),
+    rescore_query_weight: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The relative importance of the rescore query as compared to the original query.',
+      }),
+    score_mode: CoreSearchScoreModeSchema.exactOptional(),
+  })
+  .openapi({ required: ['rescore_query'] })
+  .openapi('CoreSearchRescoreQuery')
+
+type CoreSearchRescoreType = {
+  query: z.infer<typeof CoreSearchRescoreQuerySchema>
+  window_size?: number
+}
+
+const CoreSearchRescoreSchema: z.ZodType<CoreSearchRescoreType> = z
+  .object({ query: CoreSearchRescoreQuerySchema, window_size: z.int32().exactOptional() })
+  .openapi({ required: ['query'] })
+  .openapi('CoreSearchRescore')
+
+const CommonSortResultsSchema: z.ZodType<CommonSortResultsType> = z
+  .array(CommonFieldValueSchema)
+  .openapi('CommonSortResults')
+
+const CoreSearchTrackHitsSchema = z
+  .xor([z.boolean().openapi({ title: 'enabled' }), z.int32().openapi({ title: 'count' })])
+  .openapi({
+    description:
+      'The number of hits matching the query. When `true`, the exact\nnumber of hits is returned at the cost of some performance. When `false`, the\nresponse does not include the total number of hits matching the query.\nDefault is `10,000` hits.',
+  })
+  .openapi('CoreSearchTrackHits')
+
+const CoreSearchPointInTimeReferenceSchema = z
+  .object({ id: CommonIdSchema, keep_alive: CommonDurationSchema.exactOptional() })
+  .openapi({ required: ['id'] })
+  .openapi('CoreSearchPointInTimeReference')
+
+const CoreSearchSuggesterBaseSchema = z
+  .object({
+    analyzer: z.string().exactOptional(),
+    field: z.string(),
+    size: z.int32().exactOptional(),
+  })
+  .openapi({ required: ['field'] })
+  .openapi('CoreSearchSuggesterBase')
+
+const CoreSearchContextSchema = z
+  .xor([
+    z.string().openapi({ title: 'category' }),
+    CommonGeoLocationSchema.openapi({ title: 'location' }),
+  ])
+  .openapi({
+    description:
+      "Text or location that we want similar documents for or a lookup to a document's field for the text.",
+  })
+  .openapi('CoreSearchContext')
+
+const CoreSearchCompletionContextSchema = z
+  .xor([
+    CoreSearchContextSchema.openapi({ title: 'context' }),
+    z
+      .object({
+        boost: z.float64().exactOptional(),
+        context: CoreSearchContextSchema,
+        neighbours: z.array(CommonGeoHashPrecisionSchema).exactOptional(),
+        precision: CommonGeoHashPrecisionSchema.exactOptional(),
+        prefix: z.boolean().exactOptional(),
+      })
+      .openapi({ required: ['context'] }),
+  ])
+  .openapi('CoreSearchCompletionContext')
+
+const CoreSearchSuggestFuzzinessSchema = z
+  .object({
+    fuzziness: z.string(),
+    min_length: z.int32(),
+    prefix_length: z.int32(),
+    transpositions: z.boolean(),
+    unicode_aware: z.boolean(),
+  })
+  .openapi({
+    required: ['fuzziness', 'min_length', 'prefix_length', 'transpositions', 'unicode_aware'],
+  })
+  .openapi('CoreSearchSuggestFuzziness')
+
+const CoreSearchCompletionSuggesterSchema = CoreSearchSuggesterBaseSchema.and(
+  z
+    .object({
+      contexts: z.record(z.string(), z.array(CoreSearchCompletionContextSchema)).exactOptional(),
+      fuzzy: CoreSearchSuggestFuzzinessSchema.exactOptional(),
+      regex: z.string().exactOptional(),
+      skip_duplicates: z.boolean().exactOptional(),
+    })
+    .openapi({ required: [] }),
+).openapi('CoreSearchCompletionSuggester')
+
+const CoreSearchPhraseSuggestCollateQuerySchema = z
+  .object({ id: z.string().exactOptional(), source: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('CoreSearchPhraseSuggestCollateQuery')
+
+const CoreSearchPhraseSuggestCollateSchema = z
+  .object({
+    params: z.looseObject({}).exactOptional(),
+    prune: z.boolean().exactOptional(),
+    query: CoreSearchPhraseSuggestCollateQuerySchema,
+  })
+  .openapi({ required: ['query'] })
+  .openapi('CoreSearchPhraseSuggestCollate')
+
+const CommonSuggestModeSchema = z
+  .enum(['always', 'missing', 'popular'])
+  .openapi('CommonSuggestMode')
+
+const CoreSearchDirectGeneratorSchema = z
+  .object({
+    field: z.string(),
+    max_edits: z.int32().exactOptional(),
+    max_inspections: z.float32().exactOptional(),
+    max_term_freq: z.float32().exactOptional(),
+    min_doc_freq: z.float32().exactOptional(),
+    min_word_length: z.int32().exactOptional(),
+    post_filter: z.string().exactOptional(),
+    pre_filter: z.string().exactOptional(),
+    prefix_length: z.int32().exactOptional(),
+    size: z.int32().exactOptional(),
+    suggest_mode: CommonSuggestModeSchema.exactOptional(),
+  })
+  .openapi({ required: ['field'] })
+  .openapi('CoreSearchDirectGenerator')
+
+const CoreSearchPhraseSuggestHighlightSchema = z
+  .object({ post_tag: z.string(), pre_tag: z.string() })
+  .openapi({ required: ['post_tag', 'pre_tag'] })
+  .openapi('CoreSearchPhraseSuggestHighlight')
+
+const CoreSearchLaplaceSmoothingModelSchema = z
+  .object({ alpha: z.float64() })
+  .openapi({ required: ['alpha'] })
+  .openapi('CoreSearchLaplaceSmoothingModel')
+
+const CoreSearchLinearInterpolationSmoothingModelSchema = z
+  .object({ bigram_lambda: z.float64(), trigram_lambda: z.float64(), unigram_lambda: z.float64() })
+  .openapi({ required: ['bigram_lambda', 'trigram_lambda', 'unigram_lambda'] })
+  .openapi('CoreSearchLinearInterpolationSmoothingModel')
+
+const CoreSearchStupidBackoffSmoothingModelSchema = z
+  .object({ discount: z.float64() })
+  .openapi({ required: ['discount'] })
+  .openapi('CoreSearchStupidBackoffSmoothingModel')
+
+const CoreSearchSmoothingModelSchema = z
+  .object({
+    laplace: CoreSearchLaplaceSmoothingModelSchema.exactOptional(),
+    linear_interpolation: CoreSearchLinearInterpolationSmoothingModelSchema.exactOptional(),
+    stupid_backoff: CoreSearchStupidBackoffSmoothingModelSchema.exactOptional(),
+  })
+  .refine((val) => Object.keys(val).length >= 1)
+  .refine((val) => Object.keys(val).length <= 1)
+  .openapi({ required: [] })
+  .openapi('CoreSearchSmoothingModel')
+
+const CoreSearchPhraseSuggesterSchema = CoreSearchSuggesterBaseSchema.and(
+  z
+    .object({
+      collate: CoreSearchPhraseSuggestCollateSchema.exactOptional(),
+      confidence: z.float64().exactOptional(),
+      direct_generator: z.array(CoreSearchDirectGeneratorSchema).exactOptional(),
+      force_unigrams: z.boolean().exactOptional(),
+      gram_size: z.int32().exactOptional(),
+      highlight: CoreSearchPhraseSuggestHighlightSchema.exactOptional(),
+      max_errors: z.float64().exactOptional(),
+      real_word_error_likelihood: z.float64().exactOptional(),
+      separator: z.string().exactOptional(),
+      shard_size: z.int32().exactOptional(),
+      smoothing: CoreSearchSmoothingModelSchema.exactOptional(),
+      text: z.string().exactOptional(),
+      token_limit: z.int32().exactOptional(),
+    })
+    .openapi({ required: [] }),
+).openapi('CoreSearchPhraseSuggester')
+
+const CoreSearchSuggestSortSchema = z.enum(['frequency', 'score']).openapi('CoreSearchSuggestSort')
+
+const CoreSearchStringDistanceSchema = z
+  .enum(['damerau_levenshtein', 'internal', 'jaro_winkler', 'levenshtein', 'ngram'])
+  .openapi('CoreSearchStringDistance')
+
+const CoreSearchTermSuggesterSchema = CoreSearchSuggesterBaseSchema.and(
+  z
+    .object({
+      lowercase_terms: z.boolean().exactOptional(),
+      max_edits: z.int32().exactOptional(),
+      max_inspections: z.int32().exactOptional(),
+      max_term_freq: z.float32().exactOptional(),
+      min_doc_freq: z.float32().exactOptional(),
+      min_word_length: z.int32().exactOptional(),
+      prefix_length: z.int32().exactOptional(),
+      shard_size: z.int32().exactOptional(),
+      sort: CoreSearchSuggestSortSchema.exactOptional(),
+      string_distance: CoreSearchStringDistanceSchema.exactOptional(),
+      suggest_mode: CommonSuggestModeSchema.exactOptional(),
+      text: z.string().exactOptional(),
+    })
+    .openapi({ required: [] }),
+).openapi('CoreSearchTermSuggester')
+
+const CoreSearchFieldSuggesterSchema = z
+  .object({
+    prefix: z.string().exactOptional(),
+    regex: z.string().exactOptional(),
+    text: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .and(
+    z
+      .object({
+        completion: CoreSearchCompletionSuggesterSchema.exactOptional(),
+        phrase: CoreSearchPhraseSuggesterSchema.exactOptional(),
+        term: CoreSearchTermSuggesterSchema.exactOptional(),
+      })
+      .refine((val) => Object.keys(val).length >= 1)
+      .refine((val) => Object.keys(val).length <= 1)
+      .openapi({ required: [] }),
+  )
+  .openapi('CoreSearchFieldSuggester')
+
+const CoreSearchSuggesterSchema = z
+  .object({
+    text: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The global suggest text, which avoids repetition when the same text is used in several suggesters.',
+      }),
+  })
+  .catchall(
+    CoreSearchFieldSuggesterSchema.openapi({
+      title: 'suggesters',
+      description: 'The named suggesters.',
+    }),
+  )
+  .openapi('CoreSearchSuggester')
+
+type CoreMsearchMultisearchBodyType = {
+  aggregations?: { [key: string]: z.infer<typeof CommonAggregationsAggregationContainerSchema> }
+  collapse?: z.infer<typeof CoreSearchFieldCollapseSchema>
+  query?: z.infer<typeof CommonQueryDslQueryContainerSchema>
+  explain?: boolean
+  ext?: { [key: string]: { [key: string]: unknown } }
+  stored_fields?: z.infer<typeof CommonFieldsSchema>
+  docvalue_fields?: z.infer<typeof CommonQueryDslFieldAndFormatSchema>[]
+  knn?:
+    | z.infer<typeof CommonQueryDslKnnQuerySchema>
+    | z.infer<typeof CommonQueryDslKnnQuerySchema>[]
+  from?: number
+  highlight?: z.infer<typeof CoreSearchHighlightSchema>
+  indices_boost?: { [key: string]: number }[]
+  min_score?: number
+  post_filter?: z.infer<typeof CommonQueryDslQueryContainerSchema>
+  profile?: boolean
+  rescore?: z.infer<typeof CoreSearchRescoreSchema> | z.infer<typeof CoreSearchRescoreSchema>[]
+  script_fields?: { [key: string]: z.infer<typeof CommonScriptFieldSchema> }
+  search_after?: z.infer<typeof CommonSortResultsSchema>
+  size?: number
+  sort?: z.infer<typeof CommonSortSchema>
+  _source?: z.infer<typeof CoreSearchSourceConfigSchema>
+  fields?: z.infer<typeof CommonQueryDslFieldAndFormatSchema>[]
+  terminate_after?: number
+  stats?: string[]
+  timeout?: string
+  track_scores?: boolean
+  track_total_hits?: z.infer<typeof CoreSearchTrackHitsSchema>
+  version?: boolean
+  seq_no_primary_term?: boolean
+  pit?: z.infer<typeof CoreSearchPointInTimeReferenceSchema>
+  suggest?: z.infer<typeof CoreSearchSuggesterSchema>
+}
+
+const CommonShardSearchFailureSchema = z
+  .object({
+    shard: z.int().openapi({ description: 'The shard id where the failure occurred.' }),
+    index: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The index name where the failure occurred.' }),
+    node: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The node id where the failure occurred.' }),
+    reason: CommonErrorCauseSchema,
+  })
+  .openapi({
+    description: 'Represents a failure to search on a specific shard. Used in search responses.',
+    required: ['reason', 'shard'],
+  })
+  .openapi('CommonShardSearchFailure')
+
+const CommonShardStatisticsSchema = z
+  .object({
+    failed: CommonUintSchema,
+    successful: CommonUintSchema,
+    total: CommonUintSchema,
+    failures: z.array(CommonShardSearchFailureSchema).exactOptional(),
+    skipped: CommonUintSchema.exactOptional(),
+  })
+  .openapi({ required: ['failed', 'successful', 'total'] })
+  .openapi('CommonShardStatistics')
+
+const CommonPhaseTookSchema = z
+  .object({
+    dfs_pre_query: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The time taken for the distributed frequency search `pre-query` phase.',
+      }),
+    query: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The time taken for the `query` phase.',
+      }),
+    fetch: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The time taken for the `fetch` phase.',
+      }),
+    dfs_query: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The time taken for the distributed frequency search query phase.',
+      }),
+    expand: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The time taken for the `expand` phase.',
+      }),
+    can_match: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The time taken for the `can_match` phase.',
+      }),
+  })
+  .openapi({
+    description: 'The time taken by different phases of the search.',
+    required: ['can_match', 'dfs_pre_query', 'dfs_query', 'expand', 'fetch', 'query'],
+  })
+  .openapi('CommonPhaseTook')
+
+type CoreSearchTDocumentType = unknown
+
+const CoreSearchTDocumentSchema: z.ZodType<CoreSearchTDocumentType> = z
+  .any()
+  .openapi({ 'x-is-generic-type-parameter': true, 'x-protobuf-data-type': 'bytes' })
+  .openapi('CoreSearchTDocument')
+
+const CoreSearchProcessorExecutionDetailSchema = z
+  .object({
+    processor_name: z.string().exactOptional(),
+    duration_millis: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    input_data: z.any().exactOptional(),
+    output_data: z.any().exactOptional(),
+    status: z.string().exactOptional(),
+    tag: z.string().exactOptional(),
+    error: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CoreSearchProcessorExecutionDetail')
+
+const CommonAggregationsAggregateSchema: z.ZodType<CommonAggregationsAggregateType> = z
+  .lazy(() =>
+    z
+      .union([
+        CommonAggregationsAdjacencyMatrixAggregateSchema.openapi({ title: 'adjacency_matrix' }),
+        CommonAggregationsAutoDateHistogramAggregateSchema.openapi({
+          title: 'auto_date_histogram',
+        }),
+        CommonAggregationsAvgAggregateSchema.openapi({ title: 'avg' }),
+        CommonAggregationsBoxPlotAggregateSchema.openapi({ title: 'box_plot' }),
+        CommonAggregationsBucketMetricValueAggregateSchema.openapi({
+          title: 'bucket_metric_value',
+        }),
+        CommonAggregationsCardinalityAggregateSchema.openapi({ title: 'cardinality' }),
+        CommonAggregationsChildrenAggregateSchema.openapi({ title: 'children' }),
+        CommonAggregationsCompositeAggregateSchema.openapi({ title: 'composite' }),
+        CommonAggregationsDateHistogramAggregateSchema.openapi({ title: 'date_histogram' }),
+        CommonAggregationsDateRangeAggregateSchema.openapi({ title: 'date_range' }),
+        CommonAggregationsDerivativeAggregateSchema.openapi({ title: 'derivative' }),
+        CommonAggregationsDoubleTermsAggregateSchema.openapi({ title: 'dterms' }),
+        CommonAggregationsExtendedStatsAggregateSchema.openapi({ title: 'extended_stats' }),
+        CommonAggregationsExtendedStatsBucketAggregateSchema.openapi({
+          title: 'extended_stats_bucket',
+        }),
+        CommonAggregationsFilterAggregateSchema.openapi({ title: 'filter' }),
+        CommonAggregationsFiltersAggregateSchema.openapi({ title: 'filters' }),
+        CommonAggregationsGeoBoundsAggregateSchema.openapi({ title: 'geo_bounds' }),
+        CommonAggregationsGeoCentroidAggregateSchema.openapi({ title: 'geo_centroid' }),
+        CommonAggregationsGeoDistanceAggregateSchema.openapi({ title: 'geo_distance' }),
+        CommonAggregationsGeoHashGridAggregateSchema.openapi({ title: 'geohash_grid' }),
+        CommonAggregationsGeoTileGridAggregateSchema.openapi({ title: 'geotile_grid' }),
+        CommonAggregationsGlobalAggregateSchema.openapi({ title: 'global' }),
+        CommonAggregationsHdrPercentilesAggregateSchema.openapi({ title: 'hdr_percentiles' }),
+        CommonAggregationsHdrPercentileRanksAggregateSchema.openapi({
+          title: 'hdr_percentile_ranks',
+        }),
+        CommonAggregationsHistogramAggregateSchema.openapi({ title: 'histogram' }),
+        CommonAggregationsIpRangeAggregateSchema.openapi({ title: 'ip_range' }),
+        CommonAggregationsLongRareTermsAggregateSchema.openapi({ title: 'lrareterms' }),
+        CommonAggregationsLongTermsAggregateSchema.openapi({ title: 'lterms' }),
+        CommonAggregationsMatrixStatsAggregateSchema.openapi({ title: 'matrix_stats' }),
+        CommonAggregationsMaxAggregateSchema.openapi({ title: 'max' }),
+        CommonAggregationsMedianAbsoluteDeviationAggregateSchema.openapi({
+          title: 'median_absolute_deviation',
+        }),
+        CommonAggregationsMinAggregateSchema.openapi({ title: 'min' }),
+        CommonAggregationsMissingAggregateSchema.openapi({ title: 'missing' }),
+        CommonAggregationsMultiTermsAggregateSchema.openapi({ title: 'multi_terms' }),
+        CommonAggregationsNestedAggregateSchema.openapi({ title: 'nested' }),
+        CommonAggregationsParentAggregateSchema.openapi({ title: 'parent' }),
+        CommonAggregationsPercentilesBucketAggregateSchema.openapi({ title: 'percentiles_bucket' }),
+        CommonAggregationsRangeAggregateSchema.openapi({ title: 'range' }),
+        CommonAggregationsRateAggregateSchema.openapi({ title: 'rate' }),
+        CommonAggregationsReverseNestedAggregateSchema.openapi({ title: 'reverse_nested' }),
+        CommonAggregationsSamplerAggregateSchema.openapi({ title: 'sampler' }),
+        CommonAggregationsScriptedMetricAggregateSchema.openapi({ title: 'scripted_metric' }),
+        CommonAggregationsSignificantLongTermsAggregateSchema.openapi({ title: 'siglterms' }),
+        CommonAggregationsSignificantStringTermsAggregateSchema.openapi({ title: 'sigsterms' }),
+        CommonAggregationsCumulativeCardinalityAggregateSchema.openapi({
+          title: 'simple_long_value',
+        }),
+        CommonAggregationsSimpleValueAggregateSchema.openapi({ title: 'simple_value' }),
+        CommonAggregationsStatsAggregateSchema.openapi({ title: 'stats' }),
+        CommonAggregationsStatsBucketAggregateSchema.openapi({ title: 'stats_bucket' }),
+        CommonAggregationsStringRareTermsAggregateSchema.openapi({ title: 'srareterms' }),
+        CommonAggregationsStringTermsAggregateSchema.openapi({ title: 'sterms' }),
+        CommonAggregationsSumAggregateSchema.openapi({ title: 'sum' }),
+        CommonAggregationsTDigestPercentilesAggregateSchema.openapi({
+          title: 'tdigest_percentiles',
+        }),
+        CommonAggregationsTDigestPercentileRanksAggregateSchema.openapi({
+          title: 'tdigest_percentile_ranks',
+        }),
+        CommonAggregationsTTestAggregateSchema.openapi({ title: 't_test' }),
+        CommonAggregationsTopHitsAggregateSchema.openapi({ title: 'top_hits' }),
+        CommonAggregationsUnsignedLongTermsAggregateSchema.openapi({ title: 'ulterms' }),
+        CommonAggregationsUnmappedRareTermsAggregateSchema.openapi({ title: 'umrareterms' }),
+        CommonAggregationsUnmappedSignificantTermsAggregateSchema.openapi({ title: 'umsigterms' }),
+        CommonAggregationsUnmappedTermsAggregateSchema.openapi({ title: 'umterms' }),
+        CommonAggregationsValueCountAggregateSchema.openapi({ title: 'value_count' }),
+        CommonAggregationsVariableWidthHistogramAggregateSchema.openapi({
+          title: 'variable_width_histogram',
+        }),
+        CommonAggregationsWeightedAvgAggregateSchema.openapi({ title: 'weighted_avg' }),
+      ])
+      .openapi({ 'x-supports-typed-keys': true }),
+  )
+  .openapi('CommonAggregationsAggregate')
+
+const CommonClusterStatisticsSchema = z
+  .object({ skipped: z.int32(), successful: z.int32(), total: z.int32() })
+  .openapi({ required: ['skipped', 'successful', 'total'] })
+  .openapi('CommonClusterStatistics')
+
+const CoreSearchAggregationProfileSchema: z.ZodType<CoreSearchAggregationProfileType> = z
+  .lazy(() =>
+    z
+      .object({
+        breakdown: CoreSearchAggregationBreakdownSchema,
+        description: z.string(),
+        time_in_nanos: CommonUnitNanosSchema,
+        type: z.string(),
+        debug: CoreSearchAggregationProfileDebugSchema.exactOptional(),
+        children: z.array(CoreSearchAggregationProfileSchema).exactOptional(),
+      })
+      .openapi({ required: ['breakdown', 'description', 'time_in_nanos', 'type'] }),
+  )
+  .openapi('CoreSearchAggregationProfile')
+
+const CoreSearchCollectorSchema: z.ZodType<CoreSearchCollectorType> = z
+  .lazy(() =>
+    z
+      .object({
+        name: z.string(),
+        reason: z.string(),
+        time_in_nanos: CommonUnitNanosSchema,
+        children: z.array(CoreSearchCollectorSchema).exactOptional(),
+      })
+      .openapi({ required: ['name', 'reason', 'time_in_nanos'] }),
+  )
+  .openapi('CoreSearchCollector')
+
+const CoreSearchQueryProfileSchema: z.ZodType<CoreSearchQueryProfileType> = z
+  .lazy(() =>
+    z
+      .object({
+        breakdown: CoreSearchQueryBreakdownSchema,
+        description: z.string(),
+        time_in_nanos: CommonUnitNanosSchema,
+        type: z.string(),
+        children: z.array(CoreSearchQueryProfileSchema).exactOptional(),
+      })
+      .openapi({ required: ['breakdown', 'description', 'time_in_nanos', 'type'] }),
+  )
+  .openapi('CoreSearchQueryProfile')
+
+const CoreSearchSearchProfileSchema = z
+  .object({
+    collector: z.array(CoreSearchCollectorSchema),
+    query: z.array(CoreSearchQueryProfileSchema),
+    rewrite_time: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({ required: ['collector', 'query', 'rewrite_time'] })
+  .openapi('CoreSearchSearchProfile')
+
+const CoreSearchFetchProfileSchema: z.ZodType<CoreSearchFetchProfileType> = z
+  .lazy(() =>
+    z
+      .object({
+        type: z.string(),
+        description: z.string(),
+        time_in_nanos: CommonUnitNanosSchema,
+        breakdown: CoreSearchFetchProfileBreakdownSchema,
+        debug: CoreSearchFetchProfileDebugSchema.exactOptional(),
+        children: z.array(CoreSearchFetchProfileSchema).exactOptional(),
+      })
+      .openapi({ required: ['breakdown', 'description', 'time_in_nanos', 'type'] }),
+  )
+  .openapi('CoreSearchFetchProfile')
+
+const CoreSearchShardProfileSchema = z
+  .object({
+    aggregations: z.array(CoreSearchAggregationProfileSchema),
+    id: z.string(),
+    searches: z.array(CoreSearchSearchProfileSchema),
+    fetch: CoreSearchFetchProfileSchema.exactOptional(),
+  })
+  .openapi({ required: ['aggregations', 'id', 'searches'] })
+  .openapi('CoreSearchShardProfile')
+
+type CoreSearchProfileType = { shards: z.infer<typeof CoreSearchShardProfileSchema>[] }
+
+const CoreSearchProfileSchema: z.ZodType<CoreSearchProfileType> = z
+  .object({ shards: z.array(CoreSearchShardProfileSchema) })
+  .openapi({ required: ['shards'] })
+  .openapi('CoreSearchProfile')
+
+const CommonScrollIdSchema = z.string().openapi('CommonScrollId')
+
+const CoreSearchSuggestBaseSchema = z
+  .object({ length: z.int32(), offset: z.int32(), text: z.string() })
+  .openapi({ required: ['length', 'offset', 'text'] })
+  .openapi('CoreSearchSuggestBase')
+
+const CoreSearchCompletionSuggestOptionSchema = z
+  .object({
+    collate_match: z.boolean().exactOptional(),
+    contexts: z.record(z.string(), z.array(CoreSearchContextSchema)).exactOptional(),
+    fields: z.looseObject({}).exactOptional(),
+    _id: z.string().exactOptional(),
+    _index: CommonIndexNameSchema.exactOptional(),
+    _routing: CommonRoutingSchema.exactOptional(),
+    _score: z.float32().exactOptional(),
+    _source: CoreSearchTDocumentSchema.exactOptional(),
+    text: z.string(),
+    score: z.float32().exactOptional(),
+  })
+  .openapi({ required: ['text'] })
+  .openapi('CoreSearchCompletionSuggestOption')
+
+const CoreSearchCompletionSuggestSchema = CoreSearchSuggestBaseSchema.and(
+  z
+    .object({
+      options: z.xor([
+        CoreSearchCompletionSuggestOptionSchema.and(
+          z
+            .object({ _source: CoreSearchTDocumentSchema.exactOptional() })
+            .openapi({ required: [] }),
+        ),
+        z.array(
+          CoreSearchCompletionSuggestOptionSchema.and(
+            z
+              .object({ _source: CoreSearchTDocumentSchema.exactOptional() })
+              .openapi({ required: [] }),
+          ),
+        ),
+      ]),
+    })
+    .openapi({ required: ['options'] }),
+).openapi('CoreSearchCompletionSuggest')
+
+const CoreSearchPhraseSuggestOptionSchema = z
+  .object({
+    text: z.string(),
+    score: z.float64(),
+    highlighted: z.string().exactOptional(),
+    collate_match: z.boolean().exactOptional(),
+  })
+  .openapi({ required: ['score', 'text'] })
+  .openapi('CoreSearchPhraseSuggestOption')
+
+const CoreSearchPhraseSuggestSchema = CoreSearchSuggestBaseSchema.and(
+  z
+    .object({
+      options: z.xor([
+        CoreSearchPhraseSuggestOptionSchema,
+        z.array(CoreSearchPhraseSuggestOptionSchema),
+      ]),
+    })
+    .openapi({ required: ['options'] }),
+).openapi('CoreSearchPhraseSuggest')
+
+const CoreSearchTermSuggestOptionSchema = z
+  .object({
+    text: z.string(),
+    score: z.float64(),
+    freq: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    highlighted: z.string().exactOptional(),
+    collate_match: z.boolean().exactOptional(),
+  })
+  .openapi({ required: ['score', 'text'] })
+  .openapi('CoreSearchTermSuggestOption')
+
+const CoreSearchTermSuggestSchema = CoreSearchSuggestBaseSchema.and(
+  z
+    .object({
+      options: z.xor([
+        CoreSearchTermSuggestOptionSchema,
+        z.array(CoreSearchTermSuggestOptionSchema),
+      ]),
+    })
+    .openapi({ required: ['options'] }),
+).openapi('CoreSearchTermSuggest')
+
+const CoreSearchSuggestSchema = z
+  .xor([
+    CoreSearchCompletionSuggestSchema.and(
+      z
+        .object({
+          options: z
+            .xor([
+              CoreSearchCompletionSuggestOptionSchema.and(
+                z
+                  .object({ _source: CoreSearchTDocumentSchema.exactOptional() })
+                  .openapi({ required: [] }),
+              ),
+              z.array(
+                CoreSearchCompletionSuggestOptionSchema.and(
+                  z
+                    .object({ _source: CoreSearchTDocumentSchema.exactOptional() })
+                    .openapi({ required: [] }),
+                ),
+              ),
+            ])
+            .exactOptional(),
+        })
+        .openapi({ required: [] }),
+    ).openapi({ title: 'completion' }),
+    CoreSearchPhraseSuggestSchema.openapi({ title: 'phrase' }),
+    CoreSearchTermSuggestSchema.openapi({ title: 'term' }),
+  ])
+  .openapi({ 'x-supports-typed-keys': true })
+  .openapi('CoreSearchSuggest')
+
+type CoreSearchSearchResultType = {
+  took: bigint
+  timed_out: boolean
+  _shards: z.infer<typeof CommonShardStatisticsSchema>
+  phase_took?: z.infer<typeof CommonPhaseTookSchema>
+  hits: z.infer<typeof CoreSearchHitsMetadataSchema> & {
+    hits?: { _source?: z.infer<typeof CoreSearchTDocumentSchema> }[]
+  }
+  processor_results?: z.infer<typeof CoreSearchProcessorExecutionDetailSchema>[]
+  aggregations?: { [key: string]: z.infer<typeof CommonAggregationsAggregateSchema> }
+  _clusters?: z.infer<typeof CommonClusterStatisticsSchema>
+  num_reduce_phases?: number
+  profile?: z.infer<typeof CoreSearchProfileSchema>
+  pit_id?: z.infer<typeof CommonIdSchema>
+  _scroll_id?: z.infer<typeof CommonScrollIdSchema>
+  suggest?: { [key: string]: z.infer<typeof CoreSearchSuggestSchema>[] }
+  terminated_early?: boolean
+}
+
+const CoreSearchSearchResultSchema: z.ZodType<CoreSearchSearchResultType> = z
+  .object({
+    took: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    timed_out: z.boolean(),
+    _shards: CommonShardStatisticsSchema,
+    phase_took: CommonPhaseTookSchema.exactOptional().openapi({ 'x-version-added': '2.12' }),
+    hits: CoreSearchHitsMetadataSchema.and(
+      z
+        .object({
+          hits: z
+            .array(
+              z
+                .object({ _source: CoreSearchTDocumentSchema.exactOptional() })
+                .openapi({ required: [] }),
+            )
+            .exactOptional(),
+        })
+        .openapi({ 'x-protobuf-excluded': true, required: [] }),
+    ),
+    processor_results: z
+      .array(CoreSearchProcessorExecutionDetailSchema)
+      .exactOptional()
+      .openapi({ 'x-version-added': '3.0' }),
+    aggregations: z.record(z.string(), CommonAggregationsAggregateSchema).exactOptional(),
+    _clusters: CommonClusterStatisticsSchema.exactOptional(),
+    num_reduce_phases: z.int32().exactOptional(),
+    profile: CoreSearchProfileSchema.exactOptional(),
+    pit_id: CommonIdSchema.exactOptional(),
+    _scroll_id: CommonScrollIdSchema.exactOptional(),
+    suggest: z.record(z.string(), z.array(CoreSearchSuggestSchema)).exactOptional(),
+    terminated_early: z.boolean().exactOptional(),
+  })
+  .openapi({ required: ['_shards', 'hits', 'timed_out', 'took'] })
+  .openapi('CoreSearchSearchResult')
+
+type CoreMsearchMultiSearchItemType = z.infer<typeof CoreSearchSearchResultSchema> & {
+  status?: number
+}
+
+const CoreMsearchMultiSearchItemSchema: z.ZodType<CoreMsearchMultiSearchItemType> =
+  CoreSearchSearchResultSchema.and(
+    z.object({ status: z.number().exactOptional() }).openapi({ required: [] }),
+  ).openapi('CoreMsearchMultiSearchItem')
+
+const CommonErrorResponseBaseSchema = z
+  .object({
+    error: CommonErrorCauseSchema,
+    status: z.int32().openapi({ description: 'The HTTP status code.' }),
+  })
+  .openapi({
+    description: 'The base structure for error responses.',
+    required: ['error', 'status'],
+  })
+  .openapi('CommonErrorResponseBase')
+
+type CoreMsearchResponseItemType =
+  | z.infer<typeof CoreMsearchMultiSearchItemSchema>
+  | z.infer<typeof CommonErrorResponseBaseSchema>
+
+const CoreMsearchResponseItemSchema: z.ZodType<CoreMsearchResponseItemType> = z
+  .xor([CoreMsearchMultiSearchItemSchema, CommonErrorResponseBaseSchema])
+  .openapi('CoreMsearchResponseItem')
+
+type CoreMsearchMultiSearchResultType = {
+  took: number
+  responses: z.infer<typeof CoreMsearchResponseItemSchema>[]
+}
+
+const CommonExpandWildcardSchema = z
+  .xor([
+    z.literal('all').openapi({ description: 'Match any index, including hidden ones.' }),
+    z.literal('closed').openapi({ description: 'Match closed, non-hidden indexes.' }),
+    z
+      .literal('hidden')
+      .openapi({
+        description: 'Match hidden indexes. Must be combined with `open`, `closed`, or both.',
+      }),
+    z.literal('none').openapi({ description: 'Wildcard expressions are not accepted.' }),
+    z.literal('open').openapi({ description: 'Match open, non-hidden indexes.' }),
+  ])
+  .openapi('CommonExpandWildcard')
+
+const CommonExpandWildcardsSchema = z
+  .xor([CommonExpandWildcardSchema, z.array(CommonExpandWildcardSchema)])
+  .openapi({
+    description:
+      'Specifies the type of index that wildcard expressions can match. Supports comma-separated values.',
+  })
+  .openapi('CommonExpandWildcards')
+
+const CommonIndicesSchema = z
+  .xor([CommonIndexNameSchema, z.array(CommonIndexNameSchema)])
+  .openapi({
+    description:
+      'A comma-separated list of data streams, indexes, and aliases used to limit the request.\nSupports wildcards (`*`).\nTo target all data streams and indexes, omit this parameter or use `*` or `_all`.',
+  })
+  .openapi('CommonIndices')
+
+const CommonSearchTypeSchema = z
+  .xor([
+    z
+      .literal('dfs_query_then_fetch')
+      .openapi({
+        description:
+          'Documents are scored using global term and document frequencies across all shards. This is usually slower but more accurate.',
+      }),
+    z
+      .literal('query_then_fetch')
+      .openapi({
+        description:
+          'Documents are scored using local term and document frequencies for the shard. This is usually faster but less accurate.',
+      }),
+  ])
+  .openapi('CommonSearchType')
+
+const CoreMsearchMultisearchHeaderSchema = z
+  .object({
+    allow_no_indices: z.boolean().exactOptional(),
+    expand_wildcards: CommonExpandWildcardsSchema.exactOptional(),
+    ignore_unavailable: z.boolean().exactOptional(),
+    index: CommonIndicesSchema.exactOptional(),
+    preference: z.string().exactOptional(),
+    request_cache: z.boolean().exactOptional(),
+    routing: CommonRoutingSchema.exactOptional(),
+    search_type: CommonSearchTypeSchema.exactOptional(),
+    ccs_minimize_roundtrips: z.boolean().exactOptional(),
+    allow_partial_search_results: z.boolean().exactOptional(),
+    ignore_throttled: z.boolean().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CoreMsearchMultisearchHeader')
+
+const CoreMsearchMultisearchBodySchema: z.ZodType<CoreMsearchMultisearchBodyType> = z
+  .object({
+    aggregations: z
+      .record(z.string(), CommonAggregationsAggregationContainerSchema)
+      .exactOptional(),
+    collapse: CoreSearchFieldCollapseSchema.exactOptional(),
+    query: CommonQueryDslQueryContainerSchema.exactOptional(),
+    explain: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When `true`, returns detailed information about score computation as part of a hit.',
+      }),
+    ext: z
+      .record(z.string(), z.looseObject({}))
+      .exactOptional()
+      .openapi({
+        description: 'The configuration of search extensions defined by OpenSearch plugins.',
+      }),
+    stored_fields: CommonFieldsSchema.exactOptional(),
+    docvalue_fields: z
+      .array(CommonQueryDslFieldAndFormatSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of wildcard (*) patterns. The request returns document values for field\nnames matching these patterns in the `hits.fields` property of the response.',
+      }),
+    knn: z
+      .xor([CommonQueryDslKnnQuerySchema, z.array(CommonQueryDslKnnQuerySchema)])
+      .exactOptional()
+      .openapi({ description: 'Defines the approximate k-NN search to run.' }),
+    from: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'The starting document offset. By default, you cannot page through more than 10,000\nhits using the `from` and `size` parameters. To page through more than 10,000 hits, use the\n`search_after` parameter.',
+      }),
+    highlight: CoreSearchHighlightSchema.exactOptional(),
+    indices_boost: z
+      .array(z.record(z.string(), z.number()))
+      .exactOptional()
+      .openapi({ description: 'Boosts the `_score` of documents from the specified indexes.' }),
+    min_score: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'The minimum `_score` for document matching. Documents with a lower `_score` than the minimum\nare not included in the search results.',
+      }),
+    post_filter: CommonQueryDslQueryContainerSchema.exactOptional(),
+    profile: z.boolean().exactOptional(),
+    rescore: z.xor([CoreSearchRescoreSchema, z.array(CoreSearchRescoreSchema)]).exactOptional(),
+    script_fields: z
+      .record(z.string(), CommonScriptFieldSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Retrieves a script evaluation (based on different fields) for each hit.',
+      }),
+    search_after: CommonSortResultsSchema.exactOptional(),
+    size: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of hits to return. By default, you cannot page through more\nthan 10,000 hits using the `from` and `size` parameters. To page through more\nhits, use the `search_after` parameter.',
+      }),
+    sort: CommonSortSchema.exactOptional(),
+    _source: CoreSearchSourceConfigSchema.exactOptional(),
+    fields: z
+      .array(CommonQueryDslFieldAndFormatSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of wildcard (*) patterns. The request returns values for field names\nmatching these patterns in the `hits.fields` property of the response.',
+      }),
+    terminate_after: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'The maximum number of documents to collect for each shard. If a query reaches this\nlimit, OpenSearch stops the query early. OpenSearch collects documents\nbefore sorting. Default is `0`, which does not terminate query execution early.',
+      }),
+    stats: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The statistics groups to associate with the search. Each group maintains a statistics\naggregation for its associated searches. You can retrieve these statistics using\nthe Index Stats API.',
+      }),
+    timeout: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the period of time to wait for a response from each shard. If no response\nis received before the timeout expires, the request fails and returns an error.\nDefault is no timeout.',
+      }),
+    track_scores: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When `true`, calculates and returns all document scores, even if the scores are not used for sorting.',
+      }),
+    track_total_hits: CoreSearchTrackHitsSchema.exactOptional(),
+    version: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'When `true`, returns the document version as part of the hit.' }),
+    seq_no_primary_term: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When `true`, returns the sequence number and primary term of the last modification.\nof each hit. See Optimistic concurrency control.',
+      }),
+    pit: CoreSearchPointInTimeReferenceSchema.exactOptional(),
+    suggest: CoreSearchSuggesterSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CoreMsearchMultisearchBody')
+
+type CoreMsearchRequestItemType =
+  | z.infer<typeof CoreMsearchMultisearchHeaderSchema>
+  | z.infer<typeof CoreMsearchMultisearchBodySchema>
+
+type CoreRankEvalRankEvalQueryType = {
+  query: z.infer<typeof CommonQueryDslQueryContainerSchema>
+  size?: number
+}
+
+const CoreRankEvalRankEvalQuerySchema: z.ZodType<CoreRankEvalRankEvalQueryType> = z
+  .object({ query: CommonQueryDslQueryContainerSchema, size: z.int32().exactOptional() })
+  .openapi({ required: ['query'] })
+  .openapi('CoreRankEvalRankEvalQuery')
+
+const CoreRankEvalDocumentRatingSchema = z
+  .object({
+    _id: CommonIdSchema,
+    _index: CommonIndexNameSchema,
+    rating: z
+      .int32()
+      .openapi({
+        description: "The document's relevance with regard to the specified search request.",
+      }),
+  })
+  .openapi({ required: ['_id', '_index', 'rating'] })
+  .openapi('CoreRankEvalDocumentRating')
+
+type CoreRankEvalRankEvalRequestItemType = {
+  id: z.infer<typeof CommonIdSchema>
+  request?: z.infer<typeof CoreRankEvalRankEvalQuerySchema>
+  ratings: z.infer<typeof CoreRankEvalDocumentRatingSchema>[]
+  template_id?: z.infer<typeof CommonIdSchema>
+  params?: { [key: string]: unknown }
+}
+
+const CommonHostSchema = z
+  .string()
+  .openapi({ description: 'The hostname or IP address.' })
+  .openapi('CommonHost')
+
+const CommonUsernameSchema = z
+  .string()
+  .openapi({ description: 'The username for authentication.' })
+  .openapi('CommonUsername')
+
+const CommonPasswordSchema = z
+  .string()
+  .openapi({ description: 'The password for authentication.' })
+  .openapi('CommonPassword')
+
+const CoreReindexRemoteSourceSchema = z
+  .object({
+    connect_timeout: CommonDurationSchema.exactOptional(),
+    headers: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'An object containing the headers of the request.' }),
+    host: CommonHostSchema,
+    username: CommonUsernameSchema.exactOptional(),
+    password: CommonPasswordSchema.exactOptional(),
+    socket_timeout: CommonDurationSchema.exactOptional(),
+  })
+  .openapi({ required: ['host'] })
+  .openapi('CoreReindexRemoteSource')
+
+const CommonSlicedScrollSchema = z
+  .object({
+    field: CommonFieldSchema.exactOptional().openapi({ description: 'The field to slice on.' }),
+    id: z.int32().openapi({ description: 'The ID of the slice.' }),
+    max: z.int32().openapi({ description: 'The maximum number of slices.' }),
+  })
+  .openapi({
+    description: 'The configuration for a sliced scroll request.',
+    required: ['id', 'max'],
+  })
+  .openapi('CommonSlicedScroll')
+
+type CoreReindexSourceType = {
+  index: z.infer<typeof CommonIndicesSchema>
+  query?: z.infer<typeof CommonQueryDslQueryContainerSchema>
+  remote?: z.infer<typeof CoreReindexRemoteSourceSchema>
+  size?: number
+  slice?: z.infer<typeof CommonSlicedScrollSchema>
+  sort?: z.infer<typeof CommonSortSchema>
+  _source?: z.infer<typeof CommonFieldsSchema>
+}
+
+type CoreScriptsPainlessExecutePainlessContextSetupType = {
+  document: unknown
+  index: z.infer<typeof CommonIndexNameSchema>
+  query?: z.infer<typeof CommonQueryDslQueryContainerSchema>
+}
+
+type CoreSearchShardsShardStoreIndexType = {
+  aliases?: z.infer<typeof CommonNameSchema>[]
+  filter?: z.infer<typeof CommonQueryDslQueryContainerSchema>
 }
 
 const CoreSearchAggregationBreakdownSchema = z
@@ -10978,7 +12466,7 @@ const CoreSearchHighlightBaseSchema: z.ZodType<CoreSearchHighlightBaseType> = z
             description:
               "The maximum number of fragments to return.\nWhen the number of fragments is set to `0`, no fragments are returned.\nInstead, the entirety of a field's contents are highlighted and returned.\nThis is useful when you need to highlight short texts, such as a title or address, in which fragmentation is not required.\nIf `number_of_fragments` is set to `0`, the `fragment_size` is ignored.",
           }),
-        options: z.record(z.string(), z.object({})).exactOptional(),
+        options: z.record(z.string(), z.looseObject({})).exactOptional(),
         order: CoreSearchHighlighterOrderSchema.exactOptional(),
         phrase_limit: z
           .int32()
@@ -11149,39 +12637,11 @@ const CoreSearchNestedIdentitySchema: z.ZodType<CoreSearchNestedIdentityType> = 
   )
   .openapi('CoreSearchNestedIdentity')
 
-type CoreSearchTDocumentType = { [key: string]: unknown }
-
-const CoreSearchTDocumentSchema: z.ZodType<CoreSearchTDocumentType> = z
-  .any()
-  .openapi({ 'x-is-generic-type-parameter': true, 'x-protobuf-data-type': 'bytes' })
-  .openapi('CoreSearchTDocument')
-
-const CommonSequenceNumberSchema: z.ZodType<CommonSequenceNumberType> = z
-  .preprocess(
-    (val) =>
-      typeof val === 'number' && Number.isSafeInteger(val)
-        ? BigInt(val)
-        : typeof val === 'string' && /^-?\d+$/.test(val)
-          ? BigInt(val)
-          : val,
-    z.int64(),
-  )
-  .openapi({
-    type: 'integer',
-    format: 'int64',
-    description: 'The sequence number of the document.',
-  })
-  .openapi('CommonSequenceNumber')
-
-const CommonSortResultsSchema: z.ZodType<CommonSortResultsType> = z
-  .array(CommonFieldValueSchema)
-  .openapi('CommonSortResults')
-
 type CoreSearchHitType = {
   _type?: z.infer<typeof CommonTypeSchema>
   _index?: z.infer<typeof CommonIndexNameSchema>
   _id?: z.infer<typeof CommonIdSchema>
-  _score?: ({ [key: string]: unknown } | null) | number
+  _score?: null | number
   _explanation?: z.infer<typeof CoreExplainExplanationSchema>
   fields?: { [key: string]: unknown }
   highlight?: { [key: string]: string[] }
@@ -11305,44 +12765,8 @@ type CoreSearchHitsMetadataType = {
   hits: (z.infer<typeof CoreSearchHitSchema> & {
     _source?: z.infer<typeof CoreSearchTDocumentSchema>
   })[]
-  max_score?: ({ [key: string]: unknown } | null) | number
+  max_score?: null | number
 }
-
-const CoreSearchFieldCollapseSchema: z.ZodType<CoreSearchFieldCollapseType> = z
-  .lazy(() =>
-    z
-      .object({
-        field: CommonFieldSchema,
-        inner_hits: z
-          .xor([CoreSearchInnerHitsSchema, z.array(CoreSearchInnerHitsSchema)])
-          .exactOptional()
-          .openapi({ description: 'The number of inner hits and their sort order.' }),
-        max_concurrent_group_searches: z
-          .int()
-          .exactOptional()
-          .openapi({
-            description:
-              'The number of concurrent requests that are allowed to be retrieved by the `inner_hits` parameter per group.',
-          }),
-      })
-      .openapi({ required: ['field'] }),
-  )
-  .openapi('CoreSearchFieldCollapse')
-
-const CommonQueryDslFieldAndFormatSchema: z.ZodType<CommonQueryDslFieldAndFormatType> = z
-  .xor([
-    CommonFieldSchema.openapi({ title: 'field' }),
-    z
-      .object({
-        field: CommonFieldSchema,
-        format: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Format in which the values are returned.' }),
-      })
-      .openapi({ required: ['field'] }),
-  ])
-  .openapi('CommonQueryDslFieldAndFormat')
 
 type CoreSearchInnerHitsType = {
   name?: z.infer<typeof CommonNameSchema>
@@ -11604,6 +13028,491 @@ type CoreSearchQueryProfileType = {
   children?: CoreSearchQueryProfileType[]
 }
 
+type CoreSearchSearchResponseType = z.infer<typeof CoreSearchSearchResultSchema> & {
+  [key: string]: unknown
+}
+
+type CoreSearchSearchResultJsonValueType = z.infer<typeof CoreSearchSearchResultSchema> & {
+  hits?: { hits?: { _source?: unknown }[] }
+  suggest?: {
+    [key: string]: (
+      | { options?: { _source?: unknown } | { _source?: unknown }[] }
+      | z.infer<typeof CoreSearchPhraseSuggestSchema>
+      | z.infer<typeof CoreSearchTermSuggestSchema>
+    )[]
+  }
+}
+
+const CommonIpSchema = z.string().openapi({ description: 'The IP address.' }).openapi('CommonIp')
+
+const CommonNodeRoleSchema = z
+  .xor([
+    z.literal('client').openapi({ description: 'The node can act as a client node.' }),
+    z
+      .literal('coordinating_only')
+      .openapi({ description: 'The node only performs coordination tasks.' }),
+    z.literal('data').openapi({ description: 'The node can store data.' }),
+    z.literal('data_cold').openapi({ description: 'The node can store cold data.' }),
+    z.literal('data_content').openapi({ description: 'The node can store content data.' }),
+    z.literal('data_frozen').openapi({ description: 'The node can store frozen data.' }),
+    z.literal('data_hot').openapi({ description: 'The node can store hot data.' }),
+    z.literal('data_warm').openapi({ description: 'The node can store warm data.' }),
+    z.literal('ingest').openapi({ description: 'The node can perform ingest operations.' }),
+    z.literal('ml').openapi({ description: 'The node can perform machine learning operations.' }),
+    z
+      .literal('remote_cluster_client')
+      .openapi({ description: 'The node can act as a remote cluster client.' }),
+    z.literal('transform').openapi({ description: 'The node can perform transform operations.' }),
+    z
+      .literal('voting_only')
+      .openapi({ description: 'The node can only vote in cluster decisions.' }),
+    z
+      .literal('master')
+      .openapi({
+        deprecated: true,
+        'x-version-deprecated': '2.0',
+        'x-deprecation-message': 'Use `cluster_manager` instead.',
+      }),
+    z
+      .literal('cluster_manager')
+      .openapi({ description: 'The node can act as a cluster manager.', 'x-version-added': '2.0' }),
+  ])
+  .openapi('CommonNodeRole')
+
+const CommonNodeRolesSchema = z
+  .array(CommonNodeRoleSchema)
+  .openapi({ description: 'The role assigned to the node.' })
+  .openapi('CommonNodeRoles')
+
+const CommonTransportAddressSchema = z
+  .string()
+  .openapi({ description: 'The transport address of a node.' })
+  .openapi('CommonTransportAddress')
+
+const CommonBaseNodeSchema = z
+  .object({
+    attributes: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'The attributes of the node.' }),
+    host: CommonHostSchema.exactOptional(),
+    ip: CommonIpSchema.exactOptional(),
+    name: CommonNameSchema,
+    roles: CommonNodeRolesSchema.exactOptional(),
+    transport_address: CommonTransportAddressSchema.exactOptional(),
+  })
+  .openapi({ description: 'The base information about a node.', required: ['name'] })
+  .openapi('CommonBaseNode')
+
+const CommonNodeIdSchema = z
+  .string()
+  .openapi({ description: 'The unique identifier of a node.' })
+  .openapi('CommonNodeId')
+
+const TasksCommonReplicationTaskStatusSchema = z
+  .object({ phase: z.string() })
+  .openapi({ required: ['phase'] })
+  .openapi('TasksCommonReplicationTaskStatus')
+
+const TasksCommonPersistentTaskStatusSchema = z
+  .object({ state: z.string() })
+  .openapi({ required: ['state'] })
+  .openapi('TasksCommonPersistentTaskStatus')
+
+const TasksCommonRawTaskStatusSchema = z
+  .record(z.string(), z.any().openapi({ title: 'metadata' }))
+  .openapi('TasksCommonRawTaskStatus')
+
+const TasksCommonStatusSchema = z
+  .union([
+    TasksCommonReplicationTaskStatusSchema,
+    CommonBulkByScrollTaskStatusSchema,
+    TasksCommonPersistentTaskStatusSchema,
+    TasksCommonRawTaskStatusSchema,
+  ])
+  .openapi({ description: 'Task status information can vary wildly from task to task.' })
+  .openapi('TasksCommonStatus')
+
+const CommonTaskIdSchema = z
+  .string()
+  .openapi({ description: 'The unique identifier of a task.' })
+  .openapi('CommonTaskId')
+
+const CommonByteCountSchema = z
+  .preprocess(
+    (val) =>
+      typeof val === 'number' && Number.isSafeInteger(val)
+        ? BigInt(val)
+        : typeof val === 'string' && /^-?\d+$/.test(val)
+          ? BigInt(val)
+          : val,
+    z.int64(),
+  )
+  .openapi({ type: 'integer', format: 'int64', description: 'The size in bytes.' })
+  .openapi('CommonByteCount')
+
+const CommonResourceStatSchema = z
+  .object({ cpu_time_in_nanos: CommonUnitNanosSchema, memory_in_bytes: CommonByteCountSchema })
+  .openapi({
+    description: 'Any statistics about CPU and memory usage.',
+    required: ['cpu_time_in_nanos', 'memory_in_bytes'],
+  })
+  .openapi('CommonResourceStat')
+
+const CommonThreadInfoSchema = z
+  .object({
+    thread_executions: z.number().openapi({ description: 'The number of thread executions.' }),
+    active_threads: z.number().openapi({ description: 'The number of currently active threads.' }),
+  })
+  .openapi({
+    description: 'The information about thread usage.',
+    required: ['active_threads', 'thread_executions'],
+  })
+  .openapi('CommonThreadInfo')
+
+const CommonResourceStatsSchema = z
+  .object({
+    average: CommonResourceStatSchema,
+    total: CommonResourceStatSchema,
+    min: CommonResourceStatSchema,
+    max: CommonResourceStatSchema,
+    thread_info: CommonThreadInfoSchema,
+  })
+  .openapi({
+    description: 'The statistics about resource usage.',
+    required: ['average', 'max', 'min', 'thread_info', 'total'],
+  })
+  .openapi('CommonResourceStats')
+
+const TasksCommonTaskInfoBaseSchema = z
+  .object({
+    action: z.string(),
+    cancelled: z.boolean().exactOptional(),
+    cancellable: z.boolean(),
+    cancellation_time_millis: CommonUnitMillisSchema.exactOptional(),
+    description: z.string().exactOptional(),
+    headers: z.record(z.string(), z.string()),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    node: CommonNodeIdSchema,
+    running_time: CommonDurationSchema.exactOptional(),
+    running_time_in_nanos: CommonUnitNanosSchema,
+    start_time_in_millis: CommonUnitMillisSchema,
+    status: TasksCommonStatusSchema.exactOptional(),
+    type: z.string(),
+    parent_task_id: CommonTaskIdSchema.exactOptional(),
+    resource_stats: CommonResourceStatsSchema.exactOptional(),
+  })
+  .openapi({
+    required: [
+      'action',
+      'cancellable',
+      'headers',
+      'id',
+      'node',
+      'running_time_in_nanos',
+      'start_time_in_millis',
+      'type',
+    ],
+  })
+  .openapi('TasksCommonTaskInfoBase')
+
+const TasksCommonTaskInfoSchema = TasksCommonTaskInfoBaseSchema.and(z.looseObject({})).openapi(
+  'TasksCommonTaskInfo',
+)
+
+type CoreUpdateByQueryRethrottleUpdateByQueryRethrottleNodeType = z.infer<
+  typeof CommonBaseNodeSchema
+> & { tasks: { [key: string]: z.infer<typeof TasksCommonTaskInfoSchema> } }
+
+const CoreSearchSearchResponseSchema: z.ZodType<CoreSearchSearchResponseType> =
+  CoreSearchSearchResultSchema.and(z.looseObject({})).openapi('CoreSearchSearchResponse')
+
+type AsynchronousSearchCommonResponseBodyType = {
+  id?: string
+  state?: string
+  start_time_in_millis?: number
+  expiration_time_in_millis?: number
+  took?: number
+  response?: z.infer<typeof CoreSearchSearchResponseSchema>
+}
+
+type AsynchronousSearchCommonSearchType = {
+  aggregations?: { [key: string]: z.infer<typeof CommonAggregationsAggregationContainerSchema> }
+  collapse?: z.infer<typeof CoreSearchFieldCollapseSchema>
+  explain?: boolean
+  ext?: { [key: string]: { [key: string]: unknown } }
+  from?: number
+  highlight?: z.infer<typeof CoreSearchHighlightSchema>
+  track_total_hits?: z.infer<typeof CoreSearchTrackHitsSchema>
+  indices_boost?: { [key: string]: number }[]
+  docvalue_fields?: z.infer<typeof CommonQueryDslFieldAndFormatSchema>[]
+  min_score?: number
+  post_filter?: z.infer<typeof CommonQueryDslQueryContainerSchema>
+  profile?: boolean
+  query?: z.infer<typeof CommonQueryDslQueryContainerSchema>
+  script_fields?: { [key: string]: z.infer<typeof CommonScriptFieldSchema> }
+  search_after?: z.infer<typeof CommonSortResultsSchema>
+  size?: number
+  slice?: z.infer<typeof CommonSlicedScrollSchema>
+  sort?: z.infer<typeof CommonSortSchema>
+  _source?: z.infer<typeof CoreSearchSourceConfigSchema>
+  fields?: z.infer<typeof CommonQueryDslFieldAndFormatSchema>[]
+  suggest?: z.infer<typeof CoreSearchSuggesterSchema>
+  terminate_after?: number
+  timeout?: string
+  track_scores?: boolean
+  version?: boolean
+  seq_no_primary_term?: boolean
+  stored_fields?: z.infer<typeof CommonFieldsSchema>
+  pit?: z.infer<typeof CoreSearchPointInTimeReferenceSchema>
+  stats?: string[]
+}
+
+const IndicesCommonIndexSettingsSchema: z.ZodType<IndicesCommonIndexSettingsType> = z
+  .lazy(() =>
+    z
+      .object({
+        index: IndicesCommonIndexSettingsSchema.exactOptional(),
+        mode: z.string().exactOptional(),
+        routing_path: CommonStringOrStringArraySchema.exactOptional(),
+        soft_deletes: IndicesCommonSoftDeletesSchema.exactOptional(),
+        'soft_deletes.retention_lease.period': CommonDurationSchema.exactOptional(),
+        sort: IndicesCommonIndexSegmentSortSchema.exactOptional(),
+        number_of_shards: CommonStringifiedIntegerSchema.exactOptional(),
+        number_of_replicas: CommonStringifiedIntegerSchema.exactOptional(),
+        number_of_routing_shards: CommonStringifiedIntegerSchema.exactOptional(),
+        check_on_startup: IndicesCommonIndexCheckOnStartupSchema.exactOptional(),
+        codec: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The compression type for stored data.' }),
+        routing_partition_size: CommonStringifiedIntegerSchema.exactOptional(),
+        load_fixed_bitset_filters_eagerly: CommonStringifiedBooleanSchema.exactOptional(),
+        hidden: CommonStringifiedBooleanSchema.exactOptional(),
+        auto_expand_replicas: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The range of replicas to maintain.' }),
+        merge: IndicesCommonIndexSettingsMergeSchema.exactOptional(),
+        'merge.scheduler.max_thread_count': CommonStringifiedIntegerSchema.exactOptional(),
+        search: IndicesCommonIndexSettingsSearchSchema.exactOptional(),
+        'search.idle.after': CommonDurationSchema.exactOptional(),
+        refresh_interval: CommonDurationSchema.exactOptional(),
+        max_result_window: CommonStringifiedIntegerSchema.exactOptional(),
+        max_inner_result_window: CommonStringifiedIntegerSchema.exactOptional(),
+        max_rescore_window: CommonStringifiedIntegerSchema.exactOptional(),
+        max_docvalue_fields_search: CommonStringifiedIntegerSchema.exactOptional(),
+        max_script_fields: CommonStringifiedIntegerSchema.exactOptional(),
+        max_ngram_diff: CommonStringifiedIntegerSchema.exactOptional(),
+        max_shingle_diff: CommonStringifiedIntegerSchema.exactOptional(),
+        blocks: IndicesCommonIndexSettingBlocksSchema.exactOptional(),
+        'blocks.read_only': CommonStringifiedBooleanSchema.exactOptional(),
+        'blocks.read_only_allow_delete': CommonStringifiedBooleanSchema.exactOptional(),
+        'blocks.read': CommonStringifiedBooleanSchema.exactOptional(),
+        'blocks.write': CommonStringifiedBooleanSchema.exactOptional(),
+        'blocks.metadata': CommonStringifiedBooleanSchema.exactOptional(),
+        max_refresh_listeners: CommonStringifiedIntegerSchema.exactOptional(),
+        analyze: IndicesCommonIndexSettingsAnalyzeSchema.exactOptional(),
+        'analyze.max_token_count': CommonStringifiedIntegerSchema.exactOptional(),
+        highlight: IndicesCommonIndexSettingsHighlightSchema.exactOptional(),
+        'highlight.max_analyzed_offset': CommonStringifiedIntegerSchema.exactOptional(),
+        max_terms_count: CommonStringifiedIntegerSchema.exactOptional(),
+        max_regex_length: CommonStringifiedIntegerSchema.exactOptional(),
+        routing: IndicesCommonIndexRoutingSchema.exactOptional(),
+        gc_deletes: CommonDurationSchema.exactOptional(),
+        default_pipeline: CommonPipelineNameSchema.exactOptional(),
+        final_pipeline: CommonPipelineNameSchema.exactOptional(),
+        lifecycle: IndicesCommonIndexSettingsLifecycleSchema.exactOptional(),
+        'lifecycle.name': CommonNameSchema.exactOptional(),
+        provided_name: CommonNameSchema.exactOptional(),
+        creation_date: CommonStringifiedEpochTimeUnitMillisSchema.exactOptional(),
+        creation_date_string: CommonDateTimeSchema.exactOptional(),
+        uuid: CommonUuidSchema.exactOptional(),
+        version: IndicesCommonIndexVersioningSchema.exactOptional(),
+        verified_before_close: CommonStringifiedBooleanSchema.exactOptional(),
+        format: CommonStringifiedIntegerSchema.exactOptional(),
+        max_slices_per_scroll: CommonStringifiedIntegerSchema.exactOptional(),
+        translog: IndicesCommonTranslogSchema.exactOptional(),
+        'translog.durability': IndicesCommonTranslogDurabilitySchema.exactOptional(),
+        'translog.flush_threshold_size': CommonHumanReadableByteCountSchema.exactOptional(),
+        query_string: IndicesCommonIndexSettingsQueryStringSchema.exactOptional(),
+        'query_string.lenient': CommonStringifiedBooleanSchema.exactOptional(),
+        priority: CommonStringifiedIntegerSchema.exactOptional(),
+        top_metrics_max_size: CommonStringifiedIntegerSchema.exactOptional(),
+        analysis: IndicesCommonIndexSettingsAnalysisSchema.exactOptional(),
+        settings: IndicesCommonIndexSettingsSchema.exactOptional(),
+        queries: IndicesCommonIndexSettingsQueriesSchema.exactOptional(),
+        similarity: IndicesCommonIndexSettingsSimilaritySchema.exactOptional(),
+        mapping: IndicesCommonIndexSettingsMappingSchema.exactOptional(),
+        indexing: IndicesCommonIndexSettingsIndexingSchema.exactOptional(),
+        indexing_pressure: IndicesCommonIndexingPressureSchema.exactOptional(),
+        store: IndicesCommonIndexSettingsStoreSchema.exactOptional(),
+        knn: CommonStringifiedBooleanSchema.exactOptional(),
+        'knn.algo_param.ef_search': CommonStringifiedIntegerSchema.exactOptional(),
+        'composite_index.star_tree': IndicesCommonIndexSettingsStarTreeSchema.exactOptional(),
+        ingestion_source: IndicesCommonIngestionSourceSchema.exactOptional(),
+        'replication.type': IndicesCommonReplicationTypeSchema.exactOptional().openapi({
+          description: 'Defines the replication type.',
+        }),
+      })
+      .catchall(z.any().openapi({ title: 'custom_settings' }))
+      .openapi({ description: 'The configuration settings for an index.' }),
+  )
+  .openapi('IndicesCommonIndexSettings')
+
+const CommonMappingTypeMappingSchema: z.ZodType<CommonMappingTypeMappingType> = z
+  .object({
+    all_field: CommonMappingAllFieldSchema.exactOptional(),
+    date_detection: z.boolean().exactOptional(),
+    dynamic: CommonMappingDynamicMappingSchema.exactOptional(),
+    dynamic_date_formats: z.array(z.string()).exactOptional(),
+    dynamic_templates: z
+      .array(z.record(z.string(), CommonMappingDynamicTemplateSchema))
+      .exactOptional(),
+    _field_names: CommonMappingFieldNamesFieldSchema.exactOptional(),
+    index_field: CommonMappingIndexFieldSchema.exactOptional(),
+    _meta: CommonMetadataSchema.exactOptional(),
+    numeric_detection: z.boolean().exactOptional(),
+    properties: z.record(z.string(), CommonMappingPropertySchema).exactOptional(),
+    _routing: CommonMappingRoutingFieldSchema.exactOptional(),
+    _size: CommonMappingSizeFieldSchema.exactOptional(),
+    _source: CommonMappingSourceFieldSchema.exactOptional(),
+    enabled: z.boolean().exactOptional(),
+    _data_stream_timestamp: CommonMappingDataStreamTimestampSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CommonMappingTypeMapping')
+
+type IndicesCommonAliasDefinitionType = {
+  filter?: z.infer<typeof CommonQueryDslQueryContainerSchema>
+  index_routing?: string
+  is_write_index?: boolean
+  routing?: string
+  search_routing?: string
+  is_hidden?: boolean
+}
+
+const IndicesCommonAliasDefinitionSchema: z.ZodType<IndicesCommonAliasDefinitionType> = z
+  .object({
+    filter: CommonQueryDslQueryContainerSchema.exactOptional(),
+    index_routing: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The value used to route indexing operations to a specific shard.\nWhen specified, this overwrites the `routing` value for indexing operations.',
+      }),
+    is_write_index: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'When `true`, the index is the write index for the alias.' }),
+    routing: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The value used to route indexing and search operations to a specific shard.',
+      }),
+    search_routing: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The value used to route search operations to a specific shard.\nWhen specified, this overwrites the `routing` value for search operations.',
+      }),
+    is_hidden: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When `true`, the alias is hidden.\nAll indexes for the alias must have the same `is_hidden` value.',
+      }),
+  })
+  .openapi({ description: 'The configuration for an index alias.', required: [] })
+  .openapi('IndicesCommonAliasDefinition')
+
+type ClusterCommonComponentTemplateSummaryType = {
+  _meta?: z.infer<typeof CommonMetadataSchema>
+  version?: z.infer<typeof CommonVersionNumberSchema>
+  settings?: { [key: string]: z.infer<typeof IndicesCommonIndexSettingsSchema> }
+  mappings?: z.infer<typeof CommonMappingTypeMappingSchema>
+  aliases?: { [key: string]: z.infer<typeof IndicesCommonAliasDefinitionSchema> }
+}
+
+const ClusterCommonComponentTemplateSummarySchema: z.ZodType<ClusterCommonComponentTemplateSummaryType> =
+  z
+    .object({
+      _meta: CommonMetadataSchema.exactOptional(),
+      version: CommonVersionNumberSchema.exactOptional(),
+      settings: z.record(z.string(), IndicesCommonIndexSettingsSchema).exactOptional(),
+      mappings: CommonMappingTypeMappingSchema.exactOptional(),
+      aliases: z.record(z.string(), IndicesCommonAliasDefinitionSchema).exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('ClusterCommonComponentTemplateSummary')
+
+type ClusterCommonComponentTemplateNodeType = {
+  template: z.infer<typeof ClusterCommonComponentTemplateSummarySchema>
+  version?: z.infer<typeof CommonVersionNumberSchema>
+  _meta?: z.infer<typeof CommonMetadataSchema>
+}
+
+const ClusterCommonComponentTemplateNodeSchema: z.ZodType<ClusterCommonComponentTemplateNodeType> =
+  z
+    .object({
+      template: ClusterCommonComponentTemplateSummarySchema,
+      version: CommonVersionNumberSchema.exactOptional(),
+      _meta: CommonMetadataSchema.exactOptional(),
+    })
+    .openapi({ required: ['template'] })
+    .openapi('ClusterCommonComponentTemplateNode')
+
+type ClusterCommonComponentTemplateType = {
+  name: z.infer<typeof CommonNameSchema>
+  component_template: z.infer<typeof ClusterCommonComponentTemplateNodeSchema>
+}
+
+type FlowFrameworkCommonSearchWorkflowRequestType = {
+  query?: z.infer<typeof CommonQueryDslQueryContainerSchema>
+}
+
+const GeospatialCommonGeospatialFieldTypeSchema = z
+  .enum(['geo_point', 'geo_shape'])
+  .openapi('GeospatialCommonGeospatialFieldType')
+
+const GeospatialCommonGeoJSONDataTypeSchema = z
+  .enum(['Feature', 'FeatureCollection'])
+  .openapi('GeospatialCommonGeoJSONDataType')
+
+const GeospatialCommonGeometrySchema: z.ZodType<GeospatialCommonGeometryType> = z
+  .lazy(() => z.xor([GeospatialCommonGeoShapesSchema, GeospatialCommonGeometryCollectionSchema]))
+  .openapi('GeospatialCommonGeometry')
+
+const GeospatialCommonGeoJSONDataSchema = z
+  .object({
+    type: GeospatialCommonGeoJSONDataTypeSchema,
+    geometry: GeospatialCommonGeometrySchema,
+    properties: z.looseObject({}).exactOptional(),
+  })
+  .openapi({ required: ['geometry', 'type'] })
+  .openapi('GeospatialCommonGeoJSONData')
+
+type GeospatialCommonGeoJSONRequestType = {
+  index: z.infer<typeof CommonIndexNameSchema>
+  field?: string
+  type: z.infer<typeof GeospatialCommonGeospatialFieldTypeSchema>
+  data: z.infer<typeof GeospatialCommonGeoJSONDataSchema>[]
+}
+
 const GeospatialCommonPointCoordinatesSchema = z
   .array(z.number().min(-180).max(180))
   .length(2)
@@ -11737,13 +13646,18 @@ type GeospatialCommonGeometryType =
   | z.infer<typeof GeospatialCommonGeoShapesSchema>
   | z.infer<typeof GeospatialCommonGeometryCollectionSchema>
 
-const GeospatialCommonGeometrySchema: z.ZodType<GeospatialCommonGeometryType> = z
-  .lazy(() => z.xor([GeospatialCommonGeoShapesSchema, GeospatialCommonGeometryCollectionSchema]))
-  .openapi('GeospatialCommonGeometry')
-
 type GeospatialCommonGeometryCollectionType = {
   type: 'GeometryCollection'
   geometries: z.infer<typeof GeospatialCommonGeometrySchema>[]
+}
+
+type IndicesCommonAliasType = {
+  filter?: z.infer<typeof CommonQueryDslQueryContainerSchema>
+  index_routing?: z.infer<typeof CommonRoutingSchema>
+  is_hidden?: boolean
+  is_write_index?: boolean
+  routing?: z.infer<typeof CommonRoutingSchema>
+  search_routing?: z.infer<typeof CommonRoutingSchema>
 }
 
 const CommonStringifiedBooleanSchema = z
@@ -13924,6 +15838,2148 @@ type IndicesCommonIndexSettingsType = {
   'replication.type'?: z.infer<typeof IndicesCommonReplicationTypeSchema>
 }
 
+const IndicesCommonAliasSchema: z.ZodType<IndicesCommonAliasType> = z
+  .object({
+    filter: CommonQueryDslQueryContainerSchema.exactOptional(),
+    index_routing: CommonRoutingSchema.exactOptional(),
+    is_hidden: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When `true`, the alias is hidden.\nAll indexes for the alias must have the same `is_hidden` value.',
+      }),
+    is_write_index: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'When `true`, the index is the write index for the alias.' }),
+    routing: CommonRoutingSchema.exactOptional(),
+    search_routing: CommonRoutingSchema.exactOptional(),
+  })
+  .openapi({ description: 'The index alias configuration.', required: [] })
+  .openapi('IndicesCommonAlias')
+
+const CommonDataStreamNameSchema = z.string().openapi('CommonDataStreamName')
+
+type IndicesCommonIndexStateType = {
+  aliases?: { [key: string]: z.infer<typeof IndicesCommonAliasSchema> }
+  mappings?: z.infer<typeof CommonMappingTypeMappingSchema>
+  settings?: z.infer<typeof IndicesCommonIndexSettingsSchema>
+  defaults?: z.infer<typeof IndicesCommonIndexSettingsSchema>
+  data_stream?: z.infer<typeof CommonDataStreamNameSchema>
+}
+
+const CommonNamesSchema = z
+  .xor([CommonNameSchema, z.array(CommonNameSchema)])
+  .openapi({
+    description:
+      'A comma-separated list of aliases to retrieve. Supports wildcards (`*`).  To retrieve all aliases, omit this parameter or use `*` or `_all`.',
+  })
+  .openapi('CommonNames')
+
+type IndicesCommonIndexTemplateSummaryType = {
+  aliases?: { [key: string]: z.infer<typeof IndicesCommonAliasSchema> }
+  mappings?: z.infer<typeof CommonMappingTypeMappingSchema>
+  settings?: z.infer<typeof IndicesCommonIndexSettingsSchema>
+}
+
+const IndicesCommonIndexTemplateSummarySchema: z.ZodType<IndicesCommonIndexTemplateSummaryType> = z
+  .object({
+    aliases: z
+      .record(z.string(), IndicesCommonAliasSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The aliases to add.\nIf the index template includes a `data_stream` object, these are data stream aliases.\nOtherwise, these are index aliases.\nData stream aliases ignore the `index_routing`, `routing`, and `search_routing` options.',
+      }),
+    mappings: CommonMappingTypeMappingSchema.exactOptional(),
+    settings: IndicesCommonIndexSettingsSchema.exactOptional(),
+  })
+  .openapi({ description: 'The summary configuration for an index template.', required: [] })
+  .openapi('IndicesCommonIndexTemplateSummary')
+
+const IndicesCommonDataStreamTimestampFieldSchema = z
+  .object({ name: CommonFieldSchema })
+  .openapi({
+    description: 'The timestamp field configuration for a data stream.',
+    required: ['name'],
+  })
+  .openapi('IndicesCommonDataStreamTimestampField')
+
+const IndicesCommonIndexTemplateDataStreamConfigurationSchema = z
+  .object({
+    hidden: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'When `true`, the data stream is hidden.' }),
+    allow_custom_routing: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'When `true`, the data stream supports custom routing.' }),
+    timestamp_field: IndicesCommonDataStreamTimestampFieldSchema.exactOptional(),
+  })
+  .openapi({ description: 'The data stream configuration for an index template.', required: [] })
+  .openapi('IndicesCommonIndexTemplateDataStreamConfiguration')
+
+type IndicesCommonIndexTemplateType = {
+  index_patterns: z.infer<typeof CommonNamesSchema>
+  composed_of?: z.infer<typeof CommonNameSchema>[]
+  template?: z.infer<typeof IndicesCommonIndexTemplateSummarySchema>
+  version?: z.infer<typeof CommonVersionNumberSchema>
+  priority?: bigint
+  _meta?: z.infer<typeof CommonMetadataSchema>
+  allow_auto_create?: boolean
+  data_stream?: z.infer<typeof IndicesCommonIndexTemplateDataStreamConfigurationSchema>
+}
+
+type IndicesCommonTemplateMappingType = {
+  aliases: { [key: string]: z.infer<typeof IndicesCommonAliasSchema> }
+  index_patterns: z.infer<typeof CommonNameSchema>[]
+  mappings: z.infer<typeof CommonMappingTypeMappingSchema>
+  order: number
+  settings: { [key: string]: unknown }
+  version?: z.infer<typeof CommonVersionNumberSchema>
+}
+
+const IndicesCloseCloseShardResultSchema = z
+  .object({
+    failures: z
+      .array(CommonShardFailureSchema)
+      .openapi({ description: 'The list of failures that occurred while closing shards.' }),
+  })
+  .openapi({ description: 'The result of closing shards in an index.', required: ['failures'] })
+  .openapi('IndicesCloseCloseShardResult')
+
+type IndicesCloseCloseIndexResultType = {
+  closed: boolean
+  shards?: { [key: string]: z.infer<typeof IndicesCloseCloseShardResultSchema> }
+}
+
+type IndicesGetAliasIndexAliasesType = {
+  aliases: { [key: string]: z.infer<typeof IndicesCommonAliasDefinitionSchema> }
+}
+
+const CommonMappingFieldMappingSchema = z
+  .object({
+    full_name: z.string(),
+    mapping: z
+      .record(z.string(), CommonMappingPropertySchema)
+      .refine((val) => Object.keys(val).length >= 1)
+      .refine((val) => Object.keys(val).length <= 1),
+  })
+  .openapi({ required: ['full_name', 'mapping'] })
+  .openapi('CommonMappingFieldMapping')
+
+type IndicesGetFieldMappingTypeFieldMappingsType = {
+  mappings: { [key: string]: z.infer<typeof CommonMappingFieldMappingSchema> }
+}
+
+const IndicesCommonIndexTemplateSchema: z.ZodType<IndicesCommonIndexTemplateType> = z
+  .object({
+    index_patterns: CommonNamesSchema,
+    composed_of: z
+      .array(CommonNameSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'An ordered list of component template names.\nComponent templates are merged in the order specified, meaning that the last component template specified has the highest precedence.',
+      }),
+    template: IndicesCommonIndexTemplateSummarySchema.exactOptional(),
+    version: CommonVersionNumberSchema.exactOptional(),
+    priority: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The priority to determine index template precedence when a new data stream or index is created.\nThe index template with the highest priority is chosen.\nIf no priority is specified the template is treated as though it is of priority 0 (lowest priority).\nThis number is not automatically generated by OpenSearch.',
+      }),
+    _meta: CommonMetadataSchema.exactOptional(),
+    allow_auto_create: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the template allows automatic index creation.' }),
+    data_stream: IndicesCommonIndexTemplateDataStreamConfigurationSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'The configuration for an index template.',
+    required: ['index_patterns'],
+  })
+  .openapi('IndicesCommonIndexTemplate')
+
+type IndicesGetIndexTemplateIndexTemplateItemType = {
+  name: z.infer<typeof CommonNameSchema>
+  index_template: z.infer<typeof IndicesCommonIndexTemplateSchema>
+}
+
+type IndicesGetMappingIndexMappingRecordType = {
+  item?: z.infer<typeof CommonMappingTypeMappingSchema>
+  mappings: z.infer<typeof CommonMappingTypeMappingSchema>
+}
+
+type IndicesPutIndexTemplateIndexTemplateMappingType = {
+  aliases?: { [key: string]: z.infer<typeof IndicesCommonAliasSchema> }
+  mappings?: z.infer<typeof CommonMappingTypeMappingSchema>
+  settings?: z.infer<typeof IndicesCommonIndexSettingsSchema>
+}
+
+type IndicesSimulateTemplateTemplateType = {
+  aliases: { [key: string]: z.infer<typeof IndicesCommonAliasSchema> }
+  mappings?: z.infer<typeof CommonMappingTypeMappingSchema>
+  settings: z.infer<typeof IndicesCommonIndexSettingsSchema>
+}
+
+const CommonDocStatsSchema = z
+  .object({
+    count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The total number of non-deleted documents across all primary shards assigned to the selected nodes.\nThis number is based on documents in Lucene segments and may include documents from nested fields.',
+      }),
+    deleted: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The total number of deleted documents across all primary shards assigned to the selected nodes.\nThis number is based on the number of documents stored in Lucene segments.\nOpenSearch reclaims the disk space previously occupied by the deleted Lucene documents when a segment is merged.',
+      }),
+  })
+  .openapi({ description: 'The document-level statistics.', required: ['count'] })
+  .openapi('CommonDocStats')
+
+const CommonStoreStatsSchema = z
+  .object({
+    size: CommonHumanReadableByteCountSchema.exactOptional(),
+    size_in_bytes: CommonByteCountSchema.openapi({
+      description: 'The total size, in bytes, of all shards assigned to the selected nodes.',
+    }),
+    reserved: CommonHumanReadableByteCountSchema.exactOptional(),
+    reserved_in_bytes: CommonByteCountSchema.openapi({
+      description:
+        'A prediction, in bytes, of how much larger the shard stores will eventually grow due to ongoing peer recoveries, restoring snapshots, and similar activities.',
+    }),
+  })
+  .openapi({ required: ['reserved_in_bytes', 'size_in_bytes'] })
+  .openapi('CommonStoreStats')
+
+const CommonIndexingStatsSchema: z.ZodType<CommonIndexingStatsType> = z
+  .lazy(() =>
+    z
+      .object({
+        index_total: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description: 'The total number of indexing operations.',
+          }),
+        index_time: CommonDurationSchema.exactOptional().openapi({
+          description: 'The total amount of time spent on indexing operations.',
+        }),
+        index_time_in_millis: CommonUnitMillisSchema.openapi({
+          description: 'The total amount of time spent on indexing operations in milliseconds.',
+        }),
+        index_current: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description: 'The number of current indexing operations.',
+          }),
+        index_failed: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description: 'The number of failed indexing operations.',
+          }),
+        delete_total: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description: 'The total number of delete operations.',
+          }),
+        delete_time: CommonDurationSchema.exactOptional(),
+        delete_time_in_millis: CommonUnitMillisSchema,
+        delete_current: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description: 'The number of current delete operations.',
+          }),
+        noop_update_total: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description: 'The total number of noop update operations.',
+          }),
+        is_throttled: z
+          .boolean()
+          .openapi({ description: 'Whether indexing is currently throttled.' }),
+        throttle_time: CommonDurationSchema.exactOptional().openapi({
+          description: 'The total amount of time spent throttling indexing operations.',
+        }),
+        throttle_time_in_millis: CommonUnitMillisSchema.openapi({
+          description:
+            'The total amount of time spent throttling indexing operations in milliseconds.',
+        }),
+        doc_status: CommonDocStatusSchema.exactOptional(),
+        types: z
+          .record(z.string(), CommonIndexingStatsSchema)
+          .exactOptional()
+          .openapi({ 'x-version-removed': '2.0' }),
+      })
+      .openapi({
+        description: 'The statistics about indexing operations.',
+        required: [
+          'delete_current',
+          'delete_time_in_millis',
+          'delete_total',
+          'index_current',
+          'index_failed',
+          'index_time_in_millis',
+          'index_total',
+          'is_throttled',
+          'noop_update_total',
+          'throttle_time_in_millis',
+        ],
+      }),
+  )
+  .openapi('CommonIndexingStats')
+
+const CommonGetStatsSchema = z
+  .object({
+    total: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The total number of get operations.',
+      }),
+    getTime: CommonDurationSchema.exactOptional().openapi({
+      deprecated: true,
+      'x-version-deprecated': '2.19',
+    }),
+    time: CommonDurationSchema.exactOptional().openapi({ 'x-version-added': '2.19' }),
+    time_in_millis: CommonUnitMillisSchema,
+    exists_total: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The total number of successful get operations.',
+      }),
+    exists_time: CommonDurationSchema.exactOptional(),
+    exists_time_in_millis: CommonUnitMillisSchema,
+    missing_total: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The total number of failed get operations due to missing documents.',
+      }),
+    missing_time: CommonDurationSchema.exactOptional(),
+    missing_time_in_millis: CommonUnitMillisSchema,
+    current: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The number of current get operations.',
+      }),
+  })
+  .openapi({
+    description: 'The statistics about get operations.',
+    required: [
+      'current',
+      'exists_time_in_millis',
+      'exists_total',
+      'missing_time_in_millis',
+      'missing_total',
+      'time_in_millis',
+      'total',
+    ],
+  })
+  .openapi('CommonGetStats')
+
+const CommonSearchStatsSchema: z.ZodType<CommonSearchStatsType> = z
+  .lazy(() =>
+    z
+      .object({
+        open_contexts: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description: 'The number of open search contexts.',
+          }),
+        query_current: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description: 'The number of currently running shard query operations.',
+          }),
+        query_time: CommonDurationSchema.exactOptional().openapi({
+          description: 'The total amount of time taken to complete all shard query operations.',
+        }),
+        query_time_in_millis: CommonUnitMillisSchema.openapi({
+          description:
+            'The total amount of time taken to complete all shard query operations, in milliseconds.',
+        }),
+        query_total: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description: 'The total number of shard query operations.',
+          }),
+        concurrent_query_total: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description: 'The total number of query operations using concurrent segment search.',
+          }),
+        concurrent_query_time: CommonDurationSchema.exactOptional(),
+        concurrent_query_time_in_millis: CommonUnitMillisSchema.exactOptional().openapi({
+          description:
+            'The total amount of time taken by all query operations using concurrent segment search, in milliseconds.',
+        }),
+        concurrent_query_current: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description:
+              'The number of currently running query operations using concurrent segment search.',
+          }),
+        concurrent_avg_slice_count: z
+          .float64()
+          .exactOptional()
+          .openapi({
+            description:
+              'The average slice count of all search requests. This is computed as the total slice count divided by the total number of concurrent search requests.',
+          }),
+        fetch_current: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description: 'The number of currently running shard fetch operations.',
+          }),
+        fetch_time: CommonDurationSchema.exactOptional().openapi({
+          description: 'The total amount of time taken to complete all shard fetch operations.',
+        }),
+        fetch_time_in_millis: CommonUnitMillisSchema.openapi({
+          description:
+            'The total amount of time taken to complete all shard fetch operations, in milliseconds.',
+        }),
+        fetch_total: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description: 'The total number of shard fetch operations.',
+          }),
+        scroll_current: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description: 'The number of shard scroll operations that are currently running.',
+          }),
+        scroll_time: CommonDurationSchema.exactOptional().openapi({
+          description: 'The total amount of time taken to complete all shard scroll operations.',
+        }),
+        scroll_time_in_millis: CommonUnitMillisSchema.openapi({
+          description:
+            'The total amount of time taken to complete all shard scroll operations, in milliseconds.',
+        }),
+        scroll_total: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description: 'The total number of shard scroll operations.',
+          }),
+        point_in_time_total: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description:
+              'The total number of shard Point in Time (PIT) contexts created (completed and active) since the node last restarted.',
+          }),
+        point_in_time_time: CommonDurationSchema.exactOptional(),
+        point_in_time_time_in_millis: CommonUnitMillisSchema.exactOptional().openapi({
+          description:
+            'The amount of time that shard PIT contexts have been held open since the node last restarted, in milliseconds.',
+        }),
+        point_in_time_current: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description: 'The number of currently open shard PIT contexts.',
+          }),
+        suggest_current: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description: 'The number of currently running shard suggest operations.',
+          }),
+        suggest_time: CommonDurationSchema.exactOptional().openapi({
+          description: 'The total amount of time take to complete all shard suggest operations.',
+        }),
+        suggest_time_in_millis: CommonUnitMillisSchema.openapi({
+          description:
+            'The total amount of time taken to complete all shard suggest operations, in milliseconds.',
+        }),
+        suggest_total: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description: 'The total number of shard suggest operations.',
+          }),
+        search_idle_reactivate_count_total: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description: 'The total number of idle search reactivations.',
+          }),
+        request: z
+          .record(z.string(), CommonRequestStatsSchema)
+          .exactOptional()
+          .openapi({
+            description: 'Statistics related to coordinator search operations for the node.',
+          }),
+        groups: z
+          .record(z.string(), CommonSearchStatsSchema)
+          .exactOptional()
+          .openapi({ description: 'The search statistics grouped by search groups.' }),
+      })
+      .openapi({
+        description: 'The statistics about search operations.',
+        required: [
+          'fetch_current',
+          'fetch_time_in_millis',
+          'fetch_total',
+          'query_current',
+          'query_time_in_millis',
+          'query_total',
+          'scroll_current',
+          'scroll_time_in_millis',
+          'scroll_total',
+          'suggest_current',
+          'suggest_time_in_millis',
+          'suggest_total',
+        ],
+      }),
+  )
+  .openapi('CommonSearchStats')
+
+const CommonMergesStatsSchema = z
+  .object({
+    current: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The number of current merge operations.',
+      }),
+    current_docs: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The number of documents in current merge operations.',
+      }),
+    current_size: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'The size of current merge operations in a human-readable format.',
+    }),
+    current_size_in_bytes: CommonByteCountSchema.openapi({
+      description: 'The size of current merge operations in bytes.',
+    }),
+    total: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The total number of merge operations.',
+      }),
+    total_auto_throttle: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'The total auto-throttle size in a human-readable format.',
+    }),
+    total_auto_throttle_in_bytes: CommonByteCountSchema.openapi({
+      description: 'The total auto-throttle size in bytes.',
+    }),
+    total_docs: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The total number of documents that have been merged.',
+      }),
+    total_size: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'The total size of merge operations in a human-readable format.',
+    }),
+    total_size_in_bytes: CommonByteCountSchema.openapi({
+      description: 'The total size of merge operations in bytes.',
+    }),
+    total_stopped_time: CommonDurationSchema.exactOptional().openapi({
+      description: 'The total amount of time merge operations have been stopped.',
+    }),
+    total_stopped_time_in_millis: CommonUnitMillisSchema.openapi({
+      description: 'The total amount of time merge operations have been stopped in milliseconds.',
+    }),
+    total_throttled_time: CommonDurationSchema.exactOptional().openapi({
+      description: 'The total amount of time merge operations have been throttled.',
+    }),
+    total_throttled_time_in_millis: CommonUnitMillisSchema.openapi({
+      description: 'The total amount of time merge operations have been throttled in milliseconds.',
+    }),
+    total_time: CommonDurationSchema.exactOptional().openapi({
+      description: 'The total amount of time spent on merge operations.',
+    }),
+    total_time_in_millis: CommonUnitMillisSchema.openapi({
+      description: 'The total amount of time spent on merge operations in milliseconds.',
+    }),
+    unreferenced_file_cleanups_performed: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The number of unreferenced file cleanups performed.',
+      }),
+  })
+  .openapi({
+    description: 'The statistics about merge operations.',
+    required: [
+      'current',
+      'current_docs',
+      'current_size_in_bytes',
+      'total',
+      'total_auto_throttle_in_bytes',
+      'total_docs',
+      'total_size_in_bytes',
+      'total_stopped_time_in_millis',
+      'total_throttled_time_in_millis',
+      'total_time_in_millis',
+    ],
+  })
+  .openapi('CommonMergesStats')
+
+const CommonRefreshStatsSchema = z
+  .object({
+    external_total: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The total number of external refresh operations.',
+      }),
+    external_total_time: CommonDurationSchema.exactOptional().openapi({
+      description: 'The total amount of time spent on external refresh operations.',
+    }),
+    external_total_time_in_millis: CommonUnitMillisSchema.openapi({
+      description: 'The total amount of time spent on external refresh operations in milliseconds.',
+    }),
+    listeners: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The number of refresh listeners.',
+      }),
+    total: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The total number of refresh operations.',
+      }),
+    total_time: CommonDurationSchema.exactOptional().openapi({
+      description: 'The total amount of time spent on refresh operations.',
+    }),
+    total_time_in_millis: CommonUnitMillisSchema.openapi({
+      description: 'The total amount of time spent on refresh operations in milliseconds.',
+    }),
+  })
+  .openapi({
+    description: 'The statistics about refresh operations.',
+    required: [
+      'external_total',
+      'external_total_time_in_millis',
+      'listeners',
+      'total',
+      'total_time_in_millis',
+    ],
+  })
+  .openapi('CommonRefreshStats')
+
+const CommonFlushStatsSchema = z
+  .object({
+    periodic: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The number of periodic flush operations.',
+      }),
+    total: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The total number of flush operations.',
+      }),
+    total_time: CommonDurationSchema.exactOptional(),
+    total_time_in_millis: CommonUnitMillisSchema,
+  })
+  .openapi({
+    description: 'The statistics about flush operations.',
+    required: ['periodic', 'total', 'total_time_in_millis'],
+  })
+  .openapi('CommonFlushStats')
+
+const CommonWarmerStatsSchema = z
+  .object({
+    current: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The number of current warmer operations.',
+      }),
+    total: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The total number of warmer operations.',
+      }),
+    total_time: CommonDurationSchema.exactOptional().openapi({
+      description: 'The total time spent on warmer operations.',
+    }),
+    total_time_in_millis: CommonUnitMillisSchema.openapi({
+      description: 'The total time spent on warmer operations in milliseconds.',
+    }),
+  })
+  .openapi({
+    description: 'The statistics about index warmer operations.',
+    required: ['current', 'total', 'total_time_in_millis'],
+  })
+  .openapi('CommonWarmerStats')
+
+const CommonQueryCacheStatsSchema = z
+  .object({
+    cache_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The total number of entries added to the query cache across all shards assigned to the selected nodes.\nThis number includes all current and evicted entries.',
+      }),
+    cache_size: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The total number of entries currently stored in the query cache across all shards assigned to the selected nodes.',
+      }),
+    evictions: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The total number of query cache evictions across all shards assigned to the selected nodes.',
+      }),
+    hit_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The total number of query cache hits across all shards assigned to the selected nodes.',
+      }),
+    memory_size: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'The human-readable amount of memory used for the query cache.',
+    }),
+    memory_size_in_bytes: CommonByteCountSchema.openapi({
+      description:
+        'The total amount, in bytes, of memory used for the query cache across all shards assigned to the selected nodes.',
+    }),
+    miss_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The total number of query cache misses across all shards assigned to the selected nodes.',
+      }),
+    total_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The total number of hits and misses stored in the query cache across all shards assigned to the selected nodes.',
+      }),
+  })
+  .openapi({
+    description: 'The statistics about query cache usage.',
+    required: [
+      'cache_count',
+      'cache_size',
+      'evictions',
+      'hit_count',
+      'memory_size_in_bytes',
+      'miss_count',
+      'total_count',
+    ],
+  })
+  .openapi('CommonQueryCacheStats')
+
+const CommonFieldMemoryUsageSchema = z
+  .object({
+    memory_size: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'The human-readable amount of memory used.',
+    }),
+    memory_size_in_bytes: CommonByteCountSchema.openapi({
+      description: 'The amount of memory used in bytes.',
+    }),
+  })
+  .openapi({
+    description: 'The memory usage statistics for a field.',
+    required: ['memory_size_in_bytes'],
+  })
+  .openapi('CommonFieldMemoryUsage')
+
+const CommonFielddataStatsSchema = z
+  .object({
+    evictions: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The number of times field data was evicted from memory.',
+      }),
+    memory_size: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'The human-readable amount of memory used for field data.',
+    }),
+    memory_size_in_bytes: CommonByteCountSchema.openapi({
+      description: 'The amount of memory used for field data in bytes.',
+    }),
+    fields: z
+      .record(
+        z.string(),
+        CommonFieldMemoryUsageSchema.openapi({
+          description: 'The per-field field data statistics.',
+        }),
+      )
+      .exactOptional(),
+  })
+  .openapi({
+    description: 'The statistics about field data memory usage.',
+    required: ['memory_size_in_bytes'],
+  })
+  .openapi('CommonFielddataStats')
+
+const CommonFieldSizeUsageSchema = z
+  .object({
+    size: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'The human-readable size of memory used.',
+    }),
+    size_in_bytes: CommonByteCountSchema.openapi({
+      description: 'The size of memory used in bytes.',
+    }),
+  })
+  .openapi({ description: 'The memory usage statistics for a field.', required: ['size_in_bytes'] })
+  .openapi('CommonFieldSizeUsage')
+
+const CommonCompletionStatsSchema = z
+  .object({
+    size_in_bytes: CommonByteCountSchema.openapi({
+      description:
+        'The total amount, in bytes, of memory used for completion across all shards assigned to the selected nodes.',
+    }),
+    size: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'The human-readable size of memory used for completion.',
+    }),
+    fields: z
+      .record(z.string(), CommonFieldSizeUsageSchema)
+      .exactOptional()
+      .openapi({ description: 'The per-field completion statistics.' }),
+  })
+  .openapi({ required: ['size_in_bytes'] })
+  .openapi('CommonCompletionStats')
+
+const IndicesStatsShardFileSizeInfoSchema = z
+  .object({
+    description: z.string().openapi({ description: 'The description of the file type.' }),
+    size: CommonHumanReadableByteCountSchema.exactOptional(),
+    size_in_bytes: CommonByteCountSchema,
+    min_size_in_bytes: CommonByteCountSchema.exactOptional(),
+    max_size_in_bytes: CommonByteCountSchema.exactOptional(),
+    average_size_in_bytes: CommonByteCountSchema.exactOptional(),
+    count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'The number of files.' }),
+  })
+  .openapi({
+    description: 'The size information for shard files.',
+    required: ['description', 'size_in_bytes'],
+  })
+  .openapi('IndicesStatsShardFileSizeInfo')
+
+const CommonRemoteStoreUploadPressureStatsSchema = z
+  .object({
+    total_rejections: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The total number of requests rejected due to segment store upload backpressure.',
+      }),
+  })
+  .openapi({
+    description: 'Statistics related to segment store upload backpressure.',
+    required: ['total_rejections'],
+  })
+  .openapi('CommonRemoteStoreUploadPressureStats')
+
+const CommonRemoteStoreUploadRefreshSizeLagStatsSchema = z
+  .object({
+    max: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description:
+        'The maximum amount of lag, in bytes, during the upload refresh between the remote segment store and the local store.',
+    }),
+    max_bytes: CommonByteCountSchema.openapi({
+      description:
+        'The maximum amount of lag, in bytes, during the upload refresh between the remote segment store and the local store.',
+    }),
+    total: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description:
+        'The total number of bytes that lagged during the upload refresh between the remote segment store and the local store.',
+    }),
+    total_bytes: CommonByteCountSchema.openapi({
+      description:
+        'The total number of bytes that lagged during the upload refresh between the remote segment store and the local store.',
+    }),
+  })
+  .openapi({
+    description:
+      'The amount of lag during upload between the remote segment store and the local store.',
+    required: ['max_bytes', 'total_bytes'],
+  })
+  .openapi('CommonRemoteStoreUploadRefreshSizeLagStats')
+
+const CommonRemoteStoreUploadDownloadStatsSchema = z
+  .object({
+    failed: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'The number of bytes that failed to upload to/from the remote segment store.',
+    }),
+    failed_bytes: CommonByteCountSchema.openapi({
+      description: 'The number of bytes that failed to upload to/from the remote segment store.',
+    }),
+    started: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description:
+        'The number of bytes to upload/download to/from the remote segment store after the upload/download has started.',
+    }),
+    started_bytes: CommonByteCountSchema.openapi({
+      description:
+        'The number of bytes to upload/download to/from the remote segment store after the upload/download has started.',
+    }),
+    succeeded: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description:
+        'The number of bytes successfully uploaded/downloaded to/from the remote segment store.',
+    }),
+    succeeded_bytes: CommonByteCountSchema.openapi({
+      description:
+        'The number of bytes successfully uploaded/downloaded to/from the remote segment store.',
+    }),
+  })
+  .openapi({
+    description:
+      'The amount of data, in bytes, uploaded or downloaded to/from the remote segment store.',
+    required: ['failed_bytes', 'started_bytes', 'succeeded_bytes'],
+  })
+  .openapi('CommonRemoteStoreUploadDownloadStats')
+
+const CommonRemoteStoreUploadStatsSchema = z
+  .object({
+    max_refresh_time_lag: CommonDurationSchema.exactOptional().openapi({
+      description: 'The maximum duration that the remote refresh is behind the local refresh.',
+    }),
+    max_refresh_time_lag_in_millis: CommonUnitMillisSchema.openapi({
+      description:
+        'The maximum duration, in milliseconds, that the remote refresh is behind the local refresh.',
+    }),
+    pressure: CommonRemoteStoreUploadPressureStatsSchema.exactOptional(),
+    refresh_size_lag: CommonRemoteStoreUploadRefreshSizeLagStatsSchema,
+    total_time_spent: CommonDurationSchema.exactOptional().openapi({
+      description: 'The total amount of time spent on uploads to the remote segment store.',
+    }),
+    total_time_spent_in_millis: CommonUnitMillisSchema.openapi({
+      description:
+        'The total amount of time, in milliseconds, spent on uploads to the remote segment store.',
+    }),
+    total_upload_size: CommonRemoteStoreUploadDownloadStatsSchema,
+  })
+  .openapi({
+    description: 'Any statistics related to uploads to the remote segment store.',
+    required: [
+      'max_refresh_time_lag_in_millis',
+      'refresh_size_lag',
+      'total_time_spent_in_millis',
+      'total_upload_size',
+    ],
+  })
+  .openapi('CommonRemoteStoreUploadStats')
+
+const CommonRemoteStoreDownloadStatsSchema = z
+  .object({
+    total_download_size: CommonRemoteStoreUploadDownloadStatsSchema.openapi({
+      description: 'The total amount of data downloaded from the remote segment store.',
+    }),
+    total_time_spent: CommonDurationSchema.exactOptional().openapi({
+      description: 'The total amount of time spent on downloads from the remote segment store.',
+    }),
+    total_time_spent_in_millis: CommonUnitMillisSchema.openapi({
+      description:
+        'The total duration, in milliseconds, spent on downloads from the remote segment store.',
+    }),
+  })
+  .openapi({
+    description: 'Any statistics related to downloads to the remote segment store.',
+    required: ['total_download_size', 'total_time_spent_in_millis'],
+  })
+  .openapi('CommonRemoteStoreDownloadStats')
+
+const CommonRemoteStoreStatsSchema = z
+  .object({
+    upload: CommonRemoteStoreUploadStatsSchema,
+    download: CommonRemoteStoreDownloadStatsSchema,
+  })
+  .openapi({
+    description: 'The statistics related to remote segment store operations.',
+    required: ['download', 'upload'],
+  })
+  .openapi('CommonRemoteStoreStats')
+
+const CommonSegmentReplicationStatsSchema = z
+  .xor([
+    z
+      .object({
+        max_bytes_behind: CommonHumanReadableByteCountSchema.openapi({
+          description: 'The maximum number of bytes the replica is behind the primary.',
+        }),
+        max_replication_lag: CommonDurationSchema.openapi({
+          description: 'The maximum replication lag between primary and replica shards.',
+        }),
+        total_bytes_behind: CommonHumanReadableByteCountSchema.openapi({
+          description: 'The total number of bytes all replicas are behind their primaries.',
+        }),
+      })
+      .openapi({
+        'x-version-added': '2.10.0',
+        'x-version-removed': '2.12.0',
+        description: 'The segment replication statistics for versions 2.10.0 to 2.12.0.',
+        required: ['max_bytes_behind', 'max_replication_lag', 'total_bytes_behind'],
+      }),
+    z
+      .object({
+        max_bytes_behind: CommonByteCountSchema.openapi({
+          description: 'The maximum number of bytes the replica is behind the primary.',
+        }),
+        max_replication_lag: CommonUnitMillisSchema.openapi({
+          description:
+            'The maximum replication lag between primary and replica shards in milliseconds.',
+        }),
+        total_bytes_behind: CommonByteCountSchema.openapi({
+          description: 'The total number of bytes all replicas are behind their primaries.',
+        }),
+      })
+      .openapi({
+        'x-version-added': '2.12.0',
+        description: 'The segment replication statistics for version 2.12.0 and later.',
+        required: ['max_bytes_behind', 'max_replication_lag', 'total_bytes_behind'],
+      }),
+  ])
+  .openapi({ 'x-version-added': '2.10.0' })
+  .openapi('CommonSegmentReplicationStats')
+
+const CommonSegmentsStatsSchema = z
+  .object({
+    count: z
+      .int32()
+      .openapi({
+        description:
+          'The total number of segments across all shards assigned to the selected nodes.',
+      }),
+    doc_values_memory: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'The human-readable amount of memory used for doc values.',
+    }),
+    doc_values_memory_in_bytes: CommonByteCountSchema.openapi({
+      description:
+        'The total amount, in bytes, of memory used for document values across all shards assigned to the selected nodes.',
+    }),
+    file_sizes: z
+      .record(z.string(), IndicesStatsShardFileSizeInfoSchema)
+      .openapi({
+        description:
+          'This object is not populated by the cluster stats API.\nTo get information on segment files, use the node stats API.',
+      }),
+    fixed_bit_set: CommonHumanReadableByteCountSchema.exactOptional(),
+    fixed_bit_set_memory_in_bytes: CommonByteCountSchema.openapi({
+      description:
+        'The total amount of memory, in bytes, used by fixed bit sets across all shards assigned to the selected nodes.',
+    }),
+    index_writer_memory: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'The human-readable amount of memory used by index writers.',
+    }),
+    index_writer_max_memory_in_bytes: CommonByteCountSchema.exactOptional().openapi({
+      description: 'The maximum amount of memory, in bytes, used by index writers.',
+    }),
+    index_writer_memory_in_bytes: CommonByteCountSchema.openapi({
+      description:
+        'The total amount, in bytes, of memory used by all index writers across all shards assigned to the selected nodes.',
+    }),
+    max_unsafe_auto_id_timestamp: CommonUnitMillisSchema.openapi({
+      description:
+        'The Unix timestamp, in milliseconds, of the most recently retried indexing request.',
+    }),
+    memory: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description:
+        'The total amount of memory used for segments across all shards assigned to the selected nodes.',
+    }),
+    memory_in_bytes: CommonByteCountSchema.openapi({
+      description:
+        'The total amount, in bytes, of memory used for segments across all shards assigned to the selected nodes.',
+    }),
+    norms_memory: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description:
+        'The total amount of memory used for normalization factors across all shards assigned to the selected nodes.',
+    }),
+    norms_memory_in_bytes: CommonByteCountSchema.openapi({
+      description:
+        'The total amount, in bytes, of memory used for normalization factors across all shards assigned to the selected nodes.',
+    }),
+    points_memory: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description:
+        'The total amount of memory used for points across all shards assigned to the selected nodes.',
+    }),
+    points_memory_in_bytes: CommonByteCountSchema.openapi({
+      description:
+        'The total amount, in bytes, of memory used for points across all shards assigned to the selected nodes.',
+    }),
+    stored_fields_memory: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description:
+        'The total amount of memory used for stored fields across all shards assigned to the selected nodes.',
+    }),
+    stored_fields_memory_in_bytes: CommonByteCountSchema.openapi({
+      description:
+        'The total amount, in bytes, of memory used for stored fields across all shards assigned to the selected nodes.',
+    }),
+    terms_memory: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description:
+        'The total amount of memory used for terms across all shards assigned to the selected nodes.',
+    }),
+    terms_memory_in_bytes: CommonByteCountSchema.openapi({
+      description:
+        'The total amount, in bytes, of memory used for terms across all shards assigned to the selected nodes.',
+    }),
+    term_vectors_memory: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description:
+        'The total amount of memory used for term vectors across all shards assigned to the selected nodes.',
+    }),
+    term_vectors_memory_in_bytes: CommonByteCountSchema.openapi({
+      description:
+        'The total amount, in bytes, of memory used for term vectors across all shards assigned to the selected nodes.',
+    }),
+    version_map_memory: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description:
+        'The total amount of memory used by all version maps across all shards assigned to the selected nodes.',
+    }),
+    version_map_memory_in_bytes: CommonByteCountSchema.openapi({
+      description:
+        'The total amount, in bytes, of memory used by all version maps across all shards assigned to the selected nodes.',
+    }),
+    remote_store: CommonRemoteStoreStatsSchema.exactOptional(),
+    segment_replication: CommonSegmentReplicationStatsSchema.exactOptional().openapi({
+      'x-version-added': '2.10.0',
+    }),
+  })
+  .openapi({
+    description: 'The statistics about segments.',
+    required: [
+      'count',
+      'doc_values_memory_in_bytes',
+      'file_sizes',
+      'fixed_bit_set_memory_in_bytes',
+      'index_writer_memory_in_bytes',
+      'max_unsafe_auto_id_timestamp',
+      'memory_in_bytes',
+      'norms_memory_in_bytes',
+      'points_memory_in_bytes',
+      'stored_fields_memory_in_bytes',
+      'term_vectors_memory_in_bytes',
+      'terms_memory_in_bytes',
+      'version_map_memory_in_bytes',
+    ],
+  })
+  .openapi('CommonSegmentsStats')
+
+const CommonRemoteStoreTranslogUploadTotalUploadsStatsSchema = z
+  .object({
+    failed: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The number of failed upload syncs to the remote translog store.',
+      }),
+    started: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The number of upload syncs to the remote translog store that have started.',
+      }),
+    succeeded: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The number of successful upload syncs to the remote translog store.',
+      }),
+  })
+  .openapi({
+    description: 'The number of syncs to the remote translog store.',
+    required: ['failed', 'started', 'succeeded'],
+  })
+  .openapi('CommonRemoteStoreTranslogUploadTotalUploadsStats')
+
+const CommonRemoteStoreTranslogUploadTotalUploadSizeStatsSchema = z
+  .object({
+    failed: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'The number of bytes that failed to upload to the remote translog store.',
+    }),
+    failed_bytes: CommonByteCountSchema.openapi({
+      description: 'The number of bytes that failed to upload to the remote translog store.',
+    }),
+    started: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'The number of bytes successfully uploaded to the remote translog store.',
+    }),
+    started_bytes: CommonByteCountSchema.openapi({
+      description: 'The number of bytes successfully uploaded to the remote translog store.',
+    }),
+    succeeded: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'The number of bytes successfully uploaded to the remote translog store.',
+    }),
+    succeeded_bytes: CommonByteCountSchema.openapi({
+      description: 'The number of bytes successfully uploaded to the remote translog store.',
+    }),
+  })
+  .openapi({
+    description: 'The total amount of data uploaded to the remote translog store.',
+    required: ['failed_bytes', 'started_bytes', 'succeeded_bytes'],
+  })
+  .openapi('CommonRemoteStoreTranslogUploadTotalUploadSizeStats')
+
+const CommonRemoteStoreTranslogUploadStatsSchema = z
+  .object({
+    total_uploads: CommonRemoteStoreTranslogUploadTotalUploadsStatsSchema,
+    total_upload_size: CommonRemoteStoreTranslogUploadTotalUploadSizeStatsSchema,
+  })
+  .openapi({
+    description: 'The statistics related to uploads to the remote translog store.',
+    required: ['total_upload_size', 'total_uploads'],
+  })
+  .openapi('CommonRemoteStoreTranslogUploadStats')
+
+const CommonRemoteStoreTranslogStatsSchema = z
+  .object({ upload: CommonRemoteStoreTranslogUploadStatsSchema })
+  .openapi({
+    description: 'The statistics related to remote translog operations.',
+    required: ['upload'],
+  })
+  .openapi('CommonRemoteStoreTranslogStats')
+
+const CommonTranslogStatsSchema = z
+  .object({
+    earliest_last_modified_age: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The age of the oldest translog entry.',
+      }),
+    operations: z.int32().openapi({ description: 'The number of operations in the translog.' }),
+    remote_store: CommonRemoteStoreTranslogStatsSchema.exactOptional(),
+    size: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'The size of the translog in a human-readable format.',
+    }),
+    size_in_bytes: CommonByteCountSchema.openapi({
+      description: 'The size of the translog in bytes.',
+    }),
+    uncommitted_operations: z
+      .int32()
+      .openapi({ description: 'The number of uncommitted operations in the translog.' }),
+    uncommitted_size: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'The size of uncommitted operations in a human-readable format.',
+    }),
+    uncommitted_size_in_bytes: CommonByteCountSchema.openapi({
+      description: 'The size of uncommitted operations in bytes.',
+    }),
+  })
+  .openapi({
+    description: 'The statistics about translog operations.',
+    required: [
+      'earliest_last_modified_age',
+      'operations',
+      'size_in_bytes',
+      'uncommitted_operations',
+      'uncommitted_size_in_bytes',
+    ],
+  })
+  .openapi('CommonTranslogStats')
+
+const CommonRequestCacheStatsSchema = z
+  .object({
+    evictions: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The number of request cache evictions.',
+      }),
+    hit_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The number of request cache hits.',
+      }),
+    memory_size: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'The size of the request cache in a human-readable format.',
+    }),
+    memory_size_in_bytes: CommonByteCountSchema.openapi({
+      description: 'The size of the request cache in bytes.',
+    }),
+    miss_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The number of request cache misses.',
+      }),
+  })
+  .openapi({
+    description: 'The statistics about request cache operations.',
+    required: ['evictions', 'hit_count', 'memory_size_in_bytes', 'miss_count'],
+  })
+  .openapi('CommonRequestCacheStats')
+
+const CommonRecoveryStatsSchema = z
+  .object({
+    current_as_source: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The number of ongoing recoveries for which this node is the source.',
+      }),
+    current_as_target: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The number of ongoing recoveries for which this node is the target.',
+      }),
+    throttle_time: CommonDurationSchema.exactOptional().openapi({
+      description: 'The total amount of time recovery operations have been throttled.',
+    }),
+    throttle_time_in_millis: CommonUnitMillisSchema.openapi({
+      description:
+        'The total amount of time recovery operations have been throttled in milliseconds.',
+    }),
+  })
+  .openapi({
+    description: 'The statistics about recovery operations.',
+    required: ['current_as_source', 'current_as_target', 'throttle_time_in_millis'],
+  })
+  .openapi('CommonRecoveryStats')
+
+const IndicesStatsIndexStatsBaseSchema = z
+  .object({
+    docs: CommonDocStatsSchema.exactOptional(),
+    store: CommonStoreStatsSchema.exactOptional(),
+    indexing: CommonIndexingStatsSchema.exactOptional(),
+    get: CommonGetStatsSchema.exactOptional(),
+    search: CommonSearchStatsSchema.exactOptional(),
+    merges: CommonMergesStatsSchema.exactOptional(),
+    refresh: CommonRefreshStatsSchema.exactOptional(),
+    flush: CommonFlushStatsSchema.exactOptional(),
+    warmer: CommonWarmerStatsSchema.exactOptional(),
+    query_cache: CommonQueryCacheStatsSchema.exactOptional(),
+    fielddata: CommonFielddataStatsSchema.exactOptional(),
+    completion: CommonCompletionStatsSchema.exactOptional(),
+    segments: CommonSegmentsStatsSchema.exactOptional(),
+    translog: CommonTranslogStatsSchema.exactOptional(),
+    request_cache: CommonRequestCacheStatsSchema.exactOptional(),
+    recovery: CommonRecoveryStatsSchema.exactOptional(),
+  })
+  .openapi({ description: 'The base statistics for an index.', required: [] })
+  .openapi('IndicesStatsIndexStatsBase')
+
+const IndicesStatsIndexStatsSchema = IndicesStatsIndexStatsBaseSchema.and(
+  z.looseObject({}),
+).openapi('IndicesStatsIndexStats')
+
+const IndicesStatsShardRoutingStateSchema = z
+  .enum(['INITIALIZING', 'RELOCATING', 'STARTED', 'UNASSIGNED'])
+  .openapi({ description: 'The state of shard routing.' })
+  .openapi('IndicesStatsShardRoutingState')
+
+const IndicesStatsShardRoutingSchema = z
+  .object({
+    node: z.string().openapi({ description: 'The node containing the shard.' }),
+    primary: z.boolean().openapi({ description: 'Whether this is a primary shard.' }),
+    relocating_node: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The node where the shard is relocating to.' }),
+    state: IndicesStatsShardRoutingStateSchema,
+  })
+  .openapi({
+    description: 'The routing information for a shard.',
+    required: ['node', 'primary', 'state'],
+  })
+  .openapi('IndicesStatsShardRouting')
+
+const IndicesStatsShardCommitSchema = z
+  .object({
+    generation: z.int32().openapi({ description: 'The generation number of the commit.' }),
+    id: CommonIdSchema,
+    num_docs: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The number of documents in the commit.',
+      }),
+    user_data: z
+      .record(z.string(), z.string())
+      .openapi({ description: 'The user-defined data associated with the commit.' }),
+  })
+  .openapi({
+    description: 'The commit information for a shard.',
+    required: ['generation', 'id', 'num_docs', 'user_data'],
+  })
+  .openapi('IndicesStatsShardCommit')
+
+const IndicesStatsShardSequenceNumberSchema = z
+  .object({
+    global_checkpoint: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The global checkpoint for the shard.',
+      }),
+    local_checkpoint: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The local checkpoint for the shard.',
+      }),
+    max_seq_no: CommonSequenceNumberSchema,
+  })
+  .openapi({
+    description: 'The sequence number information for a shard.',
+    required: ['global_checkpoint', 'local_checkpoint', 'max_seq_no'],
+  })
+  .openapi('IndicesStatsShardSequenceNumber')
+
+const IndicesStatsShardLeaseSchema = z
+  .object({
+    id: CommonIdSchema,
+    retaining_seq_no: CommonSequenceNumberSchema,
+    timestamp: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    source: z.string(),
+  })
+  .openapi({
+    description: 'The retention lease details.',
+    required: ['id', 'retaining_seq_no', 'source', 'timestamp'],
+  })
+  .openapi('IndicesStatsShardLease')
+
+const IndicesStatsShardRetentionLeasesSchema = z
+  .object({
+    primary_term: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The primary term of the retention leases.',
+      }),
+    version: CommonVersionNumberSchema,
+    leases: z
+      .array(IndicesStatsShardLeaseSchema)
+      .openapi({ description: 'The list of retention leases.' }),
+  })
+  .openapi({
+    description: 'The retention lease information for a shard.',
+    required: ['leases', 'primary_term', 'version'],
+  })
+  .openapi('IndicesStatsShardRetentionLeases')
+
+const IndicesStatsShardPathSchema = z
+  .object({
+    data_path: z.string().openapi({ description: "The path to the shard's data." }),
+    is_custom_data_path: z
+      .boolean()
+      .openapi({ description: 'Whether the shard uses a custom data path.' }),
+    state_path: z.string().openapi({ description: "The path to the shard's state." }),
+  })
+  .openapi({
+    description: 'The path information for a shard.',
+    required: ['data_path', 'is_custom_data_path', 'state_path'],
+  })
+  .openapi('IndicesStatsShardPath')
+
+const IndicesStatsIndexShardStatsBaseSchema = IndicesStatsIndexStatsBaseSchema.and(
+  z
+    .object({
+      routing: IndicesStatsShardRoutingSchema.exactOptional(),
+      commit: IndicesStatsShardCommitSchema.exactOptional(),
+      seq_no: IndicesStatsShardSequenceNumberSchema.exactOptional(),
+      retention_leases: IndicesStatsShardRetentionLeasesSchema.exactOptional(),
+      shard_path: IndicesStatsShardPathSchema.exactOptional(),
+    })
+    .openapi({ required: [] }),
+).openapi('IndicesStatsIndexShardStatsBase')
+
+const IndicesStatsIndexShardStatsSchema = IndicesStatsIndexShardStatsBaseSchema.and(
+  z.looseObject({}),
+).openapi('IndicesStatsIndexShardStats')
+
+type IndicesStatsIndicesStatsType = {
+  uuid: z.infer<typeof CommonUuidSchema>
+  primaries: z.infer<typeof IndicesStatsIndexStatsSchema>
+  total: z.infer<typeof IndicesStatsIndexStatsSchema>
+  shards?: { [key: string]: z.infer<typeof IndicesStatsIndexShardStatsSchema>[] }
+}
+
+const CommonIndexAliasSchema = z
+  .string()
+  .openapi({ description: 'The name of an index alias.' })
+  .openapi('CommonIndexAlias')
+
+type IndicesUpdateAliasesAddActionType = {
+  alias?: z.infer<typeof CommonIndexAliasSchema>
+  aliases?: z.infer<typeof CommonIndexAliasSchema> | z.infer<typeof CommonIndexAliasSchema>[]
+  filter?: z.infer<typeof CommonQueryDslQueryContainerSchema>
+  index?: z.infer<typeof CommonIndexNameSchema>
+  indices?: z.infer<typeof CommonIndicesSchema>
+  index_routing?: z.infer<typeof CommonRoutingSchema>
+  is_hidden?: boolean
+  is_write_index?: boolean
+  routing?: z.infer<typeof CommonRoutingSchema>
+  search_routing?: z.infer<typeof CommonRoutingSchema>
+  must_exist?: boolean
+}
+
+const IndicesUpdateAliasesAddActionSchema: z.ZodType<IndicesUpdateAliasesAddActionType> = z
+  .object({
+    alias: CommonIndexAliasSchema.exactOptional(),
+    aliases: z
+      .xor([CommonIndexAliasSchema, z.array(CommonIndexAliasSchema)])
+      .exactOptional()
+      .openapi({ description: 'The list of aliases to add. Index alias names support date math.' }),
+    filter: CommonQueryDslQueryContainerSchema.exactOptional(),
+    index: CommonIndexNameSchema.exactOptional(),
+    indices: CommonIndicesSchema.exactOptional(),
+    index_routing: CommonRoutingSchema.exactOptional(),
+    is_hidden: z.boolean().exactOptional().openapi({ description: 'Whether the alias is hidden.' }),
+    is_write_index: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether this is the write index or data stream for the alias.' }),
+    routing: CommonRoutingSchema.exactOptional(),
+    search_routing: CommonRoutingSchema.exactOptional(),
+    must_exist: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the alias must exist to perform the action.' }),
+  })
+  .openapi({ description: 'The configuration for adding an alias.', required: [] })
+  .openapi('IndicesUpdateAliasesAddAction')
+
+const IndicesUpdateAliasesRemoveActionSchema = z
+  .object({
+    alias: CommonIndexAliasSchema.exactOptional(),
+    aliases: z
+      .xor([CommonIndexAliasSchema, z.array(CommonIndexAliasSchema)])
+      .exactOptional()
+      .openapi({
+        description: 'The list of aliases to remove. Index alias names support date math.',
+      }),
+    index: CommonIndexNameSchema.exactOptional(),
+    indices: CommonIndicesSchema.exactOptional(),
+    must_exist: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the alias must exist to perform the action.' }),
+  })
+  .openapi({ description: 'The configuration for removing an alias.', required: [] })
+  .openapi('IndicesUpdateAliasesRemoveAction')
+
+const IndicesUpdateAliasesRemoveIndexActionSchema = z
+  .object({
+    index: CommonIndexNameSchema.exactOptional(),
+    indices: CommonIndicesSchema.exactOptional(),
+    must_exist: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the alias must exist to perform the action.' }),
+  })
+  .openapi({ description: 'The configuration for removing an index.', required: [] })
+  .openapi('IndicesUpdateAliasesRemoveIndexAction')
+
+type IndicesUpdateAliasesActionType = {
+  add?: z.infer<typeof IndicesUpdateAliasesAddActionSchema>
+  remove?: z.infer<typeof IndicesUpdateAliasesRemoveActionSchema>
+  remove_index?: z.infer<typeof IndicesUpdateAliasesRemoveIndexActionSchema>
+}
+
 const IngestCommonProcessorBaseSchema: z.ZodType<IngestCommonProcessorBaseType> = z
   .lazy(() =>
     z
@@ -14015,7 +18071,7 @@ type IngestCommonConvertProcessorType = z.infer<typeof IngestCommonProcessorBase
 }
 
 type IngestCommonCsvProcessorType = z.infer<typeof IngestCommonProcessorBaseSchema> & {
-  empty_value?: { [key: string]: unknown }
+  empty_value?: unknown
   field: z.infer<typeof CommonFieldSchema>
   ignore_missing?: boolean
   quote?: string
@@ -14982,7 +19038,7 @@ const IngestCommonPipelineProcessorSchema: z.ZodType<IngestCommonPipelineProcess
   .openapi('IngestCommonPipelineProcessor')
 
 const IngestCommonDropProcessorSchema: z.ZodType<IngestCommonDropProcessorType> = z
-  .lazy(() => IngestCommonProcessorBaseSchema.and(z.object({})))
+  .lazy(() => IngestCommonProcessorBaseSchema.and(z.looseObject({})))
   .openapi('IngestCommonDropProcessor')
 
 const IngestCommonCircleProcessorSchema: z.ZodType<IngestCommonCircleProcessorType> = z
@@ -15085,7 +19141,7 @@ type IngestCommonSetProcessorType = z.infer<typeof IngestCommonProcessorBaseSche
   ignore_empty_value?: boolean
   media_type?: string
   override?: boolean
-  value?: { [key: string]: unknown }
+  value?: unknown
 }
 
 type IngestCommonSetSecurityUserProcessorType = z.infer<typeof IngestCommonProcessorBaseSchema> & {
@@ -15212,53 +19268,2361 @@ type IngestSimulatePipelineSimulationType = {
   status?: z.infer<typeof CommonActionStatusOptionsSchema>
 }
 
+type InsightsCommonSourceType = {
+  aggregations?: { [key: string]: unknown }
+  collapse?: z.infer<typeof CoreSearchFieldCollapseSchema>
+  explain?: boolean
+  ext?: { [key: string]: { [key: string]: unknown } }
+  from?: number
+  highlight?: z.infer<typeof CoreSearchHighlightSchema>
+  track_total_hits?: z.infer<typeof CoreSearchTrackHitsSchema>
+  indices_boost?: { [key: string]: number }[]
+  docvalue_fields?: z.infer<typeof CommonQueryDslFieldAndFormatSchema>[]
+  min_score?: number
+  post_filter?: z.infer<typeof CommonQueryDslQueryContainerSchema>
+  profile?: boolean
+  query?: z.infer<typeof CommonQueryDslQueryContainerSchema>
+  script_fields?: { [key: string]: z.infer<typeof CommonScriptFieldSchema> }
+  search_after?: z.infer<typeof CommonSortResultsSchema>
+  size?: number
+  slice?: z.infer<typeof CommonSlicedScrollSchema>
+  sort?: z.infer<typeof CommonSortSchema>
+  _source?: z.infer<typeof CoreSearchSourceConfigSchema>
+  fields?: z.infer<typeof CommonQueryDslFieldAndFormatSchema>[]
+  suggest?: z.infer<typeof CoreSearchSuggesterSchema>
+  terminate_after?: number
+  timeout?: string
+  track_scores?: boolean
+  version?: boolean
+  seq_no_primary_term?: boolean
+  stored_fields?: z.infer<typeof CommonFieldsSchema>
+  pit?: z.infer<typeof CoreSearchPointInTimeReferenceSchema>
+  stats?: string[]
+}
+
+const InsightsCommonGroupingTypeSchema = z
+  .enum(['NONE', 'SIMILARITY', 'none', 'similarity'])
+  .openapi('InsightsCommonGroupingType')
+
+const InsightsCommonTaskResourceUsageSchema = z
+  .object({
+    cpu_time_in_nanos: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The CPU time used in nanoseconds.' }),
+    memory_in_bytes: z.int().exactOptional().openapi({ description: 'The memory usage in bytes.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('InsightsCommonTaskResourceUsage')
+
+const InsightsCommonTaskResourceUsagesSchema = z
+  .object({
+    action: z.string().exactOptional().openapi({ description: 'The action type of the task.' }),
+    taskId: z.int().exactOptional().openapi({ description: 'The task ID.' }),
+    parentTaskId: z.int().exactOptional().openapi({ description: 'The parent task ID.' }),
+    nodeId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The node ID where the task was executed.' }),
+    taskResourceUsage: InsightsCommonTaskResourceUsageSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('InsightsCommonTaskResourceUsages')
+
+const InsightsCommonSourceSchema: z.ZodType<InsightsCommonSourceType> = z
+  .object({
+    aggregations: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({
+        description: 'Defines the aggregations that are run as part of the search request.',
+      }),
+    collapse: CoreSearchFieldCollapseSchema.exactOptional(),
+    explain: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `true`, returns detailed information about score computation as part of a hit.',
+      }),
+    ext: z
+      .record(z.string(), z.looseObject({}))
+      .exactOptional()
+      .openapi({
+        description: 'Configuration of search extensions defined by OpenSearch plugins.',
+      }),
+    from: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'Starting document offset.\nNeeds to be non-negative.\nBy default, you cannot page through more than 10,000 hits using the `from` and `size` parameters.\nTo page through more hits, use the `search_after` parameter.',
+      }),
+    highlight: CoreSearchHighlightSchema.exactOptional(),
+    track_total_hits: CoreSearchTrackHitsSchema.exactOptional(),
+    indices_boost: z
+      .array(z.record(z.string(), z.number()))
+      .exactOptional()
+      .openapi({ description: 'Boosts the `_score` of documents from specified indexes.' }),
+    docvalue_fields: z
+      .array(CommonQueryDslFieldAndFormatSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Array of wildcard (`*`) patterns.\nThe request returns doc values for field names matching these patterns in the `hits.fields` property of the response.',
+      }),
+    min_score: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'Minimum `_score` for matching documents.\nDocuments with a lower `_score` are not included in the search results.',
+      }),
+    post_filter: CommonQueryDslQueryContainerSchema.exactOptional(),
+    profile: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Set to `true` to return detailed timing information about the execution of individual components in a search request.\nNOTE: This is a debugging tool and adds significant overhead to search execution.',
+      }),
+    query: CommonQueryDslQueryContainerSchema.exactOptional(),
+    script_fields: z
+      .record(z.string(), CommonScriptFieldSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Retrieve a script evaluation (based on different fields) for each hit.',
+      }),
+    search_after: CommonSortResultsSchema.exactOptional(),
+    size: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of hits to return.\nBy default, you cannot page through more than 10,000 hits using the `from` and `size` parameters.\nTo page through more hits, use the `search_after` parameter.',
+      }),
+    slice: CommonSlicedScrollSchema.exactOptional(),
+    sort: CommonSortSchema.exactOptional(),
+    _source: CoreSearchSourceConfigSchema.exactOptional(),
+    fields: z
+      .array(CommonQueryDslFieldAndFormatSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Array of wildcard (`*`) patterns.\nThe request returns values for field names matching these patterns in the `hits.fields` property of the response.',
+      }),
+    suggest: CoreSearchSuggesterSchema.exactOptional(),
+    terminate_after: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of documents to collect for each shard.\nIf a query reaches this limit, OpenSearch terminates the query early.\nOpenSearch collects documents before sorting.\nUse with caution.\nOpenSearch applies this parameter to each shard handling the request.\nWhen possible, let OpenSearch perform early termination automatically.\nAvoid specifying this parameter for requests that target data streams with backing indexes across multiple data tiers.\nIf set to `0` (default), the query does not terminate early.',
+      }),
+    timeout: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the period of time to wait for a response from each shard.\nIf no response is received before the timeout expires, the request fails and returns an error.\nDefaults to no timeout.',
+      }),
+    track_scores: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `true`, calculate and return document scores, even if the scores are not used for sorting.',
+      }),
+    version: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If `true`, returns document version as part of a hit.' }),
+    seq_no_primary_term: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `true`, returns sequence number and primary term of the last modification of each hit.',
+      }),
+    stored_fields: CommonFieldsSchema.exactOptional(),
+    pit: CoreSearchPointInTimeReferenceSchema.exactOptional(),
+    stats: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Stats groups to associate with the search.\nEach group maintains a statistics aggregation for its associated searches.\nYou can retrieve these stats using the indexes stats API.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('InsightsCommonSource')
+
+const InsightsCommonMeasurementSchema = z
+  .object({
+    number: z.int().exactOptional(),
+    count: z.int().exactOptional(),
+    aggregationType: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('InsightsCommonMeasurement')
+
+const InsightsCommonMeasurementsSchema = z
+  .object({
+    latency: InsightsCommonMeasurementSchema.exactOptional(),
+    cpu: InsightsCommonMeasurementSchema.exactOptional(),
+    memory: InsightsCommonMeasurementSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('InsightsCommonMeasurements')
+
+type InsightsCommonTopQueryType = {
+  id?: string
+  group_by?: z.infer<typeof InsightsCommonGroupingTypeSchema>
+  timestamp?: number
+  total_shards?: number
+  task_resource_usages?: z.infer<typeof InsightsCommonTaskResourceUsagesSchema>[]
+  query_hashcode?: string
+  labels?: { [key: string]: unknown }
+  search_type?: string
+  source?: z.infer<typeof InsightsCommonSourceSchema>
+  node_id?: string
+  indices?: string[]
+  phase_latency_map?: { [key: string]: unknown }
+  measurements?: z.infer<typeof InsightsCommonMeasurementsSchema>
+}
+
+const InsightsCommonTopQuerySchema: z.ZodType<InsightsCommonTopQueryType> = z
+  .object({
+    id: z.string().exactOptional(),
+    group_by: InsightsCommonGroupingTypeSchema.exactOptional(),
+    timestamp: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The timestamp of the query execution.' }),
+    total_shards: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The total number of shards involved in the query.' }),
+    task_resource_usages: z.array(InsightsCommonTaskResourceUsagesSchema).exactOptional(),
+    query_hashcode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The hash code of the query.' }),
+    labels: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Additional labels for the query.' }),
+    search_type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The search query type (for example, `query_then_fetch`).' }),
+    source: InsightsCommonSourceSchema.exactOptional(),
+    node_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The node ID associated with the query.' }),
+    indices: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'The indexes involved in the query.' }),
+    phase_latency_map: z.looseObject({}).exactOptional(),
+    measurements: InsightsCommonMeasurementsSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('InsightsCommonTopQuery')
+
+type InsightsCommonTopQueriesResponseType = {
+  top_queries: z.infer<typeof InsightsCommonTopQuerySchema>[]
+}
+
+const IsmCommonMetadataSchema = z
+  .object({
+    _id: CommonIdSchema.exactOptional(),
+    _primary_term: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The primary term of the document.' }),
+    _seq_no: CommonSequenceNumberSchema.exactOptional(),
+    _version: CommonVersionNumberSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('IsmCommonMetadata')
+
+const IsmCommonErrorNotificationChimeSchema = z
+  .object({
+    url: z.string().exactOptional().openapi({ description: 'The URL for the Chime webhook.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('IsmCommonErrorNotificationChime')
+
+const IsmCommonSlackCustomWebhookSchema = z
+  .object({
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The URL for the custom Slack webhook.' }),
+    scheme: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The scheme for the custom Slack webhook.' }),
+    host: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The host for the custom Slack webhook.' }),
+    port: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The port for the custom Slack webhook.' }),
+    path: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The path for the custom Slack webhook.' }),
+    query_params: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'The query parameters for the custom Slack webhook.' }),
+    header_params: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'The header parameters for the custom Slack webhook.' }),
+    username: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The username for the custom Slack webhook.' }),
+    password: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The password for the custom Slack webhook.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('IsmCommonSlackCustomWebhook')
+
+const IsmCommonErrorNotificationSlackSchema = z
+  .object({
+    url: z.string().exactOptional().openapi({ description: 'The URL for the Slack webhook.' }),
+    custom_webhook: IsmCommonSlackCustomWebhookSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('IsmCommonErrorNotificationSlack')
+
+const IsmCommonErrorNotificationDestinationSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the notification destination.' }),
+    last_update_time: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'When the notification destination was last updated.' }),
+  })
+  .catchall(z.union([IsmCommonErrorNotificationChimeSchema, IsmCommonErrorNotificationSlackSchema]))
+  .openapi('IsmCommonErrorNotificationDestination')
+
+const IsmCommonChannelSchema = z
+  .object({
+    id: z.string().exactOptional().openapi({ description: 'The ID of the notification channel.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('IsmCommonChannel')
+
+const IsmCommonErrorNotificationSchema = z
+  .object({
+    destination: IsmCommonErrorNotificationDestinationSchema.exactOptional(),
+    channel: IsmCommonChannelSchema.exactOptional(),
+    message_template: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'The template for error notification messages.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('IsmCommonErrorNotification')
+
+const IsmCommonActionTimeoutSchema = z
+  .object({
+    timeout: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'The timeout configuration for the action.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('IsmCommonActionTimeout')
+
+const IsmCommonActionRetrySchema = z
+  .object({
+    count: z.int().exactOptional().openapi({ description: 'The number of retry attempts.' }),
+    backoff: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The backoff strategy for retries.' }),
+    delay: z.string().exactOptional().openapi({ description: 'The delay between retry attempts.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('IsmCommonActionRetry')
+
+const IsmCommonActionAliasSchema = z
+  .object({
+    actions: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'The alias actions to perform.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('IsmCommonActionAlias')
+
+const IsmCommonActionDeleteSchema = z
+  .looseObject({})
+  .openapi({ description: 'The delete action configuration.' })
+  .openapi('IsmCommonActionDelete')
+
+const IsmCommonActionForceMergeSchema = z
+  .object({
+    max_num_segments: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The maximum number of segments to merge to.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('IsmCommonActionForceMerge')
+
+const IsmCommonActionReadOnlySchema = z
+  .looseObject({})
+  .openapi({ description: 'The read-only action configuration.' })
+  .openapi('IsmCommonActionReadOnly')
+
+const IsmCommonActionReadWriteSchema = z
+  .looseObject({})
+  .openapi({ description: 'The read-write action configuration.' })
+  .openapi('IsmCommonActionReadWrite')
+
+const IsmCommonActionReplicaCountSchema = z
+  .object({
+    number_of_replicas: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The number of replicas to set.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('IsmCommonActionReplicaCount')
+
+const IsmCommonActionIndexPrioritySchema = z
+  .object({
+    priority: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The priority to set for the index.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('IsmCommonActionIndexPriority')
+
+const IsmCommonActionCloseSchema = z
+  .looseObject({})
+  .openapi({ description: 'The close action configuration.' })
+  .openapi('IsmCommonActionClose')
+
+const IsmCommonActionOpenSchema = z
+  .looseObject({})
+  .openapi({ description: 'The open action configuration.' })
+  .openapi('IsmCommonActionOpen')
+
+const IsmCommonActionSnapshotSchema = z
+  .object({
+    repository: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The repository to store the snapshot.' }),
+    snapshot: z.string().exactOptional().openapi({ description: 'The name of the snapshot.' }),
+    include_global_state: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether to include the global state in the snapshot.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('IsmCommonActionSnapshot')
+
+const IsmCommonActionRolloverSchema = z
+  .object({
+    min_size: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The minimum size to trigger rollover.' }),
+    min_index_age: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The minimum index age to trigger rollover.' }),
+    min_doc_count: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The minimum document count to trigger rollover.' }),
+    min_primary_shard_size: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The minimum primary shard size to trigger rollover.' }),
+    copy_alias: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether to copy the alias to the new index.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('IsmCommonActionRollover')
+
+const IsmCommonActionNotificationSchema = z
+  .looseObject({})
+  .openapi({ description: 'The notification action configuration.' })
+  .openapi('IsmCommonActionNotification')
+
+const IsmCommonActionAllocationSchema = z
+  .object({
+    require: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'The required allocation attributes.' }),
+    include: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'The included allocation attributes.' }),
+    exclude: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'The excluded allocation attributes.' }),
+    wait_for: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether to wait for the allocation to complete.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('IsmCommonActionAllocation')
+
+const IsmCommonActionRollupSchema = z
+  .looseObject({})
+  .openapi({ description: 'The rollup action configuration.' })
+  .openapi('IsmCommonActionRollup')
+
+const IsmCommonActionTransformSchema = z
+  .looseObject({})
+  .openapi({ description: 'The transform action configuration.' })
+  .openapi('IsmCommonActionTransform')
+
+const IsmCommonActionShrinkSchema = z
+  .looseObject({})
+  .openapi({ description: 'The shrink action configuration.' })
+  .openapi('IsmCommonActionShrink')
+
+const IsmCommonActionCustomSchema = z
+  .looseObject({})
+  .openapi({ description: 'The custom action configuration.' })
+  .openapi('IsmCommonActionCustom')
+
+const IsmCommonActionSchema = z
+  .object({
+    timeout: IsmCommonActionTimeoutSchema.exactOptional().openapi({
+      description: 'The amount of time to wait before the action fails.',
+    }),
+    retry: IsmCommonActionRetrySchema.exactOptional().openapi({
+      description: 'The number of times to retry the action.',
+    }),
+    alias: IsmCommonActionAliasSchema.exactOptional().openapi({
+      description: 'Adds or removes an index alias.',
+    }),
+    delete: IsmCommonActionDeleteSchema.exactOptional().openapi({
+      description: 'Deletes an index.',
+    }),
+    force_merge: IsmCommonActionForceMergeSchema.exactOptional().openapi({
+      description: 'Force merges an index.',
+    }),
+    read_only: IsmCommonActionReadOnlySchema.exactOptional().openapi({
+      description: 'Changes the index permissions to read-only.',
+    }),
+    read_write: IsmCommonActionReadWriteSchema.exactOptional().openapi({
+      description: 'Changes the index permissions to read-write.',
+    }),
+    replica_count: IsmCommonActionReplicaCountSchema.exactOptional().openapi({
+      description: 'The number of replicas for the index.',
+    }),
+    index_priority: IsmCommonActionIndexPrioritySchema.exactOptional().openapi({
+      description: 'The priority level of the index.',
+    }),
+    close: IsmCommonActionCloseSchema.exactOptional().openapi({ description: 'Closes an index.' }),
+    open: IsmCommonActionOpenSchema.exactOptional().openapi({ description: 'Opens an index.' }),
+    snapshot: IsmCommonActionSnapshotSchema.exactOptional().openapi({
+      description: 'Takes a snapshot of the index.',
+    }),
+    rollover: IsmCommonActionRolloverSchema.exactOptional().openapi({
+      description: 'Sets a rollover policy for the index.',
+    }),
+    notification: IsmCommonActionNotificationSchema.exactOptional().openapi({
+      description:
+        'Sets a policy which determines when to send a notification regarding the index.',
+    }),
+    allocation: IsmCommonActionAllocationSchema.exactOptional().openapi({
+      description: 'Sets the allocations settings for index.',
+    }),
+    rollup: IsmCommonActionRollupSchema.exactOptional().openapi({
+      description: 'Determines when to perform an index rollup.',
+    }),
+    transform: IsmCommonActionTransformSchema.exactOptional().openapi({
+      description: 'Determines when to perform an index transform.',
+    }),
+    shrink: IsmCommonActionShrinkSchema.exactOptional().openapi({
+      description: 'Determines when to shrink the index.',
+    }),
+    custom: IsmCommonActionCustomSchema.exactOptional().openapi({
+      description: 'Enables custom operations to be performed on the index.',
+    }),
+  })
+  .openapi({ description: 'An action to perform.', required: [] })
+  .openapi('IsmCommonAction')
+
+const IsmCommonTransitionSchema = z
+  .object({
+    state_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the state to transition to.' }),
+    conditions: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'The conditions for the transition.' }),
+  })
+  .openapi({ description: 'A transition into a new state.', required: [] })
+  .openapi('IsmCommonTransition')
+
+const IsmCommonStatesSchema = z
+  .object({
+    name: z.string().exactOptional().openapi({ description: 'The name of the state.' }),
+    actions: z
+      .array(IsmCommonActionSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of actions to perform.' }),
+    transitions: z
+      .array(IsmCommonTransitionSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of transitions to enter a new state.' }),
+  })
+  .openapi({
+    description: 'The list of actions to perform and transitions to enter a new state.',
+    required: [],
+  })
+  .openapi('IsmCommonStates')
+
+const IsmCommonIsmTemplateSchema = z
+  .object({
+    index_patterns: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'The index patterns for the ISM template.' }),
+    priority: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The priority of the ISM template.' }),
+    last_updated_time: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'When the ISM template was last updated.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('IsmCommonIsmTemplate')
+
+const IsmCommonPolicySchema = z
+  .object({
+    policy_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier for the policy.' }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of the policy.' }),
+    last_updated_time: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'When the policy was last updated.' }),
+    schema_version: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The version of the policy schema.' }),
+    error_notification: z
+      .xor([IsmCommonErrorNotificationSchema, z.null().nullable()])
+      .exactOptional()
+      .openapi({ description: 'The configuration for error notifications.' }),
+    default_state: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The default state an index is in.' }),
+    states: z
+      .array(IsmCommonStatesSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of states for the index to transition between.' }),
+    ism_template: z
+      .xor([IsmCommonIsmTemplateSchema, z.null().nullable(), z.array(IsmCommonIsmTemplateSchema)])
+      .exactOptional()
+      .openapi({ description: 'The ISM template configuration.' }),
+  })
+  .openapi({
+    description: 'The policy defines how an index is managed throughout its lifetime.',
+    required: [],
+  })
+  .openapi('IsmCommonPolicy')
+
+const IsmCommonPolicyEnvelopeSchema = z
+  .object({ policy: IsmCommonPolicySchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('IsmCommonPolicyEnvelope')
+
+const IsmCommonPolicyWithMetadataSchema = IsmCommonMetadataSchema.and(
+  IsmCommonPolicyEnvelopeSchema,
+).openapi('IsmCommonPolicyWithMetadata')
+
+type IsmCommonGetPoliciesResponseType = {
+  total_policies?: number
+  policies?: z.infer<typeof IsmCommonPolicyWithMetadataSchema>[]
+}
+
+type IsmCommonPutPolicyResponseType = z.infer<typeof IsmCommonMetadataSchema> & {
+  policy?: z.infer<typeof IsmCommonPolicyEnvelopeSchema>
+}
+
 type MlCommonAggregationType = {
   sum?: MlCommonAggregationType
   max?: MlCommonAggregationType
   field?: string
 }
 
-type SqlCommonExplainBodyType = {
-  name?: string
-  description?: { [key: string]: unknown }
-  children?: SqlCommonExplainBodyType[]
+const MlCommonExecuteLocalSampleCalculatorResponseSchema = z
+  .object({ result: z.number().exactOptional().openapi({ description: 'The result.' }) })
+  .openapi({ required: [] })
+  .openapi('MlCommonExecuteLocalSampleCalculatorResponse')
+
+const MlCommonEntitySchema = z
+  .object({
+    key: z.array(z.string()).exactOptional(),
+    contribution_value: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'The contribution value.' }),
+    base_value: z.float64().exactOptional().openapi({ description: 'The base value.' }),
+    new_value: z.float64().exactOptional().openapi({ description: 'The new value.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('MlCommonEntity')
+
+const MlCommonBucketsSchema = z
+  .object({
+    start_time: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'The start time.' }),
+    end_time: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'The end time.' }),
+    overall_aggregate_value: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'The overall aggregate value.' }),
+    entities: z.array(MlCommonEntitySchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('MlCommonBuckets')
+
+const MlCommonResultSchema = z
+  .object({ buckets: z.array(MlCommonBucketsSchema).exactOptional() })
+  .openapi({ required: [] })
+  .openapi('MlCommonResult')
+
+const MlCommonExecuteAnomalyLocalizationResponseSchema = z
+  .object({ name: z.string().exactOptional(), result: MlCommonResultSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('MlCommonExecuteAnomalyLocalizationResponse')
+
+type MlCommonExecuteAlgorithmResponseType =
+  | z.infer<typeof MlCommonExecuteLocalSampleCalculatorResponseSchema>
+  | { results?: z.infer<typeof MlCommonExecuteAnomalyLocalizationResponseSchema>[] }
+
+type MlCommonInputQueryType = {
+  _source?: string[]
+  size?: bigint
+  query?: z.infer<typeof CommonQueryDslQueryContainerSchema>
 }
 
-const CommonNodeIdSchema = z
-  .string()
-  .openapi({ description: 'The unique identifier of a node.' })
-  .openapi('CommonNodeId')
+const MlCommonHitsTotalSchema = z
+  .object({
+    value: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', description: 'The total number of hits.' }),
+    relation: z.string().openapi({ description: 'The relation.' }),
+  })
+  .openapi({ required: ['relation', 'value'] })
+  .openapi('MlCommonHitsTotal')
 
-const TasksCommonReplicationTaskStatusSchema = z
-  .object({ phase: z.string() })
-  .openapi({ required: ['phase'] })
-  .openapi('TasksCommonReplicationTaskStatus')
-
-const TasksCommonPersistentTaskStatusSchema = z
-  .object({ state: z.string() })
-  .openapi({ required: ['state'] })
-  .openapi('TasksCommonPersistentTaskStatus')
-
-const TasksCommonRawTaskStatusSchema = z
-  .record(z.string(), z.any().openapi({ title: 'metadata' }))
-  .openapi('TasksCommonRawTaskStatus')
-
-const TasksCommonStatusSchema = z
-  .union([
-    TasksCommonReplicationTaskStatusSchema,
-    CommonBulkByScrollTaskStatusSchema,
-    TasksCommonPersistentTaskStatusSchema,
-    TasksCommonRawTaskStatusSchema,
+const MlCommonModelStateSchema = z
+  .enum([
+    'DEPLOYED',
+    'DEPLOYING',
+    'DEPLOY_FAILED',
+    'PARTIALLY_DEPLOYED',
+    'REGISTERED',
+    'REGISTERING',
+    'UNDEPLOYED',
   ])
-  .openapi({ description: 'Task status information can vary wildly from task to task.' })
-  .openapi('TasksCommonStatus')
+  .openapi({ description: 'The model state.' })
+  .openapi('MlCommonModelState')
 
-const CommonTaskIdSchema = z
-  .string()
-  .openapi({ description: 'The unique identifier of a task.' })
-  .openapi('CommonTaskId')
+const MlCommonAdditionalConfigSchema = z
+  .object({
+    space_type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The distance metric for k-NN search.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('MlCommonAdditionalConfig')
 
-const CommonByteCountSchema = z
+const MlCommonModelConfigSchema = z
+  .object({
+    additional_config: MlCommonAdditionalConfigSchema.exactOptional(),
+    all_config: z.string().exactOptional().openapi({ description: 'The all config.' }),
+    model_type: z.string().exactOptional().openapi({ description: 'The model type.' }),
+    embedding_dimension: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'The embedding dimension.' }),
+    framework_type: z.string().exactOptional().openapi({ description: 'The framework type.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('MlCommonModelConfig')
+
+const MlCommonModelFormatSchema = z.enum(['ONNX', 'TORCH_SCRIPT']).openapi('MlCommonModelFormat')
+
+const CommonNodeIdsSchema = z
+  .xor([CommonNodeIdSchema, z.array(CommonNodeIdSchema)])
+  .openapi({
+    description:
+      'A comma-separated list of node IDs used to filter results. Supports [node filters](https://opensearch.org/docs/latest/api-reference/nodes-apis/index/#node-filters).',
+  })
+  .openapi('CommonNodeIds')
+
+const MlCommonOwnerSchema = z
+  .object({
+    name: CommonNameSchema,
+    backend_roles: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'The backend roles.' }),
+    roles: z.array(z.string()).exactOptional().openapi({ description: 'The roles.' }),
+    custom_attribute_names: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'The custom attribute names.' }),
+    user_requested_tenant: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The user requested tenant.' }),
+    user_requested_tenant_access: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The user requested tenant access.' }),
+  })
+  .openapi({ required: ['name'] })
+  .openapi('MlCommonOwner')
+
+const MlCommonModelGroupAccessModeSchema = z
+  .enum(['private', 'public', 'restricted'])
+  .openapi({ description: 'The model group access mode.' })
+  .openapi('MlCommonModelGroupAccessMode')
+
+const MlCommonConnectorProtocolSchema = z
+  .enum(['aws_sigv4', 'http'])
+  .openapi({ description: 'The connector protocol.' })
+  .openapi('MlCommonConnectorProtocol')
+
+const MlCommonMessagesSchema = z
+  .object({
+    role: z.string().exactOptional().openapi({ description: 'The role of the message.' }),
+    content: z.string().exactOptional().openapi({ description: 'The content of the message.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('MlCommonMessages')
+
+const MlCommonParametersSchema = z
+  .looseObject({
+    messages: z.array(MlCommonMessagesSchema).exactOptional(),
+    inputs: z.string().exactOptional(),
+    _llm_interface: z.string().exactOptional(),
+    question: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('MlCommonParameters')
+
+const MlCommonHeadersSchema = z
+  .looseObject({ content_type: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('MlCommonHeaders')
+
+const MlCommonActionSchema = z
+  .object({
+    action_type: z.string().exactOptional(),
+    method: z.string().exactOptional(),
+    headers: MlCommonHeadersSchema.exactOptional(),
+    url: z.string().exactOptional(),
+    request_body: z.string().exactOptional(),
+    pre_process_function: z.string().exactOptional(),
+    post_process_function: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('MlCommonAction')
+
+const MlCommonAdditionalInfoSchema = z
+  .looseObject({})
+  .openapi({ description: 'Additional information query.' })
+  .openapi('MlCommonAdditionalInfo')
+
+const MlCommonAgentTypeSchema = z
+  .enum(['conversational', 'conversational_flow', 'flow'])
+  .openapi({ description: 'The agent type.' })
+  .openapi('MlCommonAgentType')
+
+const MlCommonToolAttributesSchema = z
+  .object({ input_schema: z.string().exactOptional(), strict: z.boolean().exactOptional() })
+  .catchall(z.any().openapi({ title: 'attributes' }))
+  .openapi('MlCommonToolAttributes')
+
+const MlCommonToolItemsSchema = z
+  .looseObject({
+    name: z.string().exactOptional(),
+    type: z.string().exactOptional(),
+    description: z.string().exactOptional(),
+    parameters: MlCommonParametersSchema.exactOptional(),
+    include_output_in_agent_response: z.boolean().exactOptional(),
+    attributes: MlCommonToolAttributesSchema.exactOptional().openapi({ 'x-version-added': '3.0' }),
+  })
+  .openapi({ required: [] })
+  .openapi('MlCommonToolItems')
+
+const MlCommonMemorySchema = z
+  .object({
+    type: z.string().exactOptional(),
+    memory_id: CommonNameSchema.exactOptional(),
+    create_time: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The create time.' }),
+    updated_time: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The updated time.' }),
+    name: CommonNameSchema.exactOptional(),
+    user: z.string().exactOptional().openapi({ description: 'The username of the user.' }),
+    additional_info: MlCommonAdditionalInfoSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('MlCommonMemory')
+
+const MlCommonFunctionNameSchema = z
+  .enum([
+    'AD_LIBSVM',
+    'ad_libsvm',
+    'AGENT',
+    'agent',
+    'ANOMALY_LOCALIZATION',
+    'anomaly_localization',
+    'BATCH_RCF',
+    'batch_rcf',
+    'CONNECTOR',
+    'connector',
+    'FIT_RCF',
+    'fit_rcf',
+    'KMEANS',
+    'kmeans',
+    'LINEAR_REGRESSION',
+    'linear_regression',
+    'LOCAL_SAMPLE_CALCULATOR',
+    'local_sample_calculator',
+    'LOGISTIC_REGRESSION',
+    'logistic_regression',
+    'METRICS_CORRELATION',
+    'metrics_correlation',
+    'QUESTION_ANSWERING',
+    'question_answering',
+    'RCF_SUMMARIZE',
+    'rcf_summarize',
+    'REMOTE',
+    'remote',
+    'SAMPLE_ALGO',
+    'sample_algo',
+    'SPARSE_ENCODING',
+    'sparse_encoding',
+    'SPARSE_TOKENIZE',
+    'sparse_tokenize',
+    'TEXT_EMBEDDING',
+    'text_embedding',
+    'TEXT_SIMILARITY',
+    'text_similarity',
+  ])
+  .openapi({ description: 'The function name.' })
+  .openapi('MlCommonFunctionName')
+
+const MlCommonMlInputDataTypeSchema = z
+  .enum([
+    'DATA_FRAME',
+    'QUESTION_ANSWERING',
+    'REMOTE',
+    'SEARCH_QUERY',
+    'TEXT_DOCS',
+    'TEXT_SIMILARITY',
+  ])
+  .openapi({ description: 'The input type.' })
+  .openapi('MlCommonMlInputDataType')
+
+const MlCommonMlTaskTypeSchema = z
+  .enum([
+    'BATCH_INGEST',
+    'BATCH_PREDICTION',
+    'DEPLOY_MODEL',
+    'EXECUTION',
+    'PREDICTION',
+    'REGISTER_MODEL',
+    'TRAINING',
+    'TRAINING_AND_PREDICTION',
+  ])
+  .openapi({ description: 'Task type.' })
+  .openapi('MlCommonMlTaskType')
+
+const MlCommonStatusSchema = z
+  .enum(['CANCELLED', 'COMPLETED', 'COMPLETED_WITH_ERROR', 'CREATED', 'FAILED', 'RUNNING'])
+  .openapi({ description: 'The status.' })
+  .openapi('MlCommonStatus')
+
+const MlCommonIndexSchema = z
+  .looseObject({
+    number_of_shards: z.string().exactOptional().openapi({ description: 'The number of shards.' }),
+    number_of_replicas: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The number of replicas.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('MlCommonIndex')
+
+const MlCommonMemoryIndexSettingsSchema = z
+  .object({ index: MlCommonIndexSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('MlCommonMemoryIndexSettings')
+
+const MlCommonIndexSettingsSchema = z
+  .looseObject({
+    session_index: MlCommonMemoryIndexSettingsSchema.exactOptional(),
+    short_term_memory_index: MlCommonMemoryIndexSettingsSchema.exactOptional(),
+    long_term_memory_index: MlCommonMemoryIndexSettingsSchema.exactOptional(),
+    long_term_memory_history_index: MlCommonMemoryIndexSettingsSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('MlCommonIndexSettings')
+
+const MlCommonStrategyTypeSchema = z
+  .enum(['SEMANTIC', 'SUMMARY', 'USER_PREFERENCE'])
+  .openapi({ description: 'The strategy type.' })
+  .openapi('MlCommonStrategyType')
+
+const MlCommonStrategyConfigurationSchema = z
+  .object({
+    llm_result_path: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'JSONPath expression for extracting LLM results from responses.' }),
+    system_prompt: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Custom system prompt to override default strategy prompt.' }),
+    llm_id: z.string().exactOptional().openapi({ description: 'The LLM ID for strategy.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('MlCommonStrategyConfiguration')
+
+const MlCommonStrategySchema = z
+  .object({
+    type: MlCommonStrategyTypeSchema.exactOptional(),
+    namespace: z.array(z.string()).exactOptional().openapi({ description: 'The namespace.' }),
+    configuration: MlCommonStrategyConfigurationSchema.exactOptional(),
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether to enable the strategy.' }),
+    id: z.string().exactOptional().openapi({ description: 'The strategy ID.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('MlCommonStrategy')
+
+const MlCommonMemoryContainerConfigurationSchema = z
+  .object({
+    embedding_model_type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The embedding model type.' }),
+    embedding_model_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The embedding model ID.' }),
+    embedding_dimension: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'The embedding dimension.' }),
+    llm_id: z.string().exactOptional().openapi({ description: 'The LLM ID.' }),
+    index_prefix: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Custom prefix for memory indices.' }),
+    use_system_index: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether to use system indices.' }),
+    disable_history: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether history will be persisted.' }),
+    disable_session: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether session will be persisted.' }),
+    max_infer_size: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The maximum number of similar memories retrieved during consolidation.',
+      }),
+    index_settings: MlCommonIndexSettingsSchema.exactOptional(),
+    strategies: z.array(MlCommonStrategySchema).exactOptional(),
+    parameters: MlCommonParametersSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('MlCommonMemoryContainerConfiguration')
+
+const MlCommonPayloadTypeSchema = z
+  .enum(['conversational', 'data'])
+  .openapi({ description: 'The type of payload.' })
+  .openapi('MlCommonPayloadType')
+
+const MlCommonMetadataSchema = z.looseObject({}).openapi('MlCommonMetadata')
+
+const MlCommonNamespaceSchema = z.looseObject({}).openapi('MlCommonNamespace')
+
+const MlCommonSourceSchema = z
+  .looseObject({
+    last_deployed_time: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'The last deployed time.' }),
+    model_version: z.string().exactOptional().openapi({ description: 'The model version.' }),
+    version: CommonVersionStringSchema.exactOptional(),
+    created_time: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'The created time.' }),
+    chunk_number: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'The chunk number.' }),
+    deploy_to_all_nodes: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether to deploy to all nodes.' }),
+    is_hidden: z.boolean().exactOptional().openapi({ description: 'Whether the model is hidden.' }),
+    model_id: CommonNameSchema.exactOptional(),
+    description: z.string().exactOptional().openapi({ description: 'The model description.' }),
+    model_state: MlCommonModelStateSchema.exactOptional(),
+    model_content_size_in_bytes: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The model content size in bytes.',
+      }),
+    model_content_hash_value: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The model content hash value.' }),
+    planning_worker_node_count: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The planning worker node count.' }),
+    model_config: MlCommonModelConfigSchema.exactOptional(),
+    model_format: MlCommonModelFormatSchema.exactOptional(),
+    model_task_type: z.string().exactOptional().openapi({ description: 'The model task type.' }),
+    last_updated_time: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'The last updated time.' }),
+    last_update_time: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'The last update time.' }),
+    last_registered_time: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'The last registered time.' }),
+    auto_redeploy_retry_times: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'The auto redeploy retry times.' }),
+    name: CommonNameSchema.exactOptional(),
+    connector_id: z.string().exactOptional().openapi({ description: 'The connector ID.' }),
+    current_worker_node_count: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The current worker node count.' }),
+    model_group_id: z.string().exactOptional().openapi({ description: 'The model group ID.' }),
+    planning_worker_nodes: z.array(CommonNodeIdsSchema).exactOptional(),
+    total_chunks: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'The total chunks.' }),
+    algorithm: z.string().exactOptional().openapi({ description: 'The algorithm.' }),
+    url: z.string().exactOptional().openapi({ description: 'The model URL.' }),
+    backend_roles: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'The backend roles.' }),
+    owner: MlCommonOwnerSchema.exactOptional(),
+    access: MlCommonModelGroupAccessModeSchema.exactOptional(),
+    latest_version: z.int().exactOptional().openapi({ description: 'The latest version.' }),
+    protocol: MlCommonConnectorProtocolSchema.exactOptional(),
+    parameters: MlCommonParametersSchema.exactOptional(),
+    actions: z.array(MlCommonActionSchema).exactOptional(),
+    updated_time: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The updated time.' }),
+    create_time: z
+      .union([
+        z.iso.datetime({ offset: true }),
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      ])
+      .exactOptional()
+      .openapi({ description: 'The create time.' }),
+    application_type: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The application type.' }),
+    additional_info: MlCommonAdditionalInfoSchema.exactOptional(),
+    user: z.string().exactOptional().openapi({ description: 'The username of the user.' }),
+    input: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The question in the message.' }),
+    memory_id: CommonNameSchema.exactOptional(),
+    trace_number: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The trace number.' }),
+    response: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The answer to the question.' }),
+    origin: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The system name that generated the response.' }),
+    parent_message_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The parent message ID.' }),
+    prompt_template: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The prompt template.' }),
+    type: MlCommonAgentTypeSchema.exactOptional(),
+    tools: z.array(MlCommonToolItemsSchema).exactOptional(),
+    memory: MlCommonMemorySchema.exactOptional(),
+    app_type: z.string().exactOptional().openapi({ description: 'The app type.' }),
+    is_async: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the task is asynchronous.' }),
+    function_name: MlCommonFunctionNameSchema.exactOptional(),
+    input_type: MlCommonMlInputDataTypeSchema.exactOptional(),
+    worker_node: z.array(CommonNodeIdsSchema).exactOptional(),
+    task_type: MlCommonMlTaskTypeSchema.exactOptional(),
+    state: MlCommonStatusSchema.exactOptional(),
+    error: z.string().exactOptional().openapi({ description: 'The error message.' }),
+    configuration: MlCommonMemoryContainerConfigurationSchema.exactOptional(),
+    payload_type: MlCommonPayloadTypeSchema.exactOptional(),
+    metadata: MlCommonMetadataSchema.exactOptional(),
+    namespace: MlCommonNamespaceSchema.exactOptional(),
+    namespace_size: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'The number of namespaces.' }),
+    owner_id: z.string().exactOptional().openapi({ description: 'The ID of the memory owner.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('MlCommonSource')
+
+const MlCommonSearchHitsHitSchema = z
+  .object({
+    _version: CommonVersionNumberSchema.exactOptional(),
+    _seq_no: CommonSequenceNumberSchema.exactOptional(),
+    _primary_term: z.int().exactOptional().openapi({ description: 'The primary term.' }),
+    _index: CommonIndexNameSchema.exactOptional(),
+    _id: CommonIdSchema.exactOptional(),
+    _score: z.number().nullable().openapi({ description: 'The score.' }),
+    _source: MlCommonSourceSchema.exactOptional(),
+    model_id: CommonNameSchema.exactOptional(),
+    sort: z.array(z.float32()).exactOptional().openapi({ description: 'The sort values.' }),
+  })
+  .openapi({ required: ['_score'] })
+  .openapi('MlCommonSearchHitsHit')
+
+type MlCommonSearchHitsType = {
+  total: z.infer<typeof MlCommonHitsTotalSchema>
+  hits: z.infer<typeof MlCommonSearchHitsHitSchema>[]
+  max_score?: number | null
+}
+
+const MlCommonSearchHitsSchema: z.ZodType<MlCommonSearchHitsType> = z
+  .object({
+    total: MlCommonHitsTotalSchema,
+    hits: z.array(MlCommonSearchHitsHitSchema),
+    max_score: z.number().nullable().exactOptional().openapi({ description: 'The maximum score.' }),
+  })
+  .openapi({ required: ['hits', 'total'] })
+  .openapi('MlCommonSearchHits')
+
+type MlCommonSearchResponseType = {
+  took?: number
+  timed_out?: boolean
+  _shards?: z.infer<typeof CommonShardStatisticsSchema>
+  hits: z.infer<typeof MlCommonSearchHitsSchema>
+}
+
+const MlCommonSearchResponseSchema: z.ZodType<MlCommonSearchResponseType> = z
+  .object({
+    took: z.int().exactOptional().openapi({ description: 'The time taken to execute the search.' }),
+    timed_out: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the search timed out.' }),
+    _shards: CommonShardStatisticsSchema.exactOptional(),
+    hits: MlCommonSearchHitsSchema,
+  })
+  .openapi({ required: ['hits'] })
+  .openapi('MlCommonSearchResponse')
+
+type MlCommonSearchAgentsResponseType = z.infer<typeof MlCommonSearchResponseSchema>
+
+type MlCommonSearchConnectorsResponseType = z.infer<typeof MlCommonSearchResponseSchema>
+
+type MlCommonSearchMemoryResponseType = z.infer<typeof MlCommonSearchResponseSchema>
+
+type MlCommonSearchMessageResponseType = z.infer<typeof MlCommonSearchResponseSchema>
+
+type MlCommonSearchModelGroupsResponseType = z.infer<typeof MlCommonSearchResponseSchema>
+
+type MlCommonSearchModelsResponseType = z.infer<typeof MlCommonSearchResponseSchema>
+
+type MlCommonSearchTasksResponseType = z.infer<typeof MlCommonSearchResponseSchema>
+
+const NodesStatsNodeIndexShardStatsSchema = IndicesStatsIndexShardStatsBaseSchema.and(
+  z.looseObject({}),
+).openapi('NodesStatsNodeIndexShardStats')
+
+type NodesStatsNodeIndicesStatsType = z.infer<typeof IndicesStatsIndexStatsBaseSchema> & {
+  indices?: { [key: string]: z.infer<typeof IndicesStatsIndexStatsSchema> }
+  shards?: {
+    [key: string]: { [key: string]: z.infer<typeof NodesStatsNodeIndexShardStatsSchema> }[]
+  }
+}
+
+const NodesStatsAdaptiveSelectionSchema = z
+  .object({
+    avg_queue_size: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The exponentially weighted moving average queue size of search requests on the keyed node.',
+      }),
+    avg_response_time: CommonDurationSchema.exactOptional(),
+    avg_response_time_ns: CommonUnitNanosSchema.exactOptional().openapi({
+      description:
+        'The exponentially weighted moving average response time, in nanoseconds, of search requests on the keyed node.',
+    }),
+    avg_service_time: CommonDurationSchema.exactOptional(),
+    avg_service_time_ns: CommonUnitNanosSchema.exactOptional().openapi({
+      description:
+        'The exponentially weighted moving average service time, in nanoseconds, of search requests on the keyed node.',
+    }),
+    outgoing_searches: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The number of outstanding search requests to the keyed node from the node these stats are for.',
+      }),
+    rank: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The rank of this node; used for shard selection when routing search requests.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsAdaptiveSelection')
+
+const NodesStatsBreakerSchema = z
+  .object({
+    estimated_size: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'Estimated memory used for the operation.',
+    }),
+    estimated_size_in_bytes: CommonByteCountSchema.exactOptional().openapi({
+      description: 'Estimated memory used, in bytes, for the operation.',
+    }),
+    limit_size: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'Memory limit for the circuit breaker.',
+    }),
+    limit_size_in_bytes: CommonByteCountSchema.exactOptional().openapi({
+      description: 'Memory limit, in bytes, for the circuit breaker.',
+    }),
+    overhead: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'A constant that all estimates for the circuit breaker are multiplied with to calculate a final estimate.',
+      }),
+    tripped: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Total number of times the circuit breaker has been triggered and prevented an out of memory error.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsBreaker')
+
+const NodesStatsDataPathStatsSchema = z
+  .object({
+    available: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description:
+        'Total amount of disk space available to this Java virtual machine on this file store.',
+    }),
+    available_in_bytes: CommonByteCountSchema.exactOptional().openapi({
+      description:
+        'Total number of bytes available to this Java virtual machine on this file store.',
+    }),
+    cache_reserved: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      'x-version-added': '2.7',
+      description:
+        'Total number of cache bytes reserved available to this Java virtual machine on this file store.',
+    }),
+    cache_reserved_in_bytes: CommonByteCountSchema.exactOptional().openapi({
+      'x-version-added': '2.7',
+      description:
+        'Total number of cache bytes reserved available to this Java virtual machine on this file store.',
+    }),
+    free: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'Total amount of unallocated disk space in the file store.',
+    }),
+    free_in_bytes: CommonByteCountSchema.exactOptional().openapi({
+      description: 'Total number of unallocated bytes in the file store.',
+    }),
+    mount: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Mount point of the file store (for example: `/dev/sda2`).' }),
+    path: z.string().exactOptional().openapi({ description: 'Path to the file store.' }),
+    total: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'Total size of the file store.',
+    }),
+    total_in_bytes: CommonByteCountSchema.exactOptional().openapi({
+      description: 'Total size of the file store in bytes.',
+    }),
+    type: z.string().exactOptional().openapi({ description: 'Type of the file store (ex: ext4).' }),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsDataPathStats')
+
+const NodesStatsFileSystemTotalSchema = z
+  .object({
+    available: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description:
+        'Total disk space available to this Java virtual machine on all file stores.\nDepending on OS or process level restrictions, this might appear less than `free`.\nThis is the actual amount of free disk space the OpenSearch node can utilize.',
+    }),
+    available_in_bytes: CommonByteCountSchema.exactOptional().openapi({
+      description:
+        'Total number of bytes available to this Java virtual machine on all file stores.\nDepending on OS or process level restrictions, this might appear less than `free_in_bytes`.\nThis is the actual amount of free disk space the OpenSearch node can utilize.',
+    }),
+    free: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'Total unallocated disk space in all file stores.',
+    }),
+    free_in_bytes: CommonByteCountSchema.exactOptional().openapi({
+      description: 'Total number of unallocated bytes in all file stores.',
+    }),
+    total: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'Total size of all file stores.',
+    }),
+    total_in_bytes: CommonByteCountSchema.exactOptional().openapi({
+      description: 'Total size of all file stores in bytes.',
+    }),
+    cache_reserved: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      'x-version-added': '2.7',
+      description: 'Total size of cache bytes reserved in all file stores.',
+    }),
+    cache_reserved_in_bytes: CommonByteCountSchema.exactOptional().openapi({
+      'x-version-added': '2.7',
+      description: 'Total size of cache bytes reserved in all file stores.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsFileSystemTotal')
+
+const NodesStatsIoStatDeviceSchema = z
+  .object({
+    device_name: z.string().exactOptional().openapi({ description: 'The Linux device name.' }),
+    operations: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The total number of read and write operations for the device completed since starting OpenSearch.',
+      }),
+    read_kilobytes: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The total number of kilobytes read for the device since starting OpenSearch.',
+      }),
+    read_operations: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The total number of read operations for the device completed since starting OpenSearch.',
+      }),
+    write_kilobytes: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The total number of kilobytes written for the device since starting OpenSearch.',
+      }),
+    write_operations: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The total number of write operations for the device completed since starting OpenSearch.',
+      }),
+    read_time: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    write_time: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    queue_size: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    io_time_in_millis: CommonUnitMillisSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsIoStatDevice')
+
+const NodesStatsIoStatsSchema = z
+  .object({
+    devices: z
+      .array(NodesStatsIoStatDeviceSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Array of disk metrics for each device that is backing an OpenSearch data path.\nThese disk metrics are probed periodically and averages between the last probe and the current probe are computed.',
+      }),
+    total: NodesStatsIoStatDeviceSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsIoStats')
+
+const NodesStatsFileSystemSchema = z
+  .object({
+    data: z
+      .array(NodesStatsDataPathStatsSchema)
+      .exactOptional()
+      .openapi({ description: 'List of all file stores.' }),
+    timestamp: CommonUnitMillisSchema.exactOptional().openapi({
+      description:
+        'Last time the file stores statistics were refreshed.\nRecorded in milliseconds since the Unix Epoch.',
+    }),
+    total: NodesStatsFileSystemTotalSchema.exactOptional(),
+    io_stats: NodesStatsIoStatsSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsFileSystem')
+
+const NodesStatsHttpSchema = z
+  .object({
+    current_open: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Current number of open HTTP connections for the node.',
+      }),
+    total_opened: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Total number of HTTP connections opened for the node.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsHttp')
+
+const NodesStatsProcessorSchema = z
+  .object({
+    count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Number of documents transformed by the processor.',
+      }),
+    current: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Number of documents currently being transformed by the processor.',
+      }),
+    failed: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Number of failed operations for the processor.',
+      }),
+    time: CommonDurationSchema.exactOptional(),
+    time_in_millis: CommonUnitMillisSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsProcessor')
+
+const NodesStatsKeyedProcessorSchema = z
+  .object({ stats: NodesStatsProcessorSchema.exactOptional(), type: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('NodesStatsKeyedProcessor')
+
+const NodesStatsIngestTotalSchema = z
+  .object({
+    count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Total number of documents ingested during the lifetime of this node.',
+      }),
+    current: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Total number of documents currently being ingested.',
+      }),
+    failed: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Total number of failed ingest operations during the lifetime of this node.',
+      }),
+    processors: z
+      .array(z.record(z.string(), NodesStatsKeyedProcessorSchema))
+      .exactOptional()
+      .openapi({ description: 'Total number of ingest processors.' }),
+    time: CommonDurationSchema.exactOptional(),
+    time_in_millis: CommonUnitMillisSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsIngestTotal')
+
+const NodesStatsIngestSchema = z
+  .object({
+    pipelines: z
+      .record(z.string(), NodesStatsIngestTotalSchema)
+      .exactOptional()
+      .openapi({ description: 'Contains statistics about ingest pipelines for the node.' }),
+    total: NodesStatsIngestTotalSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsIngest')
+
+const NodesStatsNodeBufferPoolSchema = z
+  .object({
+    count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'Number of buffer pools.' }),
+    total_capacity: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'Total capacity of buffer pools.',
+    }),
+    total_capacity_in_bytes: CommonByteCountSchema.exactOptional().openapi({
+      description: 'Total capacity of buffer pools in bytes.',
+    }),
+    used: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'Size of buffer pools.',
+    }),
+    used_in_bytes: CommonByteCountSchema.exactOptional().openapi({
+      description: 'Size of buffer pools in bytes.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsNodeBufferPool')
+
+const NodesStatsJvmClassesSchema = z
+  .object({
+    current_loaded_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Number of classes currently loaded by JVM.',
+      }),
+    total_loaded_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Total number of classes loaded since the JVM started.',
+      }),
+    total_unloaded_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Total number of classes unloaded since the JVM started.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsJvmClasses')
+
+const NodesStatsGarbageCollectorTotalSchema = z
+  .object({
+    collection_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Total number of JVM garbage collectors that collect objects.',
+      }),
+    collection_time: CommonDurationSchema.exactOptional().openapi({
+      description: 'Total time spent by JVM collecting objects.',
+    }),
+    collection_time_in_millis: CommonUnitMillisSchema.exactOptional().openapi({
+      description: 'Total time, in milliseconds, spent by JVM collecting objects.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsGarbageCollectorTotal')
+
+const NodesStatsGarbageCollectorSchema = z
+  .object({
+    collectors: z
+      .record(z.string(), NodesStatsGarbageCollectorTotalSchema)
+      .exactOptional()
+      .openapi({ description: 'Contains statistics about JVM garbage collectors for the node.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsGarbageCollector')
+
+const CommonPercentageNumberSchema = z
+  .float64()
+  .openapi({ description: 'The percentage value as a number.' })
+  .openapi('CommonPercentageNumber')
+
+const NodesStatsLastGcStatsSchema = z
+  .object({
+    used: CommonHumanReadableByteCountSchema.exactOptional(),
+    used_in_bytes: CommonByteCountSchema.exactOptional(),
+    max: CommonHumanReadableByteCountSchema.exactOptional(),
+    max_in_bytes: CommonByteCountSchema.exactOptional(),
+    usage_percent: CommonPercentageNumberSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsLastGcStats')
+
+const NodesStatsPoolSchema = z
+  .object({
+    used: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'Memory used by the heap.',
+    }),
+    used_in_bytes: CommonByteCountSchema.exactOptional().openapi({
+      description: 'Memory, in bytes, used by the heap.',
+    }),
+    max: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'Maximum amount of memory available for use by the heap.',
+    }),
+    max_in_bytes: CommonByteCountSchema.exactOptional().openapi({
+      description: 'Maximum amount of memory, in bytes, available for use by the heap.',
+    }),
+    peak_used: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'Largest amount of memory historically used by the heap.',
+    }),
+    peak_used_in_bytes: CommonByteCountSchema.exactOptional().openapi({
+      description: 'Largest amount of memory, in bytes, historically used by the heap.',
+    }),
+    peak_max: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'Largest amount of memory historically used by the heap.',
+    }),
+    peak_max_in_bytes: CommonByteCountSchema.exactOptional().openapi({
+      description: 'Largest amount of memory, in bytes, historically used by the heap.',
+    }),
+    last_gc_stats: NodesStatsLastGcStatsSchema.exactOptional().openapi({
+      description: 'Most recent GC cycle stats for a particular memory pool.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsPool')
+
+const NodesStatsJvmMemoryStatsSchema = z
+  .object({
+    heap_used: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'Memory currently in use by the heap.',
+    }),
+    heap_used_in_bytes: CommonByteCountSchema.exactOptional().openapi({
+      description: 'Memory, in bytes, currently in use by the heap.',
+    }),
+    heap_used_percent: CommonPercentageNumberSchema.exactOptional().openapi({
+      description: 'Percentage of memory currently in use by the heap.',
+    }),
+    heap_committed: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'Amount of memory available for use by the heap.',
+    }),
+    heap_committed_in_bytes: CommonByteCountSchema.exactOptional().openapi({
+      description: 'Amount of memory, in bytes, available for use by the heap.',
+    }),
+    heap_max: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'Maximum amount of memory available for use by the heap.',
+    }),
+    heap_max_in_bytes: CommonByteCountSchema.exactOptional().openapi({
+      description: 'Maximum amount of memory, in bytes, available for use by the heap.',
+    }),
+    non_heap_used: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'Non-heap memory used.',
+    }),
+    non_heap_used_in_bytes: CommonByteCountSchema.exactOptional().openapi({
+      description: 'Non-heap memory used, in bytes.',
+    }),
+    non_heap_committed: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'Amount of non-heap memory available.',
+    }),
+    non_heap_committed_in_bytes: CommonByteCountSchema.exactOptional().openapi({
+      description: 'Amount of non-heap memory available, in bytes.',
+    }),
+    pools: z
+      .record(z.string(), NodesStatsPoolSchema)
+      .exactOptional()
+      .openapi({ description: 'Contains statistics about heap memory usage for the node.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsJvmMemoryStats')
+
+const NodesStatsJvmThreadsSchema = z
+  .object({
+    count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Number of active threads in use by JVM.',
+      }),
+    peak_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Highest number of threads used by JVM.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsJvmThreads')
+
+const NodesStatsJvmSchema = z
+  .object({
+    buffer_pools: z
+      .record(z.string(), NodesStatsNodeBufferPoolSchema)
+      .exactOptional()
+      .openapi({ description: 'Contains statistics about JVM buffer pools for the node.' }),
+    classes: NodesStatsJvmClassesSchema.exactOptional(),
+    gc: NodesStatsGarbageCollectorSchema.exactOptional(),
+    mem: NodesStatsJvmMemoryStatsSchema.exactOptional(),
+    threads: NodesStatsJvmThreadsSchema.exactOptional(),
+    timestamp: CommonUnitMillisSchema.exactOptional().openapi({
+      description: 'Last time JVM statistics were refreshed.',
+    }),
+    uptime: CommonDurationSchema.exactOptional().openapi({
+      description:
+        'Human-readable JVM uptime.\nOnly returned if the `human` query parameter is `true`.',
+    }),
+    uptime_in_millis: CommonUnitMillisSchema.exactOptional().openapi({
+      description: 'JVM uptime in milliseconds.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsJvm')
+
+const NodesStatsOperatingSystemCpuStatsSchema = z
+  .object({
+    percent: CommonPercentageNumberSchema.exactOptional(),
+    load_average: z.record(z.string(), z.float64()).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsOperatingSystemCpuStats')
+
+const NodesStatsMemoryStatsBaseSchema = z
+  .object({
+    total: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'Total amount of physical memory.',
+    }),
+    total_in_bytes: CommonByteCountSchema.exactOptional().openapi({
+      description: 'Total amount of physical memory in bytes.',
+    }),
+    free: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'Amount of free physical memory.',
+    }),
+    free_in_bytes: CommonByteCountSchema.exactOptional().openapi({
+      description: 'Amount of free physical memory in bytes.',
+    }),
+    used: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'Amount of used physical memory.',
+    }),
+    used_in_bytes: CommonByteCountSchema.exactOptional().openapi({
+      description: 'Amount of used physical memory in bytes.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsMemoryStatsBase')
+
+const NodesStatsExtendedMemoryStatsSchema = NodesStatsMemoryStatsBaseSchema.and(
+  z
+    .object({
+      free_percent: CommonPercentageNumberSchema.exactOptional().openapi({
+        description: 'Percentage of free memory.',
+      }),
+      used_percent: CommonPercentageNumberSchema.exactOptional().openapi({
+        description: 'Percentage of used memory.',
+      }),
+    })
+    .openapi({ required: [] }),
+).openapi('NodesStatsExtendedMemoryStats')
+
+const NodesStatsMemoryStatsSchema = NodesStatsMemoryStatsBaseSchema.and(z.looseObject({})).openapi(
+  'NodesStatsMemoryStats',
+)
+
+const NodesStatsCgroupCpuAcctStatsSchema = z
+  .object({
+    control_group: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The `cpuacct` control group to which the OpenSearch process belongs.',
+      }),
+    usage_nanos: CommonUnitNanosSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsCgroupCpuAcctStats')
+
+const CommonUnitMicrosSchema = z
   .preprocess(
     (val) =>
       typeof val === 'number' && Number.isSafeInteger(val)
@@ -15268,51 +21632,740 @@ const CommonByteCountSchema = z
           : val,
     z.int64(),
   )
-  .openapi({ type: 'integer', format: 'int64', description: 'The size in bytes.' })
-  .openapi('CommonByteCount')
+  .openapi({ type: 'integer', format: 'int64', description: 'Time unit for microseconds.' })
+  .openapi('CommonUnitMicros')
 
-const CommonResourceStatSchema = z
-  .object({ cpu_time_in_nanos: CommonUnitNanosSchema, memory_in_bytes: CommonByteCountSchema })
-  .openapi({
-    description: 'Any statistics about CPU and memory usage.',
-    required: ['cpu_time_in_nanos', 'memory_in_bytes'],
-  })
-  .openapi('CommonResourceStat')
-
-const CommonThreadInfoSchema = z
+const NodesStatsCgroupCpuStatSchema = z
   .object({
-    thread_executions: z.number().openapi({ description: 'The number of thread executions.' }),
-    active_threads: z.number().openapi({ description: 'The number of currently active threads.' }),
+    number_of_elapsed_periods: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The number of reporting periods (as specified by `cfs_period_micros`) that have elapsed.',
+      }),
+    number_of_times_throttled: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The number of times all tasks in the same cgroup as the OpenSearch process have been throttled.',
+      }),
+    time_throttled_nanos: CommonUnitNanosSchema.exactOptional(),
   })
-  .openapi({
-    description: 'The information about thread usage.',
-    required: ['active_threads', 'thread_executions'],
-  })
-  .openapi('CommonThreadInfo')
+  .openapi({ required: [] })
+  .openapi('NodesStatsCgroupCpuStat')
 
-const CommonResourceStatsSchema = z
+const NodesStatsCgroupCpuStatsSchema = z
   .object({
-    average: CommonResourceStatSchema,
-    total: CommonResourceStatSchema,
-    min: CommonResourceStatSchema,
-    max: CommonResourceStatSchema,
-    thread_info: CommonThreadInfoSchema,
+    control_group: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The `cpu` control group to which the OpenSearch process belongs.' }),
+    cfs_period_micros: CommonUnitMicrosSchema.exactOptional().openapi({
+      description:
+        'The period of time, in microseconds, for how regularly all tasks in the same cgroup as the OpenSearch process should have their access to CPU resources reallocated.',
+    }),
+    cfs_quota_micros: CommonUnitMicrosSchema.exactOptional().openapi({
+      description:
+        'The total amount of time, in microseconds, for which all tasks in the same cgroup as the OpenSearch process can run during one period `cfs_period_micros`.',
+    }),
+    stat: NodesStatsCgroupCpuStatSchema.exactOptional(),
   })
-  .openapi({
-    description: 'The statistics about resource usage.',
-    required: ['average', 'max', 'min', 'thread_info', 'total'],
-  })
-  .openapi('CommonResourceStats')
+  .openapi({ required: [] })
+  .openapi('NodesStatsCgroupCpuStats')
 
-const TasksCommonTaskInfoBaseSchema = z
+const NodesStatsCgroupMemoryStatsSchema = z
   .object({
-    action: z.string(),
-    cancelled: z.boolean().exactOptional(),
-    cancellable: z.boolean(),
-    cancellation_time_millis: CommonUnitMillisSchema.exactOptional(),
-    description: z.string().exactOptional(),
-    headers: z.record(z.string(), z.string()),
-    id: z
+    control_group: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The `memory` control group to which the OpenSearch process belongs.',
+      }),
+    limit_in_bytes: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The maximum amount of user memory (including file cache) allowed for all tasks in the same cgroup as the OpenSearch process.\nThis value can be too big to store in a `long`, so is returned as a string so that the value returned can exactly match what the underlying operating system interface returns.\nAny value that is too large to parse into a `long` almost certainly means no limit has been set for the cgroup.',
+      }),
+    usage_in_bytes: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The total current memory usage by processes in the cgroup, in bytes, by all tasks in the same cgroup as the OpenSearch process.\nThis value is stored as a string for consistency with `limit_in_bytes`.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsCgroupMemoryStats')
+
+const NodesStatsCgroupStatsSchema = z
+  .object({
+    cpuacct: NodesStatsCgroupCpuAcctStatsSchema.exactOptional(),
+    cpu: NodesStatsCgroupCpuStatsSchema.exactOptional(),
+    memory: NodesStatsCgroupMemoryStatsSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsCgroupStats')
+
+const NodesStatsOperatingSystemSchema = z
+  .object({
+    cpu: NodesStatsOperatingSystemCpuStatsSchema.exactOptional(),
+    mem: NodesStatsExtendedMemoryStatsSchema.exactOptional(),
+    swap: NodesStatsMemoryStatsSchema.exactOptional(),
+    cgroup: NodesStatsCgroupStatsSchema.exactOptional(),
+    timestamp: CommonUnitMillisSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsOperatingSystem')
+
+const NodesStatsProcessCpuStatsSchema = z
+  .object({
+    percent: CommonPercentageNumberSchema,
+    total: CommonDurationSchema.exactOptional(),
+    total_in_millis: CommonUnitMillisSchema,
+  })
+  .openapi({ required: ['percent', 'total_in_millis'] })
+  .openapi('NodesStatsProcessCpuStats')
+
+const NodesStatsProcessMemoryStatsSchema = z
+  .object({
+    total_virtual: CommonHumanReadableByteCountSchema.exactOptional(),
+    total_virtual_in_bytes: CommonByteCountSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsProcessMemoryStats')
+
+const NodesStatsProcessSchema = z
+  .object({
+    cpu: NodesStatsProcessCpuStatsSchema.exactOptional(),
+    mem: NodesStatsProcessMemoryStatsSchema.exactOptional(),
+    open_file_descriptors: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Number of opened file descriptors associated with the current or `-1` if not supported.',
+      }),
+    max_file_descriptors: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Maximum number of file descriptors allowed on the system, or `-1` if not supported.',
+      }),
+    timestamp: CommonUnitMillisSchema.exactOptional().openapi({
+      description:
+        'Last time the statistics were refreshed.\nRecorded in milliseconds since the Unix Epoch.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsProcess')
+
+const NodesStatsScriptStatsBaseSchema = z
+  .object({
+    cache_evictions: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Total number of times the script cache has evicted old data.',
+      }),
+    compilations: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Total number of inline script compilations performed by the node.',
+      }),
+    compilation_limit_triggered: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Total number of times the script compilation circuit breaker has limited inline script compilations.',
+      }),
+  })
+  .openapi({ required: ['cache_evictions', 'compilation_limit_triggered', 'compilations'] })
+  .openapi('NodesStatsScriptStatsBase')
+
+const NodesStatsScriptStatsSchema = NodesStatsScriptStatsBaseSchema.and(z.looseObject({})).openapi(
+  'NodesStatsScriptStats',
+)
+
+const NodesStatsScriptContextStatsSchema = NodesStatsScriptStatsBaseSchema.and(
+  z.object({ context: z.string() }).openapi({ required: ['context'] }),
+).openapi('NodesStatsScriptContextStats')
+
+const NodesStatsScriptCacheStatsSchema = z
+  .object({
+    sum: NodesStatsScriptStatsSchema,
+    contexts: z.array(NodesStatsScriptContextStatsSchema).exactOptional(),
+  })
+  .openapi({ required: ['sum'] })
+  .openapi('NodesStatsScriptCacheStats')
+
+const NodesStatsThreadCountSchema = z
+  .object({
+    active: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Number of active threads in the thread pool.',
+      }),
+    completed: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Number of tasks completed by the thread pool executor.',
+      }),
+    largest: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Highest number of active threads in the thread pool.',
+      }),
+    queue: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Number of tasks in queue for the thread pool.',
+      }),
+    rejected: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Number of tasks rejected by the thread pool executor.',
+      }),
+    threads: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Number of threads in the thread pool.',
+      }),
+    total_wait_time: CommonDurationSchema.exactOptional().openapi({
+      description:
+        'The total amount of time that tasks spend waiting in the thread pool queue.\nCurrently, only `search`, `search_throttled`, and `index_searcher` thread pools support this metric.\n',
+    }),
+    total_wait_time_in_nanos: CommonUnitNanosSchema.exactOptional().openapi({
+      description:
+        'The total amount of time that tasks spend waiting in the thread pool queue.\nCurrently, only `search`, `search_throttled`, and `index_searcher` thread pools support this metric.\n',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsThreadCount')
+
+const NodesStatsTransportSchema = z
+  .object({
+    rx_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Total number of RX (receive) packets received by the node during internal cluster communication.',
+      }),
+    rx_size: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'Size of RX packets received by the node during internal cluster communication.',
+    }),
+    rx_size_in_bytes: CommonByteCountSchema.exactOptional().openapi({
+      description:
+        'Size, in bytes, of RX packets received by the node during internal cluster communication.',
+    }),
+    server_open: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Current number of inbound TCP connections used for internal communication between nodes.',
+      }),
+    tx_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Total number of TX (transmit) packets sent by the node during internal cluster communication.',
+      }),
+    tx_size: CommonHumanReadableByteCountSchema.exactOptional().openapi({
+      description: 'Size of TX packets sent by the node during internal cluster communication.',
+    }),
+    tx_size_in_bytes: CommonByteCountSchema.exactOptional().openapi({
+      description:
+        'Size, in bytes, of TX packets sent by the node during internal cluster communication.',
+    }),
+    total_outbound_connections: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The cumulative number of outbound transport connections that this node has opened since it started.\nEach transport connection may comprise multiple TCP connections but is only counted once in this statistic.\nTransport connections are typically long-lived so this statistic should remain constant in a stable cluster.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsTransport')
+
+const NodesStatsClusterStateQueueSchema = z
+  .object({
+    total: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Total number of cluster states in queue.' }),
+    pending: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Number of pending cluster states in queue.' }),
+    committed: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Number of committed cluster states in queue.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsClusterStateQueue')
+
+const NodesStatsClusterStateOverallStatsSchema = z
+  .object({
+    update_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    total_time_in_millis: CommonUnitMillisSchema.exactOptional(),
+    failed_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsClusterStateOverallStats')
+
+const NodesStatsClusterStateStatsSchema = z
+  .object({ overall: NodesStatsClusterStateOverallStatsSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('NodesStatsClusterStateStats')
+
+const NodesStatsPublishedClusterStatesSchema = z
+  .object({
+    full_states: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Number of published cluster states.',
+      }),
+    incompatible_diffs: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Number of incompatible differences between published cluster states.',
+      }),
+    compatible_diffs: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Number of compatible differences between published cluster states.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsPublishedClusterStates')
+
+const NodesStatsDiscoverySchema = z
+  .object({
+    cluster_state_queue: NodesStatsClusterStateQueueSchema.exactOptional(),
+    cluster_state_stats: NodesStatsClusterStateStatsSchema.exactOptional(),
+    published_cluster_states: NodesStatsPublishedClusterStatesSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsDiscovery')
+
+const NodesStatsPressureMemorySchema = z
+  .object({
+    all: CommonHumanReadableByteCountSchema.exactOptional(),
+    all_in_bytes: CommonByteCountSchema.exactOptional().openapi({
+      description:
+        'Memory consumed, in bytes, by indexing requests in the coordinating, primary, or replica stage.',
+    }),
+    combined_coordinating_and_primary: CommonHumanReadableByteCountSchema.exactOptional(),
+    combined_coordinating_and_primary_in_bytes: CommonByteCountSchema.exactOptional().openapi({
+      description:
+        'Memory consumed, in bytes, by indexing requests in the coordinating or primary stage.\nThis value is not the sum of coordinating and primary as a node can reuse the coordinating memory if the primary stage is executed locally.',
+    }),
+    coordinating: CommonHumanReadableByteCountSchema.exactOptional(),
+    coordinating_in_bytes: CommonByteCountSchema.exactOptional().openapi({
+      description: 'Memory consumed, in bytes, by indexing requests in the coordinating stage.',
+    }),
+    primary: CommonHumanReadableByteCountSchema.exactOptional(),
+    primary_in_bytes: CommonByteCountSchema.exactOptional().openapi({
+      description: 'Memory consumed, in bytes, by indexing requests in the primary stage.',
+    }),
+    replica: CommonHumanReadableByteCountSchema.exactOptional(),
+    replica_in_bytes: CommonByteCountSchema.exactOptional().openapi({
+      description: 'Memory consumed, in bytes, by indexing requests in the replica stage.',
+    }),
+    coordinating_rejections: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Number of indexing requests rejected in the coordinating stage.',
+      }),
+    primary_rejections: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Number of indexing requests rejected in the primary stage.',
+      }),
+    replica_rejections: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Number of indexing requests rejected in the replica stage.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsPressureMemory')
+
+const NodesStatsIndexingPressureMemorySchema = z
+  .object({
+    limit: CommonHumanReadableByteCountSchema.exactOptional(),
+    limit_in_bytes: CommonByteCountSchema.exactOptional().openapi({
+      description:
+        'Configured memory limit, in bytes, for the indexing requests.\nReplica requests have an automatic limit that is 1.5x this value.',
+    }),
+    current: NodesStatsPressureMemorySchema.exactOptional(),
+    total: NodesStatsPressureMemorySchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsIndexingPressureMemory')
+
+const NodesStatsIndexingPressureSchema = z
+  .object({ memory: NodesStatsIndexingPressureMemorySchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('NodesStatsIndexingPressure')
+
+const NodesStatsNodeIndicesStatsSchema: z.ZodType<NodesStatsNodeIndicesStatsType> =
+  IndicesStatsIndexStatsBaseSchema.and(
+    z
+      .object({
+        indices: z.record(z.string(), IndicesStatsIndexStatsSchema).exactOptional(),
+        shards: z
+          .record(
+            z.string(),
+            z.array(
+              z
+                .record(z.string(), NodesStatsNodeIndexShardStatsSchema)
+                .refine((val) => Object.keys(val).length >= 1)
+                .refine((val) => Object.keys(val).length <= 1),
+            ),
+          )
+          .exactOptional(),
+      })
+      .openapi({ required: [] }),
+  ).openapi('NodesStatsNodeIndicesStats')
+
+const NodesStatsShardIndexingPressurePerShardMemoryStatsDetailsSchema = z
+  .object({
+    coordinating: CommonHumanReadableByteCountSchema.exactOptional(),
+    coordinating_in_bytes: CommonByteCountSchema,
+    primary: CommonHumanReadableByteCountSchema.exactOptional(),
+    primary_in_bytes: CommonByteCountSchema,
+    replica: CommonHumanReadableByteCountSchema.exactOptional(),
+    replica_in_bytes: CommonByteCountSchema,
+  })
+  .openapi({ required: ['coordinating_in_bytes', 'primary_in_bytes', 'replica_in_bytes'] })
+  .openapi('NodesStatsShardIndexingPressurePerShardMemoryStatsDetails')
+
+const NodesStatsShardIndexingPressurePerShardMemoryStatsSchema = z
+  .object({
+    current: NodesStatsShardIndexingPressurePerShardMemoryStatsDetailsSchema,
+    total: NodesStatsShardIndexingPressurePerShardMemoryStatsDetailsSchema,
+  })
+  .openapi({ required: ['current', 'total'] })
+  .openapi('NodesStatsShardIndexingPressurePerShardMemoryStats')
+
+const NodesStatsShardIndexingPressureRejectionsBreakupStatsSchema = z
+  .object({
+    node_limits: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    no_successful_request_limits: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    throughput_degradation_limits: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsShardIndexingPressureRejectionsBreakupStats')
+
+const NodesStatsShardIndexingPressurePerShardRejectionCoordinatingStatsSchema = z
+  .object({
+    coordinating_rejections: z
       .preprocess(
         (val) =>
           typeof val === 'number' && Number.isSafeInteger(val)
@@ -15323,31 +22376,1750 @@ const TasksCommonTaskInfoBaseSchema = z
         z.int64(),
       )
       .openapi({ type: 'integer', format: 'int64' }),
-    node: CommonNodeIdSchema,
-    running_time: CommonDurationSchema.exactOptional(),
-    running_time_in_nanos: CommonUnitNanosSchema,
-    start_time_in_millis: CommonUnitMillisSchema,
-    status: TasksCommonStatusSchema.exactOptional(),
-    type: z.string(),
-    parent_task_id: CommonTaskIdSchema.exactOptional(),
-    resource_stats: CommonResourceStatsSchema.exactOptional(),
+    breakup: NodesStatsShardIndexingPressureRejectionsBreakupStatsSchema.exactOptional(),
+    breakup_shadow_mode:
+      NodesStatsShardIndexingPressureRejectionsBreakupStatsSchema.exactOptional(),
+  })
+  .openapi({ required: ['coordinating_rejections'] })
+  .openapi('NodesStatsShardIndexingPressurePerShardRejectionCoordinatingStats')
+
+const NodesStatsShardIndexingPressurePerShardRejectionPrimaryStatsSchema = z
+  .object({
+    primary_rejections: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    breakup: NodesStatsShardIndexingPressureRejectionsBreakupStatsSchema.exactOptional(),
+    breakup_shadow_mode:
+      NodesStatsShardIndexingPressureRejectionsBreakupStatsSchema.exactOptional(),
+  })
+  .openapi({ required: ['primary_rejections'] })
+  .openapi('NodesStatsShardIndexingPressurePerShardRejectionPrimaryStats')
+
+const NodesStatsShardIndexingPressurePerShardRejectionReplicaStatsSchema = z
+  .object({
+    replica_rejections: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    breakup: NodesStatsShardIndexingPressureRejectionsBreakupStatsSchema.exactOptional(),
+    breakup_shadow_mode:
+      NodesStatsShardIndexingPressureRejectionsBreakupStatsSchema.exactOptional(),
+  })
+  .openapi({ required: ['replica_rejections'] })
+  .openapi('NodesStatsShardIndexingPressurePerShardRejectionReplicaStats')
+
+const NodesStatsShardIndexingPressurePerShardRejectionStatsSchema = z
+  .object({
+    coordinating: NodesStatsShardIndexingPressurePerShardRejectionCoordinatingStatsSchema,
+    primary: NodesStatsShardIndexingPressurePerShardRejectionPrimaryStatsSchema,
+    replica: NodesStatsShardIndexingPressurePerShardRejectionReplicaStatsSchema,
+  })
+  .openapi({ required: ['coordinating', 'primary', 'replica'] })
+  .openapi('NodesStatsShardIndexingPressurePerShardRejectionStats')
+
+const NodesStatsShardIndexingPressurePerShardLastSuccessfulTimestampSchema = z
+  .object({
+    coordinating_last_successful_request_timestamp_in_millis: CommonUnitMillisSchema,
+    primary_last_successful_request_timestamp_in_millis: CommonUnitMillisSchema,
+    replica_last_successful_request_timestamp_in_millis: CommonUnitMillisSchema,
   })
   .openapi({
     required: [
-      'action',
-      'cancellable',
-      'headers',
-      'id',
-      'node',
-      'running_time_in_nanos',
-      'start_time_in_millis',
-      'type',
+      'coordinating_last_successful_request_timestamp_in_millis',
+      'primary_last_successful_request_timestamp_in_millis',
+      'replica_last_successful_request_timestamp_in_millis',
     ],
   })
-  .openapi('TasksCommonTaskInfoBase')
+  .openapi('NodesStatsShardIndexingPressurePerShardLastSuccessfulTimestamp')
+
+const NodesStatsShardIndexingPressurePerShardIndexingStatsSchema = z
+  .object({
+    coordinating_time_in_millis: CommonUnitMillisSchema,
+    coordinating_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    primary_time_in_millis: CommonUnitMillisSchema,
+    primary_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    replica_time_in_millis: CommonUnitMillisSchema,
+    replica_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({
+    required: [
+      'coordinating_count',
+      'coordinating_time_in_millis',
+      'primary_count',
+      'primary_time_in_millis',
+      'replica_count',
+      'replica_time_in_millis',
+    ],
+  })
+  .openapi('NodesStatsShardIndexingPressurePerShardIndexingStats')
+
+const NodesStatsShardIndexingPressurePerShardMemoryAllocationCurrentStatsSchema = z
+  .object({
+    current_coordinating_and_primary_bytes: CommonByteCountSchema,
+    current_replica_bytes: CommonByteCountSchema,
+  })
+  .openapi({ required: ['current_coordinating_and_primary_bytes', 'current_replica_bytes'] })
+  .openapi('NodesStatsShardIndexingPressurePerShardMemoryAllocationCurrentStats')
+
+const NodesStatsShardIndexingPressurePerShardMemoryAllocationLimitStatsSchema = z
+  .object({
+    current_coordinating_and_primary_limits_in_bytes: CommonByteCountSchema,
+    current_replica_limits_in_bytes: CommonByteCountSchema,
+  })
+  .openapi({
+    required: [
+      'current_coordinating_and_primary_limits_in_bytes',
+      'current_replica_limits_in_bytes',
+    ],
+  })
+  .openapi('NodesStatsShardIndexingPressurePerShardMemoryAllocationLimitStats')
+
+const NodesStatsShardIndexingPressurePerShardMemoryAllocationStatsSchema = z
+  .object({
+    current: NodesStatsShardIndexingPressurePerShardMemoryAllocationCurrentStatsSchema,
+    limit: NodesStatsShardIndexingPressurePerShardMemoryAllocationLimitStatsSchema,
+  })
+  .openapi({ required: ['current', 'limit'] })
+  .openapi('NodesStatsShardIndexingPressurePerShardMemoryAllocationStats')
+
+const NodesStatsShardIndexingPressurePerShardStatsSchema = z
+  .object({
+    memory: NodesStatsShardIndexingPressurePerShardMemoryStatsSchema,
+    rejection: NodesStatsShardIndexingPressurePerShardRejectionStatsSchema,
+    last_successful_timestamp: NodesStatsShardIndexingPressurePerShardLastSuccessfulTimestampSchema,
+    indexing: NodesStatsShardIndexingPressurePerShardIndexingStatsSchema,
+    memory_allocation: NodesStatsShardIndexingPressurePerShardMemoryAllocationStatsSchema,
+  })
+  .openapi({
+    required: ['indexing', 'last_successful_timestamp', 'memory', 'memory_allocation', 'rejection'],
+  })
+  .openapi('NodesStatsShardIndexingPressurePerShardStats')
+
+const NodesStatsShardIndexingPressureStatsSchema = z
+  .object({
+    stats: z.record(z.string(), NodesStatsShardIndexingPressurePerShardStatsSchema).exactOptional(),
+    enabled: z.boolean().exactOptional(),
+    enforced: z.boolean().exactOptional(),
+    total_rejections_breakup:
+      NodesStatsShardIndexingPressureRejectionsBreakupStatsSchema.exactOptional(),
+    total_rejections_breakup_shadow_mode:
+      NodesStatsShardIndexingPressureRejectionsBreakupStatsSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsShardIndexingPressureStats')
+
+const NodesStatsShardSearchBackpressureTaskResourceTrackerHeapUsageTrackerStatsSchema = z
+  .object({
+    cancellation_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    current_max: CommonHumanReadableByteCountSchema.exactOptional(),
+    current_max_bytes: CommonByteCountSchema.exactOptional(),
+    current_avg: CommonHumanReadableByteCountSchema.exactOptional(),
+    current_avg_bytes: CommonByteCountSchema.exactOptional(),
+    rolling_avg: CommonHumanReadableByteCountSchema.exactOptional(),
+    rolling_avg_bytes: CommonByteCountSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsShardSearchBackpressureTaskResourceTrackerHeapUsageTrackerStats')
+
+const NodesStatsShardSearchBackpressureTaskResourceTrackerElapsedTimeTrackerStatsSchema = z
+  .object({
+    cancellation_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    current_max: CommonDurationSchema.exactOptional(),
+    current_max_millis: CommonUnitMillisSchema.exactOptional(),
+    current_avg: CommonDurationSchema.exactOptional(),
+    current_avg_millis: CommonUnitMillisSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsShardSearchBackpressureTaskResourceTrackerElapsedTimeTrackerStats')
+
+const NodesStatsShardSearchBackpressureTaskResourceTrackerCpuUsageTrackerStatsSchema = z
+  .object({
+    cancellation_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    current_max: CommonDurationSchema.exactOptional(),
+    current_max_millis: CommonUnitMillisSchema.exactOptional(),
+    current_avg: CommonDurationSchema.exactOptional(),
+    current_avg_millis: CommonUnitMillisSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsShardSearchBackpressureTaskResourceTrackerCpuUsageTrackerStats')
+
+const NodesStatsShardSearchBackpressureTaskResourceTrackerStatsSchema = z
+  .object({
+    heap_usage_tracker:
+      NodesStatsShardSearchBackpressureTaskResourceTrackerHeapUsageTrackerStatsSchema.exactOptional(),
+    elapsed_time_tracker:
+      NodesStatsShardSearchBackpressureTaskResourceTrackerElapsedTimeTrackerStatsSchema.exactOptional(),
+    cpu_usage_tracker:
+      NodesStatsShardSearchBackpressureTaskResourceTrackerCpuUsageTrackerStatsSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsShardSearchBackpressureTaskResourceTrackerStats')
+
+const NodesStatsShardSearchBackpressureTaskCancellationStatsSchema = z
+  .object({
+    cancellation_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    cancellation_limit_reached_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    cancelled_task_percentage: CommonPercentageNumberSchema.exactOptional(),
+    current_cancellation_eligible_tasks_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsShardSearchBackpressureTaskCancellationStats')
+
+const NodesStatsShardSearchBackpressureTaskStatsSchema = z
+  .object({
+    resource_tracker_stats:
+      NodesStatsShardSearchBackpressureTaskResourceTrackerStatsSchema.exactOptional(),
+    cancellation_stats:
+      NodesStatsShardSearchBackpressureTaskCancellationStatsSchema.exactOptional(),
+    completion_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', 'x-version-added': '3.0' }),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsShardSearchBackpressureTaskStats')
+
+const NodesStatsShardSearchBackpressureModeSchema = z
+  .enum(['disabled', 'enforced', 'monitor_only'])
+  .openapi('NodesStatsShardSearchBackpressureMode')
+
+const NodesStatsShardSearchBackpressureStatsSchema = z
+  .object({
+    search_task: NodesStatsShardSearchBackpressureTaskStatsSchema.exactOptional(),
+    search_shard_task: NodesStatsShardSearchBackpressureTaskStatsSchema.exactOptional(),
+    mode: NodesStatsShardSearchBackpressureModeSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsShardSearchBackpressureStats')
+
+const NodesStatsShardClusterManagerThrottlingStatsDetailSchema = z
+  .object({
+    total_throttled_tasks: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    throttled_tasks_per_task_type: z.record(
+      z.string(),
+      z
+        .preprocess(
+          (val) =>
+            typeof val === 'number' && Number.isSafeInteger(val)
+              ? BigInt(val)
+              : typeof val === 'string' && /^-?\d+$/.test(val)
+                ? BigInt(val)
+                : val,
+          z.int64(),
+        )
+        .openapi({ type: 'integer', format: 'int64' }),
+    ),
+  })
+  .openapi({ required: ['throttled_tasks_per_task_type', 'total_throttled_tasks'] })
+  .openapi('NodesStatsShardClusterManagerThrottlingStatsDetail')
+
+const NodesStatsShardClusterManagerThrottlingStatsSchema = z
+  .object({ stats: NodesStatsShardClusterManagerThrottlingStatsDetailSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('NodesStatsShardClusterManagerThrottlingStats')
+
+const NodesStatsShardWeightedRoutingStatsDetailSchema = z
+  .object({ fail_open_count: z.int32().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('NodesStatsShardWeightedRoutingStatsDetail')
+
+const NodesStatsShardWeightedRoutingStatsSchema = z
+  .object({ stats: NodesStatsShardWeightedRoutingStatsDetailSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('NodesStatsShardWeightedRoutingStats')
+
+const NodesStatsShardTaskCancellationStatsDetailSchema = z
+  .object({
+    current_count_post_cancel: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    total_count_post_cancel: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsShardTaskCancellationStatsDetail')
+
+const NodesStatsShardTaskCancellationStatsSchema = z
+  .object({
+    search_shard_task: NodesStatsShardTaskCancellationStatsDetailSchema.exactOptional(),
+    search_task: NodesStatsShardTaskCancellationStatsDetailSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsShardTaskCancellationStats')
+
+const CommonPercentageStringSchema = z
+  .string()
+  .regex(/\d+(\.\d+)?/)
+  .openapi({ description: 'The percentage value as a string.' })
+  .openapi('CommonPercentageString')
+
+const NodesStatsShardResourceUsageStatsIoUsageStatsSchema = z
+  .object({ max_io_utilization_percent: CommonPercentageStringSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('NodesStatsShardResourceUsageStatsIoUsageStats')
+
+const NodesStatsShardResourceUsageStatsDetailSchema = z
+  .object({
+    timestamp: CommonUnitMillisSchema.exactOptional(),
+    cpu_utilization_percent: CommonPercentageStringSchema.exactOptional(),
+    memory_utilization_percent: CommonPercentageStringSchema.exactOptional(),
+    io_usage_stats: NodesStatsShardResourceUsageStatsIoUsageStatsSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsShardResourceUsageStatsDetail')
+
+const NodesStatsShardResourceUsageStatsSchema = z
+  .record(z.string(), NodesStatsShardResourceUsageStatsDetailSchema)
+  .openapi('NodesStatsShardResourceUsageStats')
+
+const NodesStatsShardSearchPipelineOperationStatsSchema = z
+  .object({
+    count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    time: CommonDurationSchema.exactOptional(),
+    time_in_millis: CommonUnitMillisSchema.exactOptional(),
+    current: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    failed: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsShardSearchPipelineOperationStats')
+
+const NodesStatsShardSearchPipelinePerPipelineProcessorStatsSchema = z
+  .object({
+    type: z.string().exactOptional(),
+    stats: NodesStatsShardSearchPipelineOperationStatsSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsShardSearchPipelinePerPipelineProcessorStats')
+
+const NodesStatsShardSearchPipelinePerPipelineStatsSchema = z
+  .object({
+    request: NodesStatsShardSearchPipelineOperationStatsSchema.exactOptional(),
+    response: NodesStatsShardSearchPipelineOperationStatsSchema.exactOptional(),
+    request_processors: z
+      .array(NodesStatsShardSearchPipelinePerPipelineProcessorStatsSchema)
+      .exactOptional(),
+    response_processors: z
+      .array(
+        z
+          .record(z.string(), NodesStatsShardSearchPipelinePerPipelineProcessorStatsSchema)
+          .refine((val) => Object.keys(val).length >= 1)
+          .refine((val) => Object.keys(val).length <= 1),
+      )
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsShardSearchPipelinePerPipelineStats')
+
+const NodesStatsShardSearchPipelineStatsSchema = z
+  .object({
+    total_request: NodesStatsShardSearchPipelineOperationStatsSchema.exactOptional(),
+    total_response: NodesStatsShardSearchPipelineOperationStatsSchema.exactOptional(),
+    pipelines: z
+      .record(z.string(), NodesStatsShardSearchPipelinePerPipelineStatsSchema)
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsShardSearchPipelineStats')
+
+const NodesStatsShardSegmentReplicationBackpressureStatsSchema = z
+  .object({
+    total_rejected_requests: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsShardSegmentReplicationBackpressureStats')
+
+const CommonUnitSecondsSchema = z
+  .preprocess(
+    (val) =>
+      typeof val === 'number' && Number.isSafeInteger(val)
+        ? BigInt(val)
+        : typeof val === 'string' && /^-?\d+$/.test(val)
+          ? BigInt(val)
+          : val,
+    z.int64(),
+  )
+  .openapi({ type: 'integer', format: 'int64', description: 'Time unit for seconds.' })
+  .openapi('CommonUnitSeconds')
+
+const NodesStatsRemoteStoreStatsSchema = z
+  .object({
+    last_successful_fetch_of_pinned_timestamps: CommonUnitSecondsSchema.exactOptional().openapi({
+      description: 'Timestamp for the last successful fetch of pinned timestamps.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsRemoteStoreStats')
+
+const NodesStatsRepositoryStatsSnapshotSchema = z
+  .object({
+    repository_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the repository.' }),
+    repository_type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of the repository.' }),
+    repository_location: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'The location configuration of the repository.' }),
+    request_counts: z
+      .record(
+        z.string(),
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .exactOptional()
+      .openapi({
+        description: 'The count of requests by operation type (when detailed mode is disabled).',
+      }),
+    request_success_total: z
+      .record(
+        z.string(),
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'The count of successful requests by operation type (when detailed mode is enabled).',
+      }),
+    request_failures_total: z
+      .record(
+        z.string(),
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'The count of failed requests by operation type (when detailed mode is enabled).',
+      }),
+    request_time_in_millis: z
+      .record(
+        z.string(),
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'The total request time in milliseconds by operation type (when detailed mode is enabled).',
+      }),
+    request_retry_count_total: z
+      .record(
+        z.string(),
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .exactOptional()
+      .openapi({
+        description: 'The total retry count by operation type (when detailed mode is enabled).',
+      }),
+  })
+  .openapi({ description: 'Statistics snapshot about a repository.', required: [] })
+  .openapi('NodesStatsRepositoryStatsSnapshot')
+
+const NodesStatsShardRepositoriesStatsSchema = z
+  .array(NodesStatsRepositoryStatsSnapshotSchema)
+  .openapi('NodesStatsShardRepositoriesStats')
+
+const NodesStatsTransportUsageStatsSchema = z
+  .object({
+    rejection_count: z
+      .record(
+        z.string(),
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsTransportUsageStats')
+
+const NodesStatsUsageStatsSchema = z
+  .object({ transport: NodesStatsTransportUsageStatsSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('NodesStatsUsageStats')
+
+const NodesStatsShardAdmissionControlStatsSchema = z
+  .object({
+    global_io_usage: NodesStatsUsageStatsSchema.exactOptional(),
+    global_cpu_usage: NodesStatsUsageStatsSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsShardAdmissionControlStats')
+
+const NodesStatsCacheStatsBaseSchema = z
+  .object({
+    size: CommonHumanReadableByteCountSchema.exactOptional(),
+    size_in_bytes: CommonByteCountSchema.exactOptional(),
+    evictions: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    hit_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    miss_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    item_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({ required: [] })
+  .openapi('NodesStatsCacheStatsBase')
+
+const NodesStatsCacheIndicesStatsSchema = NodesStatsCacheStatsBaseSchema.and(
+  z.looseObject({}),
+).openapi('NodesStatsCacheIndicesStats')
+
+const NodesStatsCacheShardStatsSchema = NodesStatsCacheStatsBaseSchema.and(
+  z.looseObject({}),
+).openapi('NodesStatsCacheShardStats')
+
+const NodesStatsCacheStatsSchema = NodesStatsCacheStatsBaseSchema.and(
+  z
+    .object({
+      store_name: z.string().exactOptional(),
+      indices: z.record(z.string(), NodesStatsCacheIndicesStatsSchema).exactOptional(),
+      shards: z.record(z.string(), NodesStatsCacheShardStatsSchema).exactOptional(),
+    })
+    .openapi({ required: [] }),
+).openapi('NodesStatsCacheStats')
+
+const NodesStatsCachesStatsSchema = z
+  .record(z.string(), NodesStatsCacheStatsSchema)
+  .openapi('NodesStatsCachesStats')
+
+type NodesStatsStatsType = {
+  adaptive_selection?: { [key: string]: z.infer<typeof NodesStatsAdaptiveSelectionSchema> }
+  breakers?: { [key: string]: z.infer<typeof NodesStatsBreakerSchema> }
+  fs?: z.infer<typeof NodesStatsFileSystemSchema>
+  host?: z.infer<typeof CommonHostSchema>
+  http?: z.infer<typeof NodesStatsHttpSchema>
+  ingest?: z.infer<typeof NodesStatsIngestSchema>
+  ip?: z.infer<typeof CommonIpSchema> | z.infer<typeof CommonIpSchema>[]
+  jvm?: z.infer<typeof NodesStatsJvmSchema>
+  name?: z.infer<typeof CommonNameSchema>
+  os?: z.infer<typeof NodesStatsOperatingSystemSchema>
+  process?: z.infer<typeof NodesStatsProcessSchema>
+  roles?: z.infer<typeof CommonNodeRolesSchema>
+  script?: z.infer<typeof NodesStatsScriptStatsSchema>
+  script_cache?: z.infer<typeof NodesStatsScriptCacheStatsSchema>
+  thread_pool?: { [key: string]: z.infer<typeof NodesStatsThreadCountSchema> }
+  timestamp?: z.infer<typeof CommonUnitMillisSchema>
+  transport?: z.infer<typeof NodesStatsTransportSchema>
+  transport_address?: z.infer<typeof CommonTransportAddressSchema>
+  attributes?: { [key: string]: string }
+  discovery?: z.infer<typeof NodesStatsDiscoverySchema>
+  indexing_pressure?: z.infer<typeof NodesStatsIndexingPressureSchema>
+  indices?: z.infer<typeof NodesStatsNodeIndicesStatsSchema>
+  shard_indexing_pressure?: z.infer<typeof NodesStatsShardIndexingPressureStatsSchema>
+  search_backpressure?: z.infer<typeof NodesStatsShardSearchBackpressureStatsSchema>
+  cluster_manager_throttling?: z.infer<typeof NodesStatsShardClusterManagerThrottlingStatsSchema>
+  weighted_routing?: z.infer<typeof NodesStatsShardWeightedRoutingStatsSchema>
+  task_cancellation?: z.infer<typeof NodesStatsShardTaskCancellationStatsSchema>
+  resource_usage_stats?: z.infer<typeof NodesStatsShardResourceUsageStatsSchema>
+  search_pipeline?: z.infer<typeof NodesStatsShardSearchPipelineStatsSchema>
+  segment_replication_backpressure?: z.infer<
+    typeof NodesStatsShardSegmentReplicationBackpressureStatsSchema
+  >
+  remote_store?: z.infer<typeof NodesStatsRemoteStoreStatsSchema>
+  repositories?: z.infer<typeof NodesStatsShardRepositoriesStatsSchema>
+  admission_control?: z.infer<typeof NodesStatsShardAdmissionControlStatsSchema>
+  caches?: z.infer<typeof NodesStatsCachesStatsSchema>
+}
+
+const RollupsCommonCronSchema = z
+  .object({
+    expression: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The cron expression that defines the schedule.' }),
+    timezone: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The timezone for interpreting the cron expression.' }),
+  })
+  .openapi({ description: 'Defines a cron schedule for the rollup job execution.', required: [] })
+  .openapi('RollupsCommonCron')
+
+const RollupsCommonIntervalSchema = z
+  .object({
+    start_time: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'When the rollup job should start, in epoch milliseconds.' }),
+    period: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The numerical value for the execution interval.' }),
+    unit: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The time unit for the execution interval, such as `MINUTES` or `HOURS`.',
+      }),
+    cron: z
+      .xor([z.array(RollupsCommonCronSchema), RollupsCommonCronSchema])
+      .exactOptional()
+      .openapi({ description: 'The cron schedule configuration for the rollup job.' }),
+    schedule_delay: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The delay in milliseconds before starting the rollup process.' }),
+  })
+  .openapi({ description: 'Specifies the timing details for rollup job execution.', required: [] })
+  .openapi('RollupsCommonInterval')
+
+const RollupsCommonScheduleSchema = z
+  .object({ interval: RollupsCommonIntervalSchema.exactOptional() })
+  .openapi({ description: 'Defines the execution schedule for a rollup job.', required: [] })
+  .openapi('RollupsCommonSchedule')
+
+const RollupsCommonHistogramDimensionSchema = z
+  .object({
+    source_field: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The field from the source documents to use for the histogram.' }),
+    target_field: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The field name to use in the target index for the histogram results.',
+      }),
+    interval: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The interval for the histogram buckets.' }),
+  })
+  .openapi({
+    description: 'Configures a numeric histogram dimension for rollup aggregation.',
+    required: [],
+  })
+  .openapi('RollupsCommonHistogramDimension')
+
+const RollupsCommonDateHistogramDimensionSchema = z
+  .object({
+    fixed_interval: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The fixed interval for the date histogram.' }),
+    calendar_interval: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The calendar interval for the date histogram.' }),
+    timezone: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The timezone for the date histogram calculations.' }),
+    source_field: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The field from the source documents to use for the date histogram.',
+      }),
+    target_field: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The field name to use in the target index for the date histogram results.',
+      }),
+    format: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The date format pattern for the histogram values.' }),
+  })
+  .openapi({
+    description: 'Configures a date histogram dimension for rollup aggregation.',
+    required: [],
+  })
+  .openapi('RollupsCommonDateHistogramDimension')
+
+const RollupsCommonTermsDimensionSchema = z
+  .object({
+    source_field: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The field from the source documents to use for terms aggregation.',
+      }),
+    target_field: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The field name to use in the target index for the terms aggregation results.',
+      }),
+  })
+  .openapi({ description: 'Configures a terms dimension for rollup aggregation.', required: [] })
+  .openapi('RollupsCommonTermsDimension')
+
+const RollupsCommonDimensionsConfigItemSchema = z
+  .object({
+    histogram: RollupsCommonHistogramDimensionSchema.exactOptional(),
+    date_histogram: RollupsCommonDateHistogramDimensionSchema.exactOptional(),
+    terms: RollupsCommonTermsDimensionSchema.exactOptional(),
+  })
+  .refine((val) => Object.keys(val).length >= 1)
+  .refine((val) => Object.keys(val).length <= 1)
+  .openapi({
+    description: 'Defines a dimension for aggregating data in a rollup job.',
+    required: [],
+  })
+  .openapi('RollupsCommonDimensionsConfigItem')
+
+const RollupsCommonMetricsConfigMetricsSchema = z
+  .object({
+    avg: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Calculates the average value of a field.' }),
+    sum: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Calculates the sum of values for a field.' }),
+    max: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Finds the maximum value of a field.' }),
+    min: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Finds the minimum value of a field.' }),
+    value_count: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Counts the number of values for a field.' }),
+  })
+  .refine((val) => Object.keys(val).length >= 1)
+  .refine((val) => Object.keys(val).length <= 1)
+  .openapi({ description: 'Specifies a metric aggregation type to calculate.', required: [] })
+  .openapi('RollupsCommonMetricsConfigMetrics')
+
+const RollupsCommonMetricsConfigItemSchema = z
+  .object({
+    source_field: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The field from the source documents to calculate metrics on.' }),
+    target_field: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The field name prefix to use in the target index for the metric results.',
+      }),
+    metrics: z
+      .array(RollupsCommonMetricsConfigMetricsSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of metrics to calculate for the field.' }),
+  })
+  .openapi({
+    description: 'Defines metric aggregations for a field in a rollup job.',
+    required: [],
+  })
+  .openapi('RollupsCommonMetricsConfigItem')
+
+const RollupsCommonRollupSchema = z
+  .object({
+    rollup_id: z.string().exactOptional().openapi({ description: 'The ID for the rollup job.' }),
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the rollup job is enabled.' }),
+    schedule: RollupsCommonScheduleSchema.exactOptional(),
+    last_updated_time: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'When the rollup job was last updated.' }),
+    enabled_time: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'When the rollup job was enabled.' }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of the rollup job.' }),
+    schema_version: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The schema version for the rollup job.' }),
+    source_index: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The source index pattern for the rollup job.' }),
+    target_index: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The target index where rollup results are stored.' }),
+    target_index_settings: IndicesCommonIndexSettingsSchema.exactOptional().openapi({
+      'x-version-added': '3.0.0',
+    }),
+    metadata_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The metadata ID associated with the rollup job.' }),
+    page_size: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The number of documents to process per iteration.' }),
+    delay: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'The time delay in milliseconds between consecutive rollup executions.',
+      }),
+    continuous: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the rollup job runs continuously.' }),
+    dimensions: z
+      .array(RollupsCommonDimensionsConfigItemSchema)
+      .exactOptional()
+      .openapi({ description: 'The dimensions to aggregate data in the rollup.' }),
+    metrics: z
+      .array(RollupsCommonMetricsConfigItemSchema)
+      .exactOptional()
+      .openapi({ description: 'The metrics to calculate in the rollup.' }),
+    error_notification: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Set up a Mustache message template for error notifications. For example, if an index rollup job fails, the system can send  a message to a Slack channel.',
+      }),
+  })
+  .openapi({ description: 'Defines the configuration for a rollup job.', required: [] })
+  .openapi('RollupsCommonRollup')
+
+type RollupsCommonRollupEntityType = {
+  _id?: z.infer<typeof CommonIdSchema>
+  _seq_no?: z.infer<typeof CommonSequenceNumberSchema>
+  _primary_term?: bigint
+  _version?: z.infer<typeof CommonVersionNumberSchema>
+  rollup?: z.infer<typeof RollupsCommonRollupSchema>
+}
+
+type SearchPipelineCommonFilterQueryRequestProcessorType = {
+  tag?: string
+  description?: string
+  ignore_failure?: boolean
+  query?: z.infer<typeof CommonQueryDslQueryContainerSchema>
+}
+
+const SearchPipelineCommonAgenticQueryTranslatorRequestProcessorSchema = z
+  .object({
+    tag: z.string().exactOptional(),
+    description: z.string().exactOptional(),
+    ignore_failure: z.boolean().exactOptional(),
+    agent_id: z
+      .string()
+      .openapi({ description: 'The ID of the agent to use for query translation.' }),
+  })
+  .openapi({ 'x-version-added': '3.2', required: ['agent_id'] })
+  .openapi('SearchPipelineCommonAgenticQueryTranslatorRequestProcessor')
+
+const SearchPipelineCommonFilterQueryRequestProcessorSchema: z.ZodType<SearchPipelineCommonFilterQueryRequestProcessorType> =
+  z
+    .object({
+      tag: z.string().exactOptional(),
+      description: z.string().exactOptional(),
+      ignore_failure: z.boolean().exactOptional(),
+      query: CommonQueryDslQueryContainerSchema.exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('SearchPipelineCommonFilterQueryRequestProcessor')
+
+const SearchPipelineCommonNeuralFieldMapSchema = z
+  .record(z.string(), z.string())
+  .openapi('SearchPipelineCommonNeuralFieldMap')
+
+const SearchPipelineCommonNeuralQueryEnricherRequestProcessorSchema = z
+  .object({
+    tag: z.string().exactOptional(),
+    description: z.string().exactOptional(),
+    default_model_id: z.string().exactOptional(),
+    neural_field_default_id: SearchPipelineCommonNeuralFieldMapSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('SearchPipelineCommonNeuralQueryEnricherRequestProcessor')
+
+const SearchPipelineCommonSearchScriptRequestProcessorSchema = z
+  .object({
+    tag: z.string().exactOptional(),
+    description: z.string().exactOptional(),
+    ignore_failure: z.boolean().exactOptional(),
+    source: z.string(),
+    lang: z.string().exactOptional(),
+  })
+  .openapi({ required: ['source'] })
+  .openapi('SearchPipelineCommonSearchScriptRequestProcessor')
+
+const SearchPipelineCommonOversampleRequestProcessorSchema = z
+  .object({
+    tag: z.string().exactOptional(),
+    description: z.string().exactOptional(),
+    ignore_failure: z.boolean().exactOptional(),
+    sample_factor: z.float32(),
+    content_prefix: z.string().exactOptional(),
+  })
+  .openapi({ required: ['sample_factor'] })
+  .openapi('SearchPipelineCommonOversampleRequestProcessor')
+
+type SearchPipelineCommonRequestProcessorType =
+  | {
+      agentic_query_translator: z.infer<
+        typeof SearchPipelineCommonAgenticQueryTranslatorRequestProcessorSchema
+      >
+    }
+  | { filter_query: z.infer<typeof SearchPipelineCommonFilterQueryRequestProcessorSchema> }
+  | {
+      neural_query_enricher: z.infer<
+        typeof SearchPipelineCommonNeuralQueryEnricherRequestProcessorSchema
+      >
+    }
+  | { script: z.infer<typeof SearchPipelineCommonSearchScriptRequestProcessorSchema> }
+  | { oversample: z.infer<typeof SearchPipelineCommonOversampleRequestProcessorSchema> }
+
+const SearchPipelineCommonRequestProcessorSchema: z.ZodType<SearchPipelineCommonRequestProcessorType> =
+  z
+    .xor([
+      z
+        .object({
+          agentic_query_translator:
+            SearchPipelineCommonAgenticQueryTranslatorRequestProcessorSchema,
+        })
+        .openapi({
+          'x-version-added': '3.2',
+          title: 'agentic_query_translator',
+          required: ['agentic_query_translator'],
+        }),
+      z
+        .object({ filter_query: SearchPipelineCommonFilterQueryRequestProcessorSchema })
+        .openapi({ title: 'filter_query', required: ['filter_query'] }),
+      z
+        .object({
+          neural_query_enricher: SearchPipelineCommonNeuralQueryEnricherRequestProcessorSchema,
+        })
+        .openapi({ title: 'neural_query_enricher', required: ['neural_query_enricher'] }),
+      z
+        .object({ script: SearchPipelineCommonSearchScriptRequestProcessorSchema })
+        .openapi({ title: 'script', required: ['script'] }),
+      z
+        .object({ oversample: SearchPipelineCommonOversampleRequestProcessorSchema })
+        .openapi({ title: 'oversample', required: ['oversample'] }),
+    ])
+    .openapi('SearchPipelineCommonRequestProcessor')
+
+const SearchPipelineCommonAgenticContextResponseProcessorSchema = z
+  .object({
+    tag: z.string().exactOptional(),
+    description: z.string().exactOptional(),
+    ignore_failure: z.boolean().exactOptional(),
+    agent_steps_summary: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          "Whether to include the agent's execution step summary in the response. Available for conversational agents only.",
+      }),
+    dsl_query: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether to include the generated DSL query in the response. Available for both conversational and flow agents.',
+      }),
+  })
+  .openapi({ 'x-version-added': '3.3', required: [] })
+  .openapi('SearchPipelineCommonAgenticContextResponseProcessor')
+
+const SearchPipelineCommonPersonalizeSearchRankingResponseProcessorSchema = z
+  .object({
+    tag: z.string().exactOptional(),
+    description: z.string().exactOptional(),
+    ignore_failure: z.boolean().exactOptional(),
+    campaign_arn: z.string(),
+    recipe: z.string(),
+    weight: z.float32(),
+    item_id_field: z.string().exactOptional(),
+    iam_role_arn: z.string().exactOptional(),
+  })
+  .openapi({ required: ['campaign_arn', 'recipe', 'weight'] })
+  .openapi('SearchPipelineCommonPersonalizeSearchRankingResponseProcessor')
+
+const SearchPipelineCommonRetrievalAugmentedGenerationResponseProcessorSchema = z
+  .object({
+    tag: z.string().exactOptional(),
+    description: z.string().exactOptional(),
+    model_id: z.string(),
+    context_field_list: z.array(z.string()),
+    system_prompt: z.string().exactOptional(),
+    user_instructions: z.string().exactOptional(),
+  })
+  .openapi({ required: ['context_field_list', 'model_id'] })
+  .openapi('SearchPipelineCommonRetrievalAugmentedGenerationResponseProcessor')
+
+const SearchPipelineCommonRenameFieldResponseProcessorSchema = z
+  .object({
+    tag: z.string().exactOptional(),
+    description: z.string().exactOptional(),
+    ignore_failure: z.boolean().exactOptional(),
+    field: z.string(),
+    target_field: z.string(),
+  })
+  .openapi({ required: ['field', 'target_field'] })
+  .openapi('SearchPipelineCommonRenameFieldResponseProcessor')
+
+const SearchPipelineCommonMLOpenSearchRerankerSchema = z
+  .object({ model_id: z.string() })
+  .openapi({ required: ['model_id'] })
+  .openapi('SearchPipelineCommonMLOpenSearchReranker')
+
+const SearchPipelineCommonRerankContextSchema = z
+  .object({ document_fields: z.array(z.string()) })
+  .openapi({ required: ['document_fields'] })
+  .openapi('SearchPipelineCommonRerankContext')
+
+const SearchPipelineCommonRerankResponseProcessorSchema = z
+  .object({
+    tag: z.string().exactOptional(),
+    description: z.string().exactOptional(),
+    ignore_failure: z.boolean().exactOptional(),
+    ml_opensearch: SearchPipelineCommonMLOpenSearchRerankerSchema.exactOptional(),
+    context: SearchPipelineCommonRerankContextSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('SearchPipelineCommonRerankResponseProcessor')
+
+const SearchPipelineCommonCollapseResponseProcessorSchema = z
+  .object({
+    tag: z.string().exactOptional(),
+    description: z.string().exactOptional(),
+    ignore_failure: z.boolean().exactOptional(),
+    field: z.string(),
+    context_prefix: z.string().exactOptional(),
+  })
+  .openapi({ required: ['field'] })
+  .openapi('SearchPipelineCommonCollapseResponseProcessor')
+
+const SearchPipelineCommonTruncateHitsResponseProcessorSchema = z
+  .object({
+    tag: z.string().exactOptional(),
+    description: z.string().exactOptional(),
+    ignore_failure: z.boolean().exactOptional(),
+    target_size: z.int32().exactOptional(),
+    context_prefix: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('SearchPipelineCommonTruncateHitsResponseProcessor')
+
+const SearchPipelineCommonSortResponseProcessorSchema = z
+  .object({
+    tag: z.string().exactOptional(),
+    description: z.string().exactOptional(),
+    ignore_failure: z.boolean().exactOptional(),
+    field: z.string(),
+    order: z.string().exactOptional(),
+    target_field: z.string().exactOptional(),
+  })
+  .openapi({ required: ['field'] })
+  .openapi('SearchPipelineCommonSortResponseProcessor')
+
+const SearchPipelineCommonSplitResponseProcessorSchema = z
+  .object({
+    tag: z.string().exactOptional(),
+    description: z.string().exactOptional(),
+    ignore_failure: z.boolean().exactOptional(),
+    field: z.string(),
+    separator: z.string(),
+    preserve_trailing: z.boolean().exactOptional(),
+    target_field: z.string().exactOptional(),
+  })
+  .openapi({ required: ['field', 'separator'] })
+  .openapi('SearchPipelineCommonSplitResponseProcessor')
+
+const SearchPipelineCommonResponseProcessorSchema = z
+  .xor([
+    z
+      .object({ agentic_context: SearchPipelineCommonAgenticContextResponseProcessorSchema })
+      .openapi({
+        'x-version-added': '3.3',
+        title: 'agentic_context',
+        required: ['agentic_context'],
+      }),
+    z
+      .object({
+        personalize_search_ranking:
+          SearchPipelineCommonPersonalizeSearchRankingResponseProcessorSchema,
+      })
+      .openapi({ title: 'personalize_search_ranking', required: ['personalize_search_ranking'] }),
+    z
+      .object({
+        retrieval_augmented_generation:
+          SearchPipelineCommonRetrievalAugmentedGenerationResponseProcessorSchema,
+      })
+      .openapi({
+        title: 'retrieval_augmented_generation',
+        required: ['retrieval_augmented_generation'],
+      }),
+    z
+      .object({ rename_field: SearchPipelineCommonRenameFieldResponseProcessorSchema })
+      .openapi({ title: 'rename_field', required: ['rename_field'] }),
+    z
+      .object({ rerank: SearchPipelineCommonRerankResponseProcessorSchema })
+      .openapi({ title: 'rerank', required: ['rerank'] }),
+    z
+      .object({ collapse: SearchPipelineCommonCollapseResponseProcessorSchema })
+      .openapi({ title: 'collapse', required: ['collapse'] }),
+    z
+      .object({ truncate_hits: SearchPipelineCommonTruncateHitsResponseProcessorSchema })
+      .openapi({ title: 'truncate_hits', required: ['truncate_hits'] }),
+    z
+      .object({ sort: SearchPipelineCommonSortResponseProcessorSchema })
+      .openapi({ title: 'sort', required: ['sort'] }),
+    z
+      .object({ split: SearchPipelineCommonSplitResponseProcessorSchema })
+      .openapi({ title: 'split', required: ['split'] }),
+  ])
+  .openapi('SearchPipelineCommonResponseProcessor')
+
+const SearchPipelineCommonScoreNormalizationTechniqueSchema = z
+  .enum(['l2', 'min_max'])
+  .openapi('SearchPipelineCommonScoreNormalizationTechnique')
+
+const SearchPipelineCommonScoreNormalizationSchema = z
+  .object({ technique: SearchPipelineCommonScoreNormalizationTechniqueSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('SearchPipelineCommonScoreNormalization')
+
+const SearchPipelineCommonScoreCombinationTechniqueSchema = z
+  .enum(['arithmetic_mean', 'geometric_mean', 'harmonic_mean'])
+  .openapi('SearchPipelineCommonScoreCombinationTechnique')
+
+const SearchPipelineCommonScoreCombinationParametersSchema = z
+  .object({ weights: z.array(z.float32()).exactOptional() })
+  .openapi({ required: [] })
+  .openapi('SearchPipelineCommonScoreCombinationParameters')
+
+const SearchPipelineCommonScoreCombinationSchema = z
+  .object({
+    technique: SearchPipelineCommonScoreCombinationTechniqueSchema.exactOptional(),
+    parameters: SearchPipelineCommonScoreCombinationParametersSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('SearchPipelineCommonScoreCombination')
+
+const SearchPipelineCommonNormalizationPhaseResultsProcessorSchema = z
+  .object({
+    tag: z.string().exactOptional(),
+    description: z.string().exactOptional(),
+    ignore_failure: z.boolean().exactOptional(),
+    normalization: SearchPipelineCommonScoreNormalizationSchema.exactOptional(),
+    combination: SearchPipelineCommonScoreCombinationSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('SearchPipelineCommonNormalizationPhaseResultsProcessor')
+
+const SearchPipelineCommonScoreRankerCombinationTechniqueSchema = z
+  .literal('rrf')
+  .openapi('SearchPipelineCommonScoreRankerCombinationTechnique')
+
+const SearchPipelineCommonScoreRankerCombinationSchema = z
+  .object({
+    technique: SearchPipelineCommonScoreRankerCombinationTechniqueSchema,
+    rank_constant: z.int32().min(1).exactOptional(),
+  })
+  .openapi({ required: ['technique'] })
+  .openapi('SearchPipelineCommonScoreRankerCombination')
+
+const SearchPipelineCommonScoreRankerPhaseResultsProcessorSchema = z
+  .object({ combination: SearchPipelineCommonScoreRankerCombinationSchema })
+  .openapi({ required: ['combination'] })
+  .openapi('SearchPipelineCommonScoreRankerPhaseResultsProcessor')
+
+const SearchPipelineCommonPhaseResultsProcessorSchema = z
+  .xor([
+    z
+      .object({
+        'normalization-processor': SearchPipelineCommonNormalizationPhaseResultsProcessorSchema,
+      })
+      .openapi({ title: 'normalization-processor', required: ['normalization-processor'] }),
+    z
+      .object({
+        'score-ranker-processor': SearchPipelineCommonScoreRankerPhaseResultsProcessorSchema,
+      })
+      .openapi({ title: 'score-ranker-processor', required: ['score-ranker-processor'] }),
+  ])
+  .openapi('SearchPipelineCommonPhaseResultsProcessor')
+
+type SearchPipelineCommonSearchPipelineStructureType = {
+  description?: string
+  version?: number
+  request_processors?: z.infer<typeof SearchPipelineCommonRequestProcessorSchema>[]
+  response_processors?: z.infer<typeof SearchPipelineCommonResponseProcessorSchema>[]
+  phase_results_processors?: z.infer<typeof SearchPipelineCommonPhaseResultsProcessorSchema>[]
+}
+
+const SearchPipelineCommonSearchPipelineStructureSchema: z.ZodType<SearchPipelineCommonSearchPipelineStructureType> =
+  z
+    .object({
+      description: z.string().exactOptional(),
+      version: z.int32().exactOptional(),
+      request_processors: z.array(SearchPipelineCommonRequestProcessorSchema).exactOptional(),
+      response_processors: z.array(SearchPipelineCommonResponseProcessorSchema).exactOptional(),
+      phase_results_processors: z
+        .array(SearchPipelineCommonPhaseResultsProcessorSchema)
+        .exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('SearchPipelineCommonSearchPipelineStructure')
+
+type SearchPipelineCommonSearchPipelineMapType = {
+  [key: string]: z.infer<typeof SearchPipelineCommonSearchPipelineStructureSchema>
+}
+
+const CommonNodeStatisticsSchema = z
+  .object({
+    failures: z.array(CommonErrorCauseSchema).exactOptional(),
+    total: z.int().openapi({ description: 'The total number of nodes selected by the request.' }),
+    successful: z
+      .int()
+      .openapi({ description: 'The number of nodes that responded successfully to the request.' }),
+    failed: z
+      .int()
+      .openapi({
+        description:
+          'The number of nodes that rejected the request or failed to respond. If this value is not 0, then a reason for the rejection or failure is included in the response.',
+      }),
+  })
+  .openapi({
+    description: 'The statistics about node operations.',
+    required: ['failed', 'successful', 'total'],
+  })
+  .openapi('CommonNodeStatistics')
+
+const NodesCommonNodesResponseBaseSchema = z
+  .object({
+    _nodes: CommonNodeStatisticsSchema.exactOptional().openapi({
+      description:
+        "Contains statistics about the number of nodes selected by the request's node filters.",
+    }),
+  })
+  .openapi({
+    description: 'Provides base response structure for node-related operations.',
+    required: [],
+  })
+  .openapi('NodesCommonNodesResponseBase')
+
+const SecurityCommonCertificatesDetailSchema = z
+  .object({
+    issuer_dn: z.string().exactOptional(),
+    subject_dn: z.string().exactOptional(),
+    san: z.string().exactOptional(),
+    not_before: z.string().exactOptional(),
+    not_after: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('SecurityCommonCertificatesDetail')
+
+const SecurityCommonCertificateTypesSchema = z
+  .object({
+    http: z.array(z.record(z.string(), SecurityCommonCertificatesDetailSchema)).exactOptional(),
+    transport: z
+      .array(z.record(z.string(), SecurityCommonCertificatesDetailSchema))
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('SecurityCommonCertificateTypes')
+
+const SecurityCommonCertificatesPerNodeSchema = z
+  .object({
+    name: z.string().exactOptional().openapi({ description: 'The name of the node.' }),
+    certificates: z.record(z.string(), SecurityCommonCertificateTypesSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('SecurityCommonCertificatesPerNode')
+
+type SecurityCommonGetCertificatesNewType = z.infer<typeof NodesCommonNodesResponseBaseSchema> & {
+  cluster_name?: string
+  nodes?: { [key: string]: z.infer<typeof SecurityCommonCertificatesPerNodeSchema> }
+}
+
+type SqlCommonExplainBodyType = {
+  name?: string
+  description?: { [key: string]: unknown }
+  children?: SqlCommonExplainBodyType[]
+}
+
+type TasksCommonTaskExecutingNodeType = z.infer<typeof CommonBaseNodeSchema> & {
+  tasks: { [key: string]: z.infer<typeof TasksCommonTaskInfoSchema> }
+}
 
 type TasksCommonTaskGroupType = z.infer<typeof TasksCommonTaskInfoBaseSchema> & {
   children?: TasksCommonTaskGroupType[]
+}
+
+const CommonTaskFailureSchema = z
+  .object({
+    task_id: z.int().openapi({ description: 'The ID of the failed task.' }),
+    node_id: CommonNodeIdSchema,
+    status: z.string().openapi({ description: 'The status of the failed task.' }),
+    reason: CommonErrorCauseSchema,
+  })
+  .openapi({
+    description: 'The details of a task failure.',
+    required: ['node_id', 'reason', 'status', 'task_id'],
+  })
+  .openapi('CommonTaskFailure')
+
+const TasksCommonTaskExecutingNodeSchema: z.ZodType<TasksCommonTaskExecutingNodeType> =
+  CommonBaseNodeSchema.and(
+    z
+      .object({ tasks: z.record(z.string(), TasksCommonTaskInfoSchema) })
+      .openapi({ required: ['tasks'] }),
+  ).openapi('TasksCommonTaskExecutingNode')
+
+const TasksCommonTaskGroupSchema: z.ZodType<TasksCommonTaskGroupType> = z
+  .lazy(() =>
+    TasksCommonTaskInfoBaseSchema.and(
+      z
+        .object({ children: z.array(TasksCommonTaskGroupSchema).exactOptional() })
+        .openapi({ required: [] }),
+    ),
+  )
+  .openapi('TasksCommonTaskGroup')
+
+const TasksCommonTaskInfosSchema = z
+  .xor([
+    z.array(TasksCommonTaskInfoSchema).openapi({ title: 'grouped_by_none' }),
+    z.record(z.string(), TasksCommonTaskGroupSchema).openapi({ title: 'grouped_by_parents' }),
+  ])
+  .openapi('TasksCommonTaskInfos')
+
+type TasksCommonTaskListResponseBaseType = {
+  node_failures?: z.infer<typeof CommonErrorCauseSchema>[]
+  task_failures?: z.infer<typeof CommonTaskFailureSchema>[]
+  nodes?: { [key: string]: z.infer<typeof TasksCommonTaskExecutingNodeSchema> }
+  tasks?: z.infer<typeof TasksCommonTaskInfosSchema>
+}
+
+const TransformsCommonScheduleIntervalSchema = z
+  .object({
+    start_time: z.number().exactOptional(),
+    period: z.number().exactOptional(),
+    unit: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TransformsCommonScheduleInterval')
+
+const TransformsCommonScheduleSchema = z
+  .object({ interval: TransformsCommonScheduleIntervalSchema })
+  .openapi({ required: ['interval'] })
+  .openapi('TransformsCommonSchedule')
+
+const TransformsCommonHistogramGroupSchema = z
+  .object({
+    source_field: z.string().exactOptional(),
+    target_field: z.string().exactOptional(),
+    interval: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TransformsCommonHistogramGroup')
+
+const TransformsCommonDateHistogramGroupSchema = z
+  .object({
+    fixed_interval: z.string().exactOptional(),
+    calendar_interval: z.string().exactOptional(),
+    timezone: z.string().exactOptional(),
+    source_field: z.string().exactOptional(),
+    target_field: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TransformsCommonDateHistogramGroup')
+
+const TransformsCommonTermsGroupSchema = z
+  .object({ source_field: z.string().exactOptional(), target_field: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('TransformsCommonTermsGroup')
+
+const TransformsCommonGroupsConfigItemSchema = z
+  .object({
+    histogram: TransformsCommonHistogramGroupSchema.exactOptional(),
+    date_histogram: TransformsCommonDateHistogramGroupSchema.exactOptional(),
+    terms: TransformsCommonTermsGroupSchema.exactOptional(),
+  })
+  .refine((val) => Object.keys(val).length >= 1)
+  .refine((val) => Object.keys(val).length <= 1)
+  .openapi({ required: [] })
+  .openapi('TransformsCommonGroupsConfigItem')
+
+type TransformsCommonTransformType = {
+  transform_id?: string
+  schema_version?: number
+  continuous?: boolean
+  schedule?: z.infer<typeof TransformsCommonScheduleSchema>
+  metadata_id?: string | null
+  updated_at?: number
+  enabled?: boolean
+  enabled_at?: number | null
+  description?: string
+  source_index?: string
+  data_selection_query?: z.infer<typeof CommonQueryDslQueryContainerSchema>
+  target_index?: string
+  roles?: string[]
+  page_size?: number
+  groups?: z.infer<typeof TransformsCommonGroupsConfigItemSchema>[]
+  aggregations?: { [key: string]: z.infer<typeof TransformsCommonGroupsConfigItemSchema> }
+}
+
+const TransformsCommonTransformSchema: z.ZodType<TransformsCommonTransformType> = z
+  .object({
+    transform_id: z.string().exactOptional(),
+    schema_version: z.number().exactOptional(),
+    continuous: z.boolean().exactOptional(),
+    schedule: TransformsCommonScheduleSchema.exactOptional(),
+    metadata_id: z.string().nullable().exactOptional(),
+    updated_at: z.number().exactOptional(),
+    enabled: z.boolean().exactOptional(),
+    enabled_at: z.number().nullable().exactOptional(),
+    description: z.string().exactOptional(),
+    source_index: z.string().exactOptional(),
+    data_selection_query: CommonQueryDslQueryContainerSchema.exactOptional(),
+    target_index: z.string().exactOptional(),
+    roles: z.array(z.string()).exactOptional(),
+    page_size: z.number().exactOptional(),
+    groups: z.array(TransformsCommonGroupsConfigItemSchema).exactOptional(),
+    aggregations: z.record(z.string(), TransformsCommonGroupsConfigItemSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TransformsCommonTransform')
+
+type TransformsCommonTransformRequestType = {
+  transform: z.infer<typeof TransformsCommonTransformSchema>
+}
+
+type TransformsCommonTransformResponseType = {
+  _id?: z.infer<typeof CommonIdSchema>
+  _primary_term?: bigint
+  _seq_no?: z.infer<typeof CommonSequenceNumberSchema>
+  _version?: z.infer<typeof CommonVersionNumberSchema>
+  transform?: z.infer<typeof TransformsCommonTransformSchema>
+}
+
+const TransformsCommonTransformResponseSchema: z.ZodType<TransformsCommonTransformResponseType> = z
+  .object({
+    _id: CommonIdSchema.exactOptional(),
+    _primary_term: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    _seq_no: CommonSequenceNumberSchema.exactOptional(),
+    _version: CommonVersionNumberSchema.exactOptional(),
+    transform: TransformsCommonTransformSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TransformsCommonTransformResponse')
+
+type TransformsCommonTransformsResponseType = {
+  total_transforms?: number
+  transforms?: z.infer<typeof TransformsCommonTransformResponseSchema>[]
 }
 
 const CommonAcknowledgedResponseBaseSchema = z
@@ -15361,72 +24133,6 @@ const CommonAcknowledgedResponseBaseSchema = z
   })
   .openapi({ required: ['acknowledged'] })
   .openapi('CommonAcknowledgedResponseBase')
-
-const CommonHostSchema = z
-  .string()
-  .openapi({ description: 'The hostname or IP address.' })
-  .openapi('CommonHost')
-
-const CommonIpSchema = z.string().openapi({ description: 'The IP address.' }).openapi('CommonIp')
-
-const CommonNodeRoleSchema = z
-  .xor([
-    z.literal('client').openapi({ description: 'The node can act as a client node.' }),
-    z
-      .literal('coordinating_only')
-      .openapi({ description: 'The node only performs coordination tasks.' }),
-    z.literal('data').openapi({ description: 'The node can store data.' }),
-    z.literal('data_cold').openapi({ description: 'The node can store cold data.' }),
-    z.literal('data_content').openapi({ description: 'The node can store content data.' }),
-    z.literal('data_frozen').openapi({ description: 'The node can store frozen data.' }),
-    z.literal('data_hot').openapi({ description: 'The node can store hot data.' }),
-    z.literal('data_warm').openapi({ description: 'The node can store warm data.' }),
-    z.literal('ingest').openapi({ description: 'The node can perform ingest operations.' }),
-    z.literal('ml').openapi({ description: 'The node can perform machine learning operations.' }),
-    z
-      .literal('remote_cluster_client')
-      .openapi({ description: 'The node can act as a remote cluster client.' }),
-    z.literal('transform').openapi({ description: 'The node can perform transform operations.' }),
-    z
-      .literal('voting_only')
-      .openapi({ description: 'The node can only vote in cluster decisions.' }),
-    z
-      .literal('master')
-      .openapi({
-        deprecated: true,
-        'x-version-deprecated': '2.0',
-        'x-deprecation-message': 'Use `cluster_manager` instead.',
-      }),
-    z
-      .literal('cluster_manager')
-      .openapi({ description: 'The node can act as a cluster manager.', 'x-version-added': '2.0' }),
-  ])
-  .openapi('CommonNodeRole')
-
-const CommonNodeRolesSchema = z
-  .array(CommonNodeRoleSchema)
-  .openapi({ description: 'The role assigned to the node.' })
-  .openapi('CommonNodeRoles')
-
-const CommonTransportAddressSchema = z
-  .string()
-  .openapi({ description: 'The transport address of a node.' })
-  .openapi('CommonTransportAddress')
-
-const CommonBaseNodeSchema = z
-  .object({
-    attributes: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'The attributes of the node.' }),
-    host: CommonHostSchema.exactOptional(),
-    ip: CommonIpSchema.exactOptional(),
-    name: CommonNameSchema,
-    roles: CommonNodeRolesSchema.exactOptional(),
-    transport_address: CommonTransportAddressSchema.exactOptional(),
-  })
-  .openapi({ description: 'The base information about a node.', required: ['name'] })
-  .openapi('CommonBaseNode')
 
 const CommonBatchSizeSchema = z
   .preprocess(
@@ -15513,40 +24219,6 @@ const CommonByteUnitSchema = z
   ])
   .openapi('CommonByteUnit')
 
-const CommonClusterStatisticsSchema = z
-  .object({ skipped: z.int32(), successful: z.int32(), total: z.int32() })
-  .openapi({ required: ['skipped', 'successful', 'total'] })
-  .openapi('CommonClusterStatistics')
-
-const CommonFieldSizeUsageSchema = z
-  .object({
-    size: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'The human-readable size of memory used.',
-    }),
-    size_in_bytes: CommonByteCountSchema.openapi({
-      description: 'The size of memory used in bytes.',
-    }),
-  })
-  .openapi({ description: 'The memory usage statistics for a field.', required: ['size_in_bytes'] })
-  .openapi('CommonFieldSizeUsage')
-
-const CommonCompletionStatsSchema = z
-  .object({
-    size_in_bytes: CommonByteCountSchema.openapi({
-      description:
-        'The total amount, in bytes, of memory used for completion across all shards assigned to the selected nodes.',
-    }),
-    size: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'The human-readable size of memory used for completion.',
-    }),
-    fields: z
-      .record(z.string(), CommonFieldSizeUsageSchema)
-      .exactOptional()
-      .openapi({ description: 'The per-field completion statistics.' }),
-  })
-  .openapi({ required: ['size_in_bytes'] })
-  .openapi('CommonCompletionStats')
-
 const CommonConflictsSchema = z
   .xor([
     z.literal('abort').openapi({ description: 'Abort the operation on version conflicts.' }),
@@ -15555,8 +24227,6 @@ const CommonConflictsSchema = z
       .openapi({ description: 'Proceed with the operation on version conflicts.' }),
   ])
   .openapi('CommonConflicts')
-
-const CommonDataStreamNameSchema = z.string().openapi('CommonDataStreamName')
 
 const CommonDataStreamNamesSchema = z
   .xor([CommonDataStreamNameSchema, z.array(CommonDataStreamNameSchema)])
@@ -15568,64 +24238,12 @@ const CommonDerivedFieldSchema = z
     type: z.string(),
     script: CommonScriptSchema,
     prefilter_field: z.string().exactOptional(),
-    properties: z.object({}).exactOptional(),
+    properties: z.looseObject({}).exactOptional(),
     ignore_malformed: z.boolean().exactOptional(),
     format: z.string().exactOptional(),
   })
   .openapi({ required: ['name', 'script', 'type'] })
   .openapi('CommonDerivedField')
-
-const CommonDocStatsSchema = z
-  .object({
-    count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The total number of non-deleted documents across all primary shards assigned to the selected nodes.\nThis number is based on documents in Lucene segments and may include documents from nested fields.',
-      }),
-    deleted: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The total number of deleted documents across all primary shards assigned to the selected nodes.\nThis number is based on the number of documents stored in Lucene segments.\nOpenSearch reclaims the disk space previously occupied by the deleted Lucene documents when a segment is merged.',
-      }),
-  })
-  .openapi({ description: 'The document-level statistics.', required: ['count'] })
-  .openapi('CommonDocStats')
-
-const CommonUnitMicrosSchema = z
-  .preprocess(
-    (val) =>
-      typeof val === 'number' && Number.isSafeInteger(val)
-        ? BigInt(val)
-        : typeof val === 'string' && /^-?\d+$/.test(val)
-          ? BigInt(val)
-          : val,
-    z.int64(),
-  )
-  .openapi({ type: 'integer', format: 'int64', description: 'Time unit for microseconds.' })
-  .openapi('CommonUnitMicros')
 
 const CommonDurationValueUnitMicrosSchema = CommonUnitMicrosSchema.openapi(
   'CommonDurationValueUnitMicros',
@@ -15641,237 +24259,9 @@ const CommonDurationValueUnitNanosSchema = CommonUnitNanosSchema.openapi(
 
 const CommonEpochTimeUnitMillisSchema = CommonUnitMillisSchema.openapi('CommonEpochTimeUnitMillis')
 
-const CommonUnitSecondsSchema = z
-  .preprocess(
-    (val) =>
-      typeof val === 'number' && Number.isSafeInteger(val)
-        ? BigInt(val)
-        : typeof val === 'string' && /^-?\d+$/.test(val)
-          ? BigInt(val)
-          : val,
-    z.int64(),
-  )
-  .openapi({ type: 'integer', format: 'int64', description: 'Time unit for seconds.' })
-  .openapi('CommonUnitSeconds')
-
 const CommonEpochTimeUnitSecondsSchema = CommonUnitSecondsSchema.openapi(
   'CommonEpochTimeUnitSeconds',
 )
-
-const CommonErrorResponseBaseSchema = z
-  .object({
-    error: CommonErrorCauseSchema,
-    status: z.int32().openapi({ description: 'The HTTP status code.' }),
-  })
-  .openapi({
-    description: 'The base structure for error responses.',
-    required: ['error', 'status'],
-  })
-  .openapi('CommonErrorResponseBase')
-
-const CommonExpandWildcardSchema = z
-  .xor([
-    z.literal('all').openapi({ description: 'Match any index, including hidden ones.' }),
-    z.literal('closed').openapi({ description: 'Match closed, non-hidden indexes.' }),
-    z
-      .literal('hidden')
-      .openapi({
-        description: 'Match hidden indexes. Must be combined with `open`, `closed`, or both.',
-      }),
-    z.literal('none').openapi({ description: 'Wildcard expressions are not accepted.' }),
-    z.literal('open').openapi({ description: 'Match open, non-hidden indexes.' }),
-  ])
-  .openapi('CommonExpandWildcard')
-
-const CommonExpandWildcardsSchema = z
-  .xor([CommonExpandWildcardSchema, z.array(CommonExpandWildcardSchema)])
-  .openapi({
-    description:
-      'Specifies the type of index that wildcard expressions can match. Supports comma-separated values.',
-  })
-  .openapi('CommonExpandWildcards')
-
-const CommonFieldMemoryUsageSchema = z
-  .object({
-    memory_size: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'The human-readable amount of memory used.',
-    }),
-    memory_size_in_bytes: CommonByteCountSchema.openapi({
-      description: 'The amount of memory used in bytes.',
-    }),
-  })
-  .openapi({
-    description: 'The memory usage statistics for a field.',
-    required: ['memory_size_in_bytes'],
-  })
-  .openapi('CommonFieldMemoryUsage')
-
-const CommonFielddataStatsSchema = z
-  .object({
-    evictions: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The number of times field data was evicted from memory.',
-      }),
-    memory_size: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'The human-readable amount of memory used for field data.',
-    }),
-    memory_size_in_bytes: CommonByteCountSchema.openapi({
-      description: 'The amount of memory used for field data in bytes.',
-    }),
-    fields: z
-      .record(
-        z.string(),
-        CommonFieldMemoryUsageSchema.openapi({
-          description: 'The per-field field data statistics.',
-        }),
-      )
-      .exactOptional(),
-  })
-  .openapi({
-    description: 'The statistics about field data memory usage.',
-    required: ['memory_size_in_bytes'],
-  })
-  .openapi('CommonFielddataStats')
-
-const CommonFlushStatsSchema = z
-  .object({
-    periodic: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The number of periodic flush operations.',
-      }),
-    total: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The total number of flush operations.',
-      }),
-    total_time: CommonDurationSchema.exactOptional(),
-    total_time_in_millis: CommonUnitMillisSchema,
-  })
-  .openapi({
-    description: 'The statistics about flush operations.',
-    required: ['periodic', 'total', 'total_time_in_millis'],
-  })
-  .openapi('CommonFlushStats')
-
-const CommonGetStatsSchema = z
-  .object({
-    total: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The total number of get operations.',
-      }),
-    getTime: CommonDurationSchema.exactOptional().openapi({
-      deprecated: true,
-      'x-version-deprecated': '2.19',
-    }),
-    time: CommonDurationSchema.exactOptional().openapi({ 'x-version-added': '2.19' }),
-    time_in_millis: CommonUnitMillisSchema,
-    exists_total: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The total number of successful get operations.',
-      }),
-    exists_time: CommonDurationSchema.exactOptional(),
-    exists_time_in_millis: CommonUnitMillisSchema,
-    missing_total: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The total number of failed get operations due to missing documents.',
-      }),
-    missing_time: CommonDurationSchema.exactOptional(),
-    missing_time_in_millis: CommonUnitMillisSchema,
-    current: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The number of current get operations.',
-      }),
-  })
-  .openapi({
-    description: 'The statistics about get operations.',
-    required: [
-      'current',
-      'exists_time_in_millis',
-      'exists_total',
-      'missing_time_in_millis',
-      'missing_total',
-      'time_in_millis',
-      'total',
-    ],
-  })
-  .openapi('CommonGetStats')
 
 const CommonHealthStatusSchema = z
   .xor([
@@ -15895,187 +24285,6 @@ const CommonHttpHeadersSchema = z
   .record(z.string(), CommonStringOrStringArraySchema)
   .openapi({ description: 'The HTTP headers.' })
   .openapi('CommonHttpHeaders')
-
-const CommonIndexAliasSchema = z
-  .string()
-  .openapi({ description: 'The name of an index alias.' })
-  .openapi('CommonIndexAlias')
-
-const CommonIndexingStatsSchema: z.ZodType<CommonIndexingStatsType> = z
-  .lazy(() =>
-    z
-      .object({
-        index_total: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description: 'The total number of indexing operations.',
-          }),
-        index_time: CommonDurationSchema.exactOptional().openapi({
-          description: 'The total amount of time spent on indexing operations.',
-        }),
-        index_time_in_millis: CommonUnitMillisSchema.openapi({
-          description: 'The total amount of time spent on indexing operations in milliseconds.',
-        }),
-        index_current: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description: 'The number of current indexing operations.',
-          }),
-        index_failed: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description: 'The number of failed indexing operations.',
-          }),
-        delete_total: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description: 'The total number of delete operations.',
-          }),
-        delete_time: CommonDurationSchema.exactOptional(),
-        delete_time_in_millis: CommonUnitMillisSchema,
-        delete_current: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description: 'The number of current delete operations.',
-          }),
-        noop_update_total: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description: 'The total number of noop update operations.',
-          }),
-        is_throttled: z
-          .boolean()
-          .openapi({ description: 'Whether indexing is currently throttled.' }),
-        throttle_time: CommonDurationSchema.exactOptional().openapi({
-          description: 'The total amount of time spent throttling indexing operations.',
-        }),
-        throttle_time_in_millis: CommonUnitMillisSchema.openapi({
-          description:
-            'The total amount of time spent throttling indexing operations in milliseconds.',
-        }),
-        doc_status: CommonDocStatusSchema.exactOptional(),
-        types: z
-          .record(z.string(), CommonIndexingStatsSchema)
-          .exactOptional()
-          .openapi({ 'x-version-removed': '2.0' }),
-      })
-      .openapi({
-        description: 'The statistics about indexing operations.',
-        required: [
-          'delete_current',
-          'delete_time_in_millis',
-          'delete_total',
-          'index_current',
-          'index_failed',
-          'index_time_in_millis',
-          'index_total',
-          'is_throttled',
-          'noop_update_total',
-          'throttle_time_in_millis',
-        ],
-      }),
-  )
-  .openapi('CommonIndexingStats')
-
-const CommonIndicesSchema = z
-  .xor([CommonIndexNameSchema, z.array(CommonIndexNameSchema)])
-  .openapi({
-    description:
-      'A comma-separated list of data streams, indexes, and aliases used to limit the request.\nSupports wildcards (`*`).\nTo target all data streams and indexes, omit this parameter or use `*` or `_all`.',
-  })
-  .openapi('CommonIndices')
-
-const CommonUintSchema = z.int().openapi('CommonUint')
-
-const CommonShardSearchFailureSchema = z
-  .object({
-    shard: z.int().openapi({ description: 'The shard id where the failure occurred.' }),
-    index: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The index name where the failure occurred.' }),
-    node: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The node id where the failure occurred.' }),
-    reason: CommonErrorCauseSchema,
-  })
-  .openapi({
-    description: 'Represents a failure to search on a specific shard. Used in search responses.',
-    required: ['reason', 'shard'],
-  })
-  .openapi('CommonShardSearchFailure')
-
-const CommonShardStatisticsSchema = z
-  .object({
-    failed: CommonUintSchema,
-    successful: CommonUintSchema,
-    total: CommonUintSchema,
-    failures: z.array(CommonShardSearchFailureSchema).exactOptional(),
-    skipped: CommonUintSchema.exactOptional(),
-  })
-  .openapi({ required: ['failed', 'successful', 'total'] })
-  .openapi('CommonShardStatistics')
 
 const CommonIndicesResponseBaseSchema = CommonAcknowledgedResponseBaseSchema.and(
   z
@@ -16120,187 +24329,10 @@ const CommonInlineGetSchema = z
   .openapi({ description: 'The result of an inline get operation.', required: ['found'] })
   .openapi('CommonInlineGet')
 
-const CommonInlineGetDictUserDefinedSchema = z
-  .object({
-    fields: z
-      .record(z.string(), z.object({}))
-      .exactOptional()
-      .openapi({ description: 'The fields retrieved from the document.' }),
-    found: z.boolean().openapi({ description: 'Whether the document was found.' }),
-    _seq_no: CommonSequenceNumberSchema.exactOptional(),
-    _primary_term: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The primary term of the document.',
-      }),
-    _routing: CommonRoutingSchema.exactOptional(),
-    _source: z
-      .looseObject({})
-      .exactOptional()
-      .openapi({ 'x-protobuf-data-type': 'bytes', description: 'The source of the document.' }),
-  })
-  .catchall(z.object({}).openapi({ title: 'metadata_fields' }))
-  .openapi({
-    description: 'The inline get operation results for user-defined dictionaries.',
-    required: ['found'],
-  })
-  .openapi('CommonInlineGetDictUserDefined')
-
 const CommonLevelSchema = z
   .enum(['cluster', 'indices', 'shards'])
   .openapi({ description: 'Specifies the level of detail of the returned information.' })
   .openapi('CommonLevel')
-
-const CommonMergesStatsSchema = z
-  .object({
-    current: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The number of current merge operations.',
-      }),
-    current_docs: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The number of documents in current merge operations.',
-      }),
-    current_size: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'The size of current merge operations in a human-readable format.',
-    }),
-    current_size_in_bytes: CommonByteCountSchema.openapi({
-      description: 'The size of current merge operations in bytes.',
-    }),
-    total: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The total number of merge operations.',
-      }),
-    total_auto_throttle: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'The total auto-throttle size in a human-readable format.',
-    }),
-    total_auto_throttle_in_bytes: CommonByteCountSchema.openapi({
-      description: 'The total auto-throttle size in bytes.',
-    }),
-    total_docs: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The total number of documents that have been merged.',
-      }),
-    total_size: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'The total size of merge operations in a human-readable format.',
-    }),
-    total_size_in_bytes: CommonByteCountSchema.openapi({
-      description: 'The total size of merge operations in bytes.',
-    }),
-    total_stopped_time: CommonDurationSchema.exactOptional().openapi({
-      description: 'The total amount of time merge operations have been stopped.',
-    }),
-    total_stopped_time_in_millis: CommonUnitMillisSchema.openapi({
-      description: 'The total amount of time merge operations have been stopped in milliseconds.',
-    }),
-    total_throttled_time: CommonDurationSchema.exactOptional().openapi({
-      description: 'The total amount of time merge operations have been throttled.',
-    }),
-    total_throttled_time_in_millis: CommonUnitMillisSchema.openapi({
-      description: 'The total amount of time merge operations have been throttled in milliseconds.',
-    }),
-    total_time: CommonDurationSchema.exactOptional().openapi({
-      description: 'The total amount of time spent on merge operations.',
-    }),
-    total_time_in_millis: CommonUnitMillisSchema.openapi({
-      description: 'The total amount of time spent on merge operations in milliseconds.',
-    }),
-    unreferenced_file_cleanups_performed: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The number of unreferenced file cleanups performed.',
-      }),
-  })
-  .openapi({
-    description: 'The statistics about merge operations.',
-    required: [
-      'current',
-      'current_docs',
-      'current_size_in_bytes',
-      'total',
-      'total_auto_throttle_in_bytes',
-      'total_docs',
-      'total_size_in_bytes',
-      'total_stopped_time_in_millis',
-      'total_throttled_time_in_millis',
-      'total_time_in_millis',
-    ],
-  })
-  .openapi('CommonMergesStats')
-
-const CommonNamesSchema = z
-  .xor([CommonNameSchema, z.array(CommonNameSchema)])
-  .openapi({
-    description:
-      'A comma-separated list of aliases to retrieve. Supports wildcards (`*`).  To retrieve all aliases, omit this parameter or use `*` or `_all`.',
-  })
-  .openapi('CommonNames')
 
 const CommonNodeNameSchema = z
   .string()
@@ -16321,19 +24353,6 @@ const CommonNodeAttributesSchema = z
   })
   .openapi({ required: ['attributes', 'ephemeral_id', 'name', 'transport_address'] })
   .openapi('CommonNodeAttributes')
-
-const CommonNodeIdsSchema = z
-  .xor([CommonNodeIdSchema, z.array(CommonNodeIdSchema)])
-  .openapi({
-    description:
-      'A comma-separated list of node IDs used to filter results. Supports [node filters](https://opensearch.org/docs/latest/api-reference/nodes-apis/index/#node-filters).',
-  })
-  .openapi('CommonNodeIds')
-
-const IndicesStatsShardRoutingStateSchema = z
-  .enum(['INITIALIZING', 'RELOCATING', 'STARTED', 'UNASSIGNED'])
-  .openapi({ description: 'The state of shard routing.' })
-  .openapi('IndicesStatsShardRoutingState')
 
 const ClusterAllocationExplainUnassignedInformationReasonSchema = z
   .enum([
@@ -16398,26 +24417,6 @@ const CommonNodeShardSchema = z
   })
   .openapi('CommonNodeShard')
 
-const CommonNodeStatisticsSchema = z
-  .object({
-    failures: z.array(CommonErrorCauseSchema).exactOptional(),
-    total: z.int().openapi({ description: 'The total number of nodes selected by the request.' }),
-    successful: z
-      .int()
-      .openapi({ description: 'The number of nodes that responded successfully to the request.' }),
-    failed: z
-      .int()
-      .openapi({
-        description:
-          'The number of nodes that rejected the request or failed to respond. If this value is not 0, then a reason for the rejection or failure is included in the response.',
-      }),
-  })
-  .openapi({
-    description: 'The statistics about node operations.',
-    required: ['failed', 'successful', 'total'],
-  })
-  .openapi('CommonNodeStatistics')
-
 const CommonOpenSearchVersionInfoSchema = z
   .object({
     build_date: CommonDateTimeSchema.openapi({ description: 'When the version was built.' }),
@@ -16462,121 +24461,6 @@ const CommonOpTypeSchema = z
   ])
   .openapi('CommonOpType')
 
-const CommonPasswordSchema = z
-  .string()
-  .openapi({ description: 'The password for authentication.' })
-  .openapi('CommonPassword')
-
-const CommonPercentageNumberSchema = z
-  .float64()
-  .openapi({ description: 'The percentage value as a number.' })
-  .openapi('CommonPercentageNumber')
-
-const CommonPercentageStringSchema = z
-  .string()
-  .regex(/\d+(\.\d+)?/)
-  .openapi({ description: 'The percentage value as a string.' })
-  .openapi('CommonPercentageString')
-
-const CommonPhaseTookSchema = z
-  .object({
-    dfs_pre_query: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The time taken for the distributed frequency search `pre-query` phase.',
-      }),
-    query: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The time taken for the `query` phase.',
-      }),
-    fetch: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The time taken for the `fetch` phase.',
-      }),
-    dfs_query: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The time taken for the distributed frequency search query phase.',
-      }),
-    expand: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The time taken for the `expand` phase.',
-      }),
-    can_match: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The time taken for the `can_match` phase.',
-      }),
-  })
-  .openapi({
-    description: 'The time taken by different phases of the search.',
-    required: ['can_match', 'dfs_pre_query', 'dfs_query', 'expand', 'fetch', 'query'],
-  })
-  .openapi('CommonPhaseTook')
-
 const CommonPluginStatsSchema = z
   .object({
     classname: z.string(),
@@ -16608,172 +24492,6 @@ const CommonPluginStatsSchema = z
   })
   .openapi('CommonPluginStats')
 
-const CommonQueryCacheStatsSchema = z
-  .object({
-    cache_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The total number of entries added to the query cache across all shards assigned to the selected nodes.\nThis number includes all current and evicted entries.',
-      }),
-    cache_size: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The total number of entries currently stored in the query cache across all shards assigned to the selected nodes.',
-      }),
-    evictions: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The total number of query cache evictions across all shards assigned to the selected nodes.',
-      }),
-    hit_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The total number of query cache hits across all shards assigned to the selected nodes.',
-      }),
-    memory_size: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'The human-readable amount of memory used for the query cache.',
-    }),
-    memory_size_in_bytes: CommonByteCountSchema.openapi({
-      description:
-        'The total amount, in bytes, of memory used for the query cache across all shards assigned to the selected nodes.',
-    }),
-    miss_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The total number of query cache misses across all shards assigned to the selected nodes.',
-      }),
-    total_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The total number of hits and misses stored in the query cache across all shards assigned to the selected nodes.',
-      }),
-  })
-  .openapi({
-    description: 'The statistics about query cache usage.',
-    required: [
-      'cache_count',
-      'cache_size',
-      'evictions',
-      'hit_count',
-      'memory_size_in_bytes',
-      'miss_count',
-      'total_count',
-    ],
-  })
-  .openapi('CommonQueryCacheStats')
-
-const CommonRecoveryStatsSchema = z
-  .object({
-    current_as_source: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The number of ongoing recoveries for which this node is the source.',
-      }),
-    current_as_target: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The number of ongoing recoveries for which this node is the target.',
-      }),
-    throttle_time: CommonDurationSchema.exactOptional().openapi({
-      description: 'The total amount of time recovery operations have been throttled.',
-    }),
-    throttle_time_in_millis: CommonUnitMillisSchema.openapi({
-      description:
-        'The total amount of time recovery operations have been throttled in milliseconds.',
-    }),
-  })
-  .openapi({
-    description: 'The statistics about recovery operations.',
-    required: ['current_as_source', 'current_as_target', 'throttle_time_in_millis'],
-  })
-  .openapi('CommonRecoveryStats')
-
 const CommonRefreshSchema = z
   .xor([
     z
@@ -16790,382 +24508,6 @@ const CommonRefreshSchema = z
   ])
   .openapi('CommonRefresh')
 
-const CommonRefreshStatsSchema = z
-  .object({
-    external_total: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The total number of external refresh operations.',
-      }),
-    external_total_time: CommonDurationSchema.exactOptional().openapi({
-      description: 'The total amount of time spent on external refresh operations.',
-    }),
-    external_total_time_in_millis: CommonUnitMillisSchema.openapi({
-      description: 'The total amount of time spent on external refresh operations in milliseconds.',
-    }),
-    listeners: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The number of refresh listeners.',
-      }),
-    total: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The total number of refresh operations.',
-      }),
-    total_time: CommonDurationSchema.exactOptional().openapi({
-      description: 'The total amount of time spent on refresh operations.',
-    }),
-    total_time_in_millis: CommonUnitMillisSchema.openapi({
-      description: 'The total amount of time spent on refresh operations in milliseconds.',
-    }),
-  })
-  .openapi({
-    description: 'The statistics about refresh operations.',
-    required: [
-      'external_total',
-      'external_total_time_in_millis',
-      'listeners',
-      'total',
-      'total_time_in_millis',
-    ],
-  })
-  .openapi('CommonRefreshStats')
-
-const CommonRemoteStoreUploadDownloadStatsSchema = z
-  .object({
-    failed: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'The number of bytes that failed to upload to/from the remote segment store.',
-    }),
-    failed_bytes: CommonByteCountSchema.openapi({
-      description: 'The number of bytes that failed to upload to/from the remote segment store.',
-    }),
-    started: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description:
-        'The number of bytes to upload/download to/from the remote segment store after the upload/download has started.',
-    }),
-    started_bytes: CommonByteCountSchema.openapi({
-      description:
-        'The number of bytes to upload/download to/from the remote segment store after the upload/download has started.',
-    }),
-    succeeded: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description:
-        'The number of bytes successfully uploaded/downloaded to/from the remote segment store.',
-    }),
-    succeeded_bytes: CommonByteCountSchema.openapi({
-      description:
-        'The number of bytes successfully uploaded/downloaded to/from the remote segment store.',
-    }),
-  })
-  .openapi({
-    description:
-      'The amount of data, in bytes, uploaded or downloaded to/from the remote segment store.',
-    required: ['failed_bytes', 'started_bytes', 'succeeded_bytes'],
-  })
-  .openapi('CommonRemoteStoreUploadDownloadStats')
-
-const CommonRemoteStoreDownloadStatsSchema = z
-  .object({
-    total_download_size: CommonRemoteStoreUploadDownloadStatsSchema.openapi({
-      description: 'The total amount of data downloaded from the remote segment store.',
-    }),
-    total_time_spent: CommonDurationSchema.exactOptional().openapi({
-      description: 'The total amount of time spent on downloads from the remote segment store.',
-    }),
-    total_time_spent_in_millis: CommonUnitMillisSchema.openapi({
-      description:
-        'The total duration, in milliseconds, spent on downloads from the remote segment store.',
-    }),
-  })
-  .openapi({
-    description: 'Any statistics related to downloads to the remote segment store.',
-    required: ['total_download_size', 'total_time_spent_in_millis'],
-  })
-  .openapi('CommonRemoteStoreDownloadStats')
-
-const CommonRemoteStoreUploadPressureStatsSchema = z
-  .object({
-    total_rejections: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The total number of requests rejected due to segment store upload backpressure.',
-      }),
-  })
-  .openapi({
-    description: 'Statistics related to segment store upload backpressure.',
-    required: ['total_rejections'],
-  })
-  .openapi('CommonRemoteStoreUploadPressureStats')
-
-const CommonRemoteStoreUploadRefreshSizeLagStatsSchema = z
-  .object({
-    max: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description:
-        'The maximum amount of lag, in bytes, during the upload refresh between the remote segment store and the local store.',
-    }),
-    max_bytes: CommonByteCountSchema.openapi({
-      description:
-        'The maximum amount of lag, in bytes, during the upload refresh between the remote segment store and the local store.',
-    }),
-    total: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description:
-        'The total number of bytes that lagged during the upload refresh between the remote segment store and the local store.',
-    }),
-    total_bytes: CommonByteCountSchema.openapi({
-      description:
-        'The total number of bytes that lagged during the upload refresh between the remote segment store and the local store.',
-    }),
-  })
-  .openapi({
-    description:
-      'The amount of lag during upload between the remote segment store and the local store.',
-    required: ['max_bytes', 'total_bytes'],
-  })
-  .openapi('CommonRemoteStoreUploadRefreshSizeLagStats')
-
-const CommonRemoteStoreUploadStatsSchema = z
-  .object({
-    max_refresh_time_lag: CommonDurationSchema.exactOptional().openapi({
-      description: 'The maximum duration that the remote refresh is behind the local refresh.',
-    }),
-    max_refresh_time_lag_in_millis: CommonUnitMillisSchema.openapi({
-      description:
-        'The maximum duration, in milliseconds, that the remote refresh is behind the local refresh.',
-    }),
-    pressure: CommonRemoteStoreUploadPressureStatsSchema.exactOptional(),
-    refresh_size_lag: CommonRemoteStoreUploadRefreshSizeLagStatsSchema,
-    total_time_spent: CommonDurationSchema.exactOptional().openapi({
-      description: 'The total amount of time spent on uploads to the remote segment store.',
-    }),
-    total_time_spent_in_millis: CommonUnitMillisSchema.openapi({
-      description:
-        'The total amount of time, in milliseconds, spent on uploads to the remote segment store.',
-    }),
-    total_upload_size: CommonRemoteStoreUploadDownloadStatsSchema,
-  })
-  .openapi({
-    description: 'Any statistics related to uploads to the remote segment store.',
-    required: [
-      'max_refresh_time_lag_in_millis',
-      'refresh_size_lag',
-      'total_time_spent_in_millis',
-      'total_upload_size',
-    ],
-  })
-  .openapi('CommonRemoteStoreUploadStats')
-
-const CommonRemoteStoreStatsSchema = z
-  .object({
-    upload: CommonRemoteStoreUploadStatsSchema,
-    download: CommonRemoteStoreDownloadStatsSchema,
-  })
-  .openapi({
-    description: 'The statistics related to remote segment store operations.',
-    required: ['download', 'upload'],
-  })
-  .openapi('CommonRemoteStoreStats')
-
-const CommonRemoteStoreTranslogUploadTotalUploadsStatsSchema = z
-  .object({
-    failed: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The number of failed upload syncs to the remote translog store.',
-      }),
-    started: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The number of upload syncs to the remote translog store that have started.',
-      }),
-    succeeded: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The number of successful upload syncs to the remote translog store.',
-      }),
-  })
-  .openapi({
-    description: 'The number of syncs to the remote translog store.',
-    required: ['failed', 'started', 'succeeded'],
-  })
-  .openapi('CommonRemoteStoreTranslogUploadTotalUploadsStats')
-
-const CommonRemoteStoreTranslogUploadTotalUploadSizeStatsSchema = z
-  .object({
-    failed: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'The number of bytes that failed to upload to the remote translog store.',
-    }),
-    failed_bytes: CommonByteCountSchema.openapi({
-      description: 'The number of bytes that failed to upload to the remote translog store.',
-    }),
-    started: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'The number of bytes successfully uploaded to the remote translog store.',
-    }),
-    started_bytes: CommonByteCountSchema.openapi({
-      description: 'The number of bytes successfully uploaded to the remote translog store.',
-    }),
-    succeeded: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'The number of bytes successfully uploaded to the remote translog store.',
-    }),
-    succeeded_bytes: CommonByteCountSchema.openapi({
-      description: 'The number of bytes successfully uploaded to the remote translog store.',
-    }),
-  })
-  .openapi({
-    description: 'The total amount of data uploaded to the remote translog store.',
-    required: ['failed_bytes', 'started_bytes', 'succeeded_bytes'],
-  })
-  .openapi('CommonRemoteStoreTranslogUploadTotalUploadSizeStats')
-
-const CommonRemoteStoreTranslogUploadStatsSchema = z
-  .object({
-    total_uploads: CommonRemoteStoreTranslogUploadTotalUploadsStatsSchema,
-    total_upload_size: CommonRemoteStoreTranslogUploadTotalUploadSizeStatsSchema,
-  })
-  .openapi({
-    description: 'The statistics related to uploads to the remote translog store.',
-    required: ['total_upload_size', 'total_uploads'],
-  })
-  .openapi('CommonRemoteStoreTranslogUploadStats')
-
-const CommonRemoteStoreTranslogStatsSchema = z
-  .object({ upload: CommonRemoteStoreTranslogUploadStatsSchema })
-  .openapi({
-    description: 'The statistics related to remote translog operations.',
-    required: ['upload'],
-  })
-  .openapi('CommonRemoteStoreTranslogStats')
-
-const CommonRequestCacheStatsSchema = z
-  .object({
-    evictions: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The number of request cache evictions.',
-      }),
-    hit_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The number of request cache hits.',
-      }),
-    memory_size: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'The size of the request cache in a human-readable format.',
-    }),
-    memory_size_in_bytes: CommonByteCountSchema.openapi({
-      description: 'The size of the request cache in bytes.',
-    }),
-    miss_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The number of request cache misses.',
-      }),
-  })
-  .openapi({
-    description: 'The statistics about request cache operations.',
-    required: ['evictions', 'hit_count', 'memory_size_in_bytes', 'miss_count'],
-  })
-  .openapi('CommonRequestCacheStats')
-
 const CommonResultSchema = z
   .xor([
     z.literal('created').openapi({ description: 'The document was created.' }),
@@ -17180,541 +24522,12 @@ const CommonRoutingInQueryStringSchema = CommonStringOrStringArraySchema.openapi
   'CommonRoutingInQueryString',
 )
 
-const CommonScrollIdSchema = z.string().openapi('CommonScrollId')
-
 const CommonScrollIdsSchema = z
   .xor([
     CommonScrollIdSchema.openapi({ description: 'A single scroll identifier.' }),
     z.array(CommonScrollIdSchema).openapi({ description: 'A list of scroll identifiers.' }),
   ])
   .openapi('CommonScrollIds')
-
-const CommonSearchStatsSchema: z.ZodType<CommonSearchStatsType> = z
-  .lazy(() =>
-    z
-      .object({
-        open_contexts: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description: 'The number of open search contexts.',
-          }),
-        query_current: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description: 'The number of currently running shard query operations.',
-          }),
-        query_time: CommonDurationSchema.exactOptional().openapi({
-          description: 'The total amount of time taken to complete all shard query operations.',
-        }),
-        query_time_in_millis: CommonUnitMillisSchema.openapi({
-          description:
-            'The total amount of time taken to complete all shard query operations, in milliseconds.',
-        }),
-        query_total: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description: 'The total number of shard query operations.',
-          }),
-        concurrent_query_total: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description: 'The total number of query operations using concurrent segment search.',
-          }),
-        concurrent_query_time: CommonDurationSchema.exactOptional(),
-        concurrent_query_time_in_millis: CommonUnitMillisSchema.exactOptional().openapi({
-          description:
-            'The total amount of time taken by all query operations using concurrent segment search, in milliseconds.',
-        }),
-        concurrent_query_current: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description:
-              'The number of currently running query operations using concurrent segment search.',
-          }),
-        concurrent_avg_slice_count: z
-          .float64()
-          .exactOptional()
-          .openapi({
-            description:
-              'The average slice count of all search requests. This is computed as the total slice count divided by the total number of concurrent search requests.',
-          }),
-        fetch_current: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description: 'The number of currently running shard fetch operations.',
-          }),
-        fetch_time: CommonDurationSchema.exactOptional().openapi({
-          description: 'The total amount of time taken to complete all shard fetch operations.',
-        }),
-        fetch_time_in_millis: CommonUnitMillisSchema.openapi({
-          description:
-            'The total amount of time taken to complete all shard fetch operations, in milliseconds.',
-        }),
-        fetch_total: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description: 'The total number of shard fetch operations.',
-          }),
-        scroll_current: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description: 'The number of shard scroll operations that are currently running.',
-          }),
-        scroll_time: CommonDurationSchema.exactOptional().openapi({
-          description: 'The total amount of time taken to complete all shard scroll operations.',
-        }),
-        scroll_time_in_millis: CommonUnitMillisSchema.openapi({
-          description:
-            'The total amount of time taken to complete all shard scroll operations, in milliseconds.',
-        }),
-        scroll_total: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description: 'The total number of shard scroll operations.',
-          }),
-        point_in_time_total: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description:
-              'The total number of shard Point in Time (PIT) contexts created (completed and active) since the node last restarted.',
-          }),
-        point_in_time_time: CommonDurationSchema.exactOptional(),
-        point_in_time_time_in_millis: CommonUnitMillisSchema.exactOptional().openapi({
-          description:
-            'The amount of time that shard PIT contexts have been held open since the node last restarted, in milliseconds.',
-        }),
-        point_in_time_current: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description: 'The number of currently open shard PIT contexts.',
-          }),
-        suggest_current: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description: 'The number of currently running shard suggest operations.',
-          }),
-        suggest_time: CommonDurationSchema.exactOptional().openapi({
-          description: 'The total amount of time take to complete all shard suggest operations.',
-        }),
-        suggest_time_in_millis: CommonUnitMillisSchema.openapi({
-          description:
-            'The total amount of time taken to complete all shard suggest operations, in milliseconds.',
-        }),
-        suggest_total: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description: 'The total number of shard suggest operations.',
-          }),
-        search_idle_reactivate_count_total: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description: 'The total number of idle search reactivations.',
-          }),
-        request: z
-          .record(z.string(), CommonRequestStatsSchema)
-          .exactOptional()
-          .openapi({
-            description: 'Statistics related to coordinator search operations for the node.',
-          }),
-        groups: z
-          .record(z.string(), CommonSearchStatsSchema)
-          .exactOptional()
-          .openapi({ description: 'The search statistics grouped by search groups.' }),
-      })
-      .openapi({
-        description: 'The statistics about search operations.',
-        required: [
-          'fetch_current',
-          'fetch_time_in_millis',
-          'fetch_total',
-          'query_current',
-          'query_time_in_millis',
-          'query_total',
-          'scroll_current',
-          'scroll_time_in_millis',
-          'scroll_total',
-          'suggest_current',
-          'suggest_time_in_millis',
-          'suggest_total',
-        ],
-      }),
-  )
-  .openapi('CommonSearchStats')
-
-const CommonSearchTypeSchema = z
-  .xor([
-    z
-      .literal('dfs_query_then_fetch')
-      .openapi({
-        description:
-          'Documents are scored using global term and document frequencies across all shards. This is usually slower but more accurate.',
-      }),
-    z
-      .literal('query_then_fetch')
-      .openapi({
-        description:
-          'Documents are scored using local term and document frequencies for the shard. This is usually faster but less accurate.',
-      }),
-  ])
-  .openapi('CommonSearchType')
-
-const CommonSegmentReplicationStatsSchema = z
-  .xor([
-    z
-      .object({
-        max_bytes_behind: CommonHumanReadableByteCountSchema.openapi({
-          description: 'The maximum number of bytes the replica is behind the primary.',
-        }),
-        max_replication_lag: CommonDurationSchema.openapi({
-          description: 'The maximum replication lag between primary and replica shards.',
-        }),
-        total_bytes_behind: CommonHumanReadableByteCountSchema.openapi({
-          description: 'The total number of bytes all replicas are behind their primaries.',
-        }),
-      })
-      .openapi({
-        'x-version-added': '2.10.0',
-        'x-version-removed': '2.12.0',
-        description: 'The segment replication statistics for versions 2.10.0 to 2.12.0.',
-        required: ['max_bytes_behind', 'max_replication_lag', 'total_bytes_behind'],
-      }),
-    z
-      .object({
-        max_bytes_behind: CommonByteCountSchema.openapi({
-          description: 'The maximum number of bytes the replica is behind the primary.',
-        }),
-        max_replication_lag: CommonUnitMillisSchema.openapi({
-          description:
-            'The maximum replication lag between primary and replica shards in milliseconds.',
-        }),
-        total_bytes_behind: CommonByteCountSchema.openapi({
-          description: 'The total number of bytes all replicas are behind their primaries.',
-        }),
-      })
-      .openapi({
-        'x-version-added': '2.12.0',
-        description: 'The segment replication statistics for version 2.12.0 and later.',
-        required: ['max_bytes_behind', 'max_replication_lag', 'total_bytes_behind'],
-      }),
-  ])
-  .openapi({ 'x-version-added': '2.10.0' })
-  .openapi('CommonSegmentReplicationStats')
-
-const IndicesStatsShardFileSizeInfoSchema = z
-  .object({
-    description: z.string().openapi({ description: 'The description of the file type.' }),
-    size: CommonHumanReadableByteCountSchema.exactOptional(),
-    size_in_bytes: CommonByteCountSchema,
-    min_size_in_bytes: CommonByteCountSchema.exactOptional(),
-    max_size_in_bytes: CommonByteCountSchema.exactOptional(),
-    average_size_in_bytes: CommonByteCountSchema.exactOptional(),
-    count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: 'The number of files.' }),
-  })
-  .openapi({
-    description: 'The size information for shard files.',
-    required: ['description', 'size_in_bytes'],
-  })
-  .openapi('IndicesStatsShardFileSizeInfo')
-
-const CommonSegmentsStatsSchema = z
-  .object({
-    count: z
-      .int32()
-      .openapi({
-        description:
-          'The total number of segments across all shards assigned to the selected nodes.',
-      }),
-    doc_values_memory: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'The human-readable amount of memory used for doc values.',
-    }),
-    doc_values_memory_in_bytes: CommonByteCountSchema.openapi({
-      description:
-        'The total amount, in bytes, of memory used for document values across all shards assigned to the selected nodes.',
-    }),
-    file_sizes: z
-      .record(z.string(), IndicesStatsShardFileSizeInfoSchema)
-      .openapi({
-        description:
-          'This object is not populated by the cluster stats API.\nTo get information on segment files, use the node stats API.',
-      }),
-    fixed_bit_set: CommonHumanReadableByteCountSchema.exactOptional(),
-    fixed_bit_set_memory_in_bytes: CommonByteCountSchema.openapi({
-      description:
-        'The total amount of memory, in bytes, used by fixed bit sets across all shards assigned to the selected nodes.',
-    }),
-    index_writer_memory: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'The human-readable amount of memory used by index writers.',
-    }),
-    index_writer_max_memory_in_bytes: CommonByteCountSchema.exactOptional().openapi({
-      description: 'The maximum amount of memory, in bytes, used by index writers.',
-    }),
-    index_writer_memory_in_bytes: CommonByteCountSchema.openapi({
-      description:
-        'The total amount, in bytes, of memory used by all index writers across all shards assigned to the selected nodes.',
-    }),
-    max_unsafe_auto_id_timestamp: CommonUnitMillisSchema.openapi({
-      description:
-        'The Unix timestamp, in milliseconds, of the most recently retried indexing request.',
-    }),
-    memory: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description:
-        'The total amount of memory used for segments across all shards assigned to the selected nodes.',
-    }),
-    memory_in_bytes: CommonByteCountSchema.openapi({
-      description:
-        'The total amount, in bytes, of memory used for segments across all shards assigned to the selected nodes.',
-    }),
-    norms_memory: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description:
-        'The total amount of memory used for normalization factors across all shards assigned to the selected nodes.',
-    }),
-    norms_memory_in_bytes: CommonByteCountSchema.openapi({
-      description:
-        'The total amount, in bytes, of memory used for normalization factors across all shards assigned to the selected nodes.',
-    }),
-    points_memory: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description:
-        'The total amount of memory used for points across all shards assigned to the selected nodes.',
-    }),
-    points_memory_in_bytes: CommonByteCountSchema.openapi({
-      description:
-        'The total amount, in bytes, of memory used for points across all shards assigned to the selected nodes.',
-    }),
-    stored_fields_memory: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description:
-        'The total amount of memory used for stored fields across all shards assigned to the selected nodes.',
-    }),
-    stored_fields_memory_in_bytes: CommonByteCountSchema.openapi({
-      description:
-        'The total amount, in bytes, of memory used for stored fields across all shards assigned to the selected nodes.',
-    }),
-    terms_memory: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description:
-        'The total amount of memory used for terms across all shards assigned to the selected nodes.',
-    }),
-    terms_memory_in_bytes: CommonByteCountSchema.openapi({
-      description:
-        'The total amount, in bytes, of memory used for terms across all shards assigned to the selected nodes.',
-    }),
-    term_vectors_memory: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description:
-        'The total amount of memory used for term vectors across all shards assigned to the selected nodes.',
-    }),
-    term_vectors_memory_in_bytes: CommonByteCountSchema.openapi({
-      description:
-        'The total amount, in bytes, of memory used for term vectors across all shards assigned to the selected nodes.',
-    }),
-    version_map_memory: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description:
-        'The total amount of memory used by all version maps across all shards assigned to the selected nodes.',
-    }),
-    version_map_memory_in_bytes: CommonByteCountSchema.openapi({
-      description:
-        'The total amount, in bytes, of memory used by all version maps across all shards assigned to the selected nodes.',
-    }),
-    remote_store: CommonRemoteStoreStatsSchema.exactOptional(),
-    segment_replication: CommonSegmentReplicationStatsSchema.exactOptional().openapi({
-      'x-version-added': '2.10.0',
-    }),
-  })
-  .openapi({
-    description: 'The statistics about segments.',
-    required: [
-      'count',
-      'doc_values_memory_in_bytes',
-      'file_sizes',
-      'fixed_bit_set_memory_in_bytes',
-      'index_writer_memory_in_bytes',
-      'max_unsafe_auto_id_timestamp',
-      'memory_in_bytes',
-      'norms_memory_in_bytes',
-      'points_memory_in_bytes',
-      'stored_fields_memory_in_bytes',
-      'term_vectors_memory_in_bytes',
-      'terms_memory_in_bytes',
-      'version_map_memory_in_bytes',
-    ],
-  })
-  .openapi('CommonSegmentsStats')
-
-const CommonShardFailureSchema = z
-  .object({
-    index: CommonIndexNameSchema.exactOptional(),
-    node: z.string().exactOptional(),
-    reason: CommonErrorCauseSchema,
-    shard: z.int(),
-    status: z.string().exactOptional(),
-    primary: z.boolean(),
-  })
-  .openapi({ required: ['primary', 'reason', 'shard'] })
-  .openapi('CommonShardFailure')
-
-const CommonShardInfoSchema = z
-  .object({
-    failed: CommonUintSchema,
-    successful: CommonUintSchema,
-    total: CommonUintSchema,
-    failures: z.array(CommonShardFailureSchema).exactOptional(),
-  })
-  .openapi({ required: ['failed', 'successful', 'total'] })
-  .openapi('CommonShardInfo')
 
 const CommonShardsOperationResponseBaseSchema = z
   .object({ _shards: CommonShardStatisticsSchema })
@@ -17723,18 +24536,6 @@ const CommonShardsOperationResponseBaseSchema = z
     required: ['_shards'],
   })
   .openapi('CommonShardsOperationResponseBase')
-
-const CommonSlicedScrollSchema = z
-  .object({
-    field: CommonFieldSchema.exactOptional().openapi({ description: 'The field to slice on.' }),
-    id: z.int32().openapi({ description: 'The ID of the slice.' }),
-    max: z.int32().openapi({ description: 'The maximum number of slices.' }),
-  })
-  .openapi({
-    description: 'The configuration for a sliced scroll request.',
-    required: ['id', 'max'],
-  })
-  .openapi('CommonSlicedScroll')
 
 const CommonSlicesCalculationSchema = z
   .xor([
@@ -17765,21 +24566,6 @@ const CommonStoredScriptSchema = z
   .openapi({ description: 'The definition of a stored script.', required: ['lang', 'source'] })
   .openapi('CommonStoredScript')
 
-const CommonStoreStatsSchema = z
-  .object({
-    size: CommonHumanReadableByteCountSchema.exactOptional(),
-    size_in_bytes: CommonByteCountSchema.openapi({
-      description: 'The total size, in bytes, of all shards assigned to the selected nodes.',
-    }),
-    reserved: CommonHumanReadableByteCountSchema.exactOptional(),
-    reserved_in_bytes: CommonByteCountSchema.openapi({
-      description:
-        'A prediction, in bytes, of how much larger the shard stores will eventually grow due to ongoing peer recoveries, restoring snapshots, and similar activities.',
-    }),
-  })
-  .openapi({ required: ['reserved_in_bytes', 'size_in_bytes'] })
-  .openapi('CommonStoreStats')
-
 const CommonStringifiedEpochTimeUnitSecondsSchema = z
   .xor([CommonUnitSecondsSchema, z.string()])
   .openapi({
@@ -17787,23 +24573,6 @@ const CommonStringifiedEpochTimeUnitSecondsSchema = z
       'Certain APIs may return values, including numbers such as epoch timestamps, as strings. This setting captures\nthis behavior while keeping the semantics of the field type.\n\nDepending on the target language, code generators can keep the union or remove it and leniently parse\nstrings to the target type.',
   })
   .openapi('CommonStringifiedEpochTimeUnitSeconds')
-
-const CommonSuggestModeSchema = z
-  .enum(['always', 'missing', 'popular'])
-  .openapi('CommonSuggestMode')
-
-const CommonTaskFailureSchema = z
-  .object({
-    task_id: z.int().openapi({ description: 'The ID of the failed task.' }),
-    node_id: CommonNodeIdSchema,
-    status: z.string().openapi({ description: 'The status of the failed task.' }),
-    reason: CommonErrorCauseSchema,
-  })
-  .openapi({
-    description: 'The details of a task failure.',
-    required: ['node_id', 'reason', 'status', 'task_id'],
-  })
-  .openapi('CommonTaskFailure')
 
 const CommonTimeOfDaySchema = z
   .string()
@@ -17826,62 +24595,10 @@ const CommonTimeUnitSchema = z
   })
   .openapi('CommonTimeUnit')
 
-const CommonTranslogStatsSchema = z
-  .object({
-    earliest_last_modified_age: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The age of the oldest translog entry.',
-      }),
-    operations: z.int32().openapi({ description: 'The number of operations in the translog.' }),
-    remote_store: CommonRemoteStoreTranslogStatsSchema.exactOptional(),
-    size: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'The size of the translog in a human-readable format.',
-    }),
-    size_in_bytes: CommonByteCountSchema.openapi({
-      description: 'The size of the translog in bytes.',
-    }),
-    uncommitted_operations: z
-      .int32()
-      .openapi({ description: 'The number of uncommitted operations in the translog.' }),
-    uncommitted_size: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'The size of uncommitted operations in a human-readable format.',
-    }),
-    uncommitted_size_in_bytes: CommonByteCountSchema.openapi({
-      description: 'The size of uncommitted operations in bytes.',
-    }),
-  })
-  .openapi({
-    description: 'The statistics about translog operations.',
-    required: [
-      'earliest_last_modified_age',
-      'operations',
-      'size_in_bytes',
-      'uncommitted_operations',
-      'uncommitted_size_in_bytes',
-    ],
-  })
-  .openapi('CommonTranslogStats')
-
 const CommonTResultSchema = z
   .any()
   .openapi({ 'x-is-generic-type-parameter': true })
   .openapi('CommonTResult')
-
-const CommonUsernameSchema = z
-  .string()
-  .openapi({ description: 'The username for authentication.' })
-  .openapi('CommonUsername')
 
 const CommonWaitForActiveShardOptionsSchema = z
   .xor([
@@ -17934,51 +24651,6 @@ const CommonWaitForEventsSchema = z
   })
   .openapi('CommonWaitForEvents')
 
-const CommonWarmerStatsSchema = z
-  .object({
-    current: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The number of current warmer operations.',
-      }),
-    total: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The total number of warmer operations.',
-      }),
-    total_time: CommonDurationSchema.exactOptional().openapi({
-      description: 'The total time spent on warmer operations.',
-    }),
-    total_time_in_millis: CommonUnitMillisSchema.openapi({
-      description: 'The total time spent on warmer operations in milliseconds.',
-    }),
-  })
-  .openapi({
-    description: 'The statistics about index warmer operations.',
-    required: ['current', 'total', 'total_time_in_millis'],
-  })
-  .openapi('CommonWarmerStats')
-
 const CommonWriteResponseBaseSchema = z
   .object({
     _type: CommonTypeSchema.exactOptional(),
@@ -18011,272 +24683,7 @@ const CommonWriteResponseBaseSchema = z
   })
   .openapi('CommonWriteResponseBase')
 
-const CommonAggregationsAggregateSchema: z.ZodType<CommonAggregationsAggregateType> = z
-  .lazy(() =>
-    z
-      .union([
-        CommonAggregationsAdjacencyMatrixAggregateSchema.openapi({ title: 'adjacency_matrix' }),
-        CommonAggregationsAutoDateHistogramAggregateSchema.openapi({
-          title: 'auto_date_histogram',
-        }),
-        CommonAggregationsAvgAggregateSchema.openapi({ title: 'avg' }),
-        CommonAggregationsBoxPlotAggregateSchema.openapi({ title: 'box_plot' }),
-        CommonAggregationsBucketMetricValueAggregateSchema.openapi({
-          title: 'bucket_metric_value',
-        }),
-        CommonAggregationsCardinalityAggregateSchema.openapi({ title: 'cardinality' }),
-        CommonAggregationsChildrenAggregateSchema.openapi({ title: 'children' }),
-        CommonAggregationsCompositeAggregateSchema.openapi({ title: 'composite' }),
-        CommonAggregationsDateHistogramAggregateSchema.openapi({ title: 'date_histogram' }),
-        CommonAggregationsDateRangeAggregateSchema.openapi({ title: 'date_range' }),
-        CommonAggregationsDerivativeAggregateSchema.openapi({ title: 'derivative' }),
-        CommonAggregationsDoubleTermsAggregateSchema.openapi({ title: 'dterms' }),
-        CommonAggregationsExtendedStatsAggregateSchema.openapi({ title: 'extended_stats' }),
-        CommonAggregationsExtendedStatsBucketAggregateSchema.openapi({
-          title: 'extended_stats_bucket',
-        }),
-        CommonAggregationsFilterAggregateSchema.openapi({ title: 'filter' }),
-        CommonAggregationsFiltersAggregateSchema.openapi({ title: 'filters' }),
-        CommonAggregationsGeoBoundsAggregateSchema.openapi({ title: 'geo_bounds' }),
-        CommonAggregationsGeoCentroidAggregateSchema.openapi({ title: 'geo_centroid' }),
-        CommonAggregationsGeoDistanceAggregateSchema.openapi({ title: 'geo_distance' }),
-        CommonAggregationsGeoHashGridAggregateSchema.openapi({ title: 'geohash_grid' }),
-        CommonAggregationsGeoTileGridAggregateSchema.openapi({ title: 'geotile_grid' }),
-        CommonAggregationsGlobalAggregateSchema.openapi({ title: 'global' }),
-        CommonAggregationsHdrPercentilesAggregateSchema.openapi({ title: 'hdr_percentiles' }),
-        CommonAggregationsHdrPercentileRanksAggregateSchema.openapi({
-          title: 'hdr_percentile_ranks',
-        }),
-        CommonAggregationsHistogramAggregateSchema.openapi({ title: 'histogram' }),
-        CommonAggregationsIpRangeAggregateSchema.openapi({ title: 'ip_range' }),
-        CommonAggregationsLongRareTermsAggregateSchema.openapi({ title: 'lrareterms' }),
-        CommonAggregationsLongTermsAggregateSchema.openapi({ title: 'lterms' }),
-        CommonAggregationsMatrixStatsAggregateSchema.openapi({ title: 'matrix_stats' }),
-        CommonAggregationsMaxAggregateSchema.openapi({ title: 'max' }),
-        CommonAggregationsMedianAbsoluteDeviationAggregateSchema.openapi({
-          title: 'median_absolute_deviation',
-        }),
-        CommonAggregationsMinAggregateSchema.openapi({ title: 'min' }),
-        CommonAggregationsMissingAggregateSchema.openapi({ title: 'missing' }),
-        CommonAggregationsMultiTermsAggregateSchema.openapi({ title: 'multi_terms' }),
-        CommonAggregationsNestedAggregateSchema.openapi({ title: 'nested' }),
-        CommonAggregationsParentAggregateSchema.openapi({ title: 'parent' }),
-        CommonAggregationsPercentilesBucketAggregateSchema.openapi({ title: 'percentiles_bucket' }),
-        CommonAggregationsRangeAggregateSchema.openapi({ title: 'range' }),
-        CommonAggregationsRateAggregateSchema.openapi({ title: 'rate' }),
-        CommonAggregationsReverseNestedAggregateSchema.openapi({ title: 'reverse_nested' }),
-        CommonAggregationsSamplerAggregateSchema.openapi({ title: 'sampler' }),
-        CommonAggregationsScriptedMetricAggregateSchema.openapi({ title: 'scripted_metric' }),
-        CommonAggregationsSignificantLongTermsAggregateSchema.openapi({ title: 'siglterms' }),
-        CommonAggregationsSignificantStringTermsAggregateSchema.openapi({ title: 'sigsterms' }),
-        CommonAggregationsCumulativeCardinalityAggregateSchema.openapi({
-          title: 'simple_long_value',
-        }),
-        CommonAggregationsSimpleValueAggregateSchema.openapi({ title: 'simple_value' }),
-        CommonAggregationsStatsAggregateSchema.openapi({ title: 'stats' }),
-        CommonAggregationsStatsBucketAggregateSchema.openapi({ title: 'stats_bucket' }),
-        CommonAggregationsStringRareTermsAggregateSchema.openapi({ title: 'srareterms' }),
-        CommonAggregationsStringTermsAggregateSchema.openapi({ title: 'sterms' }),
-        CommonAggregationsSumAggregateSchema.openapi({ title: 'sum' }),
-        CommonAggregationsTDigestPercentilesAggregateSchema.openapi({
-          title: 'tdigest_percentiles',
-        }),
-        CommonAggregationsTDigestPercentileRanksAggregateSchema.openapi({
-          title: 'tdigest_percentile_ranks',
-        }),
-        CommonAggregationsTTestAggregateSchema.openapi({ title: 't_test' }),
-        CommonAggregationsTopHitsAggregateSchema.openapi({ title: 'top_hits' }),
-        CommonAggregationsUnsignedLongTermsAggregateSchema.openapi({ title: 'ulterms' }),
-        CommonAggregationsUnmappedRareTermsAggregateSchema.openapi({ title: 'umrareterms' }),
-        CommonAggregationsUnmappedSignificantTermsAggregateSchema.openapi({ title: 'umsigterms' }),
-        CommonAggregationsUnmappedTermsAggregateSchema.openapi({ title: 'umterms' }),
-        CommonAggregationsValueCountAggregateSchema.openapi({ title: 'value_count' }),
-        CommonAggregationsVariableWidthHistogramAggregateSchema.openapi({
-          title: 'variable_width_histogram',
-        }),
-        CommonAggregationsWeightedAvgAggregateSchema.openapi({ title: 'weighted_avg' }),
-      ])
-      .openapi({ 'x-supports-typed-keys': true }),
-  )
-  .openapi('CommonAggregationsAggregate')
-
-const CommonMappingAllFieldSchema = z
-  .object({
-    analyzer: z.string(),
-    enabled: z.boolean(),
-    omit_norms: z.boolean(),
-    search_analyzer: z.string(),
-    similarity: z.string(),
-    store: z.boolean(),
-    store_term_vector_offsets: z.boolean(),
-    store_term_vector_payloads: z.boolean(),
-    store_term_vector_positions: z.boolean(),
-    store_term_vectors: z.boolean(),
-  })
-  .openapi({
-    required: [
-      'analyzer',
-      'enabled',
-      'omit_norms',
-      'search_analyzer',
-      'similarity',
-      'store',
-      'store_term_vector_offsets',
-      'store_term_vector_payloads',
-      'store_term_vector_positions',
-      'store_term_vectors',
-    ],
-  })
-  .openapi('CommonMappingAllField')
-
-const CommonMappingDataStreamTimestampSchema = z
-  .object({ enabled: z.boolean() })
-  .openapi({ required: ['enabled'] })
-  .openapi('CommonMappingDataStreamTimestamp')
-
-const CommonMappingMatchTypeSchema = z.enum(['regex', 'simple']).openapi('CommonMappingMatchType')
-
-const CommonMappingDynamicTemplateSchema = z
-  .object({
-    mapping: CommonMappingPropertySchema.exactOptional(),
-    match: z.string().exactOptional(),
-    match_mapping_type: z.string().exactOptional(),
-    match_pattern: CommonMappingMatchTypeSchema.exactOptional(),
-    path_match: z.string().exactOptional(),
-    path_unmatch: z.string().exactOptional(),
-    unmatch: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CommonMappingDynamicTemplate')
-
-const CommonMappingFieldMappingSchema = z
-  .object({
-    full_name: z.string(),
-    mapping: z
-      .record(z.string(), CommonMappingPropertySchema)
-      .refine((val) => Object.keys(val).length >= 1)
-      .refine((val) => Object.keys(val).length <= 1),
-  })
-  .openapi({ required: ['full_name', 'mapping'] })
-  .openapi('CommonMappingFieldMapping')
-
-const CommonMappingFieldNamesFieldSchema = z
-  .object({ enabled: z.boolean() })
-  .openapi({ required: ['enabled'] })
-  .openapi('CommonMappingFieldNamesField')
-
-const CommonMappingIndexFieldSchema = z
-  .object({ enabled: z.boolean() })
-  .openapi({ required: ['enabled'] })
-  .openapi('CommonMappingIndexField')
-
-const CommonMappingRoutingFieldSchema = z
-  .object({ required: z.boolean() })
-  .openapi({ required: ['required'] })
-  .openapi('CommonMappingRoutingField')
-
-const CommonMappingSizeFieldSchema = z
-  .object({ enabled: z.boolean() })
-  .openapi({ required: ['enabled'] })
-  .openapi('CommonMappingSizeField')
-
-const CommonMappingSourceFieldSchema = z
-  .object({
-    compress: z.boolean().exactOptional(),
-    compress_threshold: z.string().exactOptional(),
-    enabled: z.boolean().exactOptional(),
-    excludes: z.array(z.string()).exactOptional(),
-    includes: z.array(z.string()).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CommonMappingSourceField')
-
-const CommonMappingTypeMappingSchema = z
-  .object({
-    all_field: CommonMappingAllFieldSchema.exactOptional(),
-    date_detection: z.boolean().exactOptional(),
-    dynamic: CommonMappingDynamicMappingSchema.exactOptional(),
-    dynamic_date_formats: z.array(z.string()).exactOptional(),
-    dynamic_templates: z
-      .array(z.record(z.string(), CommonMappingDynamicTemplateSchema))
-      .exactOptional(),
-    _field_names: CommonMappingFieldNamesFieldSchema.exactOptional(),
-    index_field: CommonMappingIndexFieldSchema.exactOptional(),
-    _meta: CommonMetadataSchema.exactOptional(),
-    numeric_detection: z.boolean().exactOptional(),
-    properties: z.record(z.string(), CommonMappingPropertySchema).exactOptional(),
-    _routing: CommonMappingRoutingFieldSchema.exactOptional(),
-    _size: CommonMappingSizeFieldSchema.exactOptional(),
-    _source: CommonMappingSourceFieldSchema.exactOptional(),
-    enabled: z.boolean().exactOptional(),
-    _data_stream_timestamp: CommonMappingDataStreamTimestampSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CommonMappingTypeMapping')
-
-const CoreBulkResponseItemSchema = z
-  .object({
-    _type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The document type.', 'x-version-removed': '2.0' }),
-    _id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The document ID associated with the operation.' }),
-    _index: z
-      .string()
-      .openapi({
-        description:
-          'The name of the index associated with the operation.\nIf the operation targets a data stream, this is the backing index into which the document was written.',
-      }),
-    status: z.int32().openapi({ description: 'HTTP status code returned for the operation.' }),
-    error: CommonErrorCauseSchema.exactOptional(),
-    _primary_term: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The primary term assigned to the document for the operation.',
-      }),
-    result: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Result of the operation.\nSuccessful values are `created`, `deleted`, and `updated`.',
-      }),
-    _seq_no: CommonSequenceNumberSchema.exactOptional(),
-    _shards: CommonShardInfoSchema.exactOptional(),
-    _version: CommonVersionNumberSchema.exactOptional(),
-    forced_refresh: z.boolean().exactOptional(),
-    get: CommonInlineGetDictUserDefinedSchema.exactOptional(),
-  })
-  .openapi({ required: ['_index', 'status'] })
-  .openapi('CoreBulkResponseItem')
-
-const CoreBulkItemSchema = z
-  .object({
-    index: CoreBulkResponseItemSchema.exactOptional(),
-    create: CoreBulkResponseItemSchema.exactOptional(),
-    update: CoreBulkResponseItemSchema.exactOptional(),
-    delete: CoreBulkResponseItemSchema.exactOptional(),
-  })
-  .refine((val) => Object.keys(val).length >= 1)
-  .refine((val) => Object.keys(val).length <= 1)
-  .openapi({ required: [] })
-  .openapi('CoreBulkItem')
-
-const CoreBulkBulkResponseSchema = z
+const CoreBulkBulkResponseSchema: z.ZodType<CoreBulkBulkResponseType> = z
   .object({
     errors: z.boolean(),
     items: z.array(CoreBulkItemSchema),
@@ -18432,7 +24839,7 @@ const CoreBulkUpdateActionSchema = z
           'When `false` disables the setting `result` in the response\nto `noop` if no change to the document occurred.',
       }),
     doc: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'A partial update to an existing document.',
@@ -18466,7 +24873,7 @@ const CoreBulkUpdateActionSchema = z
       }),
     _source: CoreSearchSourceConfigSchema.exactOptional(),
     upsert: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -18575,23 +24982,6 @@ const CoreMgetResponseItemSchema = z
   .xor([CoreGetGetResultSchema, CoreMgetMultiGetErrorSchema])
   .openapi('CoreMgetResponseItem')
 
-const CoreMsearchMultisearchHeaderSchema = z
-  .object({
-    allow_no_indices: z.boolean().exactOptional(),
-    expand_wildcards: CommonExpandWildcardsSchema.exactOptional(),
-    ignore_unavailable: z.boolean().exactOptional(),
-    index: CommonIndicesSchema.exactOptional(),
-    preference: z.string().exactOptional(),
-    request_cache: z.boolean().exactOptional(),
-    routing: CommonRoutingSchema.exactOptional(),
-    search_type: CommonSearchTypeSchema.exactOptional(),
-    ccs_minimize_roundtrips: z.boolean().exactOptional(),
-    allow_partial_search_results: z.boolean().exactOptional(),
-    ignore_throttled: z.boolean().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CoreMsearchMultisearchHeader')
-
 const CoreMsearchTemplateTemplateConfigSchema = z
   .object({
     explain: z
@@ -18603,7 +24993,7 @@ const CoreMsearchTemplateTemplateConfigSchema = z
       }),
     id: CommonIdSchema.exactOptional(),
     params: z
-      .record(z.string(), z.xor([z.string(), z.object({})]))
+      .record(z.string(), z.xor([z.string(), z.looseObject({})]))
       .exactOptional()
       .openapi({
         description:
@@ -18628,677 +25018,12 @@ const CoreMsearchTemplateRequestItemSchema = z
   .xor([CoreMsearchMultisearchHeaderSchema, CoreMsearchTemplateTemplateConfigSchema])
   .openapi('CoreMsearchTemplateRequestItem')
 
-const CoreSearchScoreModeSchema = z
-  .enum(['avg', 'max', 'min', 'multiply', 'total'])
-  .openapi('CoreSearchScoreMode')
-
-const CoreSearchRescoreQuerySchema = z
-  .object({
-    rescore_query: CommonQueryDslQueryContainerSchema,
-    query_weight: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The relative importance of the original query as compared to the rescore query.',
-      }),
-    rescore_query_weight: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The relative importance of the rescore query as compared to the original query.',
-      }),
-    score_mode: CoreSearchScoreModeSchema.exactOptional(),
-  })
-  .openapi({ required: ['rescore_query'] })
-  .openapi('CoreSearchRescoreQuery')
-
-const CoreSearchRescoreSchema = z
-  .object({ query: CoreSearchRescoreQuerySchema, window_size: z.int32().exactOptional() })
-  .openapi({ required: ['query'] })
-  .openapi('CoreSearchRescore')
-
-const CoreSearchTrackHitsSchema = z
-  .xor([z.boolean().openapi({ title: 'enabled' }), z.int32().openapi({ title: 'count' })])
-  .openapi({
-    description:
-      'The number of hits matching the query. When `true`, the exact\nnumber of hits is returned at the cost of some performance. When `false`, the\nresponse does not include the total number of hits matching the query.\nDefault is `10,000` hits.',
-  })
-  .openapi('CoreSearchTrackHits')
-
-const CoreSearchPointInTimeReferenceSchema = z
-  .object({ id: CommonIdSchema, keep_alive: CommonDurationSchema.exactOptional() })
-  .openapi({ required: ['id'] })
-  .openapi('CoreSearchPointInTimeReference')
-
-const CoreSearchSuggesterBaseSchema = z
-  .object({
-    analyzer: z.string().exactOptional(),
-    field: z.string(),
-    size: z.int32().exactOptional(),
-  })
-  .openapi({ required: ['field'] })
-  .openapi('CoreSearchSuggesterBase')
-
-const CoreSearchContextSchema = z
-  .xor([
-    z.string().openapi({ title: 'category' }),
-    CommonGeoLocationSchema.openapi({ title: 'location' }),
-  ])
-  .openapi({
-    description:
-      "Text or location that we want similar documents for or a lookup to a document's field for the text.",
-  })
-  .openapi('CoreSearchContext')
-
-const CoreSearchCompletionContextSchema = z
-  .xor([
-    CoreSearchContextSchema.openapi({ title: 'context' }),
-    z
-      .object({
-        boost: z.float64().exactOptional(),
-        context: CoreSearchContextSchema,
-        neighbours: z.array(CommonGeoHashPrecisionSchema).exactOptional(),
-        precision: CommonGeoHashPrecisionSchema.exactOptional(),
-        prefix: z.boolean().exactOptional(),
-      })
-      .openapi({ required: ['context'] }),
-  ])
-  .openapi('CoreSearchCompletionContext')
-
-const CoreSearchSuggestFuzzinessSchema = z
-  .object({
-    fuzziness: z.string(),
-    min_length: z.int32(),
-    prefix_length: z.int32(),
-    transpositions: z.boolean(),
-    unicode_aware: z.boolean(),
-  })
-  .openapi({
-    required: ['fuzziness', 'min_length', 'prefix_length', 'transpositions', 'unicode_aware'],
-  })
-  .openapi('CoreSearchSuggestFuzziness')
-
-const CoreSearchCompletionSuggesterSchema = CoreSearchSuggesterBaseSchema.and(
-  z
-    .object({
-      contexts: z.record(z.string(), z.array(CoreSearchCompletionContextSchema)).exactOptional(),
-      fuzzy: CoreSearchSuggestFuzzinessSchema.exactOptional(),
-      regex: z.string().exactOptional(),
-      skip_duplicates: z.boolean().exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('CoreSearchCompletionSuggester')
-
-const CoreSearchPhraseSuggestCollateQuerySchema = z
-  .object({ id: z.string().exactOptional(), source: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('CoreSearchPhraseSuggestCollateQuery')
-
-const CoreSearchPhraseSuggestCollateSchema = z
-  .object({
-    params: z.looseObject({}).exactOptional(),
-    prune: z.boolean().exactOptional(),
-    query: CoreSearchPhraseSuggestCollateQuerySchema,
-  })
-  .openapi({ required: ['query'] })
-  .openapi('CoreSearchPhraseSuggestCollate')
-
-const CoreSearchDirectGeneratorSchema = z
-  .object({
-    field: z.string(),
-    max_edits: z.int32().exactOptional(),
-    max_inspections: z.float32().exactOptional(),
-    max_term_freq: z.float32().exactOptional(),
-    min_doc_freq: z.float32().exactOptional(),
-    min_word_length: z.int32().exactOptional(),
-    post_filter: z.string().exactOptional(),
-    pre_filter: z.string().exactOptional(),
-    prefix_length: z.int32().exactOptional(),
-    size: z.int32().exactOptional(),
-    suggest_mode: CommonSuggestModeSchema.exactOptional(),
-  })
-  .openapi({ required: ['field'] })
-  .openapi('CoreSearchDirectGenerator')
-
-const CoreSearchPhraseSuggestHighlightSchema = z
-  .object({ post_tag: z.string(), pre_tag: z.string() })
-  .openapi({ required: ['post_tag', 'pre_tag'] })
-  .openapi('CoreSearchPhraseSuggestHighlight')
-
-const CoreSearchLaplaceSmoothingModelSchema = z
-  .object({ alpha: z.float64() })
-  .openapi({ required: ['alpha'] })
-  .openapi('CoreSearchLaplaceSmoothingModel')
-
-const CoreSearchLinearInterpolationSmoothingModelSchema = z
-  .object({ bigram_lambda: z.float64(), trigram_lambda: z.float64(), unigram_lambda: z.float64() })
-  .openapi({ required: ['bigram_lambda', 'trigram_lambda', 'unigram_lambda'] })
-  .openapi('CoreSearchLinearInterpolationSmoothingModel')
-
-const CoreSearchStupidBackoffSmoothingModelSchema = z
-  .object({ discount: z.float64() })
-  .openapi({ required: ['discount'] })
-  .openapi('CoreSearchStupidBackoffSmoothingModel')
-
-const CoreSearchSmoothingModelSchema = z
-  .object({
-    laplace: CoreSearchLaplaceSmoothingModelSchema.exactOptional(),
-    linear_interpolation: CoreSearchLinearInterpolationSmoothingModelSchema.exactOptional(),
-    stupid_backoff: CoreSearchStupidBackoffSmoothingModelSchema.exactOptional(),
-  })
-  .refine((val) => Object.keys(val).length >= 1)
-  .refine((val) => Object.keys(val).length <= 1)
-  .openapi({ required: [] })
-  .openapi('CoreSearchSmoothingModel')
-
-const CoreSearchPhraseSuggesterSchema = CoreSearchSuggesterBaseSchema.and(
-  z
-    .object({
-      collate: CoreSearchPhraseSuggestCollateSchema.exactOptional(),
-      confidence: z.float64().exactOptional(),
-      direct_generator: z.array(CoreSearchDirectGeneratorSchema).exactOptional(),
-      force_unigrams: z.boolean().exactOptional(),
-      gram_size: z.int32().exactOptional(),
-      highlight: CoreSearchPhraseSuggestHighlightSchema.exactOptional(),
-      max_errors: z.float64().exactOptional(),
-      real_word_error_likelihood: z.float64().exactOptional(),
-      separator: z.string().exactOptional(),
-      shard_size: z.int32().exactOptional(),
-      smoothing: CoreSearchSmoothingModelSchema.exactOptional(),
-      text: z.string().exactOptional(),
-      token_limit: z.int32().exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('CoreSearchPhraseSuggester')
-
-const CoreSearchSuggestSortSchema = z.enum(['frequency', 'score']).openapi('CoreSearchSuggestSort')
-
-const CoreSearchStringDistanceSchema = z
-  .enum(['damerau_levenshtein', 'internal', 'jaro_winkler', 'levenshtein', 'ngram'])
-  .openapi('CoreSearchStringDistance')
-
-const CoreSearchTermSuggesterSchema = CoreSearchSuggesterBaseSchema.and(
-  z
-    .object({
-      lowercase_terms: z.boolean().exactOptional(),
-      max_edits: z.int32().exactOptional(),
-      max_inspections: z.int32().exactOptional(),
-      max_term_freq: z.float32().exactOptional(),
-      min_doc_freq: z.float32().exactOptional(),
-      min_word_length: z.int32().exactOptional(),
-      prefix_length: z.int32().exactOptional(),
-      shard_size: z.int32().exactOptional(),
-      sort: CoreSearchSuggestSortSchema.exactOptional(),
-      string_distance: CoreSearchStringDistanceSchema.exactOptional(),
-      suggest_mode: CommonSuggestModeSchema.exactOptional(),
-      text: z.string().exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('CoreSearchTermSuggester')
-
-const CoreSearchFieldSuggesterSchema = z
-  .object({
-    prefix: z.string().exactOptional(),
-    regex: z.string().exactOptional(),
-    text: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        completion: CoreSearchCompletionSuggesterSchema.exactOptional(),
-        phrase: CoreSearchPhraseSuggesterSchema.exactOptional(),
-        term: CoreSearchTermSuggesterSchema.exactOptional(),
-      })
-      .refine((val) => Object.keys(val).length >= 1)
-      .refine((val) => Object.keys(val).length <= 1)
-      .openapi({ required: [] }),
-  )
-  .openapi('CoreSearchFieldSuggester')
-
-const CoreSearchSuggesterSchema = z
-  .object({
-    text: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The global suggest text, which avoids repetition when the same text is used in several suggesters.',
-      }),
-  })
-  .catchall(
-    CoreSearchFieldSuggesterSchema.openapi({
-      title: 'suggesters',
-      description: 'The named suggesters.',
-    }),
-  )
-  .openapi('CoreSearchSuggester')
-
-const CoreMsearchMultisearchBodySchema = z
-  .object({
-    aggregations: z
-      .record(z.string(), CommonAggregationsAggregationContainerSchema)
-      .exactOptional(),
-    collapse: CoreSearchFieldCollapseSchema.exactOptional(),
-    query: CommonQueryDslQueryContainerSchema.exactOptional(),
-    explain: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'When `true`, returns detailed information about score computation as part of a hit.',
-      }),
-    ext: z
-      .record(z.string(), z.object({}))
-      .exactOptional()
-      .openapi({
-        description: 'The configuration of search extensions defined by OpenSearch plugins.',
-      }),
-    stored_fields: CommonFieldsSchema.exactOptional(),
-    docvalue_fields: z
-      .array(CommonQueryDslFieldAndFormatSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'An array of wildcard (*) patterns. The request returns document values for field\nnames matching these patterns in the `hits.fields` property of the response.',
-      }),
-    knn: z
-      .xor([CommonQueryDslKnnQuerySchema, z.array(CommonQueryDslKnnQuerySchema)])
-      .exactOptional()
-      .openapi({ description: 'Defines the approximate k-NN search to run.' }),
-    from: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description:
-          'The starting document offset. By default, you cannot page through more than 10,000\nhits using the `from` and `size` parameters. To page through more than 10,000 hits, use the\n`search_after` parameter.',
-      }),
-    highlight: CoreSearchHighlightSchema.exactOptional(),
-    indices_boost: z
-      .array(z.record(z.string(), z.number()))
-      .exactOptional()
-      .openapi({ description: 'Boosts the `_score` of documents from the specified indexes.' }),
-    min_score: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description:
-          'The minimum `_score` for document matching. Documents with a lower `_score` than the minimum\nare not included in the search results.',
-      }),
-    post_filter: CommonQueryDslQueryContainerSchema.exactOptional(),
-    profile: z.boolean().exactOptional(),
-    rescore: z.xor([CoreSearchRescoreSchema, z.array(CoreSearchRescoreSchema)]).exactOptional(),
-    script_fields: z
-      .record(z.string(), CommonScriptFieldSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Retrieves a script evaluation (based on different fields) for each hit.',
-      }),
-    search_after: CommonSortResultsSchema.exactOptional(),
-    size: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description:
-          'The number of hits to return. By default, you cannot page through more\nthan 10,000 hits using the `from` and `size` parameters. To page through more\nhits, use the `search_after` parameter.',
-      }),
-    sort: CommonSortSchema.exactOptional(),
-    _source: CoreSearchSourceConfigSchema.exactOptional(),
-    fields: z
-      .array(CommonQueryDslFieldAndFormatSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'An array of wildcard (*) patterns. The request returns values for field names\nmatching these patterns in the `hits.fields` property of the response.',
-      }),
-    terminate_after: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description:
-          'The maximum number of documents to collect for each shard. If a query reaches this\nlimit, OpenSearch stops the query early. OpenSearch collects documents\nbefore sorting. Default is `0`, which does not terminate query execution early.',
-      }),
-    stats: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'The statistics groups to associate with the search. Each group maintains a statistics\naggregation for its associated searches. You can retrieve these statistics using\nthe Index Stats API.',
-      }),
-    timeout: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the period of time to wait for a response from each shard. If no response\nis received before the timeout expires, the request fails and returns an error.\nDefault is no timeout.',
-      }),
-    track_scores: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'When `true`, calculates and returns all document scores, even if the scores are not used for sorting.',
-      }),
-    track_total_hits: CoreSearchTrackHitsSchema.exactOptional(),
-    version: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'When `true`, returns the document version as part of the hit.' }),
-    seq_no_primary_term: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'When `true`, returns the sequence number and primary term of the last modification.\nof each hit. See Optimistic concurrency control.',
-      }),
-    pit: CoreSearchPointInTimeReferenceSchema.exactOptional(),
-    suggest: CoreSearchSuggesterSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CoreMsearchMultisearchBody')
-
-const CoreSearchProcessorExecutionDetailSchema = z
-  .object({
-    processor_name: z.string().exactOptional(),
-    duration_millis: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    input_data: z.any().exactOptional(),
-    output_data: z.any().exactOptional(),
-    status: z.string().exactOptional(),
-    tag: z.string().exactOptional(),
-    error: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CoreSearchProcessorExecutionDetail')
-
-const CoreSearchAggregationProfileSchema: z.ZodType<CoreSearchAggregationProfileType> = z
-  .lazy(() =>
-    z
-      .object({
-        breakdown: CoreSearchAggregationBreakdownSchema,
-        description: z.string(),
-        time_in_nanos: CommonUnitNanosSchema,
-        type: z.string(),
-        debug: CoreSearchAggregationProfileDebugSchema.exactOptional(),
-        children: z.array(CoreSearchAggregationProfileSchema).exactOptional(),
-      })
-      .openapi({ required: ['breakdown', 'description', 'time_in_nanos', 'type'] }),
-  )
-  .openapi('CoreSearchAggregationProfile')
-
-const CoreSearchCollectorSchema: z.ZodType<CoreSearchCollectorType> = z
-  .lazy(() =>
-    z
-      .object({
-        name: z.string(),
-        reason: z.string(),
-        time_in_nanos: CommonUnitNanosSchema,
-        children: z.array(CoreSearchCollectorSchema).exactOptional(),
-      })
-      .openapi({ required: ['name', 'reason', 'time_in_nanos'] }),
-  )
-  .openapi('CoreSearchCollector')
-
-const CoreSearchQueryProfileSchema: z.ZodType<CoreSearchQueryProfileType> = z
-  .lazy(() =>
-    z
-      .object({
-        breakdown: CoreSearchQueryBreakdownSchema,
-        description: z.string(),
-        time_in_nanos: CommonUnitNanosSchema,
-        type: z.string(),
-        children: z.array(CoreSearchQueryProfileSchema).exactOptional(),
-      })
-      .openapi({ required: ['breakdown', 'description', 'time_in_nanos', 'type'] }),
-  )
-  .openapi('CoreSearchQueryProfile')
-
-const CoreSearchSearchProfileSchema = z
-  .object({
-    collector: z.array(CoreSearchCollectorSchema),
-    query: z.array(CoreSearchQueryProfileSchema),
-    rewrite_time: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({ required: ['collector', 'query', 'rewrite_time'] })
-  .openapi('CoreSearchSearchProfile')
-
-const CoreSearchFetchProfileSchema: z.ZodType<CoreSearchFetchProfileType> = z
-  .lazy(() =>
-    z
-      .object({
-        type: z.string(),
-        description: z.string(),
-        time_in_nanos: CommonUnitNanosSchema,
-        breakdown: CoreSearchFetchProfileBreakdownSchema,
-        debug: CoreSearchFetchProfileDebugSchema.exactOptional(),
-        children: z.array(CoreSearchFetchProfileSchema).exactOptional(),
-      })
-      .openapi({ required: ['breakdown', 'description', 'time_in_nanos', 'type'] }),
-  )
-  .openapi('CoreSearchFetchProfile')
-
-const CoreSearchShardProfileSchema = z
-  .object({
-    aggregations: z.array(CoreSearchAggregationProfileSchema),
-    id: z.string(),
-    searches: z.array(CoreSearchSearchProfileSchema),
-    fetch: CoreSearchFetchProfileSchema.exactOptional(),
-  })
-  .openapi({ required: ['aggregations', 'id', 'searches'] })
-  .openapi('CoreSearchShardProfile')
-
-const CoreSearchProfileSchema = z
-  .object({ shards: z.array(CoreSearchShardProfileSchema) })
-  .openapi({ required: ['shards'] })
-  .openapi('CoreSearchProfile')
-
-const CoreSearchSuggestBaseSchema = z
-  .object({ length: z.int32(), offset: z.int32(), text: z.string() })
-  .openapi({ required: ['length', 'offset', 'text'] })
-  .openapi('CoreSearchSuggestBase')
-
-const CoreSearchCompletionSuggestOptionSchema = z
-  .object({
-    collate_match: z.boolean().exactOptional(),
-    contexts: z.record(z.string(), z.array(CoreSearchContextSchema)).exactOptional(),
-    fields: z.looseObject({}).exactOptional(),
-    _id: z.string().exactOptional(),
-    _index: CommonIndexNameSchema.exactOptional(),
-    _routing: CommonRoutingSchema.exactOptional(),
-    _score: z.float32().exactOptional(),
-    _source: CoreSearchTDocumentSchema.exactOptional(),
-    text: z.string(),
-    score: z.float32().exactOptional(),
-  })
-  .openapi({ required: ['text'] })
-  .openapi('CoreSearchCompletionSuggestOption')
-
-const CoreSearchCompletionSuggestSchema = CoreSearchSuggestBaseSchema.and(
-  z
-    .object({
-      options: z.xor([
-        CoreSearchCompletionSuggestOptionSchema.and(
-          z
-            .object({ _source: CoreSearchTDocumentSchema.exactOptional() })
-            .openapi({ required: [] }),
-        ),
-        z.array(
-          CoreSearchCompletionSuggestOptionSchema.and(
-            z
-              .object({ _source: CoreSearchTDocumentSchema.exactOptional() })
-              .openapi({ required: [] }),
-          ),
-        ),
-      ]),
-    })
-    .openapi({ required: ['options'] }),
-).openapi('CoreSearchCompletionSuggest')
-
-const CoreSearchPhraseSuggestOptionSchema = z
-  .object({
-    text: z.string(),
-    score: z.float64(),
-    highlighted: z.string().exactOptional(),
-    collate_match: z.boolean().exactOptional(),
-  })
-  .openapi({ required: ['score', 'text'] })
-  .openapi('CoreSearchPhraseSuggestOption')
-
-const CoreSearchPhraseSuggestSchema = CoreSearchSuggestBaseSchema.and(
-  z
-    .object({
-      options: z.xor([
-        CoreSearchPhraseSuggestOptionSchema,
-        z.array(CoreSearchPhraseSuggestOptionSchema),
-      ]),
-    })
-    .openapi({ required: ['options'] }),
-).openapi('CoreSearchPhraseSuggest')
-
-const CoreSearchTermSuggestOptionSchema = z
-  .object({
-    text: z.string(),
-    score: z.float64(),
-    freq: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    highlighted: z.string().exactOptional(),
-    collate_match: z.boolean().exactOptional(),
-  })
-  .openapi({ required: ['score', 'text'] })
-  .openapi('CoreSearchTermSuggestOption')
-
-const CoreSearchTermSuggestSchema = CoreSearchSuggestBaseSchema.and(
-  z
-    .object({
-      options: z.xor([
-        CoreSearchTermSuggestOptionSchema,
-        z.array(CoreSearchTermSuggestOptionSchema),
-      ]),
-    })
-    .openapi({ required: ['options'] }),
-).openapi('CoreSearchTermSuggest')
-
-const CoreSearchSuggestSchema = z
-  .xor([
-    CoreSearchCompletionSuggestSchema.and(
-      z
-        .object({
-          options: z
-            .xor([
-              CoreSearchCompletionSuggestOptionSchema.and(
-                z
-                  .object({ _source: CoreSearchTDocumentSchema.exactOptional() })
-                  .openapi({ required: [] }),
-              ),
-              z.array(
-                CoreSearchCompletionSuggestOptionSchema.and(
-                  z
-                    .object({ _source: CoreSearchTDocumentSchema.exactOptional() })
-                    .openapi({ required: [] }),
-                ),
-              ),
-            ])
-            .exactOptional(),
-        })
-        .openapi({ required: [] }),
-    ).openapi({ title: 'completion' }),
-    CoreSearchPhraseSuggestSchema.openapi({ title: 'phrase' }),
-    CoreSearchTermSuggestSchema.openapi({ title: 'term' }),
-  ])
-  .openapi({ 'x-supports-typed-keys': true })
-  .openapi('CoreSearchSuggest')
-
-const CoreSearchSearchResultSchema = z
-  .object({
-    took: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    timed_out: z.boolean(),
-    _shards: CommonShardStatisticsSchema,
-    phase_took: CommonPhaseTookSchema.exactOptional().openapi({ 'x-version-added': '2.12' }),
-    hits: CoreSearchHitsMetadataSchema.and(
-      z
-        .object({
-          hits: z
-            .array(
-              z
-                .object({ _source: CoreSearchTDocumentSchema.exactOptional() })
-                .openapi({ required: [] }),
-            )
-            .exactOptional(),
-        })
-        .openapi({ 'x-protobuf-excluded': true, required: [] }),
-    ),
-    processor_results: z
-      .array(CoreSearchProcessorExecutionDetailSchema)
-      .exactOptional()
-      .openapi({ 'x-version-added': '3.0' }),
-    aggregations: z.record(z.string(), CommonAggregationsAggregateSchema).exactOptional(),
-    _clusters: CommonClusterStatisticsSchema.exactOptional(),
-    num_reduce_phases: z.int32().exactOptional(),
-    profile: CoreSearchProfileSchema.exactOptional(),
-    pit_id: CommonIdSchema.exactOptional(),
-    _scroll_id: CommonScrollIdSchema.exactOptional(),
-    suggest: z.record(z.string(), z.array(CoreSearchSuggestSchema)).exactOptional(),
-    terminated_early: z.boolean().exactOptional(),
-  })
-  .openapi({ required: ['_shards', 'hits', 'timed_out', 'took'] })
-  .openapi('CoreSearchSearchResult')
-
-const CoreMsearchMultiSearchItemSchema = CoreSearchSearchResultSchema.and(
-  z.object({ status: z.number().exactOptional() }).openapi({ required: [] }),
-).openapi('CoreMsearchMultiSearchItem')
-
-const CoreMsearchResponseItemSchema = z
-  .xor([CoreMsearchMultiSearchItemSchema, CommonErrorResponseBaseSchema])
-  .openapi('CoreMsearchResponseItem')
-
-const CoreMsearchMultiSearchResultSchema = z
+const CoreMsearchMultiSearchResultSchema: z.ZodType<CoreMsearchMultiSearchResultType> = z
   .object({ took: z.number(), responses: z.array(CoreMsearchResponseItemSchema) })
   .openapi({ required: ['responses', 'took'] })
   .openapi('CoreMsearchMultiSearchResult')
 
-const CoreMsearchRequestItemSchema = z
+const CoreMsearchRequestItemSchema: z.ZodType<CoreMsearchRequestItemType> = z
   .xor([CoreMsearchMultisearchHeaderSchema, CoreMsearchMultisearchBodySchema])
   .openapi('CoreMsearchRequestItem')
 
@@ -19512,19 +25237,6 @@ const CorePitPitDetailSchema = z
   .openapi({ required: [] })
   .openapi('CorePitPitDetail')
 
-const CoreRankEvalDocumentRatingSchema = z
-  .object({
-    _id: CommonIdSchema,
-    _index: CommonIndexNameSchema,
-    rating: z
-      .int32()
-      .openapi({
-        description: "The document's relevance with regard to the specified search request.",
-      }),
-  })
-  .openapi({ required: ['_id', '_index', 'rating'] })
-  .openapi('CoreRankEvalDocumentRating')
-
 const CoreRankEvalRankEvalHitSchema = z
   .object({
     _id: CommonIdSchema,
@@ -19583,11 +25295,11 @@ const CoreRankEvalRankEvalMetricPrecisionSchema =
   ).openapi('CoreRankEvalRankEvalMetricPrecision')
 
 const CoreRankEvalRankEvalMetricRecallSchema = CoreRankEvalRankEvalMetricRatingThresholdSchema.and(
-  z.object({}),
+  z.looseObject({}),
 ).openapi('CoreRankEvalRankEvalMetricRecall')
 
 const CoreRankEvalRankEvalMetricMeanReciprocalRankSchema =
-  CoreRankEvalRankEvalMetricRatingThresholdSchema.and(z.object({})).openapi(
+  CoreRankEvalRankEvalMetricRatingThresholdSchema.and(z.looseObject({})).openapi(
     'CoreRankEvalRankEvalMetricMeanReciprocalRank',
   )
 
@@ -19666,12 +25378,7 @@ const CoreRankEvalRankEvalMetricDetailSchema = z
   .openapi({ required: ['hits', 'metric_details', 'metric_score', 'unrated_docs'] })
   .openapi('CoreRankEvalRankEvalMetricDetail')
 
-const CoreRankEvalRankEvalQuerySchema = z
-  .object({ query: CommonQueryDslQueryContainerSchema, size: z.int32().exactOptional() })
-  .openapi({ required: ['query'] })
-  .openapi('CoreRankEvalRankEvalQuery')
-
-const CoreRankEvalRankEvalRequestItemSchema = z
+const CoreRankEvalRankEvalRequestItemSchema: z.ZodType<CoreRankEvalRankEvalRequestItemType> = z
   .object({
     id: CommonIdSchema,
     request: CoreRankEvalRankEvalQuerySchema.exactOptional(),
@@ -19884,22 +25591,7 @@ const CoreReindexDestinationSchema = z
   .openapi({ required: ['index'] })
   .openapi('CoreReindexDestination')
 
-const CoreReindexRemoteSourceSchema = z
-  .object({
-    connect_timeout: CommonDurationSchema.exactOptional(),
-    headers: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'An object containing the headers of the request.' }),
-    host: CommonHostSchema,
-    username: CommonUsernameSchema.exactOptional(),
-    password: CommonPasswordSchema.exactOptional(),
-    socket_timeout: CommonDurationSchema.exactOptional(),
-  })
-  .openapi({ required: ['host'] })
-  .openapi('CoreReindexRemoteSource')
-
-const CoreReindexSourceSchema = z
+const CoreReindexSourceSchema: z.ZodType<CoreReindexSourceType> = z
   .object({
     index: CommonIndicesSchema,
     query: CommonQueryDslQueryContainerSchema.exactOptional(),
@@ -19918,21 +25610,22 @@ const CoreReindexSourceSchema = z
   .openapi({ required: ['index'] })
   .openapi('CoreReindexSource')
 
-const CoreScriptsPainlessExecutePainlessContextSetupSchema = z
-  .object({
-    document: z
-      .any()
-      .openapi({
-        description:
-          'A document temporarily indexed in-memory and accessible from the Painless script.',
-      }),
-    index: CommonIndexNameSchema,
-    query: CommonQueryDslQueryContainerSchema.exactOptional(),
-  })
-  .openapi({ required: ['document', 'index'] })
-  .openapi('CoreScriptsPainlessExecutePainlessContextSetup')
+const CoreScriptsPainlessExecutePainlessContextSetupSchema: z.ZodType<CoreScriptsPainlessExecutePainlessContextSetupType> =
+  z
+    .object({
+      document: z
+        .any()
+        .openapi({
+          description:
+            'A document temporarily indexed in-memory and accessible from the Painless script.',
+        }),
+      index: CommonIndexNameSchema,
+      query: CommonQueryDslQueryContainerSchema.exactOptional(),
+    })
+    .openapi({ required: ['document', 'index'] })
+    .openapi('CoreScriptsPainlessExecutePainlessContextSetup')
 
-const CoreSearchShardsShardStoreIndexSchema = z
+const CoreSearchShardsShardStoreIndexSchema: z.ZodType<CoreSearchShardsShardStoreIndexType> = z
   .object({
     aliases: z.array(CommonNameSchema).exactOptional(),
     filter: CommonQueryDslQueryContainerSchema.exactOptional(),
@@ -19940,47 +25633,44 @@ const CoreSearchShardsShardStoreIndexSchema = z
   .openapi({ required: [] })
   .openapi('CoreSearchShardsShardStoreIndex')
 
-const CoreSearchSearchResponseSchema = CoreSearchSearchResultSchema.and(z.object({})).openapi(
-  'CoreSearchSearchResponse',
-)
-
-const CoreSearchSearchResultJsonValueSchema = CoreSearchSearchResultSchema.and(
-  z
-    .object({
-      hits: z
-        .object({
-          hits: z
-            .array(z.object({ _source: z.any().exactOptional() }).openapi({ required: [] }))
-            .exactOptional(),
-        })
-        .exactOptional()
-        .openapi({ required: [] }),
-      suggest: z
-        .record(
-          z.string(),
-          z.array(
-            z.xor([
-              z
-                .object({
-                  options: z
-                    .xor([
-                      z.object({ _source: z.any().exactOptional() }).openapi({ required: [] }),
-                      z.array(
+const CoreSearchSearchResultJsonValueSchema: z.ZodType<CoreSearchSearchResultJsonValueType> =
+  CoreSearchSearchResultSchema.and(
+    z
+      .object({
+        hits: z
+          .object({
+            hits: z
+              .array(z.object({ _source: z.any().exactOptional() }).openapi({ required: [] }))
+              .exactOptional(),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        suggest: z
+          .record(
+            z.string(),
+            z.array(
+              z.xor([
+                z
+                  .object({
+                    options: z
+                      .xor([
                         z.object({ _source: z.any().exactOptional() }).openapi({ required: [] }),
-                      ),
-                    ])
-                    .exactOptional(),
-                })
-                .openapi({ title: 'completion', required: [] }),
-              CoreSearchPhraseSuggestSchema.openapi({ title: 'phrase' }),
-              CoreSearchTermSuggestSchema.openapi({ title: 'term' }),
-            ]),
-          ),
-        )
-        .exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('CoreSearchSearchResultJsonValue')
+                        z.array(
+                          z.object({ _source: z.any().exactOptional() }).openapi({ required: [] }),
+                        ),
+                      ])
+                      .exactOptional(),
+                  })
+                  .openapi({ title: 'completion', required: [] }),
+                CoreSearchPhraseSuggestSchema.openapi({ title: 'phrase' }),
+                CoreSearchTermSuggestSchema.openapi({ title: 'term' }),
+              ]),
+            ),
+          )
+          .exactOptional(),
+      })
+      .openapi({ required: [] }),
+  ).openapi('CoreSearchSearchResultJsonValue')
 
 const CoreSearchSourceConfigParamSchema = z
   .xor([z.boolean().openapi({ title: 'fetch' }), CommonFieldsSchema.openapi({ title: 'fields' })])
@@ -19990,15 +25680,12 @@ const CoreSearchSourceConfigParamSchema = z
   })
   .openapi('CoreSearchSourceConfigParam')
 
-const TasksCommonTaskInfoSchema = TasksCommonTaskInfoBaseSchema.and(z.object({})).openapi(
-  'TasksCommonTaskInfo',
-)
-
-const CoreUpdateByQueryRethrottleUpdateByQueryRethrottleNodeSchema = CommonBaseNodeSchema.and(
-  z
-    .object({ tasks: z.record(z.string(), TasksCommonTaskInfoSchema) })
-    .openapi({ required: ['tasks'] }),
-).openapi('CoreUpdateByQueryRethrottleUpdateByQueryRethrottleNode')
+const CoreUpdateByQueryRethrottleUpdateByQueryRethrottleNodeSchema: z.ZodType<CoreUpdateByQueryRethrottleUpdateByQueryRethrottleNodeType> =
+  CommonBaseNodeSchema.and(
+    z
+      .object({ tasks: z.record(z.string(), TasksCommonTaskInfoSchema) })
+      .openapi({ required: ['tasks'] }),
+  ).openapi('CoreUpdateByQueryRethrottleUpdateByQueryRethrottleNode')
 
 const CoreUpdateUpdateWriteResponseBaseSchema = CommonWriteResponseBaseSchema.and(
   z.object({ get: CommonInlineGetSchema.exactOptional() }).openapi({ required: [] }),
@@ -20027,19 +25714,20 @@ const AsynchronousSearchCommonNodesStatsSchema = z
   .openapi({ required: [] })
   .openapi('AsynchronousSearchCommonNodesStats')
 
-const AsynchronousSearchCommonResponseBodySchema = z
-  .object({
-    id: z.string().exactOptional(),
-    state: z.string().exactOptional(),
-    start_time_in_millis: z.number().exactOptional(),
-    expiration_time_in_millis: z.number().exactOptional(),
-    took: z.number().exactOptional(),
-    response: CoreSearchSearchResponseSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AsynchronousSearchCommonResponseBody')
+const AsynchronousSearchCommonResponseBodySchema: z.ZodType<AsynchronousSearchCommonResponseBodyType> =
+  z
+    .object({
+      id: z.string().exactOptional(),
+      state: z.string().exactOptional(),
+      start_time_in_millis: z.number().exactOptional(),
+      expiration_time_in_millis: z.number().exactOptional(),
+      took: z.number().exactOptional(),
+      response: CoreSearchSearchResponseSchema.exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('AsynchronousSearchCommonResponseBody')
 
-const AsynchronousSearchCommonSearchSchema = z
+const AsynchronousSearchCommonSearchSchema: z.ZodType<AsynchronousSearchCommonSearchType> = z
   .object({
     aggregations: z
       .record(z.string(), CommonAggregationsAggregationContainerSchema)
@@ -20056,7 +25744,7 @@ const AsynchronousSearchCommonSearchSchema = z
           'If `true`, returns detailed information about score computation as part of a hit.',
       }),
     ext: z
-      .record(z.string(), z.object({}))
+      .record(z.string(), z.looseObject({}))
       .exactOptional()
       .openapi({
         description: 'Configuration of search extensions defined by OpenSearch plugins.',
@@ -20166,19 +25854,6 @@ const AsynchronousSearchCommonSearchSchema = z
   })
   .openapi({ description: 'The search definition using the Query DSL.', required: [] })
   .openapi('AsynchronousSearchCommonSearch')
-
-const NodesCommonNodesResponseBaseSchema = z
-  .object({
-    _nodes: CommonNodeStatisticsSchema.exactOptional().openapi({
-      description:
-        "Contains statistics about the number of nodes selected by the request's node filters.",
-    }),
-  })
-  .openapi({
-    description: 'Provides base response structure for node-related operations.',
-    required: [],
-  })
-  .openapi('NodesCommonNodesResponseBase')
 
 const AsynchronousSearchCommonStatsResponseSchema = NodesCommonNodesResponseBaseSchema.and(
   z
@@ -22073,157 +27748,7 @@ const CatThreadPoolThreadPoolRecordSchema = z
   .openapi({ required: [] })
   .openapi('CatThreadPoolThreadPoolRecord')
 
-const IndicesCommonIndexSettingsSchema: z.ZodType<IndicesCommonIndexSettingsType> = z
-  .lazy(() =>
-    z
-      .object({
-        index: IndicesCommonIndexSettingsSchema.exactOptional(),
-        mode: z.string().exactOptional(),
-        routing_path: CommonStringOrStringArraySchema.exactOptional(),
-        soft_deletes: IndicesCommonSoftDeletesSchema.exactOptional(),
-        'soft_deletes.retention_lease.period': CommonDurationSchema.exactOptional(),
-        sort: IndicesCommonIndexSegmentSortSchema.exactOptional(),
-        number_of_shards: CommonStringifiedIntegerSchema.exactOptional(),
-        number_of_replicas: CommonStringifiedIntegerSchema.exactOptional(),
-        number_of_routing_shards: CommonStringifiedIntegerSchema.exactOptional(),
-        check_on_startup: IndicesCommonIndexCheckOnStartupSchema.exactOptional(),
-        codec: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The compression type for stored data.' }),
-        routing_partition_size: CommonStringifiedIntegerSchema.exactOptional(),
-        load_fixed_bitset_filters_eagerly: CommonStringifiedBooleanSchema.exactOptional(),
-        hidden: CommonStringifiedBooleanSchema.exactOptional(),
-        auto_expand_replicas: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The range of replicas to maintain.' }),
-        merge: IndicesCommonIndexSettingsMergeSchema.exactOptional(),
-        'merge.scheduler.max_thread_count': CommonStringifiedIntegerSchema.exactOptional(),
-        search: IndicesCommonIndexSettingsSearchSchema.exactOptional(),
-        'search.idle.after': CommonDurationSchema.exactOptional(),
-        refresh_interval: CommonDurationSchema.exactOptional(),
-        max_result_window: CommonStringifiedIntegerSchema.exactOptional(),
-        max_inner_result_window: CommonStringifiedIntegerSchema.exactOptional(),
-        max_rescore_window: CommonStringifiedIntegerSchema.exactOptional(),
-        max_docvalue_fields_search: CommonStringifiedIntegerSchema.exactOptional(),
-        max_script_fields: CommonStringifiedIntegerSchema.exactOptional(),
-        max_ngram_diff: CommonStringifiedIntegerSchema.exactOptional(),
-        max_shingle_diff: CommonStringifiedIntegerSchema.exactOptional(),
-        blocks: IndicesCommonIndexSettingBlocksSchema.exactOptional(),
-        'blocks.read_only': CommonStringifiedBooleanSchema.exactOptional(),
-        'blocks.read_only_allow_delete': CommonStringifiedBooleanSchema.exactOptional(),
-        'blocks.read': CommonStringifiedBooleanSchema.exactOptional(),
-        'blocks.write': CommonStringifiedBooleanSchema.exactOptional(),
-        'blocks.metadata': CommonStringifiedBooleanSchema.exactOptional(),
-        max_refresh_listeners: CommonStringifiedIntegerSchema.exactOptional(),
-        analyze: IndicesCommonIndexSettingsAnalyzeSchema.exactOptional(),
-        'analyze.max_token_count': CommonStringifiedIntegerSchema.exactOptional(),
-        highlight: IndicesCommonIndexSettingsHighlightSchema.exactOptional(),
-        'highlight.max_analyzed_offset': CommonStringifiedIntegerSchema.exactOptional(),
-        max_terms_count: CommonStringifiedIntegerSchema.exactOptional(),
-        max_regex_length: CommonStringifiedIntegerSchema.exactOptional(),
-        routing: IndicesCommonIndexRoutingSchema.exactOptional(),
-        gc_deletes: CommonDurationSchema.exactOptional(),
-        default_pipeline: CommonPipelineNameSchema.exactOptional(),
-        final_pipeline: CommonPipelineNameSchema.exactOptional(),
-        lifecycle: IndicesCommonIndexSettingsLifecycleSchema.exactOptional(),
-        'lifecycle.name': CommonNameSchema.exactOptional(),
-        provided_name: CommonNameSchema.exactOptional(),
-        creation_date: CommonStringifiedEpochTimeUnitMillisSchema.exactOptional(),
-        creation_date_string: CommonDateTimeSchema.exactOptional(),
-        uuid: CommonUuidSchema.exactOptional(),
-        version: IndicesCommonIndexVersioningSchema.exactOptional(),
-        verified_before_close: CommonStringifiedBooleanSchema.exactOptional(),
-        format: CommonStringifiedIntegerSchema.exactOptional(),
-        max_slices_per_scroll: CommonStringifiedIntegerSchema.exactOptional(),
-        translog: IndicesCommonTranslogSchema.exactOptional(),
-        'translog.durability': IndicesCommonTranslogDurabilitySchema.exactOptional(),
-        'translog.flush_threshold_size': CommonHumanReadableByteCountSchema.exactOptional(),
-        query_string: IndicesCommonIndexSettingsQueryStringSchema.exactOptional(),
-        'query_string.lenient': CommonStringifiedBooleanSchema.exactOptional(),
-        priority: CommonStringifiedIntegerSchema.exactOptional(),
-        top_metrics_max_size: CommonStringifiedIntegerSchema.exactOptional(),
-        analysis: IndicesCommonIndexSettingsAnalysisSchema.exactOptional(),
-        settings: IndicesCommonIndexSettingsSchema.exactOptional(),
-        queries: IndicesCommonIndexSettingsQueriesSchema.exactOptional(),
-        similarity: IndicesCommonIndexSettingsSimilaritySchema.exactOptional(),
-        mapping: IndicesCommonIndexSettingsMappingSchema.exactOptional(),
-        indexing: IndicesCommonIndexSettingsIndexingSchema.exactOptional(),
-        indexing_pressure: IndicesCommonIndexingPressureSchema.exactOptional(),
-        store: IndicesCommonIndexSettingsStoreSchema.exactOptional(),
-        knn: CommonStringifiedBooleanSchema.exactOptional(),
-        'knn.algo_param.ef_search': CommonStringifiedIntegerSchema.exactOptional(),
-        'composite_index.star_tree': IndicesCommonIndexSettingsStarTreeSchema.exactOptional(),
-        ingestion_source: IndicesCommonIngestionSourceSchema.exactOptional(),
-        'replication.type': IndicesCommonReplicationTypeSchema.exactOptional().openapi({
-          description: 'Defines the replication type.',
-        }),
-      })
-      .catchall(z.any().openapi({ title: 'custom_settings' }))
-      .openapi({ description: 'The configuration settings for an index.' }),
-  )
-  .openapi('IndicesCommonIndexSettings')
-
-const IndicesCommonAliasDefinitionSchema = z
-  .object({
-    filter: CommonQueryDslQueryContainerSchema.exactOptional(),
-    index_routing: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The value used to route indexing operations to a specific shard.\nWhen specified, this overwrites the `routing` value for indexing operations.',
-      }),
-    is_write_index: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'When `true`, the index is the write index for the alias.' }),
-    routing: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The value used to route indexing and search operations to a specific shard.',
-      }),
-    search_routing: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The value used to route search operations to a specific shard.\nWhen specified, this overwrites the `routing` value for search operations.',
-      }),
-    is_hidden: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'When `true`, the alias is hidden.\nAll indexes for the alias must have the same `is_hidden` value.',
-      }),
-  })
-  .openapi({ description: 'The configuration for an index alias.', required: [] })
-  .openapi('IndicesCommonAliasDefinition')
-
-const ClusterCommonComponentTemplateSummarySchema = z
-  .object({
-    _meta: CommonMetadataSchema.exactOptional(),
-    version: CommonVersionNumberSchema.exactOptional(),
-    settings: z.record(z.string(), IndicesCommonIndexSettingsSchema).exactOptional(),
-    mappings: CommonMappingTypeMappingSchema.exactOptional(),
-    aliases: z.record(z.string(), IndicesCommonAliasDefinitionSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ClusterCommonComponentTemplateSummary')
-
-const ClusterCommonComponentTemplateNodeSchema = z
-  .object({
-    template: ClusterCommonComponentTemplateSummarySchema,
-    version: CommonVersionNumberSchema.exactOptional(),
-    _meta: CommonMetadataSchema.exactOptional(),
-  })
-  .openapi({ required: ['template'] })
-  .openapi('ClusterCommonComponentTemplateNode')
-
-const ClusterCommonComponentTemplateSchema = z
+const ClusterCommonComponentTemplateSchema: z.ZodType<ClusterCommonComponentTemplateType> = z
   .object({ name: CommonNameSchema, component_template: ClusterCommonComponentTemplateNodeSchema })
   .openapi({ required: ['component_template', 'name'] })
   .openapi('ClusterCommonComponentTemplate')
@@ -23573,7 +29098,7 @@ const FlowFrameworkCommonFlowFrameworkCreateSchema = z
       }),
     version: FlowFrameworkCommonVersionSchema.exactOptional(),
     workflows: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -23622,7 +29147,7 @@ const FlowFrameworkCommonFlowFrameworkGetResponseSchema = z
         description:
           'A use case ID, which can be used with the Search Workflow API to find related workflows.',
       }),
-    workflows: z.object({}).exactOptional(),
+    workflows: z.looseObject({}).exactOptional(),
     user: FlowFrameworkCommonUserSchema.exactOptional(),
     created_time: z
       .int()
@@ -23654,7 +29179,7 @@ const FlowFrameworkCommonFlowFrameworkUpdateSchema = z
         description:
           'A use case ID, which can be used with the Search Workflow API to find related workflows.',
       }),
-    workflows: z.object({}).exactOptional(),
+    workflows: z.looseObject({}).exactOptional(),
     version: FlowFrameworkCommonVersionSchema.exactOptional(),
   })
   .refine((val) => Object.keys(val).length >= 1)
@@ -23773,14 +29298,15 @@ const FlowFrameworkCommonSearchStateResponseSchema = z
   .openapi({ required: [] })
   .openapi('FlowFrameworkCommonSearchStateResponse')
 
-const FlowFrameworkCommonSearchWorkflowRequestSchema = z
-  .object({
-    query: CommonQueryDslQueryContainerSchema.exactOptional().openapi({
-      description: 'The query used to search for workflows.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('FlowFrameworkCommonSearchWorkflowRequest')
+const FlowFrameworkCommonSearchWorkflowRequestSchema: z.ZodType<FlowFrameworkCommonSearchWorkflowRequestType> =
+  z
+    .object({
+      query: CommonQueryDslQueryContainerSchema.exactOptional().openapi({
+        description: 'The query used to search for workflows.',
+      }),
+    })
+    .openapi({ required: [] })
+    .openapi('FlowFrameworkCommonSearchWorkflowRequest')
 
 const FlowFrameworkCommonShardsSchema = z
   .object({
@@ -24243,24 +29769,7 @@ const GeospatialCommonDataSourceSchema = z
   })
   .openapi('GeospatialCommonDataSource')
 
-const GeospatialCommonGeoJSONDataTypeSchema = z
-  .enum(['Feature', 'FeatureCollection'])
-  .openapi('GeospatialCommonGeoJSONDataType')
-
-const GeospatialCommonGeoJSONDataSchema = z
-  .object({
-    type: GeospatialCommonGeoJSONDataTypeSchema,
-    geometry: GeospatialCommonGeometrySchema,
-    properties: z.object({}).exactOptional(),
-  })
-  .openapi({ required: ['geometry', 'type'] })
-  .openapi('GeospatialCommonGeoJSONData')
-
-const GeospatialCommonGeospatialFieldTypeSchema = z
-  .enum(['geo_point', 'geo_shape'])
-  .openapi('GeospatialCommonGeospatialFieldType')
-
-const GeospatialCommonGeoJSONRequestSchema = z
+const GeospatialCommonGeoJSONRequestSchema: z.ZodType<GeospatialCommonGeoJSONRequestType> = z
   .object({
     index: CommonIndexNameSchema,
     field: z
@@ -24343,27 +29852,6 @@ const GeospatialCommonPutIP2GeoDataSourceRequestSchema = z
   .openapi({ required: [] })
   .openapi('GeospatialCommonPutIP2GeoDataSourceRequest')
 
-const IndicesCommonAliasSchema = z
-  .object({
-    filter: CommonQueryDslQueryContainerSchema.exactOptional(),
-    index_routing: CommonRoutingSchema.exactOptional(),
-    is_hidden: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'When `true`, the alias is hidden.\nAll indexes for the alias must have the same `is_hidden` value.',
-      }),
-    is_write_index: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'When `true`, the index is the write index for the alias.' }),
-    routing: CommonRoutingSchema.exactOptional(),
-    search_routing: CommonRoutingSchema.exactOptional(),
-  })
-  .openapi({ description: 'The index alias configuration.', required: [] })
-  .openapi('IndicesCommonAlias')
-
 const IndicesCommonManagedBySchema = z
   .enum(['Data stream lifecycle', 'Index Lifecycle Management', 'Unmanaged'])
   .openapi({ description: 'The component managing the data stream or index.' })
@@ -24388,14 +29876,6 @@ const IndicesCommonDataStreamIndexSchema = z
     required: ['index_name', 'index_uuid'],
   })
   .openapi('IndicesCommonDataStreamIndex')
-
-const IndicesCommonDataStreamTimestampFieldSchema = z
-  .object({ name: CommonFieldSchema })
-  .openapi({
-    description: 'The timestamp field configuration for a data stream.',
-    required: ['name'],
-  })
-  .openapi('IndicesCommonDataStreamTimestampField')
 
 const IndicesCommonDataStreamSchema = z
   .object({
@@ -24503,7 +29983,7 @@ const IndicesCommonIndexGetUpgradeStatusSchema = z
   .openapi({ description: 'The upgrade status information for indexes.', required: [] })
   .openapi('IndicesCommonIndexGetUpgradeStatus')
 
-const IndicesCommonIndexStateSchema = z
+const IndicesCommonIndexStateSchema: z.ZodType<IndicesCommonIndexStateType> = z
   .object({
     aliases: z
       .record(z.string(), IndicesCommonAliasSchema)
@@ -24517,79 +29997,7 @@ const IndicesCommonIndexStateSchema = z
   .openapi({ description: 'The state configuration of an index.', required: [] })
   .openapi('IndicesCommonIndexState')
 
-const IndicesCommonIndexTemplateSummarySchema = z
-  .object({
-    aliases: z
-      .record(z.string(), IndicesCommonAliasSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The aliases to add.\nIf the index template includes a `data_stream` object, these are data stream aliases.\nOtherwise, these are index aliases.\nData stream aliases ignore the `index_routing`, `routing`, and `search_routing` options.',
-      }),
-    mappings: CommonMappingTypeMappingSchema.exactOptional(),
-    settings: IndicesCommonIndexSettingsSchema.exactOptional(),
-  })
-  .openapi({ description: 'The summary configuration for an index template.', required: [] })
-  .openapi('IndicesCommonIndexTemplateSummary')
-
-const IndicesCommonIndexTemplateDataStreamConfigurationSchema = z
-  .object({
-    hidden: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'When `true`, the data stream is hidden.' }),
-    allow_custom_routing: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'When `true`, the data stream supports custom routing.' }),
-    timestamp_field: IndicesCommonDataStreamTimestampFieldSchema.exactOptional(),
-  })
-  .openapi({ description: 'The data stream configuration for an index template.', required: [] })
-  .openapi('IndicesCommonIndexTemplateDataStreamConfiguration')
-
-const IndicesCommonIndexTemplateSchema = z
-  .object({
-    index_patterns: CommonNamesSchema,
-    composed_of: z
-      .array(CommonNameSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'An ordered list of component template names.\nComponent templates are merged in the order specified, meaning that the last component template specified has the highest precedence.',
-      }),
-    template: IndicesCommonIndexTemplateSummarySchema.exactOptional(),
-    version: CommonVersionNumberSchema.exactOptional(),
-    priority: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The priority to determine index template precedence when a new data stream or index is created.\nThe index template with the highest priority is chosen.\nIf no priority is specified the template is treated as though it is of priority 0 (lowest priority).\nThis number is not automatically generated by OpenSearch.',
-      }),
-    _meta: CommonMetadataSchema.exactOptional(),
-    allow_auto_create: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the template allows automatic index creation.' }),
-    data_stream: IndicesCommonIndexTemplateDataStreamConfigurationSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'The configuration for an index template.',
-    required: ['index_patterns'],
-  })
-  .openapi('IndicesCommonIndexTemplate')
-
-const IndicesCommonTemplateMappingSchema = z
+const IndicesCommonTemplateMappingSchema: z.ZodType<IndicesCommonTemplateMappingType> = z
   .object({
     aliases: z.record(z.string(), IndicesCommonAliasSchema),
     index_patterns: z.array(CommonNameSchema),
@@ -24732,16 +30140,7 @@ const IndicesAnalyzeTextToAnalyzeSchema = CommonStringOrStringArraySchema.openap
   description: 'The text or array of text to analyze.',
 }).openapi('IndicesAnalyzeTextToAnalyze')
 
-const IndicesCloseCloseShardResultSchema = z
-  .object({
-    failures: z
-      .array(CommonShardFailureSchema)
-      .openapi({ description: 'The list of failures that occurred while closing shards.' }),
-  })
-  .openapi({ description: 'The result of closing shards in an index.', required: ['failures'] })
-  .openapi('IndicesCloseCloseShardResult')
-
-const IndicesCloseCloseIndexResultSchema = z
+const IndicesCloseCloseIndexResultSchema: z.ZodType<IndicesCloseCloseIndexResultType> = z
   .object({
     closed: z.boolean().openapi({ description: 'Whether the index was successfully closed.' }),
     shards: z
@@ -24752,7 +30151,7 @@ const IndicesCloseCloseIndexResultSchema = z
   .openapi({ description: 'The result of a close index operation.', required: ['closed'] })
   .openapi('IndicesCloseCloseIndexResult')
 
-const IndicesGetAliasIndexAliasesSchema = z
+const IndicesGetAliasIndexAliasesSchema: z.ZodType<IndicesGetAliasIndexAliasesType> = z
   .object({
     aliases: z
       .record(z.string(), IndicesCommonAliasDefinitionSchema)
@@ -24761,45 +30160,49 @@ const IndicesGetAliasIndexAliasesSchema = z
   .openapi({ description: 'The alias configuration for an index.', required: ['aliases'] })
   .openapi('IndicesGetAliasIndexAliases')
 
-const IndicesGetFieldMappingTypeFieldMappingsSchema = z
-  .object({
-    mappings: z
-      .record(z.string(), CommonMappingFieldMappingSchema)
-      .openapi({ description: 'The map of field names to their mapping definitions.' }),
-  })
-  .openapi({ description: 'The field mapping configuration for a type.', required: ['mappings'] })
-  .openapi('IndicesGetFieldMappingTypeFieldMappings')
+const IndicesGetFieldMappingTypeFieldMappingsSchema: z.ZodType<IndicesGetFieldMappingTypeFieldMappingsType> =
+  z
+    .object({
+      mappings: z
+        .record(z.string(), CommonMappingFieldMappingSchema)
+        .openapi({ description: 'The map of field names to their mapping definitions.' }),
+    })
+    .openapi({ description: 'The field mapping configuration for a type.', required: ['mappings'] })
+    .openapi('IndicesGetFieldMappingTypeFieldMappings')
 
-const IndicesGetIndexTemplateIndexTemplateItemSchema = z
-  .object({ name: CommonNameSchema, index_template: IndicesCommonIndexTemplateSchema })
-  .openapi({
-    description: 'The configuration for an index template item.',
-    required: ['index_template', 'name'],
-  })
-  .openapi('IndicesGetIndexTemplateIndexTemplateItem')
+const IndicesGetIndexTemplateIndexTemplateItemSchema: z.ZodType<IndicesGetIndexTemplateIndexTemplateItemType> =
+  z
+    .object({ name: CommonNameSchema, index_template: IndicesCommonIndexTemplateSchema })
+    .openapi({
+      description: 'The configuration for an index template item.',
+      required: ['index_template', 'name'],
+    })
+    .openapi('IndicesGetIndexTemplateIndexTemplateItem')
 
-const IndicesGetMappingIndexMappingRecordSchema = z
-  .object({
-    item: CommonMappingTypeMappingSchema.exactOptional(),
-    mappings: CommonMappingTypeMappingSchema,
-  })
-  .openapi({ description: 'The mapping configuration for an index.', required: ['mappings'] })
-  .openapi('IndicesGetMappingIndexMappingRecord')
+const IndicesGetMappingIndexMappingRecordSchema: z.ZodType<IndicesGetMappingIndexMappingRecordType> =
+  z
+    .object({
+      item: CommonMappingTypeMappingSchema.exactOptional(),
+      mappings: CommonMappingTypeMappingSchema,
+    })
+    .openapi({ description: 'The mapping configuration for an index.', required: ['mappings'] })
+    .openapi('IndicesGetMappingIndexMappingRecord')
 
-const IndicesPutIndexTemplateIndexTemplateMappingSchema = z
-  .object({
-    aliases: z
-      .record(z.string(), IndicesCommonAliasSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The aliases to add.\nIf the index template includes a `data_stream` object, these are data stream aliases.\nOtherwise, these are index aliases.\nData stream aliases ignore the `index_routing`, `routing`, and `search_routing` options.',
-      }),
-    mappings: CommonMappingTypeMappingSchema.exactOptional(),
-    settings: IndicesCommonIndexSettingsSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('IndicesPutIndexTemplateIndexTemplateMapping')
+const IndicesPutIndexTemplateIndexTemplateMappingSchema: z.ZodType<IndicesPutIndexTemplateIndexTemplateMappingType> =
+  z
+    .object({
+      aliases: z
+        .record(z.string(), IndicesCommonAliasSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The aliases to add.\nIf the index template includes a `data_stream` object, these are data stream aliases.\nOtherwise, these are index aliases.\nData stream aliases ignore the `index_routing`, `routing`, and `search_routing` options.',
+        }),
+      mappings: CommonMappingTypeMappingSchema.exactOptional(),
+      settings: IndicesCommonIndexSettingsSchema.exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('IndicesPutIndexTemplateIndexTemplateMapping')
 
 const IndicesRecoveryFileDetailsSchema = z
   .object({
@@ -25349,7 +30752,7 @@ const IndicesSimulateTemplateOverlappingSchema = z
   })
   .openapi('IndicesSimulateTemplateOverlapping')
 
-const IndicesSimulateTemplateTemplateSchema = z
+const IndicesSimulateTemplateTemplateSchema: z.ZodType<IndicesSimulateTemplateTemplateType> = z
   .object({
     aliases: z
       .record(z.string(), IndicesCommonAliasSchema)
@@ -25363,205 +30766,12 @@ const IndicesSimulateTemplateTemplateSchema = z
   })
   .openapi('IndicesSimulateTemplateTemplate')
 
-const IndicesStatsIndexStatsBaseSchema = z
-  .object({
-    docs: CommonDocStatsSchema.exactOptional(),
-    store: CommonStoreStatsSchema.exactOptional(),
-    indexing: CommonIndexingStatsSchema.exactOptional(),
-    get: CommonGetStatsSchema.exactOptional(),
-    search: CommonSearchStatsSchema.exactOptional(),
-    merges: CommonMergesStatsSchema.exactOptional(),
-    refresh: CommonRefreshStatsSchema.exactOptional(),
-    flush: CommonFlushStatsSchema.exactOptional(),
-    warmer: CommonWarmerStatsSchema.exactOptional(),
-    query_cache: CommonQueryCacheStatsSchema.exactOptional(),
-    fielddata: CommonFielddataStatsSchema.exactOptional(),
-    completion: CommonCompletionStatsSchema.exactOptional(),
-    segments: CommonSegmentsStatsSchema.exactOptional(),
-    translog: CommonTranslogStatsSchema.exactOptional(),
-    request_cache: CommonRequestCacheStatsSchema.exactOptional(),
-    recovery: CommonRecoveryStatsSchema.exactOptional(),
-  })
-  .openapi({ description: 'The base statistics for an index.', required: [] })
-  .openapi('IndicesStatsIndexStatsBase')
-
-const IndicesStatsIndexStatsSchema = IndicesStatsIndexStatsBaseSchema.and(z.object({})).openapi(
-  'IndicesStatsIndexStats',
-)
-
 const IndicesStatsAllIndicesStatsSchema = z
   .object({ primaries: IndicesStatsIndexStatsSchema, total: IndicesStatsIndexStatsSchema })
   .openapi({ description: 'The statistics for all indexes.', required: ['primaries', 'total'] })
   .openapi('IndicesStatsAllIndicesStats')
 
-const IndicesStatsShardRoutingSchema = z
-  .object({
-    node: z.string().openapi({ description: 'The node containing the shard.' }),
-    primary: z.boolean().openapi({ description: 'Whether this is a primary shard.' }),
-    relocating_node: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The node where the shard is relocating to.' }),
-    state: IndicesStatsShardRoutingStateSchema,
-  })
-  .openapi({
-    description: 'The routing information for a shard.',
-    required: ['node', 'primary', 'state'],
-  })
-  .openapi('IndicesStatsShardRouting')
-
-const IndicesStatsShardCommitSchema = z
-  .object({
-    generation: z.int32().openapi({ description: 'The generation number of the commit.' }),
-    id: CommonIdSchema,
-    num_docs: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The number of documents in the commit.',
-      }),
-    user_data: z
-      .record(z.string(), z.string())
-      .openapi({ description: 'The user-defined data associated with the commit.' }),
-  })
-  .openapi({
-    description: 'The commit information for a shard.',
-    required: ['generation', 'id', 'num_docs', 'user_data'],
-  })
-  .openapi('IndicesStatsShardCommit')
-
-const IndicesStatsShardSequenceNumberSchema = z
-  .object({
-    global_checkpoint: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The global checkpoint for the shard.',
-      }),
-    local_checkpoint: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The local checkpoint for the shard.',
-      }),
-    max_seq_no: CommonSequenceNumberSchema,
-  })
-  .openapi({
-    description: 'The sequence number information for a shard.',
-    required: ['global_checkpoint', 'local_checkpoint', 'max_seq_no'],
-  })
-  .openapi('IndicesStatsShardSequenceNumber')
-
-const IndicesStatsShardLeaseSchema = z
-  .object({
-    id: CommonIdSchema,
-    retaining_seq_no: CommonSequenceNumberSchema,
-    timestamp: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    source: z.string(),
-  })
-  .openapi({
-    description: 'The retention lease details.',
-    required: ['id', 'retaining_seq_no', 'source', 'timestamp'],
-  })
-  .openapi('IndicesStatsShardLease')
-
-const IndicesStatsShardRetentionLeasesSchema = z
-  .object({
-    primary_term: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The primary term of the retention leases.',
-      }),
-    version: CommonVersionNumberSchema,
-    leases: z
-      .array(IndicesStatsShardLeaseSchema)
-      .openapi({ description: 'The list of retention leases.' }),
-  })
-  .openapi({
-    description: 'The retention lease information for a shard.',
-    required: ['leases', 'primary_term', 'version'],
-  })
-  .openapi('IndicesStatsShardRetentionLeases')
-
-const IndicesStatsShardPathSchema = z
-  .object({
-    data_path: z.string().openapi({ description: "The path to the shard's data." }),
-    is_custom_data_path: z
-      .boolean()
-      .openapi({ description: 'Whether the shard uses a custom data path.' }),
-    state_path: z.string().openapi({ description: "The path to the shard's state." }),
-  })
-  .openapi({
-    description: 'The path information for a shard.',
-    required: ['data_path', 'is_custom_data_path', 'state_path'],
-  })
-  .openapi('IndicesStatsShardPath')
-
-const IndicesStatsIndexShardStatsBaseSchema = IndicesStatsIndexStatsBaseSchema.and(
-  z
-    .object({
-      routing: IndicesStatsShardRoutingSchema.exactOptional(),
-      commit: IndicesStatsShardCommitSchema.exactOptional(),
-      seq_no: IndicesStatsShardSequenceNumberSchema.exactOptional(),
-      retention_leases: IndicesStatsShardRetentionLeasesSchema.exactOptional(),
-      shard_path: IndicesStatsShardPathSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('IndicesStatsIndexShardStatsBase')
-
-const IndicesStatsIndexShardStatsSchema = IndicesStatsIndexShardStatsBaseSchema.and(
-  z.object({}),
-).openapi('IndicesStatsIndexShardStats')
-
-const IndicesStatsIndicesStatsSchema = z
+const IndicesStatsIndicesStatsSchema: z.ZodType<IndicesStatsIndicesStatsType> = z
   .object({
     uuid: CommonUuidSchema,
     primaries: IndicesStatsIndexStatsSchema,
@@ -25601,64 +30811,7 @@ const IndicesStatsMetricSchema = z
   .openapi({ description: 'The type of statistics to retrieve.' })
   .openapi('IndicesStatsMetric')
 
-const IndicesUpdateAliasesAddActionSchema = z
-  .object({
-    alias: CommonIndexAliasSchema.exactOptional(),
-    aliases: z
-      .xor([CommonIndexAliasSchema, z.array(CommonIndexAliasSchema)])
-      .exactOptional()
-      .openapi({ description: 'The list of aliases to add. Index alias names support date math.' }),
-    filter: CommonQueryDslQueryContainerSchema.exactOptional(),
-    index: CommonIndexNameSchema.exactOptional(),
-    indices: CommonIndicesSchema.exactOptional(),
-    index_routing: CommonRoutingSchema.exactOptional(),
-    is_hidden: z.boolean().exactOptional().openapi({ description: 'Whether the alias is hidden.' }),
-    is_write_index: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether this is the write index or data stream for the alias.' }),
-    routing: CommonRoutingSchema.exactOptional(),
-    search_routing: CommonRoutingSchema.exactOptional(),
-    must_exist: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the alias must exist to perform the action.' }),
-  })
-  .openapi({ description: 'The configuration for adding an alias.', required: [] })
-  .openapi('IndicesUpdateAliasesAddAction')
-
-const IndicesUpdateAliasesRemoveActionSchema = z
-  .object({
-    alias: CommonIndexAliasSchema.exactOptional(),
-    aliases: z
-      .xor([CommonIndexAliasSchema, z.array(CommonIndexAliasSchema)])
-      .exactOptional()
-      .openapi({
-        description: 'The list of aliases to remove. Index alias names support date math.',
-      }),
-    index: CommonIndexNameSchema.exactOptional(),
-    indices: CommonIndicesSchema.exactOptional(),
-    must_exist: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the alias must exist to perform the action.' }),
-  })
-  .openapi({ description: 'The configuration for removing an alias.', required: [] })
-  .openapi('IndicesUpdateAliasesRemoveAction')
-
-const IndicesUpdateAliasesRemoveIndexActionSchema = z
-  .object({
-    index: CommonIndexNameSchema.exactOptional(),
-    indices: CommonIndicesSchema.exactOptional(),
-    must_exist: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the alias must exist to perform the action.' }),
-  })
-  .openapi({ description: 'The configuration for removing an index.', required: [] })
-  .openapi('IndicesUpdateAliasesRemoveIndexAction')
-
-const IndicesUpdateAliasesActionSchema = z
+const IndicesUpdateAliasesActionSchema: z.ZodType<IndicesUpdateAliasesActionType> = z
   .object({
     add: IndicesUpdateAliasesAddActionSchema.exactOptional(),
     remove: IndicesUpdateAliasesRemoveActionSchema.exactOptional(),
@@ -25852,464 +31005,14 @@ const IngestionCommonResumeIngestionResponseSchema = z
   .openapi({ required: ['acknowledged', 'shards_acknowledged'] })
   .openapi('IngestionCommonResumeIngestionResponse')
 
-const InsightsCommonGroupingTypeSchema = z
-  .enum(['NONE', 'SIMILARITY', 'none', 'similarity'])
-  .openapi('InsightsCommonGroupingType')
-
-const InsightsCommonMeasurementSchema = z
-  .object({
-    number: z.int().exactOptional(),
-    count: z.int().exactOptional(),
-    aggregationType: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('InsightsCommonMeasurement')
-
-const InsightsCommonMeasurementsSchema = z
-  .object({
-    latency: InsightsCommonMeasurementSchema.exactOptional(),
-    cpu: InsightsCommonMeasurementSchema.exactOptional(),
-    memory: InsightsCommonMeasurementSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('InsightsCommonMeasurements')
-
 const InsightsCommonMetricTypeSchema = z
   .enum(['cpu', 'latency', 'memory'])
   .openapi('InsightsCommonMetricType')
 
-const InsightsCommonSourceSchema = z
-  .object({
-    aggregations: z
-      .object({})
-      .exactOptional()
-      .openapi({
-        description: 'Defines the aggregations that are run as part of the search request.',
-      }),
-    collapse: CoreSearchFieldCollapseSchema.exactOptional(),
-    explain: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If `true`, returns detailed information about score computation as part of a hit.',
-      }),
-    ext: z
-      .record(z.string(), z.object({}))
-      .exactOptional()
-      .openapi({
-        description: 'Configuration of search extensions defined by OpenSearch plugins.',
-      }),
-    from: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description:
-          'Starting document offset.\nNeeds to be non-negative.\nBy default, you cannot page through more than 10,000 hits using the `from` and `size` parameters.\nTo page through more hits, use the `search_after` parameter.',
-      }),
-    highlight: CoreSearchHighlightSchema.exactOptional(),
-    track_total_hits: CoreSearchTrackHitsSchema.exactOptional(),
-    indices_boost: z
-      .array(z.record(z.string(), z.number()))
-      .exactOptional()
-      .openapi({ description: 'Boosts the `_score` of documents from specified indexes.' }),
-    docvalue_fields: z
-      .array(CommonQueryDslFieldAndFormatSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Array of wildcard (`*`) patterns.\nThe request returns doc values for field names matching these patterns in the `hits.fields` property of the response.',
-      }),
-    min_score: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description:
-          'Minimum `_score` for matching documents.\nDocuments with a lower `_score` are not included in the search results.',
-      }),
-    post_filter: CommonQueryDslQueryContainerSchema.exactOptional(),
-    profile: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Set to `true` to return detailed timing information about the execution of individual components in a search request.\nNOTE: This is a debugging tool and adds significant overhead to search execution.',
-      }),
-    query: CommonQueryDslQueryContainerSchema.exactOptional(),
-    script_fields: z
-      .record(z.string(), CommonScriptFieldSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Retrieve a script evaluation (based on different fields) for each hit.',
-      }),
-    search_after: CommonSortResultsSchema.exactOptional(),
-    size: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description:
-          'The number of hits to return.\nBy default, you cannot page through more than 10,000 hits using the `from` and `size` parameters.\nTo page through more hits, use the `search_after` parameter.',
-      }),
-    slice: CommonSlicedScrollSchema.exactOptional(),
-    sort: CommonSortSchema.exactOptional(),
-    _source: CoreSearchSourceConfigSchema.exactOptional(),
-    fields: z
-      .array(CommonQueryDslFieldAndFormatSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Array of wildcard (`*`) patterns.\nThe request returns values for field names matching these patterns in the `hits.fields` property of the response.',
-      }),
-    suggest: CoreSearchSuggesterSchema.exactOptional(),
-    terminate_after: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Maximum number of documents to collect for each shard.\nIf a query reaches this limit, OpenSearch terminates the query early.\nOpenSearch collects documents before sorting.\nUse with caution.\nOpenSearch applies this parameter to each shard handling the request.\nWhen possible, let OpenSearch perform early termination automatically.\nAvoid specifying this parameter for requests that target data streams with backing indexes across multiple data tiers.\nIf set to `0` (default), the query does not terminate early.',
-      }),
-    timeout: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the period of time to wait for a response from each shard.\nIf no response is received before the timeout expires, the request fails and returns an error.\nDefaults to no timeout.',
-      }),
-    track_scores: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If `true`, calculate and return document scores, even if the scores are not used for sorting.',
-      }),
-    version: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'If `true`, returns document version as part of a hit.' }),
-    seq_no_primary_term: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If `true`, returns sequence number and primary term of the last modification of each hit.',
-      }),
-    stored_fields: CommonFieldsSchema.exactOptional(),
-    pit: CoreSearchPointInTimeReferenceSchema.exactOptional(),
-    stats: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Stats groups to associate with the search.\nEach group maintains a statistics aggregation for its associated searches.\nYou can retrieve these stats using the indexes stats API.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('InsightsCommonSource')
-
-const InsightsCommonTaskResourceUsageSchema = z
-  .object({
-    cpu_time_in_nanos: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The CPU time used in nanoseconds.' }),
-    memory_in_bytes: z.int().exactOptional().openapi({ description: 'The memory usage in bytes.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('InsightsCommonTaskResourceUsage')
-
-const InsightsCommonTaskResourceUsagesSchema = z
-  .object({
-    action: z.string().exactOptional().openapi({ description: 'The action type of the task.' }),
-    taskId: z.int().exactOptional().openapi({ description: 'The task ID.' }),
-    parentTaskId: z.int().exactOptional().openapi({ description: 'The parent task ID.' }),
-    nodeId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The node ID where the task was executed.' }),
-    taskResourceUsage: InsightsCommonTaskResourceUsageSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('InsightsCommonTaskResourceUsages')
-
-const InsightsCommonTopQuerySchema = z
-  .object({
-    id: z.string().exactOptional(),
-    group_by: InsightsCommonGroupingTypeSchema.exactOptional(),
-    timestamp: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The timestamp of the query execution.' }),
-    total_shards: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The total number of shards involved in the query.' }),
-    task_resource_usages: z.array(InsightsCommonTaskResourceUsagesSchema).exactOptional(),
-    query_hashcode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The hash code of the query.' }),
-    labels: z
-      .object({})
-      .exactOptional()
-      .openapi({ description: 'Additional labels for the query.' }),
-    search_type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The search query type (for example, `query_then_fetch`).' }),
-    source: InsightsCommonSourceSchema.exactOptional(),
-    node_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The node ID associated with the query.' }),
-    indices: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'The indexes involved in the query.' }),
-    phase_latency_map: z.object({}).exactOptional(),
-    measurements: InsightsCommonMeasurementsSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('InsightsCommonTopQuery')
-
-const InsightsCommonTopQueriesResponseSchema = z
+const InsightsCommonTopQueriesResponseSchema: z.ZodType<InsightsCommonTopQueriesResponseType> = z
   .object({ top_queries: z.array(InsightsCommonTopQuerySchema) })
   .openapi({ required: ['top_queries'] })
   .openapi('InsightsCommonTopQueriesResponse')
-
-const IsmCommonActionTimeoutSchema = z
-  .object({
-    timeout: z
-      .object({})
-      .exactOptional()
-      .openapi({ description: 'The timeout configuration for the action.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('IsmCommonActionTimeout')
-
-const IsmCommonActionRetrySchema = z
-  .object({
-    count: z.int().exactOptional().openapi({ description: 'The number of retry attempts.' }),
-    backoff: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The backoff strategy for retries.' }),
-    delay: z.string().exactOptional().openapi({ description: 'The delay between retry attempts.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('IsmCommonActionRetry')
-
-const IsmCommonActionAliasSchema = z
-  .object({
-    actions: z
-      .looseObject({})
-      .exactOptional()
-      .openapi({ description: 'The alias actions to perform.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('IsmCommonActionAlias')
-
-const IsmCommonActionDeleteSchema = z
-  .object({})
-  .openapi({ description: 'The delete action configuration.' })
-  .openapi('IsmCommonActionDelete')
-
-const IsmCommonActionForceMergeSchema = z
-  .object({
-    max_num_segments: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The maximum number of segments to merge to.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('IsmCommonActionForceMerge')
-
-const IsmCommonActionReadOnlySchema = z
-  .object({})
-  .openapi({ description: 'The read-only action configuration.' })
-  .openapi('IsmCommonActionReadOnly')
-
-const IsmCommonActionReadWriteSchema = z
-  .object({})
-  .openapi({ description: 'The read-write action configuration.' })
-  .openapi('IsmCommonActionReadWrite')
-
-const IsmCommonActionReplicaCountSchema = z
-  .object({
-    number_of_replicas: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The number of replicas to set.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('IsmCommonActionReplicaCount')
-
-const IsmCommonActionIndexPrioritySchema = z
-  .object({
-    priority: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The priority to set for the index.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('IsmCommonActionIndexPriority')
-
-const IsmCommonActionCloseSchema = z
-  .object({})
-  .openapi({ description: 'The close action configuration.' })
-  .openapi('IsmCommonActionClose')
-
-const IsmCommonActionOpenSchema = z
-  .object({})
-  .openapi({ description: 'The open action configuration.' })
-  .openapi('IsmCommonActionOpen')
-
-const IsmCommonActionSnapshotSchema = z
-  .object({
-    repository: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The repository to store the snapshot.' }),
-    snapshot: z.string().exactOptional().openapi({ description: 'The name of the snapshot.' }),
-    include_global_state: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether to include the global state in the snapshot.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('IsmCommonActionSnapshot')
-
-const IsmCommonActionRolloverSchema = z
-  .object({
-    min_size: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The minimum size to trigger rollover.' }),
-    min_index_age: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The minimum index age to trigger rollover.' }),
-    min_doc_count: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The minimum document count to trigger rollover.' }),
-    min_primary_shard_size: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The minimum primary shard size to trigger rollover.' }),
-    copy_alias: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether to copy the alias to the new index.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('IsmCommonActionRollover')
-
-const IsmCommonActionNotificationSchema = z
-  .looseObject({})
-  .openapi({ description: 'The notification action configuration.' })
-  .openapi('IsmCommonActionNotification')
-
-const IsmCommonActionAllocationSchema = z
-  .object({
-    require: z
-      .looseObject({})
-      .exactOptional()
-      .openapi({ description: 'The required allocation attributes.' }),
-    include: z
-      .looseObject({})
-      .exactOptional()
-      .openapi({ description: 'The included allocation attributes.' }),
-    exclude: z
-      .looseObject({})
-      .exactOptional()
-      .openapi({ description: 'The excluded allocation attributes.' }),
-    wait_for: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether to wait for the allocation to complete.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('IsmCommonActionAllocation')
-
-const IsmCommonActionRollupSchema = z
-  .looseObject({})
-  .openapi({ description: 'The rollup action configuration.' })
-  .openapi('IsmCommonActionRollup')
-
-const IsmCommonActionTransformSchema = z
-  .looseObject({})
-  .openapi({ description: 'The transform action configuration.' })
-  .openapi('IsmCommonActionTransform')
-
-const IsmCommonActionShrinkSchema = z
-  .looseObject({})
-  .openapi({ description: 'The shrink action configuration.' })
-  .openapi('IsmCommonActionShrink')
-
-const IsmCommonActionCustomSchema = z
-  .looseObject({})
-  .openapi({ description: 'The custom action configuration.' })
-  .openapi('IsmCommonActionCustom')
-
-const IsmCommonActionSchema = z
-  .object({
-    timeout: IsmCommonActionTimeoutSchema.exactOptional().openapi({
-      description: 'The amount of time to wait before the action fails.',
-    }),
-    retry: IsmCommonActionRetrySchema.exactOptional().openapi({
-      description: 'The number of times to retry the action.',
-    }),
-    alias: IsmCommonActionAliasSchema.exactOptional().openapi({
-      description: 'Adds or removes an index alias.',
-    }),
-    delete: IsmCommonActionDeleteSchema.exactOptional().openapi({
-      description: 'Deletes an index.',
-    }),
-    force_merge: IsmCommonActionForceMergeSchema.exactOptional().openapi({
-      description: 'Force merges an index.',
-    }),
-    read_only: IsmCommonActionReadOnlySchema.exactOptional().openapi({
-      description: 'Changes the index permissions to read-only.',
-    }),
-    read_write: IsmCommonActionReadWriteSchema.exactOptional().openapi({
-      description: 'Changes the index permissions to read-write.',
-    }),
-    replica_count: IsmCommonActionReplicaCountSchema.exactOptional().openapi({
-      description: 'The number of replicas for the index.',
-    }),
-    index_priority: IsmCommonActionIndexPrioritySchema.exactOptional().openapi({
-      description: 'The priority level of the index.',
-    }),
-    close: IsmCommonActionCloseSchema.exactOptional().openapi({ description: 'Closes an index.' }),
-    open: IsmCommonActionOpenSchema.exactOptional().openapi({ description: 'Opens an index.' }),
-    snapshot: IsmCommonActionSnapshotSchema.exactOptional().openapi({
-      description: 'Takes a snapshot of the index.',
-    }),
-    rollover: IsmCommonActionRolloverSchema.exactOptional().openapi({
-      description: 'Sets a rollover policy for the index.',
-    }),
-    notification: IsmCommonActionNotificationSchema.exactOptional().openapi({
-      description:
-        'Sets a policy which determines when to send a notification regarding the index.',
-    }),
-    allocation: IsmCommonActionAllocationSchema.exactOptional().openapi({
-      description: 'Sets the allocations settings for index.',
-    }),
-    rollup: IsmCommonActionRollupSchema.exactOptional().openapi({
-      description: 'Determines when to perform an index rollup.',
-    }),
-    transform: IsmCommonActionTransformSchema.exactOptional().openapi({
-      description: 'Determines when to perform an index transform.',
-    }),
-    shrink: IsmCommonActionShrinkSchema.exactOptional().openapi({
-      description: 'Determines when to shrink the index.',
-    }),
-    custom: IsmCommonActionCustomSchema.exactOptional().openapi({
-      description: 'Enables custom operations to be performed on the index.',
-    }),
-  })
-  .openapi({ description: 'An action to perform.', required: [] })
-  .openapi('IsmCommonAction')
 
 const IsmCommonAddPolicyRequestSchema = z
   .object({ policy_id: z.string().openapi({ description: 'The ID of the policy to add.' }) })
@@ -26376,99 +31079,9 @@ const IsmCommonChangePolicyResponseSchema = IsmCommonChangeResponseSchema.openap
   'IsmCommonChangePolicyResponse',
 )
 
-const IsmCommonChannelSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ description: 'The ID of the notification channel.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('IsmCommonChannel')
-
 const IsmCommonDeletePolicyResponseSchema = CommonWriteResponseBaseSchema.openapi(
   'IsmCommonDeletePolicyResponse',
 )
-
-const IsmCommonErrorNotificationChimeSchema = z
-  .object({
-    url: z.string().exactOptional().openapi({ description: 'The URL for the Chime webhook.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('IsmCommonErrorNotificationChime')
-
-const IsmCommonSlackCustomWebhookSchema = z
-  .object({
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The URL for the custom Slack webhook.' }),
-    scheme: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The scheme for the custom Slack webhook.' }),
-    host: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The host for the custom Slack webhook.' }),
-    port: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The port for the custom Slack webhook.' }),
-    path: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The path for the custom Slack webhook.' }),
-    query_params: z
-      .looseObject({})
-      .exactOptional()
-      .openapi({ description: 'The query parameters for the custom Slack webhook.' }),
-    header_params: z
-      .looseObject({})
-      .exactOptional()
-      .openapi({ description: 'The header parameters for the custom Slack webhook.' }),
-    username: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The username for the custom Slack webhook.' }),
-    password: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The password for the custom Slack webhook.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('IsmCommonSlackCustomWebhook')
-
-const IsmCommonErrorNotificationSlackSchema = z
-  .object({
-    url: z.string().exactOptional().openapi({ description: 'The URL for the Slack webhook.' }),
-    custom_webhook: IsmCommonSlackCustomWebhookSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('IsmCommonErrorNotificationSlack')
-
-const IsmCommonErrorNotificationDestinationSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the notification destination.' }),
-    last_update_time: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'When the notification destination was last updated.' }),
-  })
-  .catchall(z.union([IsmCommonErrorNotificationChimeSchema, IsmCommonErrorNotificationSlackSchema]))
-  .openapi('IsmCommonErrorNotificationDestination')
-
-const IsmCommonErrorNotificationSchema = z
-  .object({
-    destination: IsmCommonErrorNotificationDestinationSchema.exactOptional(),
-    channel: IsmCommonChannelSchema.exactOptional(),
-    message_template: z
-      .looseObject({})
-      .exactOptional()
-      .openapi({ description: 'The template for error notification messages.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('IsmCommonErrorNotification')
 
 const IsmCommonExplainPolicySchema = z
   .object({
@@ -26501,120 +31114,7 @@ const IsmCommonExplainIndexResponseSchema = z
   .catchall(IsmCommonExplainPolicySchema)
   .openapi('IsmCommonExplainIndexResponse')
 
-const IsmCommonMetadataSchema = z
-  .object({
-    _id: CommonIdSchema.exactOptional(),
-    _primary_term: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The primary term of the document.' }),
-    _seq_no: CommonSequenceNumberSchema.exactOptional(),
-    _version: CommonVersionNumberSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('IsmCommonMetadata')
-
-const IsmCommonTransitionSchema = z
-  .object({
-    state_name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the state to transition to.' }),
-    conditions: z
-      .looseObject({})
-      .exactOptional()
-      .openapi({ description: 'The conditions for the transition.' }),
-  })
-  .openapi({ description: 'A transition into a new state.', required: [] })
-  .openapi('IsmCommonTransition')
-
-const IsmCommonStatesSchema = z
-  .object({
-    name: z.string().exactOptional().openapi({ description: 'The name of the state.' }),
-    actions: z
-      .array(IsmCommonActionSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of actions to perform.' }),
-    transitions: z
-      .array(IsmCommonTransitionSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of transitions to enter a new state.' }),
-  })
-  .openapi({
-    description: 'The list of actions to perform and transitions to enter a new state.',
-    required: [],
-  })
-  .openapi('IsmCommonStates')
-
-const IsmCommonIsmTemplateSchema = z
-  .object({
-    index_patterns: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'The index patterns for the ISM template.' }),
-    priority: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The priority of the ISM template.' }),
-    last_updated_time: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'When the ISM template was last updated.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('IsmCommonIsmTemplate')
-
-const IsmCommonPolicySchema = z
-  .object({
-    policy_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique identifier for the policy.' }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The description of the policy.' }),
-    last_updated_time: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'When the policy was last updated.' }),
-    schema_version: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The version of the policy schema.' }),
-    error_notification: z
-      .xor([IsmCommonErrorNotificationSchema, z.null().nullable()])
-      .exactOptional()
-      .openapi({ description: 'The configuration for error notifications.' }),
-    default_state: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The default state an index is in.' }),
-    states: z
-      .array(IsmCommonStatesSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of states for the index to transition between.' }),
-    ism_template: z
-      .xor([IsmCommonIsmTemplateSchema, z.null().nullable(), z.array(IsmCommonIsmTemplateSchema)])
-      .exactOptional()
-      .openapi({ description: 'The ISM template configuration.' }),
-  })
-  .openapi({
-    description: 'The policy defines how an index is managed throughout its lifetime.',
-    required: [],
-  })
-  .openapi('IsmCommonPolicy')
-
-const IsmCommonPolicyEnvelopeSchema = z
-  .object({ policy: IsmCommonPolicySchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('IsmCommonPolicyEnvelope')
-
-const IsmCommonPolicyWithMetadataSchema = IsmCommonMetadataSchema.and(
-  IsmCommonPolicyEnvelopeSchema,
-).openapi('IsmCommonPolicyWithMetadata')
-
-const IsmCommonGetPoliciesResponseSchema = z
+const IsmCommonGetPoliciesResponseSchema: z.ZodType<IsmCommonGetPoliciesResponseType> = z
   .object({
     total_policies: z
       .number()
@@ -26636,9 +31136,10 @@ const IsmCommonPutPolicyRequestSchema = IsmCommonPolicyEnvelopeSchema.openapi(
   'IsmCommonPutPolicyRequest',
 )
 
-const IsmCommonPutPolicyResponseSchema = IsmCommonMetadataSchema.and(
-  z.object({ policy: IsmCommonPolicyEnvelopeSchema.exactOptional() }).openapi({ required: [] }),
-).openapi('IsmCommonPutPolicyResponse')
+const IsmCommonPutPolicyResponseSchema: z.ZodType<IsmCommonPutPolicyResponseType> =
+  IsmCommonMetadataSchema.and(
+    z.object({ policy: IsmCommonPolicyEnvelopeSchema.exactOptional() }).openapi({ required: [] }),
+  ).openapi('IsmCommonPutPolicyResponse')
 
 const IsmCommonRefreshSearchAnalyzersResponseDetailsSchema = z
   .object({
@@ -27371,7 +31872,10 @@ const LtrCommonCacheStatsResponseSchema = z
     _nodes: CommonNodeStatisticsSchema.exactOptional(),
     cluster_name: CommonNameSchema.exactOptional(),
     all: LtrCommonCacheAllStatsSchema.exactOptional(),
-    stores: z.object({}).exactOptional().openapi({ description: 'Cache statistics by store.' }),
+    stores: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Cache statistics by store.' }),
     nodes: z
       .record(z.string(), LtrCommonNodeDetailsSchema)
       .exactOptional()
@@ -27386,7 +31890,7 @@ const LtrCommonStoreDetailsSchema = z
     index: z.string().exactOptional().openapi({ description: 'The index name for this store.' }),
     version: z.int().exactOptional().openapi({ description: 'Store version.' }),
     counts: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Count statistics for this store.' }),
   })
@@ -27463,48 +31967,10 @@ const LtrCommonStoreExistsResponseSchema = z
   .openapi({ required: [] })
   .openapi('LtrCommonStoreExistsResponse')
 
-const MlCommonHeadersSchema = z
-  .looseObject({ content_type: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('MlCommonHeaders')
-
-const MlCommonActionSchema = z
-  .object({
-    action_type: z.string().exactOptional(),
-    method: z.string().exactOptional(),
-    headers: MlCommonHeadersSchema.exactOptional(),
-    url: z.string().exactOptional(),
-    request_body: z.string().exactOptional(),
-    pre_process_function: z.string().exactOptional(),
-    post_process_function: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('MlCommonAction')
-
 const MlCommonActionTypeSchema = z
   .enum(['ADD', 'DELETE', 'UPDATE'])
   .openapi({ description: 'The type of operation.' })
   .openapi('MlCommonActionType')
-
-const MlCommonAdditionalConfigSchema = z
-  .object({
-    space_type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The distance metric for k-NN search.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('MlCommonAdditionalConfig')
-
-const MlCommonAdditionalInfoSchema = z
-  .looseObject({})
-  .openapi({ description: 'Additional information query.' })
-  .openapi('MlCommonAdditionalInfo')
-
-const MlCommonAgentTypeSchema = z
-  .enum(['conversational', 'conversational_flow', 'flow'])
-  .openapi({ description: 'The agent type.' })
-  .openapi('MlCommonAgentType')
 
 const MlCommonAggregationSchema: z.ZodType<MlCommonAggregationType> = z
   .lazy(() =>
@@ -27577,54 +32043,6 @@ const MlCommonAlgorithmsSchema = z
   .record(z.string(), MlCommonAlgorithmOperationsSchema)
   .openapi('MlCommonAlgorithms')
 
-const MlCommonEntitySchema = z
-  .object({
-    key: z.array(z.string()).exactOptional(),
-    contribution_value: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'The contribution value.' }),
-    base_value: z.float64().exactOptional().openapi({ description: 'The base value.' }),
-    new_value: z.float64().exactOptional().openapi({ description: 'The new value.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('MlCommonEntity')
-
-const MlCommonBucketsSchema = z
-  .object({
-    start_time: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: 'The start time.' }),
-    end_time: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: 'The end time.' }),
-    overall_aggregate_value: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'The overall aggregate value.' }),
-    entities: z.array(MlCommonEntitySchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('MlCommonBuckets')
-
 const MlCommonByteOrderSchema = z.enum(['BIG_ENDIAN', 'LITTLE_ENDIAN']).openapi('MlCommonByteOrder')
 
 const MlCommonByteBufferSchema = z
@@ -27662,11 +32080,6 @@ const MlCommonColumnMetaSchema = z
   })
   .openapi({ required: [] })
   .openapi('MlCommonColumnMeta')
-
-const MlCommonConnectorProtocolSchema = z
-  .enum(['aws_sigv4', 'http'])
-  .openapi({ description: 'The connector protocol.' })
-  .openapi('MlCommonConnectorProtocol')
 
 const MlCommonContentSchema = z
   .looseObject({ text: z.string().exactOptional(), type: z.string().exactOptional() })
@@ -27857,22 +32270,7 @@ const MlCommonDeleteAgenticMemoryResponseSchema = z
   .openapi({ required: [] })
   .openapi('MlCommonDeleteAgenticMemoryResponse')
 
-const MlCommonExecuteLocalSampleCalculatorResponseSchema = z
-  .object({ result: z.number().exactOptional().openapi({ description: 'The result.' }) })
-  .openapi({ required: [] })
-  .openapi('MlCommonExecuteLocalSampleCalculatorResponse')
-
-const MlCommonResultSchema = z
-  .object({ buckets: z.array(MlCommonBucketsSchema).exactOptional() })
-  .openapi({ required: [] })
-  .openapi('MlCommonResult')
-
-const MlCommonExecuteAnomalyLocalizationResponseSchema = z
-  .object({ name: z.string().exactOptional(), result: MlCommonResultSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('MlCommonExecuteAnomalyLocalizationResponse')
-
-const MlCommonExecuteAlgorithmResponseSchema = z
+const MlCommonExecuteAlgorithmResponseSchema: z.ZodType<MlCommonExecuteAlgorithmResponseType> = z
   .xor([
     MlCommonExecuteLocalSampleCalculatorResponseSchema,
     z
@@ -27936,50 +32334,6 @@ const MlCommonExecuteToolResponseSchema = z
   .openapi({ required: [] })
   .openapi('MlCommonExecuteToolResponse')
 
-const MlCommonFunctionNameSchema = z
-  .enum([
-    'AD_LIBSVM',
-    'ad_libsvm',
-    'AGENT',
-    'agent',
-    'ANOMALY_LOCALIZATION',
-    'anomaly_localization',
-    'BATCH_RCF',
-    'batch_rcf',
-    'CONNECTOR',
-    'connector',
-    'FIT_RCF',
-    'fit_rcf',
-    'KMEANS',
-    'kmeans',
-    'LINEAR_REGRESSION',
-    'linear_regression',
-    'LOCAL_SAMPLE_CALCULATOR',
-    'local_sample_calculator',
-    'LOGISTIC_REGRESSION',
-    'logistic_regression',
-    'METRICS_CORRELATION',
-    'metrics_correlation',
-    'QUESTION_ANSWERING',
-    'question_answering',
-    'RCF_SUMMARIZE',
-    'rcf_summarize',
-    'REMOTE',
-    'remote',
-    'SAMPLE_ALGO',
-    'sample_algo',
-    'SPARSE_ENCODING',
-    'sparse_encoding',
-    'SPARSE_TOKENIZE',
-    'sparse_tokenize',
-    'TEXT_EMBEDDING',
-    'text_embedding',
-    'TEXT_SIMILARITY',
-    'text_similarity',
-  ])
-  .openapi({ description: 'The function name.' })
-  .openapi('MlCommonFunctionName')
-
 const MlCommonMessageSchema = z
   .object({
     memory_id: CommonNameSchema.exactOptional(),
@@ -28031,20 +32385,6 @@ const MlCommonMessageSchema = z
   })
   .openapi({ required: [] })
   .openapi('MlCommonMessage')
-
-const MlCommonMetadataSchema = z.looseObject({}).openapi('MlCommonMetadata')
-
-const MlCommonNamespaceSchema = z.looseObject({}).openapi('MlCommonNamespace')
-
-const MlCommonPayloadTypeSchema = z
-  .enum(['conversational', 'data'])
-  .openapi({ description: 'The type of payload.' })
-  .openapi('MlCommonPayloadType')
-
-const MlCommonStrategyTypeSchema = z
-  .enum(['SEMANTIC', 'SUMMARY', 'USER_PREFERENCE'])
-  .openapi({ description: 'The strategy type.' })
-  .openapi('MlCommonStrategyType')
 
 const MlCommonGetAgenticMemoryResponseSchema = z
   .object({
@@ -28114,41 +32454,6 @@ const MlCommonGetAgenticMemoryResponseSchema = z
   })
   .openapi({ required: [] })
   .openapi('MlCommonGetAgenticMemoryResponse')
-
-const MlCommonMessagesSchema = z
-  .object({
-    role: z.string().exactOptional().openapi({ description: 'The role of the message.' }),
-    content: z.string().exactOptional().openapi({ description: 'The content of the message.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('MlCommonMessages')
-
-const MlCommonParametersSchema = z
-  .looseObject({
-    messages: z.array(MlCommonMessagesSchema).exactOptional(),
-    inputs: z.string().exactOptional(),
-    _llm_interface: z.string().exactOptional(),
-    question: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('MlCommonParameters')
-
-const MlCommonToolAttributesSchema = z
-  .object({ input_schema: z.string().exactOptional(), strict: z.boolean().exactOptional() })
-  .catchall(z.any().openapi({ title: 'attributes' }))
-  .openapi('MlCommonToolAttributes')
-
-const MlCommonToolItemsSchema = z
-  .looseObject({
-    name: z.string().exactOptional(),
-    type: z.string().exactOptional(),
-    description: z.string().exactOptional(),
-    parameters: MlCommonParametersSchema.exactOptional(),
-    include_output_in_agent_response: z.boolean().exactOptional(),
-    attributes: MlCommonToolAttributesSchema.exactOptional().openapi({ 'x-version-added': '3.0' }),
-  })
-  .openapi({ required: [] })
-  .openapi('MlCommonToolItems')
 
 const MlCommonGetAgentResponseSchema = z
   .object({
@@ -28221,148 +32526,6 @@ const MlCommonGetConnectorResponseSchema = z
   .openapi({ required: [] })
   .openapi('MlCommonGetConnectorResponse')
 
-const MlCommonOwnerSchema = z
-  .object({
-    name: CommonNameSchema,
-    backend_roles: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'The backend roles.' }),
-    roles: z.array(z.string()).exactOptional().openapi({ description: 'The roles.' }),
-    custom_attribute_names: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'The custom attribute names.' }),
-    user_requested_tenant: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The user requested tenant.' }),
-    user_requested_tenant_access: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The user requested tenant access.' }),
-  })
-  .openapi({ required: ['name'] })
-  .openapi('MlCommonOwner')
-
-const MlCommonIndexSchema = z
-  .looseObject({
-    number_of_shards: z.string().exactOptional().openapi({ description: 'The number of shards.' }),
-    number_of_replicas: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The number of replicas.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('MlCommonIndex')
-
-const MlCommonMemoryIndexSettingsSchema = z
-  .object({ index: MlCommonIndexSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('MlCommonMemoryIndexSettings')
-
-const MlCommonIndexSettingsSchema = z
-  .looseObject({
-    session_index: MlCommonMemoryIndexSettingsSchema.exactOptional(),
-    short_term_memory_index: MlCommonMemoryIndexSettingsSchema.exactOptional(),
-    long_term_memory_index: MlCommonMemoryIndexSettingsSchema.exactOptional(),
-    long_term_memory_history_index: MlCommonMemoryIndexSettingsSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('MlCommonIndexSettings')
-
-const MlCommonStrategyConfigurationSchema = z
-  .object({
-    llm_result_path: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'JSONPath expression for extracting LLM results from responses.' }),
-    system_prompt: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Custom system prompt to override default strategy prompt.' }),
-    llm_id: z.string().exactOptional().openapi({ description: 'The LLM ID for strategy.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('MlCommonStrategyConfiguration')
-
-const MlCommonStrategySchema = z
-  .object({
-    type: MlCommonStrategyTypeSchema.exactOptional(),
-    namespace: z.array(z.string()).exactOptional().openapi({ description: 'The namespace.' }),
-    configuration: MlCommonStrategyConfigurationSchema.exactOptional(),
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether to enable the strategy.' }),
-    id: z.string().exactOptional().openapi({ description: 'The strategy ID.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('MlCommonStrategy')
-
-const MlCommonMemoryContainerConfigurationSchema = z
-  .object({
-    embedding_model_type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The embedding model type.' }),
-    embedding_model_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The embedding model ID.' }),
-    embedding_dimension: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: 'The embedding dimension.' }),
-    llm_id: z.string().exactOptional().openapi({ description: 'The LLM ID.' }),
-    index_prefix: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Custom prefix for memory indices.' }),
-    use_system_index: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether to use system indices.' }),
-    disable_history: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether history will be persisted.' }),
-    disable_session: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether session will be persisted.' }),
-    max_infer_size: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The maximum number of similar memories retrieved during consolidation.',
-      }),
-    index_settings: MlCommonIndexSettingsSchema.exactOptional(),
-    strategies: z.array(MlCommonStrategySchema).exactOptional(),
-    parameters: MlCommonParametersSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('MlCommonMemoryContainerConfiguration')
-
 const MlCommonGetMemoryContainerResponseSchema = z
   .object({
     name: CommonNameSchema.exactOptional(),
@@ -28413,20 +32576,6 @@ const MlCommonTaskStateSchema = z
   ])
   .openapi('MlCommonTaskState')
 
-const MlCommonMlTaskTypeSchema = z
-  .enum([
-    'BATCH_INGEST',
-    'BATCH_PREDICTION',
-    'DEPLOY_MODEL',
-    'EXECUTION',
-    'PREDICTION',
-    'REGISTER_MODEL',
-    'TRAINING',
-    'TRAINING_AND_PREDICTION',
-  ])
-  .openapi({ description: 'Task type.' })
-  .openapi('MlCommonMlTaskType')
-
 const MlCommonTaskSchema = z
   .object({
     model_id: z.string().exactOptional(),
@@ -28466,19 +32615,6 @@ const MlCommonTaskSchema = z
   .openapi('MlCommonTask')
 
 const MlCommonTasksSchema = z.record(z.string(), MlCommonTaskSchema).openapi('MlCommonTasks')
-
-const MlCommonModelStateSchema = z
-  .enum([
-    'DEPLOYED',
-    'DEPLOYING',
-    'DEPLOY_FAILED',
-    'PARTIALLY_DEPLOYED',
-    'REGISTERED',
-    'REGISTERING',
-    'UNDEPLOYED',
-  ])
-  .openapi({ description: 'The model state.' })
-  .openapi('MlCommonModelState')
 
 const MlCommonPredictRequestStatsSchema = z
   .object({
@@ -28758,7 +32894,7 @@ const MlCommonGuardrailsSchema = z
     index_name: CommonIndexNameSchema.exactOptional(),
     source_fields: CommonFieldsSchema.exactOptional(),
     regex: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The regex used for input/output validation.' }),
     model_id: z.string().exactOptional().openapi({ description: 'The model ID.' }),
@@ -28771,25 +32907,7 @@ const MlCommonGuardrailsSchema = z
   .openapi({ required: [] })
   .openapi('MlCommonGuardrails')
 
-const MlCommonHitsTotalSchema = z
-  .object({
-    value: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64', description: 'The total number of hits.' }),
-    relation: z.string().openapi({ description: 'The relation.' }),
-  })
-  .openapi({ required: ['relation', 'value'] })
-  .openapi('MlCommonHitsTotal')
-
-const MlCommonInputQuerySchema = z
+const MlCommonInputQuerySchema: z.ZodType<MlCommonInputQueryType> = z
   .object({
     _source: z.array(z.string()).exactOptional().openapi({ description: 'The source fields' }),
     size: z
@@ -28825,40 +32943,9 @@ const MlCommonLocalSampleCalculatorOperationSchema = z
   .enum(['max', 'min', 'sum'])
   .openapi('MlCommonLocalSampleCalculatorOperation')
 
-const MlCommonMemorySchema = z
-  .object({
-    type: z.string().exactOptional(),
-    memory_id: CommonNameSchema.exactOptional(),
-    create_time: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The create time.' }),
-    updated_time: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The updated time.' }),
-    name: CommonNameSchema.exactOptional(),
-    user: z.string().exactOptional().openapi({ description: 'The username of the user.' }),
-    additional_info: MlCommonAdditionalInfoSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('MlCommonMemory')
-
 const MlCommonMemoryTypeSchema = z
   .enum(['history', 'long-term', 'sessions', 'working'])
   .openapi('MlCommonMemoryType')
-
-const MlCommonMlInputDataTypeSchema = z
-  .enum([
-    'DATA_FRAME',
-    'QUESTION_ANSWERING',
-    'REMOTE',
-    'SEARCH_QUERY',
-    'TEXT_DOCS',
-    'TEXT_SIMILARITY',
-  ])
-  .openapi({ description: 'The input type.' })
-  .openapi('MlCommonMlInputDataType')
 
 const MlCommonMlStatNameSchema = z
   .enum([
@@ -28871,30 +32958,6 @@ const MlCommonMlStatNameSchema = z
     'ml_task_index_status',
   ])
   .openapi('MlCommonMlStatName')
-
-const MlCommonModelFormatSchema = z.enum(['ONNX', 'TORCH_SCRIPT']).openapi('MlCommonModelFormat')
-
-const MlCommonModelConfigSchema = z
-  .object({
-    additional_config: MlCommonAdditionalConfigSchema.exactOptional(),
-    all_config: z.string().exactOptional().openapi({ description: 'The all config.' }),
-    model_type: z.string().exactOptional().openapi({ description: 'The model type.' }),
-    embedding_dimension: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: 'The embedding dimension.' }),
-    framework_type: z.string().exactOptional().openapi({ description: 'The framework type.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('MlCommonModelConfig')
 
 const MlCommonModelSchema = z
   .object({
@@ -28977,11 +33040,6 @@ const MlCommonModelSchema = z
   })
   .openapi({ required: ['model_state'] })
   .openapi('MlCommonModel')
-
-const MlCommonModelGroupAccessModeSchema = z
-  .enum(['private', 'public', 'restricted'])
-  .openapi({ description: 'The model group access mode.' })
-  .openapi('MlCommonModelGroupAccessMode')
 
 const MlCommonModelGroupSchema = z
   .object({
@@ -29082,11 +33140,6 @@ const MlCommonPredictModelResponseSchema = z
   .openapi({ required: [] })
   .openapi('MlCommonPredictModelResponse')
 
-const MlCommonStatusSchema = z
-  .enum(['CANCELLED', 'COMPLETED', 'COMPLETED_WITH_ERROR', 'CREATED', 'FAILED', 'RUNNING'])
-  .openapi({ description: 'The status.' })
-  .openapi('MlCommonStatus')
-
 const MlCommonPredictResponseSchema = z
   .object({
     inference_results: z.array(MlCommonInferenceResultsSchema).exactOptional(),
@@ -29125,319 +33178,26 @@ const MlCommonRateLimiterSchema = z
   .openapi({ required: ['limit', 'unit'] })
   .openapi('MlCommonRateLimiter')
 
-const MlCommonSourceSchema = z
-  .looseObject({
-    last_deployed_time: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: 'The last deployed time.' }),
-    model_version: z.string().exactOptional().openapi({ description: 'The model version.' }),
-    version: CommonVersionStringSchema.exactOptional(),
-    created_time: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: 'The created time.' }),
-    chunk_number: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: 'The chunk number.' }),
-    deploy_to_all_nodes: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether to deploy to all nodes.' }),
-    is_hidden: z.boolean().exactOptional().openapi({ description: 'Whether the model is hidden.' }),
-    model_id: CommonNameSchema.exactOptional(),
-    description: z.string().exactOptional().openapi({ description: 'The model description.' }),
-    model_state: MlCommonModelStateSchema.exactOptional(),
-    model_content_size_in_bytes: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The model content size in bytes.',
-      }),
-    model_content_hash_value: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The model content hash value.' }),
-    planning_worker_node_count: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The planning worker node count.' }),
-    model_config: MlCommonModelConfigSchema.exactOptional(),
-    model_format: MlCommonModelFormatSchema.exactOptional(),
-    model_task_type: z.string().exactOptional().openapi({ description: 'The model task type.' }),
-    last_updated_time: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: 'The last updated time.' }),
-    last_update_time: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: 'The last update time.' }),
-    last_registered_time: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: 'The last registered time.' }),
-    auto_redeploy_retry_times: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: 'The auto redeploy retry times.' }),
-    name: CommonNameSchema.exactOptional(),
-    connector_id: z.string().exactOptional().openapi({ description: 'The connector ID.' }),
-    current_worker_node_count: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The current worker node count.' }),
-    model_group_id: z.string().exactOptional().openapi({ description: 'The model group ID.' }),
-    planning_worker_nodes: z.array(CommonNodeIdsSchema).exactOptional(),
-    total_chunks: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: 'The total chunks.' }),
-    algorithm: z.string().exactOptional().openapi({ description: 'The algorithm.' }),
-    url: z.string().exactOptional().openapi({ description: 'The model URL.' }),
-    backend_roles: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'The backend roles.' }),
-    owner: MlCommonOwnerSchema.exactOptional(),
-    access: MlCommonModelGroupAccessModeSchema.exactOptional(),
-    latest_version: z.int().exactOptional().openapi({ description: 'The latest version.' }),
-    protocol: MlCommonConnectorProtocolSchema.exactOptional(),
-    parameters: MlCommonParametersSchema.exactOptional(),
-    actions: z.array(MlCommonActionSchema).exactOptional(),
-    updated_time: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The updated time.' }),
-    create_time: z
-      .union([
-        z.iso.datetime({ offset: true }),
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      ])
-      .exactOptional()
-      .openapi({ description: 'The create time.' }),
-    application_type: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The application type.' }),
-    additional_info: MlCommonAdditionalInfoSchema.exactOptional(),
-    user: z.string().exactOptional().openapi({ description: 'The username of the user.' }),
-    input: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The question in the message.' }),
-    memory_id: CommonNameSchema.exactOptional(),
-    trace_number: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The trace number.' }),
-    response: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The answer to the question.' }),
-    origin: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The system name that generated the response.' }),
-    parent_message_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The parent message ID.' }),
-    prompt_template: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The prompt template.' }),
-    type: MlCommonAgentTypeSchema.exactOptional(),
-    tools: z.array(MlCommonToolItemsSchema).exactOptional(),
-    memory: MlCommonMemorySchema.exactOptional(),
-    app_type: z.string().exactOptional().openapi({ description: 'The app type.' }),
-    is_async: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the task is asynchronous.' }),
-    function_name: MlCommonFunctionNameSchema.exactOptional(),
-    input_type: MlCommonMlInputDataTypeSchema.exactOptional(),
-    worker_node: z.array(CommonNodeIdsSchema).exactOptional(),
-    task_type: MlCommonMlTaskTypeSchema.exactOptional(),
-    state: MlCommonStatusSchema.exactOptional(),
-    error: z.string().exactOptional().openapi({ description: 'The error message.' }),
-    configuration: MlCommonMemoryContainerConfigurationSchema.exactOptional(),
-    payload_type: MlCommonPayloadTypeSchema.exactOptional(),
-    metadata: MlCommonMetadataSchema.exactOptional(),
-    namespace: MlCommonNamespaceSchema.exactOptional(),
-    namespace_size: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: 'The number of namespaces.' }),
-    owner_id: z.string().exactOptional().openapi({ description: 'The ID of the memory owner.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('MlCommonSource')
+const MlCommonSearchAgentsResponseSchema: z.ZodType<MlCommonSearchAgentsResponseType> =
+  MlCommonSearchResponseSchema.openapi('MlCommonSearchAgentsResponse')
 
-const MlCommonSearchHitsHitSchema = z
-  .object({
-    _version: CommonVersionNumberSchema.exactOptional(),
-    _seq_no: CommonSequenceNumberSchema.exactOptional(),
-    _primary_term: z.int().exactOptional().openapi({ description: 'The primary term.' }),
-    _index: CommonIndexNameSchema.exactOptional(),
-    _id: CommonIdSchema.exactOptional(),
-    _score: z.number().nullable().openapi({ description: 'The score.' }),
-    _source: MlCommonSourceSchema.exactOptional(),
-    model_id: CommonNameSchema.exactOptional(),
-    sort: z.array(z.float32()).exactOptional().openapi({ description: 'The sort values.' }),
-  })
-  .openapi({ required: ['_score'] })
-  .openapi('MlCommonSearchHitsHit')
+const MlCommonSearchConnectorsResponseSchema: z.ZodType<MlCommonSearchConnectorsResponseType> =
+  MlCommonSearchResponseSchema.openapi('MlCommonSearchConnectorsResponse')
 
-const MlCommonSearchHitsSchema = z
-  .object({
-    total: MlCommonHitsTotalSchema,
-    hits: z.array(MlCommonSearchHitsHitSchema),
-    max_score: z.number().nullable().exactOptional().openapi({ description: 'The maximum score.' }),
-  })
-  .openapi({ required: ['hits', 'total'] })
-  .openapi('MlCommonSearchHits')
+const MlCommonSearchMemoryResponseSchema: z.ZodType<MlCommonSearchMemoryResponseType> =
+  MlCommonSearchResponseSchema.openapi('MlCommonSearchMemoryResponse')
 
-const MlCommonSearchResponseSchema = z
-  .object({
-    took: z.int().exactOptional().openapi({ description: 'The time taken to execute the search.' }),
-    timed_out: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the search timed out.' }),
-    _shards: CommonShardStatisticsSchema.exactOptional(),
-    hits: MlCommonSearchHitsSchema,
-  })
-  .openapi({ required: ['hits'] })
-  .openapi('MlCommonSearchResponse')
+const MlCommonSearchMessageResponseSchema: z.ZodType<MlCommonSearchMessageResponseType> =
+  MlCommonSearchResponseSchema.openapi('MlCommonSearchMessageResponse')
 
-const MlCommonSearchAgentsResponseSchema = MlCommonSearchResponseSchema.openapi(
-  'MlCommonSearchAgentsResponse',
-)
+const MlCommonSearchModelGroupsResponseSchema: z.ZodType<MlCommonSearchModelGroupsResponseType> =
+  MlCommonSearchResponseSchema.openapi('MlCommonSearchModelGroupsResponse')
 
-const MlCommonSearchConnectorsResponseSchema = MlCommonSearchResponseSchema.openapi(
-  'MlCommonSearchConnectorsResponse',
-)
+const MlCommonSearchModelsResponseSchema: z.ZodType<MlCommonSearchModelsResponseType> =
+  MlCommonSearchResponseSchema.openapi('MlCommonSearchModelsResponse')
 
-const MlCommonSearchMemoryResponseSchema = MlCommonSearchResponseSchema.openapi(
-  'MlCommonSearchMemoryResponse',
-)
-
-const MlCommonSearchMessageResponseSchema = MlCommonSearchResponseSchema.openapi(
-  'MlCommonSearchMessageResponse',
-)
-
-const MlCommonSearchModelGroupsResponseSchema = MlCommonSearchResponseSchema.openapi(
-  'MlCommonSearchModelGroupsResponse',
-)
-
-const MlCommonSearchModelsResponseSchema = MlCommonSearchResponseSchema.openapi(
-  'MlCommonSearchModelsResponse',
-)
-
-const MlCommonSearchTasksResponseSchema = MlCommonSearchResponseSchema.openapi(
-  'MlCommonSearchTasksResponse',
-)
+const MlCommonSearchTasksResponseSchema: z.ZodType<MlCommonSearchTasksResponseType> =
+  MlCommonSearchResponseSchema.openapi('MlCommonSearchTasksResponse')
 
 const MlCommonToolSchema = z
   .object({
@@ -30848,849 +34608,6 @@ const NodesReloadSecureSettingsNodeReloadResultSchema = z
   ])
   .openapi('NodesReloadSecureSettingsNodeReloadResult')
 
-const NodesStatsAdaptiveSelectionSchema = z
-  .object({
-    avg_queue_size: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The exponentially weighted moving average queue size of search requests on the keyed node.',
-      }),
-    avg_response_time: CommonDurationSchema.exactOptional(),
-    avg_response_time_ns: CommonUnitNanosSchema.exactOptional().openapi({
-      description:
-        'The exponentially weighted moving average response time, in nanoseconds, of search requests on the keyed node.',
-    }),
-    avg_service_time: CommonDurationSchema.exactOptional(),
-    avg_service_time_ns: CommonUnitNanosSchema.exactOptional().openapi({
-      description:
-        'The exponentially weighted moving average service time, in nanoseconds, of search requests on the keyed node.',
-    }),
-    outgoing_searches: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The number of outstanding search requests to the keyed node from the node these stats are for.',
-      }),
-    rank: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The rank of this node; used for shard selection when routing search requests.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsAdaptiveSelection')
-
-const NodesStatsBreakerSchema = z
-  .object({
-    estimated_size: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'Estimated memory used for the operation.',
-    }),
-    estimated_size_in_bytes: CommonByteCountSchema.exactOptional().openapi({
-      description: 'Estimated memory used, in bytes, for the operation.',
-    }),
-    limit_size: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'Memory limit for the circuit breaker.',
-    }),
-    limit_size_in_bytes: CommonByteCountSchema.exactOptional().openapi({
-      description: 'Memory limit, in bytes, for the circuit breaker.',
-    }),
-    overhead: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'A constant that all estimates for the circuit breaker are multiplied with to calculate a final estimate.',
-      }),
-    tripped: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'Total number of times the circuit breaker has been triggered and prevented an out of memory error.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsBreaker')
-
-const NodesStatsCacheStatsBaseSchema = z
-  .object({
-    size: CommonHumanReadableByteCountSchema.exactOptional(),
-    size_in_bytes: CommonByteCountSchema.exactOptional(),
-    evictions: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    hit_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    miss_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    item_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsCacheStatsBase')
-
-const NodesStatsCacheIndicesStatsSchema = NodesStatsCacheStatsBaseSchema.and(z.object({})).openapi(
-  'NodesStatsCacheIndicesStats',
-)
-
-const NodesStatsCacheShardStatsSchema = NodesStatsCacheStatsBaseSchema.and(z.object({})).openapi(
-  'NodesStatsCacheShardStats',
-)
-
-const NodesStatsCacheStatsSchema = NodesStatsCacheStatsBaseSchema.and(
-  z
-    .object({
-      store_name: z.string().exactOptional(),
-      indices: z.record(z.string(), NodesStatsCacheIndicesStatsSchema).exactOptional(),
-      shards: z.record(z.string(), NodesStatsCacheShardStatsSchema).exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('NodesStatsCacheStats')
-
-const NodesStatsCachesStatsSchema = z
-  .record(z.string(), NodesStatsCacheStatsSchema)
-  .openapi('NodesStatsCachesStats')
-
-const NodesStatsCgroupCpuAcctStatsSchema = z
-  .object({
-    control_group: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The `cpuacct` control group to which the OpenSearch process belongs.',
-      }),
-    usage_nanos: CommonUnitNanosSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsCgroupCpuAcctStats')
-
-const NodesStatsCgroupCpuStatSchema = z
-  .object({
-    number_of_elapsed_periods: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The number of reporting periods (as specified by `cfs_period_micros`) that have elapsed.',
-      }),
-    number_of_times_throttled: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The number of times all tasks in the same cgroup as the OpenSearch process have been throttled.',
-      }),
-    time_throttled_nanos: CommonUnitNanosSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsCgroupCpuStat')
-
-const NodesStatsCgroupCpuStatsSchema = z
-  .object({
-    control_group: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The `cpu` control group to which the OpenSearch process belongs.' }),
-    cfs_period_micros: CommonUnitMicrosSchema.exactOptional().openapi({
-      description:
-        'The period of time, in microseconds, for how regularly all tasks in the same cgroup as the OpenSearch process should have their access to CPU resources reallocated.',
-    }),
-    cfs_quota_micros: CommonUnitMicrosSchema.exactOptional().openapi({
-      description:
-        'The total amount of time, in microseconds, for which all tasks in the same cgroup as the OpenSearch process can run during one period `cfs_period_micros`.',
-    }),
-    stat: NodesStatsCgroupCpuStatSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsCgroupCpuStats')
-
-const NodesStatsCgroupMemoryStatsSchema = z
-  .object({
-    control_group: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The `memory` control group to which the OpenSearch process belongs.',
-      }),
-    limit_in_bytes: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The maximum amount of user memory (including file cache) allowed for all tasks in the same cgroup as the OpenSearch process.\nThis value can be too big to store in a `long`, so is returned as a string so that the value returned can exactly match what the underlying operating system interface returns.\nAny value that is too large to parse into a `long` almost certainly means no limit has been set for the cgroup.',
-      }),
-    usage_in_bytes: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The total current memory usage by processes in the cgroup, in bytes, by all tasks in the same cgroup as the OpenSearch process.\nThis value is stored as a string for consistency with `limit_in_bytes`.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsCgroupMemoryStats')
-
-const NodesStatsCgroupStatsSchema = z
-  .object({
-    cpuacct: NodesStatsCgroupCpuAcctStatsSchema.exactOptional(),
-    cpu: NodesStatsCgroupCpuStatsSchema.exactOptional(),
-    memory: NodesStatsCgroupMemoryStatsSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsCgroupStats')
-
-const NodesStatsClusterStateOverallStatsSchema = z
-  .object({
-    update_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    total_time_in_millis: CommonUnitMillisSchema.exactOptional(),
-    failed_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsClusterStateOverallStats')
-
-const NodesStatsClusterStateQueueSchema = z
-  .object({
-    total: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Total number of cluster states in queue.' }),
-    pending: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Number of pending cluster states in queue.' }),
-    committed: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Number of committed cluster states in queue.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsClusterStateQueue')
-
-const NodesStatsClusterStateStatsSchema = z
-  .object({ overall: NodesStatsClusterStateOverallStatsSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('NodesStatsClusterStateStats')
-
-const NodesStatsDataPathStatsSchema = z
-  .object({
-    available: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description:
-        'Total amount of disk space available to this Java virtual machine on this file store.',
-    }),
-    available_in_bytes: CommonByteCountSchema.exactOptional().openapi({
-      description:
-        'Total number of bytes available to this Java virtual machine on this file store.',
-    }),
-    cache_reserved: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      'x-version-added': '2.7',
-      description:
-        'Total number of cache bytes reserved available to this Java virtual machine on this file store.',
-    }),
-    cache_reserved_in_bytes: CommonByteCountSchema.exactOptional().openapi({
-      'x-version-added': '2.7',
-      description:
-        'Total number of cache bytes reserved available to this Java virtual machine on this file store.',
-    }),
-    free: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'Total amount of unallocated disk space in the file store.',
-    }),
-    free_in_bytes: CommonByteCountSchema.exactOptional().openapi({
-      description: 'Total number of unallocated bytes in the file store.',
-    }),
-    mount: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Mount point of the file store (for example: `/dev/sda2`).' }),
-    path: z.string().exactOptional().openapi({ description: 'Path to the file store.' }),
-    total: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'Total size of the file store.',
-    }),
-    total_in_bytes: CommonByteCountSchema.exactOptional().openapi({
-      description: 'Total size of the file store in bytes.',
-    }),
-    type: z.string().exactOptional().openapi({ description: 'Type of the file store (ex: ext4).' }),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsDataPathStats')
-
-const NodesStatsPublishedClusterStatesSchema = z
-  .object({
-    full_states: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Number of published cluster states.',
-      }),
-    incompatible_diffs: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Number of incompatible differences between published cluster states.',
-      }),
-    compatible_diffs: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Number of compatible differences between published cluster states.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsPublishedClusterStates')
-
-const NodesStatsDiscoverySchema = z
-  .object({
-    cluster_state_queue: NodesStatsClusterStateQueueSchema.exactOptional(),
-    cluster_state_stats: NodesStatsClusterStateStatsSchema.exactOptional(),
-    published_cluster_states: NodesStatsPublishedClusterStatesSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsDiscovery')
-
-const NodesStatsMemoryStatsBaseSchema = z
-  .object({
-    total: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'Total amount of physical memory.',
-    }),
-    total_in_bytes: CommonByteCountSchema.exactOptional().openapi({
-      description: 'Total amount of physical memory in bytes.',
-    }),
-    free: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'Amount of free physical memory.',
-    }),
-    free_in_bytes: CommonByteCountSchema.exactOptional().openapi({
-      description: 'Amount of free physical memory in bytes.',
-    }),
-    used: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'Amount of used physical memory.',
-    }),
-    used_in_bytes: CommonByteCountSchema.exactOptional().openapi({
-      description: 'Amount of used physical memory in bytes.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsMemoryStatsBase')
-
-const NodesStatsExtendedMemoryStatsSchema = NodesStatsMemoryStatsBaseSchema.and(
-  z
-    .object({
-      free_percent: CommonPercentageNumberSchema.exactOptional().openapi({
-        description: 'Percentage of free memory.',
-      }),
-      used_percent: CommonPercentageNumberSchema.exactOptional().openapi({
-        description: 'Percentage of used memory.',
-      }),
-    })
-    .openapi({ required: [] }),
-).openapi('NodesStatsExtendedMemoryStats')
-
-const NodesStatsFileSystemTotalSchema = z
-  .object({
-    available: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description:
-        'Total disk space available to this Java virtual machine on all file stores.\nDepending on OS or process level restrictions, this might appear less than `free`.\nThis is the actual amount of free disk space the OpenSearch node can utilize.',
-    }),
-    available_in_bytes: CommonByteCountSchema.exactOptional().openapi({
-      description:
-        'Total number of bytes available to this Java virtual machine on all file stores.\nDepending on OS or process level restrictions, this might appear less than `free_in_bytes`.\nThis is the actual amount of free disk space the OpenSearch node can utilize.',
-    }),
-    free: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'Total unallocated disk space in all file stores.',
-    }),
-    free_in_bytes: CommonByteCountSchema.exactOptional().openapi({
-      description: 'Total number of unallocated bytes in all file stores.',
-    }),
-    total: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'Total size of all file stores.',
-    }),
-    total_in_bytes: CommonByteCountSchema.exactOptional().openapi({
-      description: 'Total size of all file stores in bytes.',
-    }),
-    cache_reserved: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      'x-version-added': '2.7',
-      description: 'Total size of cache bytes reserved in all file stores.',
-    }),
-    cache_reserved_in_bytes: CommonByteCountSchema.exactOptional().openapi({
-      'x-version-added': '2.7',
-      description: 'Total size of cache bytes reserved in all file stores.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsFileSystemTotal')
-
-const NodesStatsIoStatDeviceSchema = z
-  .object({
-    device_name: z.string().exactOptional().openapi({ description: 'The Linux device name.' }),
-    operations: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The total number of read and write operations for the device completed since starting OpenSearch.',
-      }),
-    read_kilobytes: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The total number of kilobytes read for the device since starting OpenSearch.',
-      }),
-    read_operations: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The total number of read operations for the device completed since starting OpenSearch.',
-      }),
-    write_kilobytes: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The total number of kilobytes written for the device since starting OpenSearch.',
-      }),
-    write_operations: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The total number of write operations for the device completed since starting OpenSearch.',
-      }),
-    read_time: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    write_time: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    queue_size: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    io_time_in_millis: CommonUnitMillisSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsIoStatDevice')
-
-const NodesStatsIoStatsSchema = z
-  .object({
-    devices: z
-      .array(NodesStatsIoStatDeviceSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Array of disk metrics for each device that is backing an OpenSearch data path.\nThese disk metrics are probed periodically and averages between the last probe and the current probe are computed.',
-      }),
-    total: NodesStatsIoStatDeviceSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsIoStats')
-
-const NodesStatsFileSystemSchema = z
-  .object({
-    data: z
-      .array(NodesStatsDataPathStatsSchema)
-      .exactOptional()
-      .openapi({ description: 'List of all file stores.' }),
-    timestamp: CommonUnitMillisSchema.exactOptional().openapi({
-      description:
-        'Last time the file stores statistics were refreshed.\nRecorded in milliseconds since the Unix Epoch.',
-    }),
-    total: NodesStatsFileSystemTotalSchema.exactOptional(),
-    io_stats: NodesStatsIoStatsSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsFileSystem')
-
-const NodesStatsGarbageCollectorTotalSchema = z
-  .object({
-    collection_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Total number of JVM garbage collectors that collect objects.',
-      }),
-    collection_time: CommonDurationSchema.exactOptional().openapi({
-      description: 'Total time spent by JVM collecting objects.',
-    }),
-    collection_time_in_millis: CommonUnitMillisSchema.exactOptional().openapi({
-      description: 'Total time, in milliseconds, spent by JVM collecting objects.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsGarbageCollectorTotal')
-
-const NodesStatsGarbageCollectorSchema = z
-  .object({
-    collectors: z
-      .record(z.string(), NodesStatsGarbageCollectorTotalSchema)
-      .exactOptional()
-      .openapi({ description: 'Contains statistics about JVM garbage collectors for the node.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsGarbageCollector')
-
-const NodesStatsHttpSchema = z
-  .object({
-    current_open: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Current number of open HTTP connections for the node.',
-      }),
-    total_opened: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Total number of HTTP connections opened for the node.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsHttp')
-
-const NodesStatsPressureMemorySchema = z
-  .object({
-    all: CommonHumanReadableByteCountSchema.exactOptional(),
-    all_in_bytes: CommonByteCountSchema.exactOptional().openapi({
-      description:
-        'Memory consumed, in bytes, by indexing requests in the coordinating, primary, or replica stage.',
-    }),
-    combined_coordinating_and_primary: CommonHumanReadableByteCountSchema.exactOptional(),
-    combined_coordinating_and_primary_in_bytes: CommonByteCountSchema.exactOptional().openapi({
-      description:
-        'Memory consumed, in bytes, by indexing requests in the coordinating or primary stage.\nThis value is not the sum of coordinating and primary as a node can reuse the coordinating memory if the primary stage is executed locally.',
-    }),
-    coordinating: CommonHumanReadableByteCountSchema.exactOptional(),
-    coordinating_in_bytes: CommonByteCountSchema.exactOptional().openapi({
-      description: 'Memory consumed, in bytes, by indexing requests in the coordinating stage.',
-    }),
-    primary: CommonHumanReadableByteCountSchema.exactOptional(),
-    primary_in_bytes: CommonByteCountSchema.exactOptional().openapi({
-      description: 'Memory consumed, in bytes, by indexing requests in the primary stage.',
-    }),
-    replica: CommonHumanReadableByteCountSchema.exactOptional(),
-    replica_in_bytes: CommonByteCountSchema.exactOptional().openapi({
-      description: 'Memory consumed, in bytes, by indexing requests in the replica stage.',
-    }),
-    coordinating_rejections: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Number of indexing requests rejected in the coordinating stage.',
-      }),
-    primary_rejections: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Number of indexing requests rejected in the primary stage.',
-      }),
-    replica_rejections: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Number of indexing requests rejected in the replica stage.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsPressureMemory')
-
-const NodesStatsIndexingPressureMemorySchema = z
-  .object({
-    limit: CommonHumanReadableByteCountSchema.exactOptional(),
-    limit_in_bytes: CommonByteCountSchema.exactOptional().openapi({
-      description:
-        'Configured memory limit, in bytes, for the indexing requests.\nReplica requests have an automatic limit that is 1.5x this value.',
-    }),
-    current: NodesStatsPressureMemorySchema.exactOptional(),
-    total: NodesStatsPressureMemorySchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsIndexingPressureMemory')
-
-const NodesStatsIndexingPressureSchema = z
-  .object({ memory: NodesStatsIndexingPressureMemorySchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('NodesStatsIndexingPressure')
-
 const NodesStatsIndexMetricSchema = z
   .enum([
     '_all',
@@ -31713,375 +34630,6 @@ const NodesStatsIndexMetricSchema = z
     'warmer',
   ])
   .openapi('NodesStatsIndexMetric')
-
-const NodesStatsProcessorSchema = z
-  .object({
-    count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Number of documents transformed by the processor.',
-      }),
-    current: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Number of documents currently being transformed by the processor.',
-      }),
-    failed: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Number of failed operations for the processor.',
-      }),
-    time: CommonDurationSchema.exactOptional(),
-    time_in_millis: CommonUnitMillisSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsProcessor')
-
-const NodesStatsKeyedProcessorSchema = z
-  .object({ stats: NodesStatsProcessorSchema.exactOptional(), type: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('NodesStatsKeyedProcessor')
-
-const NodesStatsIngestTotalSchema = z
-  .object({
-    count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Total number of documents ingested during the lifetime of this node.',
-      }),
-    current: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Total number of documents currently being ingested.',
-      }),
-    failed: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Total number of failed ingest operations during the lifetime of this node.',
-      }),
-    processors: z
-      .array(z.record(z.string(), NodesStatsKeyedProcessorSchema))
-      .exactOptional()
-      .openapi({ description: 'Total number of ingest processors.' }),
-    time: CommonDurationSchema.exactOptional(),
-    time_in_millis: CommonUnitMillisSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsIngestTotal')
-
-const NodesStatsIngestSchema = z
-  .object({
-    pipelines: z
-      .record(z.string(), NodesStatsIngestTotalSchema)
-      .exactOptional()
-      .openapi({ description: 'Contains statistics about ingest pipelines for the node.' }),
-    total: NodesStatsIngestTotalSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsIngest')
-
-const NodesStatsNodeBufferPoolSchema = z
-  .object({
-    count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: 'Number of buffer pools.' }),
-    total_capacity: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'Total capacity of buffer pools.',
-    }),
-    total_capacity_in_bytes: CommonByteCountSchema.exactOptional().openapi({
-      description: 'Total capacity of buffer pools in bytes.',
-    }),
-    used: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'Size of buffer pools.',
-    }),
-    used_in_bytes: CommonByteCountSchema.exactOptional().openapi({
-      description: 'Size of buffer pools in bytes.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsNodeBufferPool')
-
-const NodesStatsJvmClassesSchema = z
-  .object({
-    current_loaded_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Number of classes currently loaded by JVM.',
-      }),
-    total_loaded_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Total number of classes loaded since the JVM started.',
-      }),
-    total_unloaded_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Total number of classes unloaded since the JVM started.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsJvmClasses')
-
-const NodesStatsLastGcStatsSchema = z
-  .object({
-    used: CommonHumanReadableByteCountSchema.exactOptional(),
-    used_in_bytes: CommonByteCountSchema.exactOptional(),
-    max: CommonHumanReadableByteCountSchema.exactOptional(),
-    max_in_bytes: CommonByteCountSchema.exactOptional(),
-    usage_percent: CommonPercentageNumberSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsLastGcStats')
-
-const NodesStatsPoolSchema = z
-  .object({
-    used: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'Memory used by the heap.',
-    }),
-    used_in_bytes: CommonByteCountSchema.exactOptional().openapi({
-      description: 'Memory, in bytes, used by the heap.',
-    }),
-    max: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'Maximum amount of memory available for use by the heap.',
-    }),
-    max_in_bytes: CommonByteCountSchema.exactOptional().openapi({
-      description: 'Maximum amount of memory, in bytes, available for use by the heap.',
-    }),
-    peak_used: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'Largest amount of memory historically used by the heap.',
-    }),
-    peak_used_in_bytes: CommonByteCountSchema.exactOptional().openapi({
-      description: 'Largest amount of memory, in bytes, historically used by the heap.',
-    }),
-    peak_max: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'Largest amount of memory historically used by the heap.',
-    }),
-    peak_max_in_bytes: CommonByteCountSchema.exactOptional().openapi({
-      description: 'Largest amount of memory, in bytes, historically used by the heap.',
-    }),
-    last_gc_stats: NodesStatsLastGcStatsSchema.exactOptional().openapi({
-      description: 'Most recent GC cycle stats for a particular memory pool.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsPool')
-
-const NodesStatsJvmMemoryStatsSchema = z
-  .object({
-    heap_used: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'Memory currently in use by the heap.',
-    }),
-    heap_used_in_bytes: CommonByteCountSchema.exactOptional().openapi({
-      description: 'Memory, in bytes, currently in use by the heap.',
-    }),
-    heap_used_percent: CommonPercentageNumberSchema.exactOptional().openapi({
-      description: 'Percentage of memory currently in use by the heap.',
-    }),
-    heap_committed: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'Amount of memory available for use by the heap.',
-    }),
-    heap_committed_in_bytes: CommonByteCountSchema.exactOptional().openapi({
-      description: 'Amount of memory, in bytes, available for use by the heap.',
-    }),
-    heap_max: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'Maximum amount of memory available for use by the heap.',
-    }),
-    heap_max_in_bytes: CommonByteCountSchema.exactOptional().openapi({
-      description: 'Maximum amount of memory, in bytes, available for use by the heap.',
-    }),
-    non_heap_used: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'Non-heap memory used.',
-    }),
-    non_heap_used_in_bytes: CommonByteCountSchema.exactOptional().openapi({
-      description: 'Non-heap memory used, in bytes.',
-    }),
-    non_heap_committed: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'Amount of non-heap memory available.',
-    }),
-    non_heap_committed_in_bytes: CommonByteCountSchema.exactOptional().openapi({
-      description: 'Amount of non-heap memory available, in bytes.',
-    }),
-    pools: z
-      .record(z.string(), NodesStatsPoolSchema)
-      .exactOptional()
-      .openapi({ description: 'Contains statistics about heap memory usage for the node.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsJvmMemoryStats')
-
-const NodesStatsJvmThreadsSchema = z
-  .object({
-    count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Number of active threads in use by JVM.',
-      }),
-    peak_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Highest number of threads used by JVM.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsJvmThreads')
-
-const NodesStatsJvmSchema = z
-  .object({
-    buffer_pools: z
-      .record(z.string(), NodesStatsNodeBufferPoolSchema)
-      .exactOptional()
-      .openapi({ description: 'Contains statistics about JVM buffer pools for the node.' }),
-    classes: NodesStatsJvmClassesSchema.exactOptional(),
-    gc: NodesStatsGarbageCollectorSchema.exactOptional(),
-    mem: NodesStatsJvmMemoryStatsSchema.exactOptional(),
-    threads: NodesStatsJvmThreadsSchema.exactOptional(),
-    timestamp: CommonUnitMillisSchema.exactOptional().openapi({
-      description: 'Last time JVM statistics were refreshed.',
-    }),
-    uptime: CommonDurationSchema.exactOptional().openapi({
-      description:
-        'Human-readable JVM uptime.\nOnly returned if the `human` query parameter is `true`.',
-    }),
-    uptime_in_millis: CommonUnitMillisSchema.exactOptional().openapi({
-      description: 'JVM uptime in milliseconds.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsJvm')
-
-const NodesStatsMemoryStatsSchema = NodesStatsMemoryStatsBaseSchema.and(z.object({})).openapi(
-  'NodesStatsMemoryStats',
-)
 
 const NodesStatsMetricSchema = z
   .enum([
@@ -32116,1155 +34664,7 @@ const NodesStatsMetricSchema = z
   ])
   .openapi('NodesStatsMetric')
 
-const NodesStatsNodeIndexShardStatsSchema = IndicesStatsIndexShardStatsBaseSchema.and(
-  z.object({}),
-).openapi('NodesStatsNodeIndexShardStats')
-
-const NodesStatsNodeIndicesStatsSchema = IndicesStatsIndexStatsBaseSchema.and(
-  z
-    .object({
-      indices: z.record(z.string(), IndicesStatsIndexStatsSchema).exactOptional(),
-      shards: z
-        .record(
-          z.string(),
-          z.array(
-            z
-              .record(z.string(), NodesStatsNodeIndexShardStatsSchema)
-              .refine((val) => Object.keys(val).length >= 1)
-              .refine((val) => Object.keys(val).length <= 1),
-          ),
-        )
-        .exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('NodesStatsNodeIndicesStats')
-
-const NodesStatsOperatingSystemCpuStatsSchema = z
-  .object({
-    percent: CommonPercentageNumberSchema.exactOptional(),
-    load_average: z.record(z.string(), z.float64()).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsOperatingSystemCpuStats')
-
-const NodesStatsOperatingSystemSchema = z
-  .object({
-    cpu: NodesStatsOperatingSystemCpuStatsSchema.exactOptional(),
-    mem: NodesStatsExtendedMemoryStatsSchema.exactOptional(),
-    swap: NodesStatsMemoryStatsSchema.exactOptional(),
-    cgroup: NodesStatsCgroupStatsSchema.exactOptional(),
-    timestamp: CommonUnitMillisSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsOperatingSystem')
-
-const NodesStatsProcessCpuStatsSchema = z
-  .object({
-    percent: CommonPercentageNumberSchema,
-    total: CommonDurationSchema.exactOptional(),
-    total_in_millis: CommonUnitMillisSchema,
-  })
-  .openapi({ required: ['percent', 'total_in_millis'] })
-  .openapi('NodesStatsProcessCpuStats')
-
-const NodesStatsProcessMemoryStatsSchema = z
-  .object({
-    total_virtual: CommonHumanReadableByteCountSchema.exactOptional(),
-    total_virtual_in_bytes: CommonByteCountSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsProcessMemoryStats')
-
-const NodesStatsProcessSchema = z
-  .object({
-    cpu: NodesStatsProcessCpuStatsSchema.exactOptional(),
-    mem: NodesStatsProcessMemoryStatsSchema.exactOptional(),
-    open_file_descriptors: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'Number of opened file descriptors associated with the current or `-1` if not supported.',
-      }),
-    max_file_descriptors: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'Maximum number of file descriptors allowed on the system, or `-1` if not supported.',
-      }),
-    timestamp: CommonUnitMillisSchema.exactOptional().openapi({
-      description:
-        'Last time the statistics were refreshed.\nRecorded in milliseconds since the Unix Epoch.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsProcess')
-
-const NodesStatsRemoteStoreStatsSchema = z
-  .object({
-    last_successful_fetch_of_pinned_timestamps: CommonUnitSecondsSchema.exactOptional().openapi({
-      description: 'Timestamp for the last successful fetch of pinned timestamps.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsRemoteStoreStats')
-
-const NodesStatsRepositoryStatsSnapshotSchema = z
-  .object({
-    repository_name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the repository.' }),
-    repository_type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The type of the repository.' }),
-    repository_location: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'The location configuration of the repository.' }),
-    request_counts: z
-      .record(
-        z.string(),
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .exactOptional()
-      .openapi({
-        description: 'The count of requests by operation type (when detailed mode is disabled).',
-      }),
-    request_success_total: z
-      .record(
-        z.string(),
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'The count of successful requests by operation type (when detailed mode is enabled).',
-      }),
-    request_failures_total: z
-      .record(
-        z.string(),
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'The count of failed requests by operation type (when detailed mode is enabled).',
-      }),
-    request_time_in_millis: z
-      .record(
-        z.string(),
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'The total request time in milliseconds by operation type (when detailed mode is enabled).',
-      }),
-    request_retry_count_total: z
-      .record(
-        z.string(),
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .exactOptional()
-      .openapi({
-        description: 'The total retry count by operation type (when detailed mode is enabled).',
-      }),
-  })
-  .openapi({ description: 'Statistics snapshot about a repository.', required: [] })
-  .openapi('NodesStatsRepositoryStatsSnapshot')
-
-const NodesStatsScriptStatsBaseSchema = z
-  .object({
-    cache_evictions: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Total number of times the script cache has evicted old data.',
-      }),
-    compilations: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Total number of inline script compilations performed by the node.',
-      }),
-    compilation_limit_triggered: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'Total number of times the script compilation circuit breaker has limited inline script compilations.',
-      }),
-  })
-  .openapi({ required: ['cache_evictions', 'compilation_limit_triggered', 'compilations'] })
-  .openapi('NodesStatsScriptStatsBase')
-
-const NodesStatsScriptStatsSchema = NodesStatsScriptStatsBaseSchema.and(z.object({})).openapi(
-  'NodesStatsScriptStats',
-)
-
-const NodesStatsScriptContextStatsSchema = NodesStatsScriptStatsBaseSchema.and(
-  z.object({ context: z.string() }).openapi({ required: ['context'] }),
-).openapi('NodesStatsScriptContextStats')
-
-const NodesStatsScriptCacheStatsSchema = z
-  .object({
-    sum: NodesStatsScriptStatsSchema,
-    contexts: z.array(NodesStatsScriptContextStatsSchema).exactOptional(),
-  })
-  .openapi({ required: ['sum'] })
-  .openapi('NodesStatsScriptCacheStats')
-
-const NodesStatsTransportUsageStatsSchema = z
-  .object({
-    rejection_count: z
-      .record(
-        z.string(),
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsTransportUsageStats')
-
-const NodesStatsUsageStatsSchema = z
-  .object({ transport: NodesStatsTransportUsageStatsSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('NodesStatsUsageStats')
-
-const NodesStatsShardAdmissionControlStatsSchema = z
-  .object({
-    global_io_usage: NodesStatsUsageStatsSchema.exactOptional(),
-    global_cpu_usage: NodesStatsUsageStatsSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsShardAdmissionControlStats')
-
-const NodesStatsShardClusterManagerThrottlingStatsDetailSchema = z
-  .object({
-    total_throttled_tasks: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    throttled_tasks_per_task_type: z.record(
-      z.string(),
-      z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
-                ? BigInt(val)
-                : val,
-          z.int64(),
-        )
-        .openapi({ type: 'integer', format: 'int64' }),
-    ),
-  })
-  .openapi({ required: ['throttled_tasks_per_task_type', 'total_throttled_tasks'] })
-  .openapi('NodesStatsShardClusterManagerThrottlingStatsDetail')
-
-const NodesStatsShardClusterManagerThrottlingStatsSchema = z
-  .object({ stats: NodesStatsShardClusterManagerThrottlingStatsDetailSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('NodesStatsShardClusterManagerThrottlingStats')
-
-const NodesStatsShardIndexingPressurePerShardIndexingStatsSchema = z
-  .object({
-    coordinating_time_in_millis: CommonUnitMillisSchema,
-    coordinating_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    primary_time_in_millis: CommonUnitMillisSchema,
-    primary_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    replica_time_in_millis: CommonUnitMillisSchema,
-    replica_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({
-    required: [
-      'coordinating_count',
-      'coordinating_time_in_millis',
-      'primary_count',
-      'primary_time_in_millis',
-      'replica_count',
-      'replica_time_in_millis',
-    ],
-  })
-  .openapi('NodesStatsShardIndexingPressurePerShardIndexingStats')
-
-const NodesStatsShardIndexingPressurePerShardLastSuccessfulTimestampSchema = z
-  .object({
-    coordinating_last_successful_request_timestamp_in_millis: CommonUnitMillisSchema,
-    primary_last_successful_request_timestamp_in_millis: CommonUnitMillisSchema,
-    replica_last_successful_request_timestamp_in_millis: CommonUnitMillisSchema,
-  })
-  .openapi({
-    required: [
-      'coordinating_last_successful_request_timestamp_in_millis',
-      'primary_last_successful_request_timestamp_in_millis',
-      'replica_last_successful_request_timestamp_in_millis',
-    ],
-  })
-  .openapi('NodesStatsShardIndexingPressurePerShardLastSuccessfulTimestamp')
-
-const NodesStatsShardIndexingPressurePerShardMemoryAllocationCurrentStatsSchema = z
-  .object({
-    current_coordinating_and_primary_bytes: CommonByteCountSchema,
-    current_replica_bytes: CommonByteCountSchema,
-  })
-  .openapi({ required: ['current_coordinating_and_primary_bytes', 'current_replica_bytes'] })
-  .openapi('NodesStatsShardIndexingPressurePerShardMemoryAllocationCurrentStats')
-
-const NodesStatsShardIndexingPressurePerShardMemoryAllocationLimitStatsSchema = z
-  .object({
-    current_coordinating_and_primary_limits_in_bytes: CommonByteCountSchema,
-    current_replica_limits_in_bytes: CommonByteCountSchema,
-  })
-  .openapi({
-    required: [
-      'current_coordinating_and_primary_limits_in_bytes',
-      'current_replica_limits_in_bytes',
-    ],
-  })
-  .openapi('NodesStatsShardIndexingPressurePerShardMemoryAllocationLimitStats')
-
-const NodesStatsShardIndexingPressurePerShardMemoryAllocationStatsSchema = z
-  .object({
-    current: NodesStatsShardIndexingPressurePerShardMemoryAllocationCurrentStatsSchema,
-    limit: NodesStatsShardIndexingPressurePerShardMemoryAllocationLimitStatsSchema,
-  })
-  .openapi({ required: ['current', 'limit'] })
-  .openapi('NodesStatsShardIndexingPressurePerShardMemoryAllocationStats')
-
-const NodesStatsShardIndexingPressurePerShardMemoryStatsDetailsSchema = z
-  .object({
-    coordinating: CommonHumanReadableByteCountSchema.exactOptional(),
-    coordinating_in_bytes: CommonByteCountSchema,
-    primary: CommonHumanReadableByteCountSchema.exactOptional(),
-    primary_in_bytes: CommonByteCountSchema,
-    replica: CommonHumanReadableByteCountSchema.exactOptional(),
-    replica_in_bytes: CommonByteCountSchema,
-  })
-  .openapi({ required: ['coordinating_in_bytes', 'primary_in_bytes', 'replica_in_bytes'] })
-  .openapi('NodesStatsShardIndexingPressurePerShardMemoryStatsDetails')
-
-const NodesStatsShardIndexingPressurePerShardMemoryStatsSchema = z
-  .object({
-    current: NodesStatsShardIndexingPressurePerShardMemoryStatsDetailsSchema,
-    total: NodesStatsShardIndexingPressurePerShardMemoryStatsDetailsSchema,
-  })
-  .openapi({ required: ['current', 'total'] })
-  .openapi('NodesStatsShardIndexingPressurePerShardMemoryStats')
-
-const NodesStatsShardIndexingPressureRejectionsBreakupStatsSchema = z
-  .object({
-    node_limits: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    no_successful_request_limits: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    throughput_degradation_limits: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsShardIndexingPressureRejectionsBreakupStats')
-
-const NodesStatsShardIndexingPressurePerShardRejectionCoordinatingStatsSchema = z
-  .object({
-    coordinating_rejections: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    breakup: NodesStatsShardIndexingPressureRejectionsBreakupStatsSchema.exactOptional(),
-    breakup_shadow_mode:
-      NodesStatsShardIndexingPressureRejectionsBreakupStatsSchema.exactOptional(),
-  })
-  .openapi({ required: ['coordinating_rejections'] })
-  .openapi('NodesStatsShardIndexingPressurePerShardRejectionCoordinatingStats')
-
-const NodesStatsShardIndexingPressurePerShardRejectionPrimaryStatsSchema = z
-  .object({
-    primary_rejections: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    breakup: NodesStatsShardIndexingPressureRejectionsBreakupStatsSchema.exactOptional(),
-    breakup_shadow_mode:
-      NodesStatsShardIndexingPressureRejectionsBreakupStatsSchema.exactOptional(),
-  })
-  .openapi({ required: ['primary_rejections'] })
-  .openapi('NodesStatsShardIndexingPressurePerShardRejectionPrimaryStats')
-
-const NodesStatsShardIndexingPressurePerShardRejectionReplicaStatsSchema = z
-  .object({
-    replica_rejections: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    breakup: NodesStatsShardIndexingPressureRejectionsBreakupStatsSchema.exactOptional(),
-    breakup_shadow_mode:
-      NodesStatsShardIndexingPressureRejectionsBreakupStatsSchema.exactOptional(),
-  })
-  .openapi({ required: ['replica_rejections'] })
-  .openapi('NodesStatsShardIndexingPressurePerShardRejectionReplicaStats')
-
-const NodesStatsShardIndexingPressurePerShardRejectionStatsSchema = z
-  .object({
-    coordinating: NodesStatsShardIndexingPressurePerShardRejectionCoordinatingStatsSchema,
-    primary: NodesStatsShardIndexingPressurePerShardRejectionPrimaryStatsSchema,
-    replica: NodesStatsShardIndexingPressurePerShardRejectionReplicaStatsSchema,
-  })
-  .openapi({ required: ['coordinating', 'primary', 'replica'] })
-  .openapi('NodesStatsShardIndexingPressurePerShardRejectionStats')
-
-const NodesStatsShardIndexingPressurePerShardStatsSchema = z
-  .object({
-    memory: NodesStatsShardIndexingPressurePerShardMemoryStatsSchema,
-    rejection: NodesStatsShardIndexingPressurePerShardRejectionStatsSchema,
-    last_successful_timestamp: NodesStatsShardIndexingPressurePerShardLastSuccessfulTimestampSchema,
-    indexing: NodesStatsShardIndexingPressurePerShardIndexingStatsSchema,
-    memory_allocation: NodesStatsShardIndexingPressurePerShardMemoryAllocationStatsSchema,
-  })
-  .openapi({
-    required: ['indexing', 'last_successful_timestamp', 'memory', 'memory_allocation', 'rejection'],
-  })
-  .openapi('NodesStatsShardIndexingPressurePerShardStats')
-
-const NodesStatsShardIndexingPressureStatsSchema = z
-  .object({
-    stats: z.record(z.string(), NodesStatsShardIndexingPressurePerShardStatsSchema).exactOptional(),
-    enabled: z.boolean().exactOptional(),
-    enforced: z.boolean().exactOptional(),
-    total_rejections_breakup:
-      NodesStatsShardIndexingPressureRejectionsBreakupStatsSchema.exactOptional(),
-    total_rejections_breakup_shadow_mode:
-      NodesStatsShardIndexingPressureRejectionsBreakupStatsSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsShardIndexingPressureStats')
-
-const NodesStatsShardRepositoriesStatsSchema = z
-  .array(NodesStatsRepositoryStatsSnapshotSchema)
-  .openapi('NodesStatsShardRepositoriesStats')
-
-const NodesStatsShardResourceUsageStatsIoUsageStatsSchema = z
-  .object({ max_io_utilization_percent: CommonPercentageStringSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('NodesStatsShardResourceUsageStatsIoUsageStats')
-
-const NodesStatsShardResourceUsageStatsDetailSchema = z
-  .object({
-    timestamp: CommonUnitMillisSchema.exactOptional(),
-    cpu_utilization_percent: CommonPercentageStringSchema.exactOptional(),
-    memory_utilization_percent: CommonPercentageStringSchema.exactOptional(),
-    io_usage_stats: NodesStatsShardResourceUsageStatsIoUsageStatsSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsShardResourceUsageStatsDetail')
-
-const NodesStatsShardResourceUsageStatsSchema = z
-  .record(z.string(), NodesStatsShardResourceUsageStatsDetailSchema)
-  .openapi('NodesStatsShardResourceUsageStats')
-
-const NodesStatsShardSearchBackpressureModeSchema = z
-  .enum(['disabled', 'enforced', 'monitor_only'])
-  .openapi('NodesStatsShardSearchBackpressureMode')
-
-const NodesStatsShardSearchBackpressureTaskResourceTrackerHeapUsageTrackerStatsSchema = z
-  .object({
-    cancellation_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    current_max: CommonHumanReadableByteCountSchema.exactOptional(),
-    current_max_bytes: CommonByteCountSchema.exactOptional(),
-    current_avg: CommonHumanReadableByteCountSchema.exactOptional(),
-    current_avg_bytes: CommonByteCountSchema.exactOptional(),
-    rolling_avg: CommonHumanReadableByteCountSchema.exactOptional(),
-    rolling_avg_bytes: CommonByteCountSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsShardSearchBackpressureTaskResourceTrackerHeapUsageTrackerStats')
-
-const NodesStatsShardSearchBackpressureTaskResourceTrackerElapsedTimeTrackerStatsSchema = z
-  .object({
-    cancellation_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    current_max: CommonDurationSchema.exactOptional(),
-    current_max_millis: CommonUnitMillisSchema.exactOptional(),
-    current_avg: CommonDurationSchema.exactOptional(),
-    current_avg_millis: CommonUnitMillisSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsShardSearchBackpressureTaskResourceTrackerElapsedTimeTrackerStats')
-
-const NodesStatsShardSearchBackpressureTaskResourceTrackerCpuUsageTrackerStatsSchema = z
-  .object({
-    cancellation_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    current_max: CommonDurationSchema.exactOptional(),
-    current_max_millis: CommonUnitMillisSchema.exactOptional(),
-    current_avg: CommonDurationSchema.exactOptional(),
-    current_avg_millis: CommonUnitMillisSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsShardSearchBackpressureTaskResourceTrackerCpuUsageTrackerStats')
-
-const NodesStatsShardSearchBackpressureTaskResourceTrackerStatsSchema = z
-  .object({
-    heap_usage_tracker:
-      NodesStatsShardSearchBackpressureTaskResourceTrackerHeapUsageTrackerStatsSchema.exactOptional(),
-    elapsed_time_tracker:
-      NodesStatsShardSearchBackpressureTaskResourceTrackerElapsedTimeTrackerStatsSchema.exactOptional(),
-    cpu_usage_tracker:
-      NodesStatsShardSearchBackpressureTaskResourceTrackerCpuUsageTrackerStatsSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsShardSearchBackpressureTaskResourceTrackerStats')
-
-const NodesStatsShardSearchBackpressureTaskCancellationStatsSchema = z
-  .object({
-    cancellation_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    cancellation_limit_reached_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    cancelled_task_percentage: CommonPercentageNumberSchema.exactOptional(),
-    current_cancellation_eligible_tasks_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsShardSearchBackpressureTaskCancellationStats')
-
-const NodesStatsShardSearchBackpressureTaskStatsSchema = z
-  .object({
-    resource_tracker_stats:
-      NodesStatsShardSearchBackpressureTaskResourceTrackerStatsSchema.exactOptional(),
-    cancellation_stats:
-      NodesStatsShardSearchBackpressureTaskCancellationStatsSchema.exactOptional(),
-    completion_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', 'x-version-added': '3.0' }),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsShardSearchBackpressureTaskStats')
-
-const NodesStatsShardSearchBackpressureStatsSchema = z
-  .object({
-    search_task: NodesStatsShardSearchBackpressureTaskStatsSchema.exactOptional(),
-    search_shard_task: NodesStatsShardSearchBackpressureTaskStatsSchema.exactOptional(),
-    mode: NodesStatsShardSearchBackpressureModeSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsShardSearchBackpressureStats')
-
-const NodesStatsShardSearchPipelineOperationStatsSchema = z
-  .object({
-    count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    time: CommonDurationSchema.exactOptional(),
-    time_in_millis: CommonUnitMillisSchema.exactOptional(),
-    current: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    failed: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsShardSearchPipelineOperationStats')
-
-const NodesStatsShardSearchPipelinePerPipelineProcessorStatsSchema = z
-  .object({
-    type: z.string().exactOptional(),
-    stats: NodesStatsShardSearchPipelineOperationStatsSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsShardSearchPipelinePerPipelineProcessorStats')
-
-const NodesStatsShardSearchPipelinePerPipelineStatsSchema = z
-  .object({
-    request: NodesStatsShardSearchPipelineOperationStatsSchema.exactOptional(),
-    response: NodesStatsShardSearchPipelineOperationStatsSchema.exactOptional(),
-    request_processors: z
-      .array(NodesStatsShardSearchPipelinePerPipelineProcessorStatsSchema)
-      .exactOptional(),
-    response_processors: z
-      .array(
-        z
-          .record(z.string(), NodesStatsShardSearchPipelinePerPipelineProcessorStatsSchema)
-          .refine((val) => Object.keys(val).length >= 1)
-          .refine((val) => Object.keys(val).length <= 1),
-      )
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsShardSearchPipelinePerPipelineStats')
-
-const NodesStatsShardSearchPipelineStatsSchema = z
-  .object({
-    total_request: NodesStatsShardSearchPipelineOperationStatsSchema.exactOptional(),
-    total_response: NodesStatsShardSearchPipelineOperationStatsSchema.exactOptional(),
-    pipelines: z
-      .record(z.string(), NodesStatsShardSearchPipelinePerPipelineStatsSchema)
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsShardSearchPipelineStats')
-
-const NodesStatsShardSegmentReplicationBackpressureStatsSchema = z
-  .object({
-    total_rejected_requests: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsShardSegmentReplicationBackpressureStats')
-
-const NodesStatsShardTaskCancellationStatsDetailSchema = z
-  .object({
-    current_count_post_cancel: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    total_count_post_cancel: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsShardTaskCancellationStatsDetail')
-
-const NodesStatsShardTaskCancellationStatsSchema = z
-  .object({
-    search_shard_task: NodesStatsShardTaskCancellationStatsDetailSchema.exactOptional(),
-    search_task: NodesStatsShardTaskCancellationStatsDetailSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsShardTaskCancellationStats')
-
-const NodesStatsShardWeightedRoutingStatsDetailSchema = z
-  .object({ fail_open_count: z.int32().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('NodesStatsShardWeightedRoutingStatsDetail')
-
-const NodesStatsShardWeightedRoutingStatsSchema = z
-  .object({ stats: NodesStatsShardWeightedRoutingStatsDetailSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('NodesStatsShardWeightedRoutingStats')
-
-const NodesStatsThreadCountSchema = z
-  .object({
-    active: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Number of active threads in the thread pool.',
-      }),
-    completed: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Number of tasks completed by the thread pool executor.',
-      }),
-    largest: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Highest number of active threads in the thread pool.',
-      }),
-    queue: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Number of tasks in queue for the thread pool.',
-      }),
-    rejected: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Number of tasks rejected by the thread pool executor.',
-      }),
-    threads: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Number of threads in the thread pool.',
-      }),
-    total_wait_time: CommonDurationSchema.exactOptional().openapi({
-      description:
-        'The total amount of time that tasks spend waiting in the thread pool queue.\nCurrently, only `search`, `search_throttled`, and `index_searcher` thread pools support this metric.\n',
-    }),
-    total_wait_time_in_nanos: CommonUnitNanosSchema.exactOptional().openapi({
-      description:
-        'The total amount of time that tasks spend waiting in the thread pool queue.\nCurrently, only `search`, `search_throttled`, and `index_searcher` thread pools support this metric.\n',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsThreadCount')
-
-const NodesStatsTransportSchema = z
-  .object({
-    rx_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'Total number of RX (receive) packets received by the node during internal cluster communication.',
-      }),
-    rx_size: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'Size of RX packets received by the node during internal cluster communication.',
-    }),
-    rx_size_in_bytes: CommonByteCountSchema.exactOptional().openapi({
-      description:
-        'Size, in bytes, of RX packets received by the node during internal cluster communication.',
-    }),
-    server_open: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'Current number of inbound TCP connections used for internal communication between nodes.',
-      }),
-    tx_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'Total number of TX (transmit) packets sent by the node during internal cluster communication.',
-      }),
-    tx_size: CommonHumanReadableByteCountSchema.exactOptional().openapi({
-      description: 'Size of TX packets sent by the node during internal cluster communication.',
-    }),
-    tx_size_in_bytes: CommonByteCountSchema.exactOptional().openapi({
-      description:
-        'Size, in bytes, of TX packets sent by the node during internal cluster communication.',
-    }),
-    total_outbound_connections: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The cumulative number of outbound transport connections that this node has opened since it started.\nEach transport connection may comprise multiple TCP connections but is only counted once in this statistic.\nTransport connections are typically long-lived so this statistic should remain constant in a stable cluster.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('NodesStatsTransport')
-
-const NodesStatsStatsSchema = z
+const NodesStatsStatsSchema: z.ZodType<NodesStatsStatsType> = z
   .object({
     adaptive_selection: z
       .record(z.string(), NodesStatsAdaptiveSelectionSchema)
@@ -34239,113 +35639,6 @@ const ReplicationCommonUpdateSettingsSchema = z
   .openapi({ required: [] })
   .openapi('ReplicationCommonUpdateSettings')
 
-const RollupsCommonCronSchema = z
-  .object({
-    expression: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The cron expression that defines the schedule.' }),
-    timezone: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The timezone for interpreting the cron expression.' }),
-  })
-  .openapi({ description: 'Defines a cron schedule for the rollup job execution.', required: [] })
-  .openapi('RollupsCommonCron')
-
-const RollupsCommonDateHistogramDimensionSchema = z
-  .object({
-    fixed_interval: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The fixed interval for the date histogram.' }),
-    calendar_interval: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The calendar interval for the date histogram.' }),
-    timezone: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The timezone for the date histogram calculations.' }),
-    source_field: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The field from the source documents to use for the date histogram.',
-      }),
-    target_field: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The field name to use in the target index for the date histogram results.',
-      }),
-    format: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The date format pattern for the histogram values.' }),
-  })
-  .openapi({
-    description: 'Configures a date histogram dimension for rollup aggregation.',
-    required: [],
-  })
-  .openapi('RollupsCommonDateHistogramDimension')
-
-const RollupsCommonHistogramDimensionSchema = z
-  .object({
-    source_field: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The field from the source documents to use for the histogram.' }),
-    target_field: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The field name to use in the target index for the histogram results.',
-      }),
-    interval: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The interval for the histogram buckets.' }),
-  })
-  .openapi({
-    description: 'Configures a numeric histogram dimension for rollup aggregation.',
-    required: [],
-  })
-  .openapi('RollupsCommonHistogramDimension')
-
-const RollupsCommonTermsDimensionSchema = z
-  .object({
-    source_field: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The field from the source documents to use for terms aggregation.',
-      }),
-    target_field: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The field name to use in the target index for the terms aggregation results.',
-      }),
-  })
-  .openapi({ description: 'Configures a terms dimension for rollup aggregation.', required: [] })
-  .openapi('RollupsCommonTermsDimension')
-
-const RollupsCommonDimensionsConfigItemSchema = z
-  .object({
-    histogram: RollupsCommonHistogramDimensionSchema.exactOptional(),
-    date_histogram: RollupsCommonDateHistogramDimensionSchema.exactOptional(),
-    terms: RollupsCommonTermsDimensionSchema.exactOptional(),
-  })
-  .refine((val) => Object.keys(val).length >= 1)
-  .refine((val) => Object.keys(val).length <= 1)
-  .openapi({
-    description: 'Defines a dimension for aggregating data in a rollup job.',
-    required: [],
-  })
-  .openapi('RollupsCommonDimensionsConfigItem')
-
 const RollupsCommonExplainSchema = z
   .object({
     metadata_id: z
@@ -34354,7 +35647,7 @@ const RollupsCommonExplainSchema = z
       .exactOptional()
       .openapi({ description: 'The metadata ID for the rollup job.' }),
     rollup_metadata: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'The metadata associated with the rollup job execution.' }),
@@ -34367,164 +35660,7 @@ const RollupsCommonExplainEntitiesSchema = z
   .openapi({ description: 'Maps rollup IDs to their explanation details.' })
   .openapi('RollupsCommonExplainEntities')
 
-const RollupsCommonIntervalSchema = z
-  .object({
-    start_time: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'When the rollup job should start, in epoch milliseconds.' }),
-    period: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The numerical value for the execution interval.' }),
-    unit: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The time unit for the execution interval, such as `MINUTES` or `HOURS`.',
-      }),
-    cron: z
-      .xor([z.array(RollupsCommonCronSchema), RollupsCommonCronSchema])
-      .exactOptional()
-      .openapi({ description: 'The cron schedule configuration for the rollup job.' }),
-    schedule_delay: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The delay in milliseconds before starting the rollup process.' }),
-  })
-  .openapi({ description: 'Specifies the timing details for rollup job execution.', required: [] })
-  .openapi('RollupsCommonInterval')
-
-const RollupsCommonMetricsConfigMetricsSchema = z
-  .object({
-    avg: z
-      .object({})
-      .exactOptional()
-      .openapi({ description: 'Calculates the average value of a field.' }),
-    sum: z
-      .object({})
-      .exactOptional()
-      .openapi({ description: 'Calculates the sum of values for a field.' }),
-    max: z
-      .object({})
-      .exactOptional()
-      .openapi({ description: 'Finds the maximum value of a field.' }),
-    min: z
-      .object({})
-      .exactOptional()
-      .openapi({ description: 'Finds the minimum value of a field.' }),
-    value_count: z
-      .object({})
-      .exactOptional()
-      .openapi({ description: 'Counts the number of values for a field.' }),
-  })
-  .refine((val) => Object.keys(val).length >= 1)
-  .refine((val) => Object.keys(val).length <= 1)
-  .openapi({ description: 'Specifies a metric aggregation type to calculate.', required: [] })
-  .openapi('RollupsCommonMetricsConfigMetrics')
-
-const RollupsCommonMetricsConfigItemSchema = z
-  .object({
-    source_field: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The field from the source documents to calculate metrics on.' }),
-    target_field: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The field name prefix to use in the target index for the metric results.',
-      }),
-    metrics: z
-      .array(RollupsCommonMetricsConfigMetricsSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of metrics to calculate for the field.' }),
-  })
-  .openapi({
-    description: 'Defines metric aggregations for a field in a rollup job.',
-    required: [],
-  })
-  .openapi('RollupsCommonMetricsConfigItem')
-
-const RollupsCommonScheduleSchema = z
-  .object({ interval: RollupsCommonIntervalSchema.exactOptional() })
-  .openapi({ description: 'Defines the execution schedule for a rollup job.', required: [] })
-  .openapi('RollupsCommonSchedule')
-
-const RollupsCommonRollupSchema = z
-  .object({
-    rollup_id: z.string().exactOptional().openapi({ description: 'The ID for the rollup job.' }),
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the rollup job is enabled.' }),
-    schedule: RollupsCommonScheduleSchema.exactOptional(),
-    last_updated_time: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'When the rollup job was last updated.' }),
-    enabled_time: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'When the rollup job was enabled.' }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The description of the rollup job.' }),
-    schema_version: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The schema version for the rollup job.' }),
-    source_index: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The source index pattern for the rollup job.' }),
-    target_index: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The target index where rollup results are stored.' }),
-    target_index_settings: IndicesCommonIndexSettingsSchema.exactOptional().openapi({
-      'x-version-added': '3.0.0',
-    }),
-    metadata_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The metadata ID associated with the rollup job.' }),
-    page_size: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The number of documents to process per iteration.' }),
-    delay: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description: 'The time delay in milliseconds between consecutive rollup executions.',
-      }),
-    continuous: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the rollup job runs continuously.' }),
-    dimensions: z
-      .array(RollupsCommonDimensionsConfigItemSchema)
-      .exactOptional()
-      .openapi({ description: 'The dimensions to aggregate data in the rollup.' }),
-    metrics: z
-      .array(RollupsCommonMetricsConfigItemSchema)
-      .exactOptional()
-      .openapi({ description: 'The metrics to calculate in the rollup.' }),
-    error_notification: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Set up a Mustache message template for error notifications. For example, if an index rollup job fails, the system can send  a message to a Slack channel.',
-      }),
-  })
-  .openapi({ description: 'Defines the configuration for a rollup job.', required: [] })
-  .openapi('RollupsCommonRollup')
-
-const RollupsCommonRollupEntitySchema = z
+const RollupsCommonRollupEntitySchema: z.ZodType<RollupsCommonRollupEntityType> = z
   .object({
     _id: CommonIdSchema.exactOptional(),
     _seq_no: CommonSequenceNumberSchema.exactOptional(),
@@ -34550,352 +35686,10 @@ const RollupsCommonRollupEntitySchema = z
   .openapi({ description: 'A rollup job entity with metadata.', required: [] })
   .openapi('RollupsCommonRollupEntity')
 
-const SearchPipelineCommonAgenticContextResponseProcessorSchema = z
-  .object({
-    tag: z.string().exactOptional(),
-    description: z.string().exactOptional(),
-    ignore_failure: z.boolean().exactOptional(),
-    agent_steps_summary: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          "Whether to include the agent's execution step summary in the response. Available for conversational agents only.",
-      }),
-    dsl_query: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether to include the generated DSL query in the response. Available for both conversational and flow agents.',
-      }),
-  })
-  .openapi({ 'x-version-added': '3.3', required: [] })
-  .openapi('SearchPipelineCommonAgenticContextResponseProcessor')
-
-const SearchPipelineCommonAgenticQueryTranslatorRequestProcessorSchema = z
-  .object({
-    tag: z.string().exactOptional(),
-    description: z.string().exactOptional(),
-    ignore_failure: z.boolean().exactOptional(),
-    agent_id: z
-      .string()
-      .openapi({ description: 'The ID of the agent to use for query translation.' }),
-  })
-  .openapi({ 'x-version-added': '3.2', required: ['agent_id'] })
-  .openapi('SearchPipelineCommonAgenticQueryTranslatorRequestProcessor')
-
-const SearchPipelineCommonCollapseResponseProcessorSchema = z
-  .object({
-    tag: z.string().exactOptional(),
-    description: z.string().exactOptional(),
-    ignore_failure: z.boolean().exactOptional(),
-    field: z.string(),
-    context_prefix: z.string().exactOptional(),
-  })
-  .openapi({ required: ['field'] })
-  .openapi('SearchPipelineCommonCollapseResponseProcessor')
-
-const SearchPipelineCommonFilterQueryRequestProcessorSchema = z
-  .object({
-    tag: z.string().exactOptional(),
-    description: z.string().exactOptional(),
-    ignore_failure: z.boolean().exactOptional(),
-    query: CommonQueryDslQueryContainerSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('SearchPipelineCommonFilterQueryRequestProcessor')
-
-const SearchPipelineCommonMLOpenSearchRerankerSchema = z
-  .object({ model_id: z.string() })
-  .openapi({ required: ['model_id'] })
-  .openapi('SearchPipelineCommonMLOpenSearchReranker')
-
-const SearchPipelineCommonNeuralFieldMapSchema = z
-  .record(z.string(), z.string())
-  .openapi('SearchPipelineCommonNeuralFieldMap')
-
-const SearchPipelineCommonNeuralQueryEnricherRequestProcessorSchema = z
-  .object({
-    tag: z.string().exactOptional(),
-    description: z.string().exactOptional(),
-    default_model_id: z.string().exactOptional(),
-    neural_field_default_id: SearchPipelineCommonNeuralFieldMapSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('SearchPipelineCommonNeuralQueryEnricherRequestProcessor')
-
-const SearchPipelineCommonScoreNormalizationTechniqueSchema = z
-  .enum(['l2', 'min_max'])
-  .openapi('SearchPipelineCommonScoreNormalizationTechnique')
-
-const SearchPipelineCommonScoreNormalizationSchema = z
-  .object({ technique: SearchPipelineCommonScoreNormalizationTechniqueSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('SearchPipelineCommonScoreNormalization')
-
-const SearchPipelineCommonScoreCombinationTechniqueSchema = z
-  .enum(['arithmetic_mean', 'geometric_mean', 'harmonic_mean'])
-  .openapi('SearchPipelineCommonScoreCombinationTechnique')
-
-const SearchPipelineCommonScoreCombinationParametersSchema = z
-  .object({ weights: z.array(z.float32()).exactOptional() })
-  .openapi({ required: [] })
-  .openapi('SearchPipelineCommonScoreCombinationParameters')
-
-const SearchPipelineCommonScoreCombinationSchema = z
-  .object({
-    technique: SearchPipelineCommonScoreCombinationTechniqueSchema.exactOptional(),
-    parameters: SearchPipelineCommonScoreCombinationParametersSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('SearchPipelineCommonScoreCombination')
-
-const SearchPipelineCommonNormalizationPhaseResultsProcessorSchema = z
-  .object({
-    tag: z.string().exactOptional(),
-    description: z.string().exactOptional(),
-    ignore_failure: z.boolean().exactOptional(),
-    normalization: SearchPipelineCommonScoreNormalizationSchema.exactOptional(),
-    combination: SearchPipelineCommonScoreCombinationSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('SearchPipelineCommonNormalizationPhaseResultsProcessor')
-
-const SearchPipelineCommonOversampleRequestProcessorSchema = z
-  .object({
-    tag: z.string().exactOptional(),
-    description: z.string().exactOptional(),
-    ignore_failure: z.boolean().exactOptional(),
-    sample_factor: z.float32(),
-    content_prefix: z.string().exactOptional(),
-  })
-  .openapi({ required: ['sample_factor'] })
-  .openapi('SearchPipelineCommonOversampleRequestProcessor')
-
-const SearchPipelineCommonPersonalizeSearchRankingResponseProcessorSchema = z
-  .object({
-    tag: z.string().exactOptional(),
-    description: z.string().exactOptional(),
-    ignore_failure: z.boolean().exactOptional(),
-    campaign_arn: z.string(),
-    recipe: z.string(),
-    weight: z.float32(),
-    item_id_field: z.string().exactOptional(),
-    iam_role_arn: z.string().exactOptional(),
-  })
-  .openapi({ required: ['campaign_arn', 'recipe', 'weight'] })
-  .openapi('SearchPipelineCommonPersonalizeSearchRankingResponseProcessor')
-
-const SearchPipelineCommonScoreRankerCombinationTechniqueSchema = z
-  .literal('rrf')
-  .openapi('SearchPipelineCommonScoreRankerCombinationTechnique')
-
-const SearchPipelineCommonScoreRankerCombinationSchema = z
-  .object({
-    technique: SearchPipelineCommonScoreRankerCombinationTechniqueSchema,
-    rank_constant: z.int32().min(1).exactOptional(),
-  })
-  .openapi({ required: ['technique'] })
-  .openapi('SearchPipelineCommonScoreRankerCombination')
-
-const SearchPipelineCommonScoreRankerPhaseResultsProcessorSchema = z
-  .object({ combination: SearchPipelineCommonScoreRankerCombinationSchema })
-  .openapi({ required: ['combination'] })
-  .openapi('SearchPipelineCommonScoreRankerPhaseResultsProcessor')
-
-const SearchPipelineCommonPhaseResultsProcessorSchema = z
-  .xor([
-    z
-      .object({
-        'normalization-processor': SearchPipelineCommonNormalizationPhaseResultsProcessorSchema,
-      })
-      .openapi({ title: 'normalization-processor', required: ['normalization-processor'] }),
-    z
-      .object({
-        'score-ranker-processor': SearchPipelineCommonScoreRankerPhaseResultsProcessorSchema,
-      })
-      .openapi({ title: 'score-ranker-processor', required: ['score-ranker-processor'] }),
-  ])
-  .openapi('SearchPipelineCommonPhaseResultsProcessor')
-
-const SearchPipelineCommonRenameFieldResponseProcessorSchema = z
-  .object({
-    tag: z.string().exactOptional(),
-    description: z.string().exactOptional(),
-    ignore_failure: z.boolean().exactOptional(),
-    field: z.string(),
-    target_field: z.string(),
-  })
-  .openapi({ required: ['field', 'target_field'] })
-  .openapi('SearchPipelineCommonRenameFieldResponseProcessor')
-
-const SearchPipelineCommonSearchScriptRequestProcessorSchema = z
-  .object({
-    tag: z.string().exactOptional(),
-    description: z.string().exactOptional(),
-    ignore_failure: z.boolean().exactOptional(),
-    source: z.string(),
-    lang: z.string().exactOptional(),
-  })
-  .openapi({ required: ['source'] })
-  .openapi('SearchPipelineCommonSearchScriptRequestProcessor')
-
-const SearchPipelineCommonRequestProcessorSchema = z
-  .xor([
-    z
-      .object({
-        agentic_query_translator: SearchPipelineCommonAgenticQueryTranslatorRequestProcessorSchema,
-      })
-      .openapi({
-        'x-version-added': '3.2',
-        title: 'agentic_query_translator',
-        required: ['agentic_query_translator'],
-      }),
-    z
-      .object({ filter_query: SearchPipelineCommonFilterQueryRequestProcessorSchema })
-      .openapi({ title: 'filter_query', required: ['filter_query'] }),
-    z
-      .object({
-        neural_query_enricher: SearchPipelineCommonNeuralQueryEnricherRequestProcessorSchema,
-      })
-      .openapi({ title: 'neural_query_enricher', required: ['neural_query_enricher'] }),
-    z
-      .object({ script: SearchPipelineCommonSearchScriptRequestProcessorSchema })
-      .openapi({ title: 'script', required: ['script'] }),
-    z
-      .object({ oversample: SearchPipelineCommonOversampleRequestProcessorSchema })
-      .openapi({ title: 'oversample', required: ['oversample'] }),
-  ])
-  .openapi('SearchPipelineCommonRequestProcessor')
-
-const SearchPipelineCommonRerankContextSchema = z
-  .object({ document_fields: z.array(z.string()) })
-  .openapi({ required: ['document_fields'] })
-  .openapi('SearchPipelineCommonRerankContext')
-
-const SearchPipelineCommonRerankResponseProcessorSchema = z
-  .object({
-    tag: z.string().exactOptional(),
-    description: z.string().exactOptional(),
-    ignore_failure: z.boolean().exactOptional(),
-    ml_opensearch: SearchPipelineCommonMLOpenSearchRerankerSchema.exactOptional(),
-    context: SearchPipelineCommonRerankContextSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('SearchPipelineCommonRerankResponseProcessor')
-
-const SearchPipelineCommonRetrievalAugmentedGenerationResponseProcessorSchema = z
-  .object({
-    tag: z.string().exactOptional(),
-    description: z.string().exactOptional(),
-    model_id: z.string(),
-    context_field_list: z.array(z.string()),
-    system_prompt: z.string().exactOptional(),
-    user_instructions: z.string().exactOptional(),
-  })
-  .openapi({ required: ['context_field_list', 'model_id'] })
-  .openapi('SearchPipelineCommonRetrievalAugmentedGenerationResponseProcessor')
-
-const SearchPipelineCommonTruncateHitsResponseProcessorSchema = z
-  .object({
-    tag: z.string().exactOptional(),
-    description: z.string().exactOptional(),
-    ignore_failure: z.boolean().exactOptional(),
-    target_size: z.int32().exactOptional(),
-    context_prefix: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('SearchPipelineCommonTruncateHitsResponseProcessor')
-
-const SearchPipelineCommonSortResponseProcessorSchema = z
-  .object({
-    tag: z.string().exactOptional(),
-    description: z.string().exactOptional(),
-    ignore_failure: z.boolean().exactOptional(),
-    field: z.string(),
-    order: z.string().exactOptional(),
-    target_field: z.string().exactOptional(),
-  })
-  .openapi({ required: ['field'] })
-  .openapi('SearchPipelineCommonSortResponseProcessor')
-
-const SearchPipelineCommonSplitResponseProcessorSchema = z
-  .object({
-    tag: z.string().exactOptional(),
-    description: z.string().exactOptional(),
-    ignore_failure: z.boolean().exactOptional(),
-    field: z.string(),
-    separator: z.string(),
-    preserve_trailing: z.boolean().exactOptional(),
-    target_field: z.string().exactOptional(),
-  })
-  .openapi({ required: ['field', 'separator'] })
-  .openapi('SearchPipelineCommonSplitResponseProcessor')
-
-const SearchPipelineCommonResponseProcessorSchema = z
-  .xor([
-    z
-      .object({ agentic_context: SearchPipelineCommonAgenticContextResponseProcessorSchema })
-      .openapi({
-        'x-version-added': '3.3',
-        title: 'agentic_context',
-        required: ['agentic_context'],
-      }),
-    z
-      .object({
-        personalize_search_ranking:
-          SearchPipelineCommonPersonalizeSearchRankingResponseProcessorSchema,
-      })
-      .openapi({ title: 'personalize_search_ranking', required: ['personalize_search_ranking'] }),
-    z
-      .object({
-        retrieval_augmented_generation:
-          SearchPipelineCommonRetrievalAugmentedGenerationResponseProcessorSchema,
-      })
-      .openapi({
-        title: 'retrieval_augmented_generation',
-        required: ['retrieval_augmented_generation'],
-      }),
-    z
-      .object({ rename_field: SearchPipelineCommonRenameFieldResponseProcessorSchema })
-      .openapi({ title: 'rename_field', required: ['rename_field'] }),
-    z
-      .object({ rerank: SearchPipelineCommonRerankResponseProcessorSchema })
-      .openapi({ title: 'rerank', required: ['rerank'] }),
-    z
-      .object({ collapse: SearchPipelineCommonCollapseResponseProcessorSchema })
-      .openapi({ title: 'collapse', required: ['collapse'] }),
-    z
-      .object({ truncate_hits: SearchPipelineCommonTruncateHitsResponseProcessorSchema })
-      .openapi({ title: 'truncate_hits', required: ['truncate_hits'] }),
-    z
-      .object({ sort: SearchPipelineCommonSortResponseProcessorSchema })
-      .openapi({ title: 'sort', required: ['sort'] }),
-    z
-      .object({ split: SearchPipelineCommonSplitResponseProcessorSchema })
-      .openapi({ title: 'split', required: ['split'] }),
-  ])
-  .openapi('SearchPipelineCommonResponseProcessor')
-
-const SearchPipelineCommonSearchPipelineStructureSchema = z
-  .object({
-    description: z.string().exactOptional(),
-    version: z.int32().exactOptional(),
-    request_processors: z.array(SearchPipelineCommonRequestProcessorSchema).exactOptional(),
-    response_processors: z.array(SearchPipelineCommonResponseProcessorSchema).exactOptional(),
-    phase_results_processors: z
-      .array(SearchPipelineCommonPhaseResultsProcessorSchema)
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('SearchPipelineCommonSearchPipelineStructure')
-
-const SearchPipelineCommonSearchPipelineMapSchema = z
-  .record(z.string(), SearchPipelineCommonSearchPipelineStructureSchema)
-  .openapi('SearchPipelineCommonSearchPipelineMap')
+const SearchPipelineCommonSearchPipelineMapSchema: z.ZodType<SearchPipelineCommonSearchPipelineMapType> =
+  z
+    .record(z.string(), SearchPipelineCommonSearchPipelineStructureSchema)
+    .openapi('SearchPipelineCommonSearchPipelineMap')
 
 const SearchRelevanceCommonPostQuerySetsRequestSchema = z
   .object({
@@ -34949,7 +35743,7 @@ const SearchRelevanceCommonPutImportJudgmentsRequestSchema = z
     name: z.string().exactOptional(),
     description: z.string().exactOptional(),
     type: z.string().exactOptional(),
-    judgmentRatings: z.array(z.object({})).exactOptional(),
+    judgmentRatings: z.array(z.looseObject({})).exactOptional(),
   })
   .openapi({ description: 'The schema for an import judgment.', required: [] })
   .openapi('SearchRelevanceCommonPutImportJudgmentsRequest')
@@ -35000,7 +35794,7 @@ const SearchRelevanceCommonPutQuerySetsRequestSchema = z
     name: z.string().exactOptional(),
     description: z.string().exactOptional(),
     sampling: z.string().exactOptional(),
-    querySetQueries: z.array(z.object({})).exactOptional(),
+    querySetQueries: z.array(z.looseObject({})).exactOptional(),
   })
   .openapi({ description: 'The schema for updating a query set.', required: [] })
   .openapi('SearchRelevanceCommonPutQuerySetsRequest')
@@ -35404,35 +36198,6 @@ const SecurityCommonAuthInfoSchema = z
   .openapi({ required: [] })
   .openapi('SecurityCommonAuthInfo')
 
-const SecurityCommonCertificatesDetailSchema = z
-  .object({
-    issuer_dn: z.string().exactOptional(),
-    subject_dn: z.string().exactOptional(),
-    san: z.string().exactOptional(),
-    not_before: z.string().exactOptional(),
-    not_after: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('SecurityCommonCertificatesDetail')
-
-const SecurityCommonCertificateTypesSchema = z
-  .object({
-    http: z.array(z.record(z.string(), SecurityCommonCertificatesDetailSchema)).exactOptional(),
-    transport: z
-      .array(z.record(z.string(), SecurityCommonCertificatesDetailSchema))
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('SecurityCommonCertificateTypes')
-
-const SecurityCommonCertificatesPerNodeSchema = z
-  .object({
-    name: z.string().exactOptional().openapi({ description: 'The name of the node.' }),
-    certificates: z.record(z.string(), SecurityCommonCertificateTypesSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('SecurityCommonCertificatesPerNode')
-
 const SecurityCommonChangePasswordRequestContentSchema = z
   .object({
     current_password: z.string().openapi({ description: 'The current password.' }),
@@ -35534,17 +36299,17 @@ const SecurityCommonDynamicOptionsSchema = z
     disable_rest_auth: z.boolean().exactOptional(),
     disable_intertransport_auth: z.boolean().exactOptional(),
     respect_request_indices_options: z.boolean().exactOptional(),
-    'opensearch-dashboards': z.object({}).exactOptional(),
-    kibana: z.object({}).exactOptional(),
-    http: z.object({}).exactOptional(),
-    authc: z.object({}).exactOptional(),
-    authz: z.object({}).exactOptional(),
-    auth_failure_listeners: z.object({}).exactOptional(),
+    'opensearch-dashboards': z.looseObject({}).exactOptional(),
+    kibana: z.looseObject({}).exactOptional(),
+    http: z.looseObject({}).exactOptional(),
+    authc: z.looseObject({}).exactOptional(),
+    authz: z.looseObject({}).exactOptional(),
+    auth_failure_listeners: z.looseObject({}).exactOptional(),
     do_not_fail_on_forbidden: z.boolean().exactOptional(),
     multi_rolespan_enabled: z.boolean().exactOptional(),
     hosts_resolver_mode: z.string().exactOptional(),
     do_not_fail_on_forbidden_empty: z.boolean().exactOptional(),
-    on_behalf_of: z.object({}).exactOptional(),
+    on_behalf_of: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('SecurityCommonDynamicOptions')
@@ -35601,14 +36366,15 @@ const SecurityCommonGetCertificatesSchema = z
   .openapi({ required: [] })
   .openapi('SecurityCommonGetCertificates')
 
-const SecurityCommonGetCertificatesNewSchema = NodesCommonNodesResponseBaseSchema.and(
-  z
-    .object({
-      cluster_name: z.string().exactOptional().openapi({ description: 'Name of this cluster.' }),
-      nodes: z.record(z.string(), SecurityCommonCertificatesPerNodeSchema).exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('SecurityCommonGetCertificatesNew')
+const SecurityCommonGetCertificatesNewSchema: z.ZodType<SecurityCommonGetCertificatesNewType> =
+  NodesCommonNodesResponseBaseSchema.and(
+    z
+      .object({
+        cluster_name: z.string().exactOptional().openapi({ description: 'Name of this cluster.' }),
+        nodes: z.record(z.string(), SecurityCommonCertificatesPerNodeSchema).exactOptional(),
+      })
+      .openapi({ required: [] }),
+  ).openapi('SecurityCommonGetCertificatesNew')
 
 const SecurityCommonHealthInfoSchema = z
   .object({
@@ -36693,7 +37459,7 @@ const SqlCommonExplainSchema = z
   .object({
     query: z.string().exactOptional().openapi({ description: 'The SQL query to explain.' }),
     filter: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The filter to apply when explaining the query.' }),
     fetch_size: z
@@ -36713,7 +37479,7 @@ const SqlCommonExplainBodySchema: z.ZodType<SqlCommonExplainBodyType> = z
           .exactOptional()
           .openapi({ description: 'The name of the execution step.' }),
         description: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'The details about the execution step.' }),
         children: z
@@ -36782,7 +37548,7 @@ const SqlCommonQuerySchema = z
   .object({
     query: z.string().exactOptional().openapi({ description: 'The SQL query string to execute.' }),
     filter: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The filter to apply to query results.' }),
     fetch_size: z
@@ -36796,7 +37562,7 @@ const SqlCommonQuerySchema = z
 const SqlCommonQueryResponseSchema = z
   .object({
     schema: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({ description: 'The schema of the query result.' }),
     datarows: z
@@ -36886,7 +37652,7 @@ const SqlCommonSqlSettingsResponseSchema = z
       .exactOptional()
       .openapi({ description: 'Whether the settings were acknowledged.' }),
     persistent: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The permanent settings that persist through restarts.' }),
     transient: SqlCommonTransientSchema.exactOptional(),
@@ -36901,21 +37667,21 @@ const SqlCommonStatsSchema = z
       .exactOptional()
       .openapi({ description: 'When the query execution started.' }),
     end_time: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'When the query execution ended.' }),
     cluster_name: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The name of the cluster executing the query.' }),
     index: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The index information for the query.' }),
-    query: z.object({}).exactOptional().openapi({ description: 'The query information.' }),
-    user: z.object({}).exactOptional().openapi({ description: 'The user information.' }),
+    query: z.looseObject({}).exactOptional().openapi({ description: 'The query information.' }),
+    user: z.looseObject({}).exactOptional().openapi({ description: 'The user information.' }),
     execution_time: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The time taken to execute the query.' }),
   })
@@ -36924,30 +37690,7 @@ const SqlCommonStatsSchema = z
 
 const TasksCommonGroupBySchema = z.enum(['nodes', 'none', 'parents']).openapi('TasksCommonGroupBy')
 
-const TasksCommonTaskExecutingNodeSchema = CommonBaseNodeSchema.and(
-  z
-    .object({ tasks: z.record(z.string(), TasksCommonTaskInfoSchema) })
-    .openapi({ required: ['tasks'] }),
-).openapi('TasksCommonTaskExecutingNode')
-
-const TasksCommonTaskGroupSchema: z.ZodType<TasksCommonTaskGroupType> = z
-  .lazy(() =>
-    TasksCommonTaskInfoBaseSchema.and(
-      z
-        .object({ children: z.array(TasksCommonTaskGroupSchema).exactOptional() })
-        .openapi({ required: [] }),
-    ),
-  )
-  .openapi('TasksCommonTaskGroup')
-
-const TasksCommonTaskInfosSchema = z
-  .xor([
-    z.array(TasksCommonTaskInfoSchema).openapi({ title: 'grouped_by_none' }),
-    z.record(z.string(), TasksCommonTaskGroupSchema).openapi({ title: 'grouped_by_parents' }),
-  ])
-  .openapi('TasksCommonTaskInfos')
-
-const TasksCommonTaskListResponseBaseSchema = z
+const TasksCommonTaskListResponseBaseSchema: z.ZodType<TasksCommonTaskListResponseBaseType> = z
   .object({
     node_failures: z.array(CommonErrorCauseSchema).exactOptional(),
     task_failures: z.array(CommonTaskFailureSchema).exactOptional(),
@@ -36974,17 +37717,6 @@ const TransformsCommonContinuousStatsSchema = z
   })
   .openapi({ required: [] })
   .openapi('TransformsCommonContinuousStats')
-
-const TransformsCommonDateHistogramGroupSchema = z
-  .object({
-    fixed_interval: z.string().exactOptional(),
-    calendar_interval: z.string().exactOptional(),
-    timezone: z.string().exactOptional(),
-    source_field: z.string().exactOptional(),
-    target_field: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TransformsCommonDateHistogramGroup')
 
 const TransformsCommonExplainStatsSchema = z
   .object({
@@ -37023,106 +37755,24 @@ const TransformsCommonExplainResponseSchema = z
   .record(z.string(), TransformsCommonExplainSchema)
   .openapi('TransformsCommonExplainResponse')
 
-const TransformsCommonHistogramGroupSchema = z
-  .object({
-    source_field: z.string().exactOptional(),
-    target_field: z.string().exactOptional(),
-    interval: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TransformsCommonHistogramGroup')
-
-const TransformsCommonTermsGroupSchema = z
-  .object({ source_field: z.string().exactOptional(), target_field: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('TransformsCommonTermsGroup')
-
-const TransformsCommonGroupsConfigItemSchema = z
-  .object({
-    histogram: TransformsCommonHistogramGroupSchema.exactOptional(),
-    date_histogram: TransformsCommonDateHistogramGroupSchema.exactOptional(),
-    terms: TransformsCommonTermsGroupSchema.exactOptional(),
-  })
-  .refine((val) => Object.keys(val).length >= 1)
-  .refine((val) => Object.keys(val).length <= 1)
-  .openapi({ required: [] })
-  .openapi('TransformsCommonGroupsConfigItem')
-
 const TransformsCommonPreviewSchema = z
-  .object({ documents: z.array(z.object({})).exactOptional() })
+  .object({ documents: z.array(z.looseObject({})).exactOptional() })
   .openapi({ required: [] })
   .openapi('TransformsCommonPreview')
 
-const TransformsCommonScheduleIntervalSchema = z
-  .object({
-    start_time: z.number().exactOptional(),
-    period: z.number().exactOptional(),
-    unit: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TransformsCommonScheduleInterval')
-
-const TransformsCommonScheduleSchema = z
-  .object({ interval: TransformsCommonScheduleIntervalSchema })
-  .openapi({ required: ['interval'] })
-  .openapi('TransformsCommonSchedule')
-
-const TransformsCommonTransformSchema = z
-  .object({
-    transform_id: z.string().exactOptional(),
-    schema_version: z.number().exactOptional(),
-    continuous: z.boolean().exactOptional(),
-    schedule: TransformsCommonScheduleSchema.exactOptional(),
-    metadata_id: z.string().nullable().exactOptional(),
-    updated_at: z.number().exactOptional(),
-    enabled: z.boolean().exactOptional(),
-    enabled_at: z.number().nullable().exactOptional(),
-    description: z.string().exactOptional(),
-    source_index: z.string().exactOptional(),
-    data_selection_query: CommonQueryDslQueryContainerSchema.exactOptional(),
-    target_index: z.string().exactOptional(),
-    roles: z.array(z.string()).exactOptional(),
-    page_size: z.number().exactOptional(),
-    groups: z.array(TransformsCommonGroupsConfigItemSchema).exactOptional(),
-    aggregations: z.record(z.string(), TransformsCommonGroupsConfigItemSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TransformsCommonTransform')
-
-const TransformsCommonTransformRequestSchema = z
+const TransformsCommonTransformRequestSchema: z.ZodType<TransformsCommonTransformRequestType> = z
   .object({ transform: TransformsCommonTransformSchema })
   .openapi({ required: ['transform'] })
   .openapi('TransformsCommonTransformRequest')
 
-const TransformsCommonTransformResponseSchema = z
-  .object({
-    _id: CommonIdSchema.exactOptional(),
-    _primary_term: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    _seq_no: CommonSequenceNumberSchema.exactOptional(),
-    _version: CommonVersionNumberSchema.exactOptional(),
-    transform: TransformsCommonTransformSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TransformsCommonTransformResponse')
-
-const TransformsCommonTransformsResponseSchema = z
-  .object({
-    total_transforms: z.number().exactOptional(),
-    transforms: z.array(TransformsCommonTransformResponseSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TransformsCommonTransformsResponse')
+const TransformsCommonTransformsResponseSchema: z.ZodType<TransformsCommonTransformsResponseType> =
+  z
+    .object({
+      total_transforms: z.number().exactOptional(),
+      transforms: z.array(TransformsCommonTransformResponseSchema).exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('TransformsCommonTransformsResponse')
 
 const UbiCommonInitializeSchema = z.string().openapi('UbiCommonInitialize')
 
@@ -38912,13 +39562,13 @@ const KnnDeleteModel_200Response = {
 
 const KnnGetModel_200Response = {
   description: '',
-  content: { 'application/json': { schema: z.object({}) } },
+  content: { 'application/json': { schema: z.looseObject({}) } },
 }
 
 const KnnSearchModels_200Response = {
   description: '',
   content: {
-    'application/json': { schema: CoreSearchSearchResultJsonValueSchema.and(z.object({})) },
+    'application/json': { schema: CoreSearchSearchResultJsonValueSchema.and(z.looseObject({})) },
   },
 }
 
@@ -39239,21 +39889,21 @@ const LtrListStores_200Response = {
 const LtrSearchFeatures_200Response = {
   description: 'Returns search results for features.',
   content: {
-    'application/json': { schema: CoreSearchSearchResultJsonValueSchema.and(z.object({})) },
+    'application/json': { schema: CoreSearchSearchResultJsonValueSchema.and(z.looseObject({})) },
   },
 }
 
 const LtrSearchFeaturesets_200Response = {
   description: 'Returns search results for feature sets.',
   content: {
-    'application/json': { schema: CoreSearchSearchResultJsonValueSchema.and(z.object({})) },
+    'application/json': { schema: CoreSearchSearchResultJsonValueSchema.and(z.looseObject({})) },
   },
 }
 
 const LtrSearchModels_200Response = {
   description: 'Returns search results for models.',
   content: {
-    'application/json': { schema: CoreSearchSearchResultJsonValueSchema.and(z.object({})) },
+    'application/json': { schema: CoreSearchSearchResultJsonValueSchema.and(z.looseObject({})) },
   },
 }
 
@@ -40163,7 +40813,7 @@ const PutScript_200Response = {
 
 const QueryDatasourceDelete_204Response = {
   description: 'Confirms successful data source deletion.',
-  content: { 'application/json': { schema: z.object({}) } },
+  content: { 'application/json': { schema: z.looseObject({}) } },
 }
 
 const QueryDatasourceDelete_404Response = {
@@ -40446,9 +41096,9 @@ const SearchRelevanceGetNodeStats_200Response = {
         z
           .object({
             cluster_name: CommonNameSchema.exactOptional(),
-            info: z.object({}).exactOptional(),
-            all_nodes: z.object({}).exactOptional(),
-            nodes: z.object({}),
+            info: z.looseObject({}).exactOptional(),
+            all_nodes: z.looseObject({}).exactOptional(),
+            nodes: z.looseObject({}),
           })
           .openapi({ required: ['nodes'] }),
       ),
@@ -40479,9 +41129,9 @@ const SearchRelevanceGetStats_200Response = {
         z
           .object({
             cluster_name: CommonNameSchema.exactOptional(),
-            info: z.object({}).exactOptional(),
-            all_nodes: z.object({}).exactOptional(),
-            nodes: z.object({}),
+            info: z.looseObject({}).exactOptional(),
+            all_nodes: z.looseObject({}).exactOptional(),
+            nodes: z.looseObject({}),
           })
           .openapi({ required: ['nodes'] }),
       ),
@@ -64723,7 +65373,11 @@ const BulkStreamRequestBody = {
     'application/x-ndjson': {
       schema: z
         .array(
-          z.union([CoreBulkOperationContainerSchema, CoreBulkUpdateActionSchema, z.object({})]),
+          z.union([
+            CoreBulkOperationContainerSchema,
+            CoreBulkUpdateActionSchema,
+            z.looseObject({}),
+          ]),
         )
         .openapi({
           description:
@@ -64840,7 +65494,7 @@ const ClusterPutSettingsRequestBody = {
 
 const ClusterPutWeightedRoutingRequestBody = {
   content: {
-    'application/json': { schema: ClusterWeightedRoutingWeightsBaseSchema.and(z.object({})) },
+    'application/json': { schema: ClusterWeightedRoutingWeightsBaseSchema.and(z.looseObject({})) },
   },
 }
 
@@ -64880,7 +65534,7 @@ const CountRequestBody = {
 
 const CreateRequestBody = {
   content: {
-    'application/json': { schema: z.object({}).openapi({ description: 'The document' }) },
+    'application/json': { schema: z.looseObject({}).openapi({ description: 'The document' }) },
   },
   required: true,
 }
@@ -64981,7 +65635,7 @@ const GeospatialPutIp2geoDatasourceSettingsRequestBody = {
 
 const IndexRequestBody = {
   content: {
-    'application/json': { schema: z.object({}).openapi({ description: 'The document' }) },
+    'application/json': { schema: z.looseObject({}).openapi({ description: 'The document' }) },
   },
   required: true,
 }
@@ -65085,7 +65739,7 @@ const IndicesCreateRequestBody = {
 const IndicesCreateDataStreamRequestBody = {
   content: {
     'application/json': {
-      schema: z.object({}).openapi({ description: 'The data stream definition' }),
+      schema: z.looseObject({}).openapi({ description: 'The data stream definition' }),
     },
   },
 }
@@ -65471,7 +66125,9 @@ const IsmRetryIndexRequestBody = {
   content: { 'application/json': { schema: IsmCommonRetryIndexRequestSchema } },
 }
 
-const KnnSearchModelsRequestBody = { content: { 'application/json': { schema: z.object({}) } } }
+const KnnSearchModelsRequestBody = {
+  content: { 'application/json': { schema: z.looseObject({}) } },
+}
 
 const KnnTrainModelRequestBody = {
   content: { 'application/json': { schema: KnnCommonTrainedModelSchema } },
@@ -66498,7 +67154,7 @@ const MlUpdateModelRequestBody = {
       schema: z
         .object({
           connector: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({ description: 'The connector to use for the model.' }),
           connector_id: z.string().exactOptional().openapi({ description: 'The connector ID.' }),
@@ -66514,7 +67170,10 @@ const MlUpdateModelRequestBody = {
           name: z.string().exactOptional().openapi({ description: 'The model name.' }),
           rate_limiter: MlCommonRateLimiterSchema.exactOptional(),
           guardrails: MlCommonGuardrailsSchema.exactOptional(),
-          interface: z.object({}).exactOptional().openapi({ description: 'The model interface.' }),
+          interface: z
+            .looseObject({})
+            .exactOptional()
+            .openapi({ description: 'The model interface.' }),
         })
         .openapi({ required: [] }),
     },
@@ -66827,12 +67486,12 @@ const ReplicationDeleteReplicationRuleRequestBody = {
 }
 
 const ReplicationPauseRequestBody = {
-  content: { 'application/json': { schema: z.object({}) } },
+  content: { 'application/json': { schema: z.looseObject({}) } },
   required: true,
 }
 
 const ReplicationResumeRequestBody = {
-  content: { 'application/json': { schema: z.object({}) } },
+  content: { 'application/json': { schema: z.looseObject({}) } },
   required: true,
 }
 
@@ -66842,7 +67501,7 @@ const ReplicationStartRequestBody = {
 }
 
 const ReplicationStopRequestBody = {
-  content: { 'application/json': { schema: z.object({}) } },
+  content: { 'application/json': { schema: z.looseObject({}) } },
   required: true,
 }
 
@@ -67572,7 +68231,7 @@ const TermvectorsRequestBody = {
       schema: z
         .object({
           doc: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               description:
@@ -67614,7 +68273,7 @@ const UpdateRequestBody = {
                 'Set to `false` to disable setting `result` in the response\nto `noop` if no change to the document occurred.',
             }),
           doc: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({ description: 'A partial update to an existing document.' }),
           doc_as_upsert: z
@@ -67633,7 +68292,7 @@ const UpdateRequestBody = {
             }),
           _source: CoreSearchSourceConfigSchema.exactOptional(),
           upsert: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               description:

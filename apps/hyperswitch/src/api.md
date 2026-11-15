@@ -57,8 +57,7 @@ Admin API keys allow you to perform some privileged actions such as creating a m
 * API Key (api_key)
     - Parameter Name: **api-key**, in: header. Use the API key created under your merchant account from the HyperSwitch dashboard. API key is used to authenticate API requests from your merchant server only. Don't expose this key on a website or embed it in a mobile application.
 
-* API Key (ephemeral_key)
-    - Parameter Name: **api-key**, in: header. Ephemeral keys provide temporary access to singular data, such as access to a single customer object for a short period of time.
+- HTTP Authentication, scheme: basic HTTP Basic authentication with a merchant API key as the password. The username is ignored. Used by endpoints that a third party posts to, such as telephone order providers.
 
 - HTTP Authentication, scheme: bearer
 
@@ -126,6 +125,7 @@ Create a new account for a *merchant* and the *merchant* could be a seller or re
 |» » » last_name|body|string \| null|false|The last name for the address|
 |» » » origin_zip|body|string \| null|false|The zip/postal code of the origin|
 |» » merchant_tax_registration_id|body|string \| null|false|none|
+|» » merchant_vat_registration_id|body|string \| null|false|The merchant's VAT registration identifier|
 |» return_url|body|string \| null|false|The URL to redirect after the completion of the operation|
 |» webhook_details|body|object \| null|false|none|
 |» » webhook_version|body|string \| null|false|The version for Webhook|
@@ -530,7 +530,8 @@ Create a new account for a *merchant* and the *merchant* could be a seller or re
       "last_name": "Doe",
       "origin_zip": "08807"
     },
-    "merchant_tax_registration_id": "123456789"
+    "merchant_tax_registration_id": "123456789",
+    "merchant_vat_registration_id": "GB987654321"
   },
   "webhook_details": {
     "webhook_version": "1.0.2",
@@ -685,7 +686,8 @@ Retrieve a *merchant* account details.
       "last_name": "Doe",
       "origin_zip": "08807"
     },
-    "merchant_tax_registration_id": "123456789"
+    "merchant_tax_registration_id": "123456789",
+    "merchant_vat_registration_id": "GB987654321"
   },
   "webhook_details": {
     "webhook_version": "1.0.2",
@@ -845,6 +847,7 @@ Updates details of an existing merchant account. Helpful in updating merchant de
 |» » » last_name|body|string \| null|false|The last name for the address|
 |» » » origin_zip|body|string \| null|false|The zip/postal code of the origin|
 |» » merchant_tax_registration_id|body|string \| null|false|none|
+|» » merchant_vat_registration_id|body|string \| null|false|The merchant's VAT registration identifier|
 |» return_url|body|string \| null|false|The URL to redirect after the completion of the operation|
 |» webhook_details|body|object \| null|false|none|
 |» » webhook_version|body|string \| null|false|The version for Webhook|
@@ -999,7 +1002,8 @@ Updates details of an existing merchant account. Helpful in updating merchant de
       "last_name": "Doe",
       "origin_zip": "08807"
     },
-    "merchant_tax_registration_id": "123456789"
+    "merchant_tax_registration_id": "123456789",
+    "merchant_vat_registration_id": "GB987654321"
   },
   "webhook_details": {
     "webhook_version": "1.0.2",
@@ -5805,6 +5809,7 @@ Creates a new Merchant Connector for the merchant account. The connector could b
 |» connector_name|bamboraapac|
 |» connector_name|bankofamerica|
 |» connector_name|barclaycard|
+|» connector_name|betterpayment|
 |» connector_name|billwerk|
 |» connector_name|bitpay|
 |» connector_name|bluesnap|
@@ -7147,7 +7152,11 @@ This endpoint is the starting point for various payment flows:
 |» tax_status|body|object \| null|false|none|
 |» discount_amount|body|integer(int64) \| null|false|Total amount of the discount you have applied to the order or transaction.|
 |» shipping_amount_tax|body|object \| null|false|none|
+|» value_added_tax_amount|body|integer(int64) \| null|false|Value added tax (VAT) amount applied to the order or transaction.|
+|» value_added_tax_percent|body|number(double) \| null|false|Value added tax (VAT) rate applied to the order or transaction.|
 |» duty_amount|body|object \| null|false|none|
+|» order_commodity_code|body|string \| null|false|Commodity code classifying the order as a whole, as opposed to the<br>per-item codes in `order_details`.|
+|» vat_invoice_reference_number|body|string \| null|false|Reference number of the value added tax (VAT) invoice for this order.|
 |» order_date|body|string(date-time) \| null|false|Date the payer placed the order.|
 |» enable_partial_authorization|body|boolean \| null|false|Allow partial authorization for this payment|
 |» enable_overcapture|body|boolean \| null|false|Boolean indicating whether to enable overcapture for this payment|
@@ -7227,6 +7236,7 @@ This endpoint is the starting point for various payment flows:
 |» profile_acquirer_id|body|string \| null|false|Identification for the profile acquirer to be used for this payment.|
 |» external_surcharge_strategy|body|object \| null|false|none|
 |» enable_avs_check|body|boolean \| null|false|Request address verification using the billing address for supported card payments.<br>Omit this field on updates or confirmation to preserve the existing setting.|
+|» enable_account_name_verification|body|boolean \| null|false|Request account name verification for supported payments.|
 |» settlement_conclusion_applied|body|boolean \| null|false|Indicates that the merchant has concluded settlement and supplied final amounts.<br>When true, Hyperswitch skips tax and surcharge calculations that would change<br>those amounts. Omit this field on updates or confirmation to preserve the setting.|
 
 #### Enumerated Values
@@ -7418,6 +7428,7 @@ This endpoint is the starting point for various payment flows:
 |» connector|bamboraapac|
 |» connector|bankofamerica|
 |» connector|barclaycard|
+|» connector|betterpayment|
 |» connector|billwerk|
 |» connector|bitpay|
 |» connector|bluesnap|
@@ -8204,6 +8215,8 @@ Retrieves a Payment. This API can also be used to get the status of a previously
       "refund_id": "string",
       "payment_id": "string",
       "amount": 6540,
+      "net_amount": 0,
+      "surcharge_refund_amount": 0,
       "currency": "string",
       "status": "succeeded",
       "reason": "string",
@@ -8870,7 +8883,8 @@ Retrieves a Payment. This API can also be used to get the status of a previously
     "installment_interest": {}
   },
   "sender_payment_instrument_id": "string",
-  "enable_avs_check": true
+  "enable_avs_check": true,
+  "enable_account_name_verification": true
 }
 ```
 
@@ -9303,7 +9317,11 @@ To update the properties of a *PaymentIntent* object. This may include attaching
 |» tax_status|body|object \| null|false|none|
 |» discount_amount|body|integer(int64) \| null|false|Total amount of the discount you have applied to the order or transaction.|
 |» shipping_amount_tax|body|object \| null|false|none|
+|» value_added_tax_amount|body|integer(int64) \| null|false|Value added tax (VAT) amount applied to the order or transaction.|
+|» value_added_tax_percent|body|number(double) \| null|false|Value added tax (VAT) rate applied to the order or transaction.|
 |» duty_amount|body|object \| null|false|none|
+|» order_commodity_code|body|string \| null|false|Commodity code classifying the order as a whole, as opposed to the<br>per-item codes in `order_details`.|
+|» vat_invoice_reference_number|body|string \| null|false|Reference number of the value added tax (VAT) invoice for this order.|
 |» order_date|body|string(date-time) \| null|false|Date the payer placed the order.|
 |» enable_partial_authorization|body|boolean \| null|false|Allow partial authorization for this payment|
 |» enable_overcapture|body|boolean \| null|false|Boolean indicating whether to enable overcapture for this payment|
@@ -9383,6 +9401,7 @@ To update the properties of a *PaymentIntent* object. This may include attaching
 |» profile_acquirer_id|body|string \| null|false|Identification for the profile acquirer to be used for this payment.|
 |» external_surcharge_strategy|body|object \| null|false|none|
 |» enable_avs_check|body|boolean \| null|false|Request address verification using the billing address for supported card payments.<br>Omit this field on updates or confirmation to preserve the existing setting.|
+|» enable_account_name_verification|body|boolean \| null|false|Request account name verification for supported payments.|
 |» settlement_conclusion_applied|body|boolean \| null|false|Indicates that the merchant has concluded settlement and supplied final amounts.<br>When true, Hyperswitch skips tax and surcharge calculations that would change<br>those amounts. Omit this field on updates or confirmation to preserve the setting.|
 
 #### Enumerated Values
@@ -9414,6 +9433,7 @@ To update the properties of a *PaymentIntent* object. This may include attaching
 |» connector|bamboraapac|
 |» connector|bankofamerica|
 |» connector|barclaycard|
+|» connector|betterpayment|
 |» connector|billwerk|
 |» connector|bitpay|
 |» connector|bluesnap|
@@ -10438,7 +10458,11 @@ prefetch, retry records, address updates, or other confirmation side effects.
 |» tax_status|body|object \| null|false|none|
 |» discount_amount|body|integer(int64) \| null|false|Total amount of the discount you have applied to the order or transaction.|
 |» shipping_amount_tax|body|object \| null|false|none|
+|» value_added_tax_amount|body|integer(int64) \| null|false|Value added tax (VAT) amount applied to the order or transaction.|
+|» value_added_tax_percent|body|number(double) \| null|false|Value added tax (VAT) rate applied to the order or transaction.|
 |» duty_amount|body|object \| null|false|none|
+|» order_commodity_code|body|string \| null|false|Commodity code classifying the order as a whole, as opposed to the<br>per-item codes in `order_details`.|
+|» vat_invoice_reference_number|body|string \| null|false|Reference number of the value added tax (VAT) invoice for this order.|
 |» order_date|body|string(date-time) \| null|false|Date the payer placed the order.|
 |» enable_partial_authorization|body|boolean \| null|false|Allow partial authorization for this payment|
 |» is_stored_credential|body|boolean \| null|false|Boolean flag indicating whether this payment method is stored and has been previously used for payments|
@@ -10466,6 +10490,7 @@ prefetch, retry records, address updates, or other confirmation side effects.
 |» profile_acquirer_id|body|string \| null|false|Identification for the profile acquirer to be used for this payment.|
 |» external_surcharge_strategy|body|object \| null|false|none|
 |» enable_avs_check|body|boolean \| null|false|Request address verification using the billing address for supported card payments.<br>Omit this field on updates or confirmation to preserve the existing setting.|
+|» enable_account_name_verification|body|boolean \| null|false|Request account name verification for supported payments.|
 |» settlement_conclusion_applied|body|boolean \| null|false|Indicates that the merchant has concluded settlement and supplied final amounts.<br>When true, Hyperswitch skips tax and surcharge calculations that would change<br>those amounts. Omit this field on updates or confirmation to preserve the setting.|
 
 #### Enumerated Values
@@ -10497,6 +10522,7 @@ prefetch, retry records, address updates, or other confirmation side effects.
 |» connector|bamboraapac|
 |» connector|bankofamerica|
 |» connector|barclaycard|
+|» connector|betterpayment|
 |» connector|billwerk|
 |» connector|bitpay|
 |» connector|bluesnap|
@@ -11192,6 +11218,8 @@ prefetch, retry records, address updates, or other confirmation side effects.
       "refund_id": "string",
       "payment_id": "string",
       "amount": 6540,
+      "net_amount": 0,
+      "surcharge_refund_amount": 0,
       "currency": "string",
       "status": "succeeded",
       "reason": "string",
@@ -11855,7 +11883,8 @@ prefetch, retry records, address updates, or other confirmation side effects.
     "installment_interest": {}
   },
   "sender_payment_instrument_id": "string",
-  "enable_avs_check": true
+  "enable_avs_check": true,
+  "enable_account_name_verification": true
 }
 ```
 
@@ -12384,6 +12413,8 @@ Payments outside the authenticated merchant/profile scope are treated as not fou
       "refund_id": "string",
       "payment_id": "string",
       "amount": 6540,
+      "net_amount": 0,
+      "surcharge_refund_amount": 0,
       "currency": "string",
       "status": "succeeded",
       "reason": "string",
@@ -13050,7 +13081,8 @@ Payments outside the authenticated merchant/profile scope are treated as not fou
     "installment_interest": {}
   },
   "sender_payment_instrument_id": "string",
-  "enable_avs_check": true
+  "enable_avs_check": true,
+  "enable_account_name_verification": true
 }
 ```
 
@@ -13719,6 +13751,8 @@ Retrieves a canceled Payment post capture
       "refund_id": "string",
       "payment_id": "string",
       "amount": 6540,
+      "net_amount": 0,
+      "surcharge_refund_amount": 0,
       "currency": "string",
       "status": "succeeded",
       "reason": "string",
@@ -14385,7 +14419,8 @@ Retrieves a canceled Payment post capture
     "installment_interest": {}
   },
   "sender_payment_instrument_id": "string",
-  "enable_avs_check": true
+  "enable_avs_check": true,
+  "enable_account_name_verification": true
 }
 ```
 
@@ -14731,6 +14766,8 @@ A Payment could can be cancelled when it is in one of these statuses: `succeeded
       "refund_id": "string",
       "payment_id": "string",
       "amount": 6540,
+      "net_amount": 0,
+      "surcharge_refund_amount": 0,
       "currency": "string",
       "status": "succeeded",
       "reason": "string",
@@ -15397,7 +15434,8 @@ A Payment could can be cancelled when it is in one of these statuses: `succeeded
     "installment_interest": {}
   },
   "sender_payment_instrument_id": "string",
-  "enable_avs_check": true
+  "enable_avs_check": true,
+  "enable_account_name_verification": true
 }
 ```
 
@@ -15735,6 +15773,8 @@ To list the *payments*
             "refund_id": "string",
             "payment_id": "string",
             "amount": 6540,
+            "net_amount": 0,
+            "surcharge_refund_amount": 0,
             "currency": "string",
             "status": "succeeded",
             "reason": "string",
@@ -16401,7 +16441,8 @@ To list the *payments*
           "installment_interest": {}
         },
         "sender_payment_instrument_id": "string",
-        "enable_avs_check": true
+        "enable_avs_check": true,
+        "enable_account_name_verification": true
       }
     ]
   }
@@ -16789,6 +16830,8 @@ Authorized amount for a payment can be incremented if it is in status: requires_
       "refund_id": "string",
       "payment_id": "string",
       "amount": 6540,
+      "net_amount": 0,
+      "surcharge_refund_amount": 0,
       "currency": "string",
       "status": "succeeded",
       "reason": "string",
@@ -17455,7 +17498,8 @@ Authorized amount for a payment can be incremented if it is in status: requires_
     "installment_interest": {}
   },
   "sender_payment_instrument_id": "string",
-  "enable_avs_check": true
+  "enable_avs_check": true,
+  "enable_account_name_verification": true
 }
 ```
 
@@ -18004,6 +18048,8 @@ curl https://sandbox.hyperswitch.io/payments/string/complete_authorize \
       "refund_id": "string",
       "payment_id": "string",
       "amount": 6540,
+      "net_amount": 0,
+      "surcharge_refund_amount": 0,
       "currency": "string",
       "status": "succeeded",
       "reason": "string",
@@ -18670,7 +18716,8 @@ curl https://sandbox.hyperswitch.io/payments/string/complete_authorize \
     "installment_interest": {}
   },
   "sender_payment_instrument_id": "string",
-  "enable_avs_check": true
+  "enable_avs_check": true,
+  "enable_account_name_verification": true
 }
 ```
 
@@ -20473,6 +20520,8 @@ Creates a refund against an already processed payment. In case of some processor
   "refund_id": "string",
   "payment_id": "string",
   "amount": 6540,
+  "net_amount": 0,
+  "surcharge_refund_amount": 0,
   "currency": "string",
   "status": "succeeded",
   "reason": "string",
@@ -20559,6 +20608,8 @@ Retrieves a Refund. This may be used to get the status of a previously initiated
   "refund_id": "string",
   "payment_id": "string",
   "amount": 6540,
+  "net_amount": 0,
+  "surcharge_refund_amount": 0,
   "currency": "string",
   "status": "succeeded",
   "reason": "string",
@@ -20651,6 +20702,8 @@ Updates the properties of a Refund object. This API can be used to attach a reas
   "refund_id": "string",
   "payment_id": "string",
   "amount": 6540,
+  "net_amount": 0,
+  "surcharge_refund_amount": 0,
   "currency": "string",
   "status": "succeeded",
   "reason": "string",
@@ -20981,6 +21034,8 @@ Lists all the refunds associated with the merchant, or for a specific payment if
       "refund_id": "string",
       "payment_id": "string",
       "amount": 6540,
+      "net_amount": 0,
+      "surcharge_refund_amount": 0,
       "currency": "string",
       "status": "succeeded",
       "reason": "string",
@@ -21060,6 +21115,10 @@ Retrieves a mandate created using the Payments/Create API
 {
   "mandate_id": "string",
   "payment_id": "string",
+  "amount": 0,
+  "currency": {},
+  "profile_id": "string",
+  "mandate_metadata": {},
   "status": "active",
   "payment_method_id": "string",
   "payment_method": "string",
@@ -21181,6 +21240,10 @@ Lists all the mandates for a particular customer id.
   {
     "mandate_id": "string",
     "payment_id": "string",
+    "amount": 0,
+    "currency": {},
+    "profile_id": "string",
+    "mandate_metadata": {},
     "status": "active",
     "payment_method_id": "string",
     "payment_method": "string",
@@ -21418,7 +21481,7 @@ Retrieves a customer's details.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-api_key, ephemeral_key
+api_key
 </aside>
 
 ## Customers - Update
@@ -24878,7 +24941,7 @@ Set the Payment Method as Default for the Customer.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-ephemeral_key
+api_key
 </aside>
 
 ## Payment Method - Retrieve
@@ -26650,7 +26713,51 @@ curl https://sandbox.hyperswitch.io/payouts/create \
 |» » statement_descriptor|body|string \| null|false|Statement descriptor displayed for the payout.|
 |» entity_type|body|object \| null|false|none|
 |» recurring|body|boolean \| null|false|Specifies whether or not the payout request is recurring|
-|» metadata|body|object \| null|false|You can specify up to 50 keys, with key names up to 40 characters long and values up to 500 characters long. Metadata is useful for storing additional, structured information on an object.|
+|» metadata|body|object \| null|false|Legacy vendor/individual details in metadata are a compatibility fallback for Stripe.<br>Explicit sender_details takes precedence and is never merged with that identity.<br>You can specify up to 50 keys, with key names up to 40 characters long and values up to 500 characters long. Metadata is useful for storing additional, structured information on an object.|
+|» funds_transfer_type|body|object \| null|false|none|
+|» sender_details|body|object \| null|false|none|
+|» » *oneOf*|body|object|false|none|
+|» » first_name|body|string \| null|false|The sender's first name. When neither the first nor the last name is provided, the name<br>from the billing address of the payment method is used instead.|
+|» » last_name|body|string \| null|false|The sender's last name. When neither the first nor the last name is provided, the name<br>from the billing address of the payment method is used instead.|
+|» » date_of_birth|body|string(date) \| null|false|The sender's date of birth, in the format yyyy-mm-dd.|
+|» » address|body|object \| null|false|none|
+|» » » city|body|string \| null|false|The city, district, suburb, town, or village of the address.|
+|» » » country|body|object \| null|false|none|
+|» » » line1|body|string \| null|false|The first line of the street address or P.O. Box.|
+|» » » line2|body|string \| null|false|The second line of the street address or P.O. Box (e.g., apartment, suite, unit, or building).|
+|» » » line3|body|string \| null|false|The third line of the street address, if applicable.|
+|» » » zip|body|string \| null|false|The zip/postal code for the address|
+|» » » state|body|string \| null|false|The address state|
+|» » » first_name|body|string \| null|false|The first name for the address|
+|» » » last_name|body|string \| null|false|The last name for the address|
+|» » » origin_zip|body|string \| null|false|The zip/postal code of the origin|
+|» » email|body|string \| null|false|The sender's email address.|
+|» » phone|body|object \| null|false|none|
+|» » » number|body|string \| null|false|The contact number|
+|» » » country_code|body|string \| null|false|The country code attached to the number|
+|» » reference_id|body|string \| null|false|The merchant's stable identifier for the sender|
+|» » source_of_funds|body|object \| null|false|none|
+|» » type|body|string|true|none|
+|» » *oneOf*|body|object|false|none|
+|» » company_name|body|string|true|The sender's legal company name.|
+|» » address|body|object \| null|false|none|
+|» » » city|body|string \| null|false|The city, district, suburb, town, or village of the address.|
+|» » » country|body|object \| null|false|none|
+|» » » line1|body|string \| null|false|The first line of the street address or P.O. Box.|
+|» » » line2|body|string \| null|false|The second line of the street address or P.O. Box (e.g., apartment, suite, unit, or building).|
+|» » » line3|body|string \| null|false|The third line of the street address, if applicable.|
+|» » » zip|body|string \| null|false|The zip/postal code for the address|
+|» » » state|body|string \| null|false|The address state|
+|» » » first_name|body|string \| null|false|The first name for the address|
+|» » » last_name|body|string \| null|false|The last name for the address|
+|» » » origin_zip|body|string \| null|false|The zip/postal code of the origin|
+|» » email|body|string \| null|false|The sender's email address.|
+|» » phone|body|object \| null|false|none|
+|» » » number|body|string \| null|false|The contact number|
+|» » » country_code|body|string \| null|false|The country code attached to the number|
+|» » reference_id|body|string \| null|false|The merchant's stable identifier for the sender.|
+|» » source_of_funds|body|object \| null|false|none|
+|» » type|body|string|true|none|
 |» payout_token|body|string \| null|false|Provide a reference to a stored payout method, used to process the payout.|
 |» profile_id|body|string \| null|false|The business profile to use for this payout, especially if there are multiple business profiles associated with the account, otherwise default business profile associated with the merchant account will be used.|
 |» priority|body|object \| null|false|none|
@@ -26663,7 +26770,7 @@ curl https://sandbox.hyperswitch.io/payouts/create \
 |» » enabled_payment_methods|body|[[EnabledPaymentMethod](#schemaenabledpaymentmethod)]|false|List of payout methods shown on collect UI|
 |» » form_layout|body|object \| null|false|none|
 |» » test_mode|body|boolean \| null|false|`test_mode` allows for opening payout links without any restrictions. This removes<br>- domain name validations<br>- check for making sure link is accessed within an iframe|
-|» session_expiry|body|integer(int32) \| null|false|Will be used to expire client secret after certain amount of time to be supplied in seconds<br>(900) for 15 mins|
+|» session_expiry|body|integer(int32) \| null|false|Lifetime of the payout link in seconds, for example 900 for 15 minutes.|
 |» email|body|string \| null|false|**Deprecated.** Customer's email. _Deprecated: Use customer object instead._|
 |» name|body|string \| null|false|**Deprecated.** Customer's name. _Deprecated: Use customer object instead._|
 |» phone|body|string \| null|false|**Deprecated.** Customer's phone. _Deprecated: Use customer object instead._|
@@ -26857,6 +26964,7 @@ curl https://sandbox.hyperswitch.io/payouts/create \
 |» » type|three_ds_decision_rule|
 |» connector|adyen|
 |» connector|adyenplatform|
+|» connector|checkout|
 |» connector|cybersource|
 |» connector|deutschebank|
 |» connector|ebanx|
@@ -27141,6 +27249,8 @@ curl https://sandbox.hyperswitch.io/payouts/create \
 |» » » document_type|cnpj|
 |» » » document_type|psn|
 |» » » document_type|other|
+|» » type|individual|
+|» » type|corporate|
 
 > Example responses
 
@@ -27229,6 +27339,32 @@ curl https://sandbox.hyperswitch.io/payouts/create \
   "entity_type": "Individual",
   "recurring": false,
   "metadata": {},
+  "funds_transfer_type": {},
+  "sender_details": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "date_of_birth": "1990-01-31",
+    "address": {
+      "city": "New York",
+      "country": {},
+      "line1": "123, King Street",
+      "line2": "Powelson Avenue",
+      "line3": "Bridgewater",
+      "zip": "08807",
+      "state": "New York",
+      "first_name": "John",
+      "last_name": "Doe",
+      "origin_zip": "08807"
+    },
+    "email": "john.doe@example.com",
+    "phone": {
+      "number": "9123456789",
+      "country_code": "+1"
+    },
+    "reference_id": "string",
+    "source_of_funds": {},
+    "type": "individual"
+  },
   "merchant_connector_id": "mca_sAD3OZLATetvjLOYhUSy",
   "status": "success",
   "error_message": "Failed while verifying the card",
@@ -27399,6 +27535,32 @@ curl https://sandbox.hyperswitch.io/payouts/string \
   "entity_type": "Individual",
   "recurring": false,
   "metadata": {},
+  "funds_transfer_type": {},
+  "sender_details": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "date_of_birth": "1990-01-31",
+    "address": {
+      "city": "New York",
+      "country": {},
+      "line1": "123, King Street",
+      "line2": "Powelson Avenue",
+      "line3": "Bridgewater",
+      "zip": "08807",
+      "state": "New York",
+      "first_name": "John",
+      "last_name": "Doe",
+      "origin_zip": "08807"
+    },
+    "email": "john.doe@example.com",
+    "phone": {
+      "number": "9123456789",
+      "country_code": "+1"
+    },
+    "reference_id": "string",
+    "source_of_funds": {},
+    "type": "individual"
+  },
   "merchant_connector_id": "mca_sAD3OZLATetvjLOYhUSy",
   "status": "success",
   "error_message": "Failed while verifying the card",
@@ -27541,7 +27703,6 @@ curl https://sandbox.hyperswitch.io/payouts/string \
       },
       "date_of_birth": "1990-01-31"
     },
-    "client_secret": "pay_U42c409qyHwOkWo3vK60_secret_el9ksDkiB8hi6j9N78yo",
     "return_url": "https://hyperswitch.io",
     "business_country": {},
     "business_label": "food",
@@ -27553,6 +27714,32 @@ curl https://sandbox.hyperswitch.io/payouts/string \
     "entity_type": {},
     "recurring": false,
     "metadata": {},
+    "funds_transfer_type": {},
+    "sender_details": {
+      "first_name": "John",
+      "last_name": "Doe",
+      "date_of_birth": "1990-01-31",
+      "address": {
+        "city": "New York",
+        "country": {},
+        "line1": "123, King Street",
+        "line2": "Powelson Avenue",
+        "line3": "Bridgewater",
+        "zip": "08807",
+        "state": "New York",
+        "first_name": "John",
+        "last_name": "Doe",
+        "origin_zip": "08807"
+      },
+      "email": "john.doe@example.com",
+      "phone": {
+        "number": "9123456789",
+        "country_code": "+1"
+      },
+      "reference_id": "string",
+      "source_of_funds": {},
+      "type": "individual"
+    },
     "payout_token": "187282ab-40ef-47a9-9206-5099ba31e432",
     "profile_id": "string",
     "priority": {},
@@ -27666,7 +27853,6 @@ curl https://sandbox.hyperswitch.io/payouts/string \
     },
     "date_of_birth": "1990-01-31"
   },
-  "client_secret": "pay_U42c409qyHwOkWo3vK60_secret_el9ksDkiB8hi6j9N78yo",
   "return_url": "https://hyperswitch.io",
   "business_country": {},
   "business_label": "food",
@@ -27678,6 +27864,32 @@ curl https://sandbox.hyperswitch.io/payouts/string \
   "entity_type": {},
   "recurring": false,
   "metadata": {},
+  "funds_transfer_type": {},
+  "sender_details": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "date_of_birth": "1990-01-31",
+    "address": {
+      "city": "New York",
+      "country": {},
+      "line1": "123, King Street",
+      "line2": "Powelson Avenue",
+      "line3": "Bridgewater",
+      "zip": "08807",
+      "state": "New York",
+      "first_name": "John",
+      "last_name": "Doe",
+      "origin_zip": "08807"
+    },
+    "email": "john.doe@example.com",
+    "phone": {
+      "number": "9123456789",
+      "country_code": "+1"
+    },
+    "reference_id": "string",
+    "source_of_funds": {},
+    "type": "individual"
+  },
   "payout_token": "187282ab-40ef-47a9-9206-5099ba31e432",
   "profile_id": "string",
   "priority": {},
@@ -27857,7 +28069,6 @@ curl https://sandbox.hyperswitch.io/payouts/string \
 |» » » document_type|body|[DocumentKind](#schemadocumentkind)|true|Represents the type of identification document used for validation.|
 |» » » document_number|body|string|true|The customer's document number<br>Length of the document number depends upon the document_type.<br>For CPF/CNPJ it is typically 11/14 digits long|
 |» » date_of_birth|body|string(date) \| null|false|The customer's date of birth|
-|» client_secret|body|string \| null|false|It's a token used for client side verification.|
 |» return_url|body|string \| null|false|The URL to redirect after the completion of the operation|
 |» business_country|body|object \| null|false|none|
 |» business_label|body|string \| null|false|**Deprecated.** Business label of the merchant for this payout. _Deprecated: Use profile_id instead._|
@@ -27867,7 +28078,51 @@ curl https://sandbox.hyperswitch.io/payouts/string \
 |» » statement_descriptor|body|string \| null|false|Statement descriptor displayed for the payout.|
 |» entity_type|body|object \| null|false|none|
 |» recurring|body|boolean \| null|false|Specifies whether or not the payout request is recurring|
-|» metadata|body|object \| null|false|You can specify up to 50 keys, with key names up to 40 characters long and values up to 500 characters long. Metadata is useful for storing additional, structured information on an object.|
+|» metadata|body|object \| null|false|Legacy vendor/individual details in metadata are a compatibility fallback for Stripe.<br>Explicit sender_details takes precedence and is never merged with that identity.<br>You can specify up to 50 keys, with key names up to 40 characters long and values up to 500 characters long. Metadata is useful for storing additional, structured information on an object.|
+|» funds_transfer_type|body|object \| null|false|none|
+|» sender_details|body|object \| null|false|none|
+|» » *oneOf*|body|object|false|none|
+|» » first_name|body|string \| null|false|The sender's first name. When neither the first nor the last name is provided, the name<br>from the billing address of the payment method is used instead.|
+|» » last_name|body|string \| null|false|The sender's last name. When neither the first nor the last name is provided, the name<br>from the billing address of the payment method is used instead.|
+|» » date_of_birth|body|string(date) \| null|false|The sender's date of birth, in the format yyyy-mm-dd.|
+|» » address|body|object \| null|false|none|
+|» » » city|body|string \| null|false|The city, district, suburb, town, or village of the address.|
+|» » » country|body|object \| null|false|none|
+|» » » line1|body|string \| null|false|The first line of the street address or P.O. Box.|
+|» » » line2|body|string \| null|false|The second line of the street address or P.O. Box (e.g., apartment, suite, unit, or building).|
+|» » » line3|body|string \| null|false|The third line of the street address, if applicable.|
+|» » » zip|body|string \| null|false|The zip/postal code for the address|
+|» » » state|body|string \| null|false|The address state|
+|» » » first_name|body|string \| null|false|The first name for the address|
+|» » » last_name|body|string \| null|false|The last name for the address|
+|» » » origin_zip|body|string \| null|false|The zip/postal code of the origin|
+|» » email|body|string \| null|false|The sender's email address.|
+|» » phone|body|object \| null|false|none|
+|» » » number|body|string \| null|false|The contact number|
+|» » » country_code|body|string \| null|false|The country code attached to the number|
+|» » reference_id|body|string \| null|false|The merchant's stable identifier for the sender|
+|» » source_of_funds|body|object \| null|false|none|
+|» » type|body|string|true|none|
+|» » *oneOf*|body|object|false|none|
+|» » company_name|body|string|true|The sender's legal company name.|
+|» » address|body|object \| null|false|none|
+|» » » city|body|string \| null|false|The city, district, suburb, town, or village of the address.|
+|» » » country|body|object \| null|false|none|
+|» » » line1|body|string \| null|false|The first line of the street address or P.O. Box.|
+|» » » line2|body|string \| null|false|The second line of the street address or P.O. Box (e.g., apartment, suite, unit, or building).|
+|» » » line3|body|string \| null|false|The third line of the street address, if applicable.|
+|» » » zip|body|string \| null|false|The zip/postal code for the address|
+|» » » state|body|string \| null|false|The address state|
+|» » » first_name|body|string \| null|false|The first name for the address|
+|» » » last_name|body|string \| null|false|The last name for the address|
+|» » » origin_zip|body|string \| null|false|The zip/postal code of the origin|
+|» » email|body|string \| null|false|The sender's email address.|
+|» » phone|body|object \| null|false|none|
+|» » » number|body|string \| null|false|The contact number|
+|» » » country_code|body|string \| null|false|The country code attached to the number|
+|» » reference_id|body|string \| null|false|The merchant's stable identifier for the sender.|
+|» » source_of_funds|body|object \| null|false|none|
+|» » type|body|string|true|none|
 |» payout_token|body|string \| null|false|Provide a reference to a stored payout method, used to process the payout.|
 |» profile_id|body|string \| null|false|The business profile to use for this payout, especially if there are multiple business profiles associated with the account, otherwise default business profile associated with the merchant account will be used.|
 |» priority|body|object \| null|false|none|
@@ -27880,7 +28135,7 @@ curl https://sandbox.hyperswitch.io/payouts/string \
 |» » enabled_payment_methods|body|[[EnabledPaymentMethod](#schemaenabledpaymentmethod)]|false|List of payout methods shown on collect UI|
 |» » form_layout|body|object \| null|false|none|
 |» » test_mode|body|boolean \| null|false|`test_mode` allows for opening payout links without any restrictions. This removes<br>- domain name validations<br>- check for making sure link is accessed within an iframe|
-|» session_expiry|body|integer(int32) \| null|false|Will be used to expire client secret after certain amount of time to be supplied in seconds<br>(900) for 15 mins|
+|» session_expiry|body|integer(int32) \| null|false|Lifetime of the payout link in seconds, for example 900 for 15 minutes.|
 |» email|body|string \| null|false|**Deprecated.** Customer's email. _Deprecated: Use customer object instead._|
 |» name|body|string \| null|false|**Deprecated.** Customer's name. _Deprecated: Use customer object instead._|
 |» phone|body|string \| null|false|**Deprecated.** Customer's phone. _Deprecated: Use customer object instead._|
@@ -27914,6 +28169,7 @@ curl https://sandbox.hyperswitch.io/payouts/string \
 |» » type|three_ds_decision_rule|
 |» connector|adyen|
 |» connector|adyenplatform|
+|» connector|checkout|
 |» connector|cybersource|
 |» connector|deutschebank|
 |» connector|ebanx|
@@ -28198,6 +28454,8 @@ curl https://sandbox.hyperswitch.io/payouts/string \
 |» » » document_type|cnpj|
 |» » » document_type|psn|
 |» » » document_type|other|
+|» » type|individual|
+|» » type|corporate|
 
 > Example responses
 
@@ -28286,6 +28544,32 @@ curl https://sandbox.hyperswitch.io/payouts/string \
   "entity_type": "Individual",
   "recurring": false,
   "metadata": {},
+  "funds_transfer_type": {},
+  "sender_details": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "date_of_birth": "1990-01-31",
+    "address": {
+      "city": "New York",
+      "country": {},
+      "line1": "123, King Street",
+      "line2": "Powelson Avenue",
+      "line3": "Bridgewater",
+      "zip": "08807",
+      "state": "New York",
+      "first_name": "John",
+      "last_name": "Doe",
+      "origin_zip": "08807"
+    },
+    "email": "john.doe@example.com",
+    "phone": {
+      "number": "9123456789",
+      "country_code": "+1"
+    },
+    "reference_id": "string",
+    "source_of_funds": {},
+    "type": "individual"
+  },
   "merchant_connector_id": "mca_sAD3OZLATetvjLOYhUSy",
   "status": "success",
   "error_message": "Failed while verifying the card",
@@ -28469,6 +28753,32 @@ curl https://sandbox.hyperswitch.io/payouts/string/cancel \
   "entity_type": "Individual",
   "recurring": false,
   "metadata": {},
+  "funds_transfer_type": {},
+  "sender_details": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "date_of_birth": "1990-01-31",
+    "address": {
+      "city": "New York",
+      "country": {},
+      "line1": "123, King Street",
+      "line2": "Powelson Avenue",
+      "line3": "Bridgewater",
+      "zip": "08807",
+      "state": "New York",
+      "first_name": "John",
+      "last_name": "Doe",
+      "origin_zip": "08807"
+    },
+    "email": "john.doe@example.com",
+    "phone": {
+      "number": "9123456789",
+      "country_code": "+1"
+    },
+    "reference_id": "string",
+    "source_of_funds": {},
+    "type": "individual"
+  },
   "merchant_connector_id": "mca_sAD3OZLATetvjLOYhUSy",
   "status": "success",
   "error_message": "Failed while verifying the card",
@@ -28652,6 +28962,32 @@ curl https://sandbox.hyperswitch.io/payouts/string/fulfill \
   "entity_type": "Individual",
   "recurring": false,
   "metadata": {},
+  "funds_transfer_type": {},
+  "sender_details": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "date_of_birth": "1990-01-31",
+    "address": {
+      "city": "New York",
+      "country": {},
+      "line1": "123, King Street",
+      "line2": "Powelson Avenue",
+      "line3": "Bridgewater",
+      "zip": "08807",
+      "state": "New York",
+      "first_name": "John",
+      "last_name": "Doe",
+      "origin_zip": "08807"
+    },
+    "email": "john.doe@example.com",
+    "phone": {
+      "number": "9123456789",
+      "country_code": "+1"
+    },
+    "reference_id": "string",
+    "source_of_funds": {},
+    "type": "individual"
+  },
   "merchant_connector_id": "mca_sAD3OZLATetvjLOYhUSy",
   "status": "success",
   "error_message": "Failed while verifying the card",
@@ -28828,6 +29164,32 @@ curl 'https://sandbox.hyperswitch.io/payouts/list?customer_id=string&starting_af
       "entity_type": "Individual",
       "recurring": false,
       "metadata": {},
+      "funds_transfer_type": {},
+      "sender_details": {
+        "first_name": "John",
+        "last_name": "Doe",
+        "date_of_birth": "1990-01-31",
+        "address": {
+          "city": "New York",
+          "country": {},
+          "line1": "123, King Street",
+          "line2": "Powelson Avenue",
+          "line3": "Bridgewater",
+          "zip": "08807",
+          "state": "New York",
+          "first_name": "John",
+          "last_name": "Doe",
+          "origin_zip": "08807"
+        },
+        "email": "john.doe@example.com",
+        "phone": {
+          "number": "9123456789",
+          "country_code": "+1"
+        },
+        "reference_id": "string",
+        "source_of_funds": {},
+        "type": "individual"
+      },
       "merchant_connector_id": "mca_sAD3OZLATetvjLOYhUSy",
       "status": "success",
       "error_message": "Failed while verifying the card",
@@ -28986,6 +29348,7 @@ curl https://sandbox.hyperswitch.io/payouts/list \
 |---|---|
 |» connector|adyen|
 |» connector|adyenplatform|
+|» connector|checkout|
 |» connector|cybersource|
 |» connector|deutschebank|
 |» connector|ebanx|
@@ -29282,6 +29645,32 @@ curl https://sandbox.hyperswitch.io/payouts/list \
       "entity_type": "Individual",
       "recurring": false,
       "metadata": {},
+      "funds_transfer_type": {},
+      "sender_details": {
+        "first_name": "John",
+        "last_name": "Doe",
+        "date_of_birth": "1990-01-31",
+        "address": {
+          "city": "New York",
+          "country": {},
+          "line1": "123, King Street",
+          "line2": "Powelson Avenue",
+          "line3": "Bridgewater",
+          "zip": "08807",
+          "state": "New York",
+          "first_name": "John",
+          "last_name": "Doe",
+          "origin_zip": "08807"
+        },
+        "email": "john.doe@example.com",
+        "phone": {
+          "number": "9123456789",
+          "country_code": "+1"
+        },
+        "reference_id": "string",
+        "source_of_funds": {},
+        "type": "individual"
+      },
       "merchant_connector_id": "mca_sAD3OZLATetvjLOYhUSy",
       "status": "success",
       "error_message": "Failed while verifying the card",
@@ -29426,7 +29815,6 @@ curl https://sandbox.hyperswitch.io/payouts/string/confirm \
       },
       "date_of_birth": "1990-01-31"
     },
-    "client_secret": "string",
     "return_url": "https://hyperswitch.io",
     "business_country": {},
     "business_label": "food",
@@ -29438,6 +29826,32 @@ curl https://sandbox.hyperswitch.io/payouts/string/confirm \
     "entity_type": {},
     "recurring": false,
     "metadata": {},
+    "funds_transfer_type": {},
+    "sender_details": {
+      "first_name": "John",
+      "last_name": "Doe",
+      "date_of_birth": "1990-01-31",
+      "address": {
+        "city": "New York",
+        "country": {},
+        "line1": "123, King Street",
+        "line2": "Powelson Avenue",
+        "line3": "Bridgewater",
+        "zip": "08807",
+        "state": "New York",
+        "first_name": "John",
+        "last_name": "Doe",
+        "origin_zip": "08807"
+      },
+      "email": "john.doe@example.com",
+      "phone": {
+        "number": "9123456789",
+        "country_code": "+1"
+      },
+      "reference_id": "string",
+      "source_of_funds": {},
+      "type": "individual"
+    },
     "payout_token": "187282ab-40ef-47a9-9206-5099ba31e432",
     "profile_id": "string",
     "priority": {},
@@ -29550,7 +29964,6 @@ curl https://sandbox.hyperswitch.io/payouts/string/confirm \
     },
     "date_of_birth": "1990-01-31"
   },
-  "client_secret": "string",
   "return_url": "https://hyperswitch.io",
   "business_country": {},
   "business_label": "food",
@@ -29562,6 +29975,32 @@ curl https://sandbox.hyperswitch.io/payouts/string/confirm \
   "entity_type": {},
   "recurring": false,
   "metadata": {},
+  "funds_transfer_type": {},
+  "sender_details": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "date_of_birth": "1990-01-31",
+    "address": {
+      "city": "New York",
+      "country": {},
+      "line1": "123, King Street",
+      "line2": "Powelson Avenue",
+      "line3": "Bridgewater",
+      "zip": "08807",
+      "state": "New York",
+      "first_name": "John",
+      "last_name": "Doe",
+      "origin_zip": "08807"
+    },
+    "email": "john.doe@example.com",
+    "phone": {
+      "number": "9123456789",
+      "country_code": "+1"
+    },
+    "reference_id": "string",
+    "source_of_funds": {},
+    "type": "individual"
+  },
   "payout_token": "187282ab-40ef-47a9-9206-5099ba31e432",
   "profile_id": "string",
   "priority": {},
@@ -29740,7 +30179,6 @@ curl https://sandbox.hyperswitch.io/payouts/string/confirm \
 |» » » document_type|body|[DocumentKind](#schemadocumentkind)|true|Represents the type of identification document used for validation.|
 |» » » document_number|body|string|true|The customer's document number<br>Length of the document number depends upon the document_type.<br>For CPF/CNPJ it is typically 11/14 digits long|
 |» » date_of_birth|body|string(date) \| null|false|The customer's date of birth|
-|» client_secret|body|string|true|It's a token used for client side verification.|
 |» return_url|body|string \| null|false|The URL to redirect after the completion of the operation|
 |» business_country|body|object \| null|false|none|
 |» business_label|body|string \| null|false|**Deprecated.** Business label of the merchant for this payout. _Deprecated: Use profile_id instead._|
@@ -29750,7 +30188,51 @@ curl https://sandbox.hyperswitch.io/payouts/string/confirm \
 |» » statement_descriptor|body|string \| null|false|Statement descriptor displayed for the payout.|
 |» entity_type|body|object \| null|false|none|
 |» recurring|body|boolean \| null|false|Specifies whether or not the payout request is recurring|
-|» metadata|body|object \| null|false|You can specify up to 50 keys, with key names up to 40 characters long and values up to 500 characters long. Metadata is useful for storing additional, structured information on an object.|
+|» metadata|body|object \| null|false|Legacy vendor/individual details in metadata are a compatibility fallback for Stripe.<br>Explicit sender_details takes precedence and is never merged with that identity.<br>You can specify up to 50 keys, with key names up to 40 characters long and values up to 500 characters long. Metadata is useful for storing additional, structured information on an object.|
+|» funds_transfer_type|body|object \| null|false|none|
+|» sender_details|body|object \| null|false|none|
+|» » *oneOf*|body|object|false|none|
+|» » first_name|body|string \| null|false|The sender's first name. When neither the first nor the last name is provided, the name<br>from the billing address of the payment method is used instead.|
+|» » last_name|body|string \| null|false|The sender's last name. When neither the first nor the last name is provided, the name<br>from the billing address of the payment method is used instead.|
+|» » date_of_birth|body|string(date) \| null|false|The sender's date of birth, in the format yyyy-mm-dd.|
+|» » address|body|object \| null|false|none|
+|» » » city|body|string \| null|false|The city, district, suburb, town, or village of the address.|
+|» » » country|body|object \| null|false|none|
+|» » » line1|body|string \| null|false|The first line of the street address or P.O. Box.|
+|» » » line2|body|string \| null|false|The second line of the street address or P.O. Box (e.g., apartment, suite, unit, or building).|
+|» » » line3|body|string \| null|false|The third line of the street address, if applicable.|
+|» » » zip|body|string \| null|false|The zip/postal code for the address|
+|» » » state|body|string \| null|false|The address state|
+|» » » first_name|body|string \| null|false|The first name for the address|
+|» » » last_name|body|string \| null|false|The last name for the address|
+|» » » origin_zip|body|string \| null|false|The zip/postal code of the origin|
+|» » email|body|string \| null|false|The sender's email address.|
+|» » phone|body|object \| null|false|none|
+|» » » number|body|string \| null|false|The contact number|
+|» » » country_code|body|string \| null|false|The country code attached to the number|
+|» » reference_id|body|string \| null|false|The merchant's stable identifier for the sender|
+|» » source_of_funds|body|object \| null|false|none|
+|» » type|body|string|true|none|
+|» » *oneOf*|body|object|false|none|
+|» » company_name|body|string|true|The sender's legal company name.|
+|» » address|body|object \| null|false|none|
+|» » » city|body|string \| null|false|The city, district, suburb, town, or village of the address.|
+|» » » country|body|object \| null|false|none|
+|» » » line1|body|string \| null|false|The first line of the street address or P.O. Box.|
+|» » » line2|body|string \| null|false|The second line of the street address or P.O. Box (e.g., apartment, suite, unit, or building).|
+|» » » line3|body|string \| null|false|The third line of the street address, if applicable.|
+|» » » zip|body|string \| null|false|The zip/postal code for the address|
+|» » » state|body|string \| null|false|The address state|
+|» » » first_name|body|string \| null|false|The first name for the address|
+|» » » last_name|body|string \| null|false|The last name for the address|
+|» » » origin_zip|body|string \| null|false|The zip/postal code of the origin|
+|» » email|body|string \| null|false|The sender's email address.|
+|» » phone|body|object \| null|false|none|
+|» » » number|body|string \| null|false|The contact number|
+|» » » country_code|body|string \| null|false|The country code attached to the number|
+|» » reference_id|body|string \| null|false|The merchant's stable identifier for the sender.|
+|» » source_of_funds|body|object \| null|false|none|
+|» » type|body|string|true|none|
 |» payout_token|body|string \| null|false|Provide a reference to a stored payout method, used to process the payout.|
 |» profile_id|body|string \| null|false|The business profile to use for this payout, especially if there are multiple business profiles associated with the account, otherwise default business profile associated with the merchant account will be used.|
 |» priority|body|object \| null|false|none|
@@ -29763,7 +30245,7 @@ curl https://sandbox.hyperswitch.io/payouts/string/confirm \
 |» » enabled_payment_methods|body|[[EnabledPaymentMethod](#schemaenabledpaymentmethod)]|false|List of payout methods shown on collect UI|
 |» » form_layout|body|object \| null|false|none|
 |» » test_mode|body|boolean \| null|false|`test_mode` allows for opening payout links without any restrictions. This removes<br>- domain name validations<br>- check for making sure link is accessed within an iframe|
-|» session_expiry|body|integer(int32) \| null|false|Will be used to expire client secret after certain amount of time to be supplied in seconds<br>(900) for 15 mins|
+|» session_expiry|body|integer(int32) \| null|false|Lifetime of the payout link in seconds, for example 900 for 15 minutes.|
 |» email|body|string \| null|false|**Deprecated.** Customer's email. _Deprecated: Use customer object instead._|
 |» name|body|string \| null|false|**Deprecated.** Customer's name. _Deprecated: Use customer object instead._|
 |» phone|body|string \| null|false|**Deprecated.** Customer's phone. _Deprecated: Use customer object instead._|
@@ -29797,6 +30279,7 @@ curl https://sandbox.hyperswitch.io/payouts/string/confirm \
 |» » type|three_ds_decision_rule|
 |» connector|adyen|
 |» connector|adyenplatform|
+|» connector|checkout|
 |» connector|cybersource|
 |» connector|deutschebank|
 |» connector|ebanx|
@@ -30081,6 +30564,8 @@ curl https://sandbox.hyperswitch.io/payouts/string/confirm \
 |» » » document_type|cnpj|
 |» » » document_type|psn|
 |» » » document_type|other|
+|» » type|individual|
+|» » type|corporate|
 
 > Example responses
 
@@ -30169,6 +30654,32 @@ curl https://sandbox.hyperswitch.io/payouts/string/confirm \
   "entity_type": "Individual",
   "recurring": false,
   "metadata": {},
+  "funds_transfer_type": {},
+  "sender_details": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "date_of_birth": "1990-01-31",
+    "address": {
+      "city": "New York",
+      "country": {},
+      "line1": "123, King Street",
+      "line2": "Powelson Avenue",
+      "line3": "Bridgewater",
+      "zip": "08807",
+      "state": "New York",
+      "first_name": "John",
+      "last_name": "Doe",
+      "origin_zip": "08807"
+    },
+    "email": "john.doe@example.com",
+    "phone": {
+      "number": "9123456789",
+      "country_code": "+1"
+    },
+    "reference_id": "string",
+    "source_of_funds": {},
+    "type": "individual"
+  },
   "merchant_connector_id": "mca_sAD3OZLATetvjLOYhUSy",
   "status": "success",
   "error_message": "Failed while verifying the card",
@@ -31586,333 +32097,6 @@ To perform this operation, you must be authenticated by means of one of the foll
 api_key, jwt_key
 </aside>
 
-## Routing - Evaluate
-
-<a id="opIdEvaluate routing rules"></a>
-
-> Code samples
-
-```bash
-curl https://sandbox.hyperswitch.io/routing/evaluate \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "api-key: ${API_KEY}" \
-  -d '{
-    "paymentInfo": {
-      "paymentId": "pay_12345",
-      "amount": "100",
-      "currency": "USD",
-      "preferredConnectors": [
-        "adyen:mca_5678"
-      ],
-      "paymentType": "ORDER_PAYMENT",
-      "metadata": "metadata",
-      "paymentMethodType": "upi",
-      "paymentMethod": "upi",
-      "cardIsin": "424242"
-    },
-    "merchantId": "pro_aMoPnEkgCVnh2WVsFe32",
-    "eligibleGatewayList": "[\"stripe:mca_123\", \"adyen:mca_456\"]",
-    "rankingAlgorithm": {}
-  }'
-```
-
-`POST /routing/evaluate`
-
-Evaluate routing rules
-
-> Body parameter
-
-```json
-{
-  "paymentInfo": {
-    "paymentId": "pay_12345",
-    "amount": "100",
-    "currency": "USD",
-    "preferredConnectors": [
-      "adyen:mca_5678"
-    ],
-    "paymentType": "ORDER_PAYMENT",
-    "metadata": "metadata",
-    "paymentMethodType": "upi",
-    "paymentMethod": "upi",
-    "cardIsin": "424242"
-  },
-  "merchantId": "pro_aMoPnEkgCVnh2WVsFe32",
-  "eligibleGatewayList": "[\"stripe:mca_123\", \"adyen:mca_456\"]",
-  "rankingAlgorithm": {}
-}
-```
-
-<h3 id="routing---evaluate-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|X-Connected-Merchant-Id|header|string \| null|false|Merchant ID of the connected merchant on whose behalf the operation is performed. Required when authenticating with a platform merchant's API key. Standard and connected merchants must not send it.|
-|body|body|[OpenRouterDecideGatewayRequest](#schemaopenrouterdecidegatewayrequest)|true|none|
-|» paymentInfo|body|[PaymentInfo](#schemapaymentinfo)|true|Payment information used for routing decision-making|
-|» merchantId|body|string|true|Profile ID of the merchant|
-|» eligibleGatewayList|body|[string]|false|List of eligible gateways for routing consideration|
-|» rankingAlgorithm|body|object \| null|false|none|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "decided_gateway": "stripe:mca1",
-  "gateway_priority_map": {
-    "adyen:mca2": 1,
-    "stripe:mca1": 1
-  },
-  "filter_wise_gateways": {},
-  "priority_logic_tag": "string",
-  "routing_approach": "SR_SELECTION_V3_ROUTING",
-  "gateway_before_evaluation": "adyen:mca2",
-  "priority_logic_output": {
-    "isEnforcement": false,
-    "gws": [
-      "stripe:mca1",
-      "adyen:mca2"
-    ],
-    "priorityLogicTag": "string",
-    "gatewayReferenceIds": {},
-    "primaryLogic": {
-      "name": "success_rate_logic",
-      "status": "success",
-      "failure_reason": "insufficient_data"
-    },
-    "fallbackLogic": {
-      "name": "success_rate_logic",
-      "status": "success",
-      "failure_reason": "insufficient_data"
-    }
-  },
-  "reset_approach": "NO_RESET",
-  "routing_dimension": "ORDER_PAYMENT, UPI, upi",
-  "routing_dimension_level": "PM_LEVEL",
-  "is_scheduled_outage": false,
-  "is_dynamic_mga_enabled": false,
-  "gateway_mga_id_map": {}
-}
-```
-
-<h3 id="routing---evaluate-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Routing rules evaluated successfully|[DecideGatewayResponse](#schemadecidegatewayresponse)|
-|400|Bad Request|Request body is malformed|None|
-|403|Forbidden|Forbidden|None|
-|404|Not Found|Resource missing|None|
-|422|Unprocessable Entity|Unprocessable request|None|
-|500|Internal Server Error|Internal server error|None|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-api_key
-</aside>
-
-## Routing - Feedback
-
-<a id="opIdUpdate gateway scores"></a>
-
-> Code samples
-
-```bash
-curl https://sandbox.hyperswitch.io/routing/feedback \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "api-key: ${API_KEY}" \
-  -d '{
-    "merchantId": "pro_aMoPnEkgCVnh2WVsFe32",
-    "gateway": "stripe:mca1",
-    "status": "STARTED",
-    "paymentId": "pay_1234"
-  }'
-```
-
-`POST /routing/feedback`
-
-Update gateway scores for dynamic routing
-
-> Body parameter
-
-```json
-{
-  "merchantId": "pro_aMoPnEkgCVnh2WVsFe32",
-  "gateway": "stripe:mca1",
-  "status": "STARTED",
-  "paymentId": "pay_1234"
-}
-```
-
-<h3 id="routing---feedback-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|X-Connected-Merchant-Id|header|string \| null|false|Merchant ID of the connected merchant on whose behalf the operation is performed. Required when authenticating with a platform merchant's API key. Standard and connected merchants must not send it.|
-|body|body|[UpdateScorePayload](#schemaupdatescorepayload)|true|none|
-|» merchantId|body|string|true|Profile ID of the merchant|
-|» gateway|body|string|true|Payment Gateway identifier|
-|» status|body|[TxnStatus](#schematxnstatus)|true|none|
-|» paymentId|body|string|true|Payment ID associated with the transaction|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|» status|STARTED|
-|» status|AUTHENTICATION_FAILED|
-|» status|JUSPAY_DECLINED|
-|» status|PENDING_VBV|
-|» status|V_B_V_SUCCESSFUL|
-|» status|AUTHORIZED|
-|» status|AUTHORIZATION_FAILED|
-|» status|CHARGED|
-|» status|AUTHORIZING|
-|» status|C_O_D_INITIATED|
-|» status|VOIDED|
-|» status|VOIDED_POST_CHARGE|
-|» status|VOID_INITIATED|
-|» status|NOP|
-|» status|CAPTURE_INITIATED|
-|» status|CAPTURE_FAILED|
-|» status|VOID_FAILED|
-|» status|AUTO_REFUNDED|
-|» status|PARTIAL_CHARGED|
-|» status|TO_BE_CHARGED|
-|» status|PENDING|
-|» status|FAILURE|
-|» status|DECLINED|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "message": "Gateway score updated successfully"
-}
-```
-
-<h3 id="routing---feedback-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Gateway score updated successfully|[UpdateScoreResponse](#schemaupdatescoreresponse)|
-|400|Bad Request|Request body is malformed|None|
-|403|Forbidden|Forbidden|None|
-|404|Not Found|Resource missing|None|
-|422|Unprocessable Entity|Unprocessable request|None|
-|500|Internal Server Error|Internal server error|None|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-api_key
-</aside>
-
-## Routing - Rule Evaluate
-
-<a id="opIdEvaluate routing rules (alternative)"></a>
-
-> Code samples
-
-```bash
-curl https://sandbox.hyperswitch.io/routing/rule/evaluate \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "api-key: ${API_KEY}" \
-  -d '{
-    "created_by": "profile_123",
-    "payment_id": "pay_abc123",
-    "parameters": {},
-    "fallback_output": [
-      {
-        "gateway_name": "absa_sanlam",
-        "gateway_id": "authipay_1705"
-      }
-    ],
-    "algorithm_for": {}
-  }'
-```
-
-`POST /routing/rule/evaluate`
-
-Evaluate routing rules
-
-> Body parameter
-
-```json
-{
-  "created_by": "profile_123",
-  "payment_id": "pay_abc123",
-  "parameters": {},
-  "fallback_output": [
-    {
-      "gateway_name": "absa_sanlam",
-      "gateway_id": "authipay_1705"
-    }
-  ],
-  "algorithm_for": {}
-}
-```
-
-<h3 id="routing---rule-evaluate-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|X-Connected-Merchant-Id|header|string \| null|false|Merchant ID of the connected merchant on whose behalf the operation is performed. Required when authenticating with a platform merchant's API key. Standard and connected merchants must not send it.|
-|body|body|[RoutingEvaluateRequest](#schemaroutingevaluaterequest)|true|none|
-|» created_by|body|string|true|Identifier of the user/system triggering routing evaluation.<br><br>Example:<br>```json<br>"created_by": "some_id"<br>```|
-|» payment_id|body|string \| null|false|Payment ID for debugging and tracing routing decisions.<br><br>Example:<br>```json<br>"payment_id": "pay_abc123"<br>```|
-|» parameters|body|object|true|Dynamic parameters used during routing evaluation.<br><br>Each key represents a routing attribute.<br><br>Example fields:<br><br>- `payment_method`<br>- `payment_method_type`<br>- `amount`<br>- `currency`<br>- `authentication_type`<br>- `card_bin`<br>- `capture_method`<br>- `business_country`<br>- `billing_country`<br>- `business_label`<br>- `setup_future_usage`<br>- `card_network`<br>- `payment_type`<br>- `mandate_type`<br>- `mandate_acceptance_type`<br>- `metadata`<br><br>Example:<br>```json<br>{<br>"payment_method": { "type": "enum_variant", "value": "card" },<br>"amount": { "type": "number", "value": 10 },<br>"currency": { "type": "str_value", "value": "INR" },<br>"authentication_type": { "type": "enum_variant", "value": "three_ds" },<br>"card_bin": { "type": "str_value", "value": "424242" },<br>"business_country": { "type": "str_value", "value": "IN" },<br>"setup_future_usage": { "type": "enum_variant", "value": "off_session" },<br>"card_network": { "type": "enum_variant", "value": "visa" },<br>"metadata": {<br>"type": "metadata_variant",<br>"value": { "key": "key1", "value": "value1" }<br>}<br>}<br>```<br><br>For the complete superset of supported routing keys,<br>refer to `routing_configs.keys` in:<br>https://github.com/juspay/decision-engine/blob/main/config/development.toml|
-|» fallback_output|body|[[DeRoutableConnectorChoice](#schemaderoutableconnectorchoice)]|true|Fallback connectors used if routing rule evaluation fails.<br><br>These connectors will be returned if no rule matches.<br><br>Example:<br>```json<br>[<br>{<br>"gateway_name": "stripe",<br>"gateway_id": "mca_123"<br>}<br>]<br>```|
-|» algorithm_for|body|object \| null|false|none|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "status": "success",
-  "output": null,
-  "evaluated_output": [
-    {
-      "connector": "absa_sanlam",
-      "merchant_connector_id": "string"
-    }
-  ],
-  "eligible_connectors": [
-    {
-      "connector": "absa_sanlam",
-      "merchant_connector_id": "string"
-    }
-  ]
-}
-```
-
-<h3 id="routing---rule-evaluate-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Routing rules evaluated successfully|[RoutingEvaluateResponse](#schemaroutingevaluateresponse)|
-|400|Bad Request|Request body is malformed|None|
-|403|Forbidden|Forbidden|None|
-|404|Not Found|Resource missing|None|
-|422|Unprocessable Entity|Unprocessable request|None|
-|500|Internal Server Error|Internal server error|None|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-api_key
-</aside>
-
 <h1 id="hyperswitch---api-documentation-event">Event</h1>
 
 Manage events
@@ -33099,6 +33283,7 @@ Check if an authentication is eligible for a specific merchant.
 |---|---|---|---|
 |200|OK|Authentication eligibility checked|[AuthenticationEligibilityResponse](#schemaauthenticationeligibilityresponse)|
 |400|Bad Request|Invalid data|None|
+|422|Unprocessable Entity|Profile does not match the authentication|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -34887,6 +35072,7 @@ Gets pricing estimate for a subscription.
 |customer_id|query|string \| null|false|Customer ID for personalized pricing|
 |coupon_id|query|string \| null|false|Coupon ID to apply discount|
 |trial_days|query|integer(int32) \| null|false|Number of trial days|
+|client_secret|query|string \| null|false|Subscription client secret; required when authenticating with a publishable key|
 
 > Example responses
 
@@ -34923,7 +35109,7 @@ Gets pricing estimate for a subscription.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-api_key
+api_key, client_secret
 </aside>
 
 ## Subscription - Pause Subscription
@@ -35361,6 +35547,136 @@ To perform this operation, you must be authenticated by means of one of the foll
 admin_api_key
 </aside>
 
+<h1 id="hyperswitch---api-documentation-telephone-order">Telephone Order</h1>
+
+Charge cards collected over the phone by an IVR provider
+
+## Telephone Order - Charge
+
+<a id="opIdCharge a telephone order"></a>
+
+> Code samples
+
+```bash
+curl https://sandbox.hyperswitch.io/telephone_order/merchant_1791294465/twilio \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}" \
+  -d '{
+    "amount": "1.00",
+    "cardnumber": "4242424242424242",
+    "currency_code": "USD",
+    "cvv": "123",
+    "description": "Order placed over the phone",
+    "expiry_month": "12",
+    "expiry_year": "28",
+    "method": "charge",
+    "parameters": {
+      "payment_id": "pay_8320b449b06630271e378214dab80ce5",
+      "profile_id": "pro_GUMsmmzTU7oadT00pJeo"
+    },
+    "postal_code": "94122",
+    "transaction_id": "IPe16430-39ba-4820-bedc-7aad0762a487"
+  }'
+```
+
+`POST /telephone_order/{merchant_id}/{provider}`
+
+Charges a card that an IVR provider collected over the phone. Only `twilio` is supported as `{provider}`.
+
+> Body parameter
+
+```json
+{
+  "amount": "1.00",
+  "cardnumber": "4242424242424242",
+  "currency_code": "USD",
+  "cvv": "123",
+  "description": "Order placed over the phone",
+  "expiry_month": "12",
+  "expiry_year": "28",
+  "method": "charge",
+  "parameters": {
+    "payment_id": "pay_8320b449b06630271e378214dab80ce5",
+    "profile_id": "pro_GUMsmmzTU7oadT00pJeo"
+  },
+  "postal_code": "94122",
+  "transaction_id": "IPe16430-39ba-4820-bedc-7aad0762a487"
+}
+```
+
+<h3 id="telephone-order---charge-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|merchant_id|path|string|true|The unique identifier for the merchant account the card is charged under|
+|provider|path|string|true|The telephone order provider posting the request. Currently only `twilio`.|
+|body|body|[TwilioGenericPayRequest](#schematwiliogenericpayrequest)|true|The provider's charge request. Shown here in Twilio's Generic Pay Connector shape.|
+|» method|body|[TwilioPayMethod](#schematwiliopaymethod)|true|The operation Twilio is asking us to perform.|
+|» transaction_id|body|string|true|Twilio's id for this attempt. Stable across its retries, and used to derive the `payment_id` so a retry replays the original charge.|
+|» cardnumber|body|string \| null|false|Card number collected over DTMF. Required for a charge.|
+|» cvv|body|string \| null|false|Card security code collected over DTMF. Required for a charge.|
+|» expiry_month|body|string \| null|false|Two digit card expiry month. Required for a charge.|
+|» expiry_year|body|string \| null|false|Two or four digit card expiry year. Required for a charge.|
+|» postal_code|body|string \| null|false|Billing postal code, collected for AVS.|
+|» bankaccountnumber|body|string \| null|false|Bank account number for ACH debits. Not supported.|
+|» routingnumber|body|string \| null|false|Bank routing number for ACH debits. Not supported.|
+|» amount|body|string \| null|false|Amount in major units, as a decimal string. Absent for `tokenize`.|
+|» currency_code|body|object \| null|false|none|
+|» description|body|string \| null|false|Free-form description configured on the `<Pay>` verb.|
+|» parameters|body|object \| null|false|Values from the IVR's `<Parameter>` tags, stored unmasked in the payment's `metadata`. `profile_id`, `payment_id` and `customer_id` are also read.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» method|charge|
+|» method|tokenize|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "charge_id": "pay_8320b449b06630271e378214dab80ce5",
+  "error_code": null,
+  "error_message": null,
+  "parameters": {
+    "amount_capturable": "0",
+    "amount_received": "100",
+    "connector": "stripe",
+    "connector_transaction_id": "pi_3URyI8D5R7gDAGff17RhZpfW",
+    "merchant_order_reference_id": "IPe16430-39ba-4820-bedc-7aad0762a487",
+    "payment_id": "pay_8320b449b06630271e378214dab80ce5",
+    "status": "succeeded"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": "IR_04",
+  "message": "Missing required param: transaction_id",
+  "type": "invalid_request"
+}
+```
+
+<h3 id="telephone-order---charge-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The outcome of the charge, in the provider's response shape.|[TwilioGenericPayResponse](#schematwiliogenericpayresponse)|
+|400|Bad Request|The request was rejected before a charge was attempted: the API key is missing or does not belong to this merchant, the provider in the path is unknown, or the body is not a valid charge request for that provider.|[GenericErrorResponseOpenApi](#schemagenericerrorresponseopenapi)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+basic_api_key
+</aside>
+
 <h1 id="hyperswitch---api-documentation-payment-links">Payment Links</h1>
 
 ## Payment Link - List
@@ -35701,7 +36017,7 @@ Retrieves a relay details.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-api_key, ephemeral_key
+api_key
 </aside>
 
 <h1 id="hyperswitch---api-documentation-organization">Organization</h1>
@@ -36021,6 +36337,7 @@ Creates a GSM (Global Status Mapping) Rule. A GSM rule is used to map a connecto
 |» connector|bamboraapac|
 |» connector|bankofamerica|
 |» connector|barclaycard|
+|» connector|betterpayment|
 |» connector|billwerk|
 |» connector|bitpay|
 |» connector|bluesnap|
@@ -36290,6 +36607,7 @@ Retrieves a Gsm Rule
 |» connector|bamboraapac|
 |» connector|bankofamerica|
 |» connector|barclaycard|
+|» connector|betterpayment|
 |» connector|billwerk|
 |» connector|bitpay|
 |» connector|bluesnap|
@@ -36969,7 +37287,7 @@ curl 'https://sandbox.hyperswitch.io/blocklist?data_kind=payment_method' \
 |---|---|---|---|---|
 |data_kind|query|[BlocklistDataKind](#schemablocklistdatakind)|true|Kind of the fingerprint list requested|
 |transaction_type|query|object \| null|false|Blocklist flow: payment (default) or payout.|
-|X-Profile-Id|header|string \| null|false|Restricts the listing to entries belonging to this business profile, plus entries with no profile. When no profile can be resolved - as with publishable-key authentication - all of the merchant's entries are returned, as before.|
+|X-Profile-Id|header|string \| null|false|Restricts the listing to entries belonging to this business profile, plus entries with no profile. Ignored when authenticating with a JWT, which carries its own profile. If no profile is resolved for an API key, all of the merchant's entries are returned.|
 |X-Connected-Merchant-Id|header|string \| null|false|Merchant ID of the connected merchant on whose behalf the operation is performed. Required when authenticating with a platform merchant's API key. Standard and connected merchants must not send it.|
 
 #### Enumerated Values
@@ -37004,7 +37322,7 @@ curl 'https://sandbox.hyperswitch.io/blocklist?data_kind=payment_method' \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-api_key, jwt_key, publishable_key
+api_key, jwt_key
 </aside>
 
 ## Block a Fingerprint
@@ -42009,7 +42327,8 @@ This struct represents the decrypted Apple Pay payment data
     "card_segment_type": {},
     "funding_source": {},
     "issuer_name": "string",
-    "issuer_country": {}
+    "issuer_country": {},
+    "payment_checks": null
   },
   "transaction_identifier": "string"
 }
@@ -42087,7 +42406,8 @@ This struct represents the decrypted Apple Pay payment data
   "card_segment_type": {},
   "funding_source": {},
   "issuer_name": "string",
-  "issuer_country": {}
+  "issuer_country": {},
+  "payment_checks": null
 }
 ```
 
@@ -42109,6 +42429,7 @@ This struct represents the decrypted Apple Pay payment data
 |funding_source|object \| null|false|none|none|
 |issuer_name|string \| null|false|none|The name of the card issuer, as returned by the connector|
 |issuer_country|object \| null|false|none|none|
+|payment_checks|object \| null|false|none|Additional payment checks done by the processor.|
 
 <h2 id="tocS_ApplepaySessionTokenResponse">ApplepaySessionTokenResponse</h2>
 <!-- backwards compatibility -->
@@ -51139,6 +51460,51 @@ Scope of a single registered connector webhook.
 "day"
 ```
 
+<h2 id="tocS_CorporateSenderDetails">CorporateSenderDetails</h2>
+<!-- backwards compatibility -->
+<a id="schemacorporatesenderdetails"></a>
+<a id="schema_CorporateSenderDetails"></a>
+<a id="tocScorporatesenderdetails"></a>
+<a id="tocscorporatesenderdetails"></a>
+
+```json
+{
+  "company_name": "Acme Ltd",
+  "address": {
+    "city": "New York",
+    "country": {},
+    "line1": "123, King Street",
+    "line2": "Powelson Avenue",
+    "line3": "Bridgewater",
+    "zip": "08807",
+    "state": "New York",
+    "first_name": "John",
+    "last_name": "Doe",
+    "origin_zip": "08807"
+  },
+  "email": "treasury@acme.com",
+  "phone": {
+    "number": "9123456789",
+    "country_code": "+1"
+  },
+  "reference_id": "string",
+  "source_of_funds": {}
+}
+```
+
+A company providing the funds.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|company_name|string|true|none|The sender's legal company name.|
+|address|object \| null|false|none|none|
+|email|string \| null|false|none|The sender's email address.|
+|phone|object \| null|false|none|none|
+|reference_id|string \| null|false|none|The merchant's stable identifier for the sender.|
+|source_of_funds|object \| null|false|none|none|
+
 <h2 id="tocS_Country">Country</h2>
 <!-- backwards compatibility -->
 <a id="schemacountry"></a>
@@ -52882,6 +53248,7 @@ Represents a Merchant Connector Account.
 |gateway_name|authorizedotnet|
 |gateway_name|bankofamerica|
 |gateway_name|barclaycard|
+|gateway_name|betterpayment|
 |gateway_name|billwerk|
 |gateway_name|bitpay|
 |gateway_name|bambora|
@@ -53025,70 +53392,6 @@ Represents a Merchant Connector Account.
 |gateway_name|vgs|
 |gateway_name|cardinal|
 |gateway_name|threedsecureio|
-
-<h2 id="tocS_DecideGatewayResponse">DecideGatewayResponse</h2>
-<!-- backwards compatibility -->
-<a id="schemadecidegatewayresponse"></a>
-<a id="schema_DecideGatewayResponse"></a>
-<a id="tocSdecidegatewayresponse"></a>
-<a id="tocsdecidegatewayresponse"></a>
-
-```json
-{
-  "decided_gateway": "stripe:mca1",
-  "gateway_priority_map": {
-    "adyen:mca2": 1,
-    "stripe:mca1": 1
-  },
-  "filter_wise_gateways": {},
-  "priority_logic_tag": "string",
-  "routing_approach": "SR_SELECTION_V3_ROUTING",
-  "gateway_before_evaluation": "adyen:mca2",
-  "priority_logic_output": {
-    "isEnforcement": false,
-    "gws": [
-      "stripe:mca1",
-      "adyen:mca2"
-    ],
-    "priorityLogicTag": "string",
-    "gatewayReferenceIds": {},
-    "primaryLogic": {
-      "name": "success_rate_logic",
-      "status": "success",
-      "failure_reason": "insufficient_data"
-    },
-    "fallbackLogic": {
-      "name": "success_rate_logic",
-      "status": "success",
-      "failure_reason": "insufficient_data"
-    }
-  },
-  "reset_approach": "NO_RESET",
-  "routing_dimension": "ORDER_PAYMENT, UPI, upi",
-  "routing_dimension_level": "PM_LEVEL",
-  "is_scheduled_outage": false,
-  "is_dynamic_mga_enabled": false,
-  "gateway_mga_id_map": {}
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|decided_gateway|string \| null|false|none|The gateway decided by the routing engine|
-|gateway_priority_map|object \| null|false|none|Map of gateways with their priority scores|
-|filter_wise_gateways|object \| null|false|none|Gateways organized by filter criteria|
-|priority_logic_tag|string \| null|false|none|Tag identifying the priority logic used|
-|routing_approach|string \| null|false|none|The routing approach used for decision making|
-|gateway_before_evaluation|string \| null|false|none|The gateway that was evaluated before the final decision|
-|priority_logic_output|object \| null|false|none|none|
-|reset_approach|string \| null|false|none|The reset approach applied during routing|
-|routing_dimension|string \| null|false|none|Dimensions used for routing decision (payment type, method, etc.)|
-|routing_dimension_level|string \| null|false|none|Level at which routing dimension is evaluated|
-|is_scheduled_outage|boolean \| null|false|none|Indicates if routing decision was affected by scheduled outage|
-|is_dynamic_mga_enabled|boolean \| null|false|none|Indicates if dynamic merchant gateway account is enabled|
-|gateway_mga_id_map|object \| null|false|none|Map of gateways to their MGA IDs|
 
 <h2 id="tocS_DecisionEngineEliminationData">DecisionEngineEliminationData</h2>
 <!-- backwards compatibility -->
@@ -55165,33 +55468,6 @@ Object for EnabledPaymentMethod
 |payment_method_types|payshap_proxy|
 |payment_method_types|ted|
 
-<h2 id="tocS_EphemeralKeyCreateResponse">EphemeralKeyCreateResponse</h2>
-<!-- backwards compatibility -->
-<a id="schemaephemeralkeycreateresponse"></a>
-<a id="schema_EphemeralKeyCreateResponse"></a>
-<a id="tocSephemeralkeycreateresponse"></a>
-<a id="tocsephemeralkeycreateresponse"></a>
-
-```json
-{
-  "customer_id": "cus_y3oqhf46pyzuxjbcn2giaqnb44",
-  "created_at": 0,
-  "expires": 0,
-  "secret": "string"
-}
-```
-
-ephemeral_key for the customer_id mentioned
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|customer_id|string|true|none|customer_id to which this ephemeral key belongs to|
-|created_at|integer(int64)|true|none|time at which this ephemeral key was created|
-|expires|integer(int64)|true|none|time at which this ephemeral key would expire|
-|secret|string|true|none|ephemeral key|
-
 <h2 id="tocS_ErrorCategory">ErrorCategory</h2>
 <!-- backwards compatibility -->
 <a id="schemaerrorcategory"></a>
@@ -55212,6 +55488,7 @@ ephemeral_key for the customer_id mentioned
 
 ```json
 {
+  "client_secret": "string",
   "plan_id": "string",
   "item_price_id": "string",
   "coupon_code": "string"
@@ -55222,6 +55499,7 @@ ephemeral_key for the customer_id mentioned
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|client_secret|string \| null|false|none|This is a token which expires after 15 minutes, used from the client to authenticate and create sessions from the SDK|
 |plan_id|string \| null|false|none|Identifier for the associated subscription plan.|
 |item_price_id|string|true|none|Identifier for the associated item_price_id for the subscription.|
 |coupon_code|string \| null|false|none|Identifier for the coupon code for the subscription.|
@@ -56117,6 +56395,7 @@ External surcharge details from InterPayments (stored as JSONB)
 |connectors|bamboraapac|
 |connectors|bankofamerica|
 |connectors|barclaycard|
+|connectors|betterpayment|
 |connectors|billwerk|
 |connectors|bitpay|
 |connectors|bluesnap|
@@ -58453,6 +58732,7 @@ This enum is used to represent the Gpay payment data, which can either be encryp
 |connector|bamboraapac|
 |connector|bankofamerica|
 |connector|barclaycard|
+|connector|betterpayment|
 |connector|billwerk|
 |connector|bitpay|
 |connector|bluesnap|
@@ -58828,6 +59108,7 @@ details specific to the retry behavior.
 |connector|bamboraapac|
 |connector|bankofamerica|
 |connector|barclaycard|
+|connector|betterpayment|
 |connector|billwerk|
 |connector|bitpay|
 |connector|bluesnap|
@@ -59247,6 +59528,55 @@ payment.method.network = (amex, rupay, diners)
 |status|failure|
 |status|processing|
 |status|unresolved|
+
+<h2 id="tocS_IndividualSenderDetails">IndividualSenderDetails</h2>
+<!-- backwards compatibility -->
+<a id="schemaindividualsenderdetails"></a>
+<a id="schema_IndividualSenderDetails"></a>
+<a id="tocSindividualsenderdetails"></a>
+<a id="tocsindividualsenderdetails"></a>
+
+```json
+{
+  "first_name": "John",
+  "last_name": "Doe",
+  "date_of_birth": "1990-01-31",
+  "address": {
+    "city": "New York",
+    "country": {},
+    "line1": "123, King Street",
+    "line2": "Powelson Avenue",
+    "line3": "Bridgewater",
+    "zip": "08807",
+    "state": "New York",
+    "first_name": "John",
+    "last_name": "Doe",
+    "origin_zip": "08807"
+  },
+  "email": "john.doe@example.com",
+  "phone": {
+    "number": "9123456789",
+    "country_code": "+1"
+  },
+  "reference_id": "string",
+  "source_of_funds": {}
+}
+```
+
+An individual providing the funds.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|first_name|string \| null|false|none|The sender's first name. When neither the first nor the last name is provided, the name<br>from the billing address of the payment method is used instead.|
+|last_name|string \| null|false|none|The sender's last name. When neither the first nor the last name is provided, the name<br>from the billing address of the payment method is used instead.|
+|date_of_birth|string(date) \| null|false|none|The sender's date of birth, in the format yyyy-mm-dd.|
+|address|object \| null|false|none|none|
+|email|string \| null|false|none|The sender's email address.|
+|phone|object \| null|false|none|none|
+|reference_id|string \| null|false|none|The merchant's stable identifier for the sender|
+|source_of_funds|object \| null|false|none|none|
 
 <h2 id="tocS_IndomaretVoucherData">IndomaretVoucherData</h2>
 <!-- backwards compatibility -->
@@ -60310,8 +60640,7 @@ Response for `GET /blocklist/batch`.
   "data_kind": "payment_method",
   "transaction_type": "payment",
   "limit": 0,
-  "offset": 0,
-  "client_secret": "string"
+  "offset": 0
 }
 ```
 
@@ -60323,7 +60652,6 @@ Response for `GET /blocklist/batch`.
 |transaction_type|[BlocklistTransactionType](#schemablocklisttransactiontype)|false|none|The transaction namespace of a blocklist entry, stored as text.|
 |limit|integer(int32)|false|none|none|
 |offset|integer(int32)|false|none|none|
-|client_secret|string \| null|false|none|none|
 
 #### Enumerated Values
 
@@ -60641,6 +60969,10 @@ Passing this object during payments creates a mandate. The mandate_type sub obje
 {
   "mandate_id": "string",
   "payment_id": "string",
+  "amount": 0,
+  "currency": {},
+  "profile_id": "string",
+  "mandate_metadata": {},
   "status": "active",
   "payment_method_id": "string",
   "payment_method": "string",
@@ -60677,6 +61009,10 @@ Passing this object during payments creates a mandate. The mandate_type sub obje
 |---|---|---|---|---|
 |mandate_id|string|true|none|The identifier for mandate|
 |payment_id|string \| null|false|none|The original setup payment associated with this mandate, when known.|
+|amount|integer(int64) \| null|false|none|The original authorized amount for the connector mandate, when known.|
+|currency|object \| null|false|none|none|
+|profile_id|string \| null|false|none|The business profile associated with this mandate event, when known.|
+|mandate_metadata|object \| null|false|none|Connector-specific mandate metadata associated with the original setup payment.|
 |status|[MandateStatus](#schemamandatestatus)|true|none|The status of the mandate, which indicates whether it can be used to initiate a payment.|
 |payment_method_id|string|true|none|The identifier for payment method|
 |payment_method|string|true|none|The payment method|
@@ -61029,7 +61365,8 @@ A partially masked view of `RecipientDetails`, safe to return in API responses.
       "last_name": "Doe",
       "origin_zip": "08807"
     },
-    "merchant_tax_registration_id": "123456789"
+    "merchant_tax_registration_id": "123456789",
+    "merchant_vat_registration_id": "GB987654321"
   },
   "return_url": "https://www.example.com/success",
   "webhook_details": {
@@ -61242,7 +61579,8 @@ A partially masked view of `RecipientDetails`, safe to return in API responses.
       "last_name": "Doe",
       "origin_zip": "08807"
     },
-    "merchant_tax_registration_id": "123456789"
+    "merchant_tax_registration_id": "123456789",
+    "merchant_vat_registration_id": "GB987654321"
   },
   "webhook_details": {
     "webhook_version": "1.0.2",
@@ -61414,7 +61752,8 @@ A partially masked view of `RecipientDetails`, safe to return in API responses.
       "last_name": "Doe",
       "origin_zip": "08807"
     },
-    "merchant_tax_registration_id": "123456789"
+    "merchant_tax_registration_id": "123456789",
+    "merchant_vat_registration_id": "GB987654321"
   },
   "return_url": "https://www.example.com/success",
   "webhook_details": {
@@ -61720,6 +62059,7 @@ Create a new Merchant Connector for the merchant account. The connector could be
 |connector_name|bamboraapac|
 |connector_name|bankofamerica|
 |connector_name|barclaycard|
+|connector_name|betterpayment|
 |connector_name|billwerk|
 |connector_name|bitpay|
 |connector_name|bluesnap|
@@ -62124,6 +62464,7 @@ Merchant connector details used to make payments.
 |connector_name|bamboraapac|
 |connector_name|bankofamerica|
 |connector_name|barclaycard|
+|connector_name|betterpayment|
 |connector_name|billwerk|
 |connector_name|bitpay|
 |connector_name|bluesnap|
@@ -62432,6 +62773,7 @@ Response of creating a new Merchant Connector for the merchant account."
 |connector_name|bamboraapac|
 |connector_name|bankofamerica|
 |connector_name|barclaycard|
+|connector_name|betterpayment|
 |connector_name|billwerk|
 |connector_name|bitpay|
 |connector_name|bluesnap|
@@ -62765,7 +63107,8 @@ and convert it to a `Country` enum variant.
     "last_name": "Doe",
     "origin_zip": "08807"
   },
-  "merchant_tax_registration_id": "123456789"
+  "merchant_tax_registration_id": "123456789",
+  "merchant_vat_registration_id": "GB987654321"
 }
 ```
 
@@ -62783,6 +63126,7 @@ and convert it to a `Country` enum variant.
 |about_business|string \| null|false|none|A brief description about merchant's business|
 |address|object \| null|false|none|none|
 |merchant_tax_registration_id|string \| null|false|none|none|
+|merchant_vat_registration_id|string \| null|false|none|The merchant's VAT registration identifier|
 
 <h2 id="tocS_MerchantId">MerchantId</h2>
 <!-- backwards compatibility -->
@@ -64611,45 +64955,6 @@ Masked payout method details for OpenBankingUK bank redirect payout method
 |account_holder_name|string|true|none|Account holder name|
 |iban|string|true|none|International Bank Account Number (iban) - used in many countries for identifying a bank along with it's customer.|
 
-<h2 id="tocS_OpenRouterDecideGatewayRequest">OpenRouterDecideGatewayRequest</h2>
-<!-- backwards compatibility -->
-<a id="schemaopenrouterdecidegatewayrequest"></a>
-<a id="schema_OpenRouterDecideGatewayRequest"></a>
-<a id="tocSopenrouterdecidegatewayrequest"></a>
-<a id="tocsopenrouterdecidegatewayrequest"></a>
-
-```json
-{
-  "paymentInfo": {
-    "paymentId": "pay_12345",
-    "amount": "100",
-    "currency": "USD",
-    "preferredConnectors": [
-      "adyen:mca_5678"
-    ],
-    "paymentType": "ORDER_PAYMENT",
-    "metadata": "metadata",
-    "paymentMethodType": "upi",
-    "paymentMethod": "upi",
-    "cardIsin": "424242"
-  },
-  "merchantId": "pro_aMoPnEkgCVnh2WVsFe32",
-  "eligibleGatewayList": "[\"stripe:mca_123\", \"adyen:mca_456\"]",
-  "rankingAlgorithm": {}
-}
-```
-
-Request to decide the optimal gateway for routing a payment
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|paymentInfo|[PaymentInfo](#schemapaymentinfo)|true|none|Payment information used for routing decision-making|
-|merchantId|string|true|none|Profile ID of the merchant|
-|eligibleGatewayList|[string]|false|none|List of eligible gateways for routing consideration|
-|rankingAlgorithm|object \| null|false|none|none|
-
 <h2 id="tocS_OrderDetailsWithAmount">OrderDetailsWithAmount</h2>
 <!-- backwards compatibility -->
 <a id="schemaorderdetailswithamount"></a>
@@ -65042,6 +65347,8 @@ Request to decide the optimal gateway for routing a payment
           "refund_id": "string",
           "payment_id": "string",
           "amount": 6540,
+          "net_amount": 0,
+          "surcharge_refund_amount": 0,
           "currency": "string",
           "status": "succeeded",
           "reason": "string",
@@ -65708,7 +66015,8 @@ Request to decide the optimal gateway for routing a payment
         "installment_interest": {}
       },
       "sender_payment_instrument_id": "string",
-      "enable_avs_check": true
+      "enable_avs_check": true,
+      "enable_account_name_verification": true
     }
   },
   "timestamp": "1970-01-01T00:00:00Z",
@@ -65998,6 +66306,8 @@ Request to decide the optimal gateway for routing a payment
         "refund_id": "string",
         "payment_id": "string",
         "amount": 6540,
+        "net_amount": 0,
+        "surcharge_refund_amount": 0,
         "currency": "string",
         "status": "succeeded",
         "reason": "string",
@@ -66664,7 +66974,8 @@ Request to decide the optimal gateway for routing a payment
       "installment_interest": {}
     },
     "sender_payment_instrument_id": "string",
-    "enable_avs_check": true
+    "enable_avs_check": true,
+    "enable_account_name_verification": true
   }
 }
 ```
@@ -67277,6 +67588,19 @@ Response payload returned after successfully pausing a subscription.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |token|string|true|none|Token generated for the Apple pay|
+
+<h2 id="tocS_PayViaSingleUseToken">PayViaSingleUseToken</h2>
+<!-- backwards compatibility -->
+<a id="schemapayviasingleusetoken"></a>
+<a id="schema_PayViaSingleUseToken"></a>
+<a id="tocSpayviasingleusetoken"></a>
+<a id="tocspayviasingleusetoken"></a>
+
+```json
+"default"
+```
+
+Whether to exchange the payment method data for a connector single-use token before authorize / setup mandate
 
 <h2 id="tocS_PaylaterResponse">PaylaterResponse</h2>
 <!-- backwards compatibility -->
@@ -68012,45 +68336,6 @@ To indicate the type of payment experience that the customer would go through
 
 A type for payment_id that can be used for payment ids
 
-<h2 id="tocS_PaymentInfo">PaymentInfo</h2>
-<!-- backwards compatibility -->
-<a id="schemapaymentinfo"></a>
-<a id="schema_PaymentInfo"></a>
-<a id="tocSpaymentinfo"></a>
-<a id="tocspaymentinfo"></a>
-
-```json
-{
-  "paymentId": "pay_12345",
-  "amount": "100",
-  "currency": "USD",
-  "preferredConnectors": [
-    "adyen:mca_5678"
-  ],
-  "paymentType": "ORDER_PAYMENT",
-  "metadata": "metadata",
-  "paymentMethodType": "upi",
-  "paymentMethod": "upi",
-  "cardIsin": "424242"
-}
-```
-
-Payment information used for routing decision-making
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|paymentId|string|true|none|Unique identifier for the payment transaction|
-|amount|integer(int64)|true|none|Payment amount in minor units|
-|currency|string|true|none|Currency code for the payment|
-|preferredConnectors|[string]|false|none|Ordered preferred connector account identities in `connector:mca_id` format.|
-|paymentType|string|true|none|Type of payment transaction being processed|
-|metadata|string|true|none|Optional metadata associated with the payment|
-|paymentMethodType|string|true|none|Specific payment method type being used|
-|paymentMethod|string|true|none|General payment method category|
-|cardIsin|string|true|none|Card Issuer Identification Number (first 6 digits of card)|
-
 <h2 id="tocS_PaymentIntentStateMetadata">PaymentIntentStateMetadata</h2>
 <!-- backwards compatibility -->
 <a id="schemapaymentintentstatemetadata"></a>
@@ -68780,6 +69065,8 @@ Status Of the Payment Link
           "refund_id": "string",
           "payment_id": "string",
           "amount": 6540,
+          "net_amount": 0,
+          "surcharge_refund_amount": 0,
           "currency": "string",
           "status": "succeeded",
           "reason": "string",
@@ -69446,7 +69733,8 @@ Status Of the Payment Link
         "installment_interest": {}
       },
       "sender_payment_instrument_id": "string",
-      "enable_avs_check": true
+      "enable_avs_check": true,
+      "enable_account_name_verification": true
     }
   ]
 }
@@ -73292,7 +73580,11 @@ Request to cancel a payment when the payment is already captured
   "tax_status": {},
   "discount_amount": 6540,
   "shipping_amount_tax": {},
+  "value_added_tax_amount": 54,
+  "value_added_tax_percent": 2.5,
   "duty_amount": {},
+  "order_commodity_code": "4900",
+  "vat_invoice_reference_number": "9999",
   "order_date": "1970-01-01T00:00:00Z",
   "enable_partial_authorization": false,
   "is_stored_credential": true,
@@ -73336,6 +73628,7 @@ Request to cancel a payment when the payment is already captured
   "profile_acquirer_id": "string",
   "external_surcharge_strategy": {},
   "enable_avs_check": true,
+  "enable_account_name_verification": true,
   "settlement_conclusion_applied": false
 }
 ```
@@ -73406,7 +73699,11 @@ Request to cancel a payment when the payment is already captured
 |tax_status|object \| null|false|none|none|
 |discount_amount|integer(int64) \| null|false|none|Total amount of the discount you have applied to the order or transaction.|
 |shipping_amount_tax|object \| null|false|none|none|
+|value_added_tax_amount|integer(int64) \| null|false|none|Value added tax (VAT) amount applied to the order or transaction.|
+|value_added_tax_percent|number(double) \| null|false|none|Value added tax (VAT) rate applied to the order or transaction.|
 |duty_amount|object \| null|false|none|none|
+|order_commodity_code|string \| null|false|none|Commodity code classifying the order as a whole, as opposed to the<br>per-item codes in `order_details`.|
+|vat_invoice_reference_number|string \| null|false|none|Reference number of the value added tax (VAT) invoice for this order.|
 |order_date|string(date-time) \| null|false|none|Date the payer placed the order.|
 |enable_partial_authorization|boolean \| null|false|none|Allow partial authorization for this payment|
 |is_stored_credential|boolean \| null|false|none|Boolean flag indicating whether this payment method is stored and has been previously used for payments|
@@ -73419,6 +73716,7 @@ Request to cancel a payment when the payment is already captured
 |profile_acquirer_id|string \| null|false|none|Identification for the profile acquirer to be used for this payment.|
 |external_surcharge_strategy|object \| null|false|none|none|
 |enable_avs_check|boolean \| null|false|none|Request address verification using the billing address for supported card payments.<br>Omit this field on updates or confirmation to preserve the existing setting.|
+|enable_account_name_verification|boolean \| null|false|none|Request account name verification for supported payments.|
 |settlement_conclusion_applied|boolean \| null|false|none|Indicates that the merchant has concluded settlement and supplied final amounts.<br>When true, Hyperswitch skips tax and surcharge calculations that would change<br>those amounts. Omit this field on updates or confirmation to preserve the setting.|
 
 #### Enumerated Values
@@ -73447,6 +73745,7 @@ Request to cancel a payment when the payment is already captured
 |connector|bamboraapac|
 |connector|bankofamerica|
 |connector|barclaycard|
+|connector|betterpayment|
 |connector|billwerk|
 |connector|bitpay|
 |connector|bluesnap|
@@ -74124,7 +74423,11 @@ Request to cancel a payment when the payment is already captured
   "tax_status": {},
   "discount_amount": 6540,
   "shipping_amount_tax": {},
+  "value_added_tax_amount": 54,
+  "value_added_tax_percent": 2.5,
   "duty_amount": {},
+  "order_commodity_code": "4900",
+  "vat_invoice_reference_number": "9999",
   "order_date": "1970-01-01T00:00:00Z",
   "enable_partial_authorization": false,
   "enable_overcapture": true,
@@ -74191,6 +74494,7 @@ Request to cancel a payment when the payment is already captured
   "profile_acquirer_id": "string",
   "external_surcharge_strategy": {},
   "enable_avs_check": true,
+  "enable_account_name_verification": true,
   "settlement_conclusion_applied": false
 }
 ```
@@ -74263,7 +74567,11 @@ Request to cancel a payment when the payment is already captured
 |tax_status|object \| null|false|none|none|
 |discount_amount|integer(int64) \| null|false|none|Total amount of the discount you have applied to the order or transaction.|
 |shipping_amount_tax|object \| null|false|none|none|
+|value_added_tax_amount|integer(int64) \| null|false|none|Value added tax (VAT) amount applied to the order or transaction.|
+|value_added_tax_percent|number(double) \| null|false|none|Value added tax (VAT) rate applied to the order or transaction.|
 |duty_amount|object \| null|false|none|none|
+|order_commodity_code|string \| null|false|none|Commodity code classifying the order as a whole, as opposed to the<br>per-item codes in `order_details`.|
+|vat_invoice_reference_number|string \| null|false|none|Reference number of the value added tax (VAT) invoice for this order.|
 |order_date|string(date-time) \| null|false|none|Date the payer placed the order.|
 |enable_partial_authorization|boolean \| null|false|none|Allow partial authorization for this payment|
 |enable_overcapture|boolean \| null|false|none|Boolean indicating whether to enable overcapture for this payment|
@@ -74279,6 +74587,7 @@ Request to cancel a payment when the payment is already captured
 |profile_acquirer_id|string \| null|false|none|Identification for the profile acquirer to be used for this payment.|
 |external_surcharge_strategy|object \| null|false|none|none|
 |enable_avs_check|boolean \| null|false|none|Request address verification using the billing address for supported card payments.<br>Omit this field on updates or confirmation to preserve the existing setting.|
+|enable_account_name_verification|boolean \| null|false|none|Request account name verification for supported payments.|
 |settlement_conclusion_applied|boolean \| null|false|none|Indicates that the merchant has concluded settlement and supplied final amounts.<br>When true, Hyperswitch skips tax and surcharge calculations that would change<br>those amounts. Omit this field on updates or confirmation to preserve the setting.|
 
 #### Enumerated Values
@@ -74467,6 +74776,7 @@ Request to cancel a payment when the payment is already captured
 |connector|bamboraapac|
 |connector|bankofamerica|
 |connector|barclaycard|
+|connector|betterpayment|
 |connector|billwerk|
 |connector|bitpay|
 |connector|bluesnap|
@@ -74960,6 +75270,8 @@ Request to cancel a payment when the payment is already captured
       "refund_id": "string",
       "payment_id": "string",
       "amount": 6540,
+      "net_amount": 0,
+      "surcharge_refund_amount": 0,
       "currency": "string",
       "status": "succeeded",
       "reason": "string",
@@ -75623,7 +75935,8 @@ Request to cancel a payment when the payment is already captured
     "installment_interest": {}
   },
   "sender_payment_instrument_id": "string",
-  "enable_avs_check": true
+  "enable_avs_check": true,
+  "enable_account_name_verification": true
 }
 ```
 
@@ -75751,6 +76064,7 @@ Request to cancel a payment when the payment is already captured
 |installment_data|object \| null|false|none|none|
 |sender_payment_instrument_id|string \| null|false|none|A connector-specific identifier representing the stored payment instrument|
 |enable_avs_check|boolean \| null|false|none|Whether address verification was requested for this payment.|
+|enable_account_name_verification|boolean \| null|false|none|Whether account name verification was requested for this payment.|
 
 #### Enumerated Values
 
@@ -77413,7 +77727,11 @@ Response body for the eligibility endpoint.
   "tax_status": {},
   "discount_amount": 6540,
   "shipping_amount_tax": {},
+  "value_added_tax_amount": 54,
+  "value_added_tax_percent": 2.5,
   "duty_amount": {},
+  "order_commodity_code": "4900",
+  "vat_invoice_reference_number": "9999",
   "order_date": "1970-01-01T00:00:00Z",
   "enable_partial_authorization": false,
   "enable_overcapture": true,
@@ -77480,6 +77798,7 @@ Response body for the eligibility endpoint.
   "profile_acquirer_id": "string",
   "external_surcharge_strategy": {},
   "enable_avs_check": true,
+  "enable_account_name_verification": true,
   "settlement_conclusion_applied": false
 }
 ```
@@ -77563,7 +77882,11 @@ Response body for the eligibility endpoint.
 |tax_status|object \| null|false|none|none|
 |discount_amount|integer(int64) \| null|false|none|Total amount of the discount you have applied to the order or transaction.|
 |shipping_amount_tax|object \| null|false|none|none|
+|value_added_tax_amount|integer(int64) \| null|false|none|Value added tax (VAT) amount applied to the order or transaction.|
+|value_added_tax_percent|number(double) \| null|false|none|Value added tax (VAT) rate applied to the order or transaction.|
 |duty_amount|object \| null|false|none|none|
+|order_commodity_code|string \| null|false|none|Commodity code classifying the order as a whole, as opposed to the<br>per-item codes in `order_details`.|
+|vat_invoice_reference_number|string \| null|false|none|Reference number of the value added tax (VAT) invoice for this order.|
 |order_date|string(date-time) \| null|false|none|Date the payer placed the order.|
 |enable_partial_authorization|boolean \| null|false|none|Allow partial authorization for this payment|
 |enable_overcapture|boolean \| null|false|none|Boolean indicating whether to enable overcapture for this payment|
@@ -77579,6 +77902,7 @@ Response body for the eligibility endpoint.
 |profile_acquirer_id|string \| null|false|none|Identification for the profile acquirer to be used for this payment.|
 |external_surcharge_strategy|object \| null|false|none|none|
 |enable_avs_check|boolean \| null|false|none|Request address verification using the billing address for supported card payments.<br>Omit this field on updates or confirmation to preserve the existing setting.|
+|enable_account_name_verification|boolean \| null|false|none|Request account name verification for supported payments.|
 |settlement_conclusion_applied|boolean \| null|false|none|Indicates that the merchant has concluded settlement and supplied final amounts.<br>When true, Hyperswitch skips tax and surcharge calculations that would change<br>those amounts. Omit this field on updates or confirmation to preserve the setting.|
 
 #### Enumerated Values
@@ -77607,6 +77931,7 @@ Response body for the eligibility endpoint.
 |connector|bamboraapac|
 |connector|bankofamerica|
 |connector|barclaycard|
+|connector|betterpayment|
 |connector|billwerk|
 |connector|bitpay|
 |connector|bluesnap|
@@ -78111,6 +78436,8 @@ Response body for the eligibility endpoint.
       "refund_id": "string",
       "payment_id": "string",
       "amount": 6540,
+      "net_amount": 0,
+      "surcharge_refund_amount": 0,
       "currency": "string",
       "status": "succeeded",
       "reason": "string",
@@ -78777,7 +79104,8 @@ Response body for the eligibility endpoint.
     "installment_interest": {}
   },
   "sender_payment_instrument_id": "string",
-  "enable_avs_check": true
+  "enable_avs_check": true,
+  "enable_account_name_verification": true
 }
 ```
 
@@ -78909,6 +79237,7 @@ Response body for the eligibility endpoint.
 |installment_data|object \| null|false|none|none|
 |sender_payment_instrument_id|string \| null|false|none|A connector-specific identifier representing the stored payment instrument|
 |enable_avs_check|boolean \| null|false|none|Whether address verification was requested for this payment.|
+|enable_account_name_verification|boolean \| null|false|none|Whether account name verification was requested for this payment.|
 
 #### Enumerated Values
 
@@ -80107,7 +80436,11 @@ Response body for the eligibility endpoint.
   "tax_status": {},
   "discount_amount": 6540,
   "shipping_amount_tax": {},
+  "value_added_tax_amount": 54,
+  "value_added_tax_percent": 2.5,
   "duty_amount": {},
+  "order_commodity_code": "4900",
+  "vat_invoice_reference_number": "9999",
   "order_date": "1970-01-01T00:00:00Z",
   "enable_partial_authorization": false,
   "enable_overcapture": true,
@@ -80174,6 +80507,7 @@ Response body for the eligibility endpoint.
   "profile_acquirer_id": "string",
   "external_surcharge_strategy": {},
   "enable_avs_check": true,
+  "enable_account_name_verification": true,
   "settlement_conclusion_applied": false
 }
 ```
@@ -80243,7 +80577,11 @@ Response body for the eligibility endpoint.
 |tax_status|object \| null|false|none|none|
 |discount_amount|integer(int64) \| null|false|none|Total amount of the discount you have applied to the order or transaction.|
 |shipping_amount_tax|object \| null|false|none|none|
+|value_added_tax_amount|integer(int64) \| null|false|none|Value added tax (VAT) amount applied to the order or transaction.|
+|value_added_tax_percent|number(double) \| null|false|none|Value added tax (VAT) rate applied to the order or transaction.|
 |duty_amount|object \| null|false|none|none|
+|order_commodity_code|string \| null|false|none|Commodity code classifying the order as a whole, as opposed to the<br>per-item codes in `order_details`.|
+|vat_invoice_reference_number|string \| null|false|none|Reference number of the value added tax (VAT) invoice for this order.|
 |order_date|string(date-time) \| null|false|none|Date the payer placed the order.|
 |enable_partial_authorization|boolean \| null|false|none|Allow partial authorization for this payment|
 |enable_overcapture|boolean \| null|false|none|Boolean indicating whether to enable overcapture for this payment|
@@ -80259,6 +80597,7 @@ Response body for the eligibility endpoint.
 |profile_acquirer_id|string \| null|false|none|Identification for the profile acquirer to be used for this payment.|
 |external_surcharge_strategy|object \| null|false|none|none|
 |enable_avs_check|boolean \| null|false|none|Request address verification using the billing address for supported card payments.<br>Omit this field on updates or confirmation to preserve the existing setting.|
+|enable_account_name_verification|boolean \| null|false|none|Request account name verification for supported payments.|
 |settlement_conclusion_applied|boolean \| null|false|none|Indicates that the merchant has concluded settlement and supplied final amounts.<br>When true, Hyperswitch skips tax and surcharge calculations that would change<br>those amounts. Omit this field on updates or confirmation to preserve the setting.|
 
 #### Enumerated Values
@@ -80287,6 +80626,7 @@ Response body for the eligibility endpoint.
 |connector|bamboraapac|
 |connector|bankofamerica|
 |connector|barclaycard|
+|connector|betterpayment|
 |connector|billwerk|
 |connector|bitpay|
 |connector|bluesnap|
@@ -80717,7 +81057,6 @@ Response body for the eligibility endpoint.
     },
     "date_of_birth": "1990-01-31"
   },
-  "client_secret": "string",
   "return_url": "https://hyperswitch.io",
   "business_country": {},
   "business_label": "food",
@@ -80729,6 +81068,32 @@ Response body for the eligibility endpoint.
   "entity_type": {},
   "recurring": false,
   "metadata": {},
+  "funds_transfer_type": {},
+  "sender_details": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "date_of_birth": "1990-01-31",
+    "address": {
+      "city": "New York",
+      "country": {},
+      "line1": "123, King Street",
+      "line2": "Powelson Avenue",
+      "line3": "Bridgewater",
+      "zip": "08807",
+      "state": "New York",
+      "first_name": "John",
+      "last_name": "Doe",
+      "origin_zip": "08807"
+    },
+    "email": "john.doe@example.com",
+    "phone": {
+      "number": "9123456789",
+      "country_code": "+1"
+    },
+    "reference_id": "string",
+    "source_of_funds": {},
+    "type": "individual"
+  },
   "payout_token": "187282ab-40ef-47a9-9206-5099ba31e432",
   "profile_id": "string",
   "priority": {},
@@ -80784,7 +81149,6 @@ Response body for the eligibility endpoint.
 |auto_fulfill|boolean \| null|false|none|Set to true to confirm the payout without review, no further action required|
 |customer_id|string \| null|false|none|**Deprecated.** Customer identifier for normal and proxy payouts; normal creates may generate it when omitted, while proxy creates require this or customer.id owning payout_method_id. _Deprecated: Use customer.id instead._|
 |customer|object \| null|false|none|none|
-|client_secret|string|true|none|It's a token used for client side verification.|
 |return_url|string \| null|false|none|The URL to redirect after the completion of the operation|
 |business_country|object \| null|false|none|none|
 |business_label|string \| null|false|none|**Deprecated.** Business label of the merchant for this payout. _Deprecated: Use profile_id instead._|
@@ -80792,13 +81156,15 @@ Response body for the eligibility endpoint.
 |billing_descriptor|object \| null|false|none|none|
 |entity_type|object \| null|false|none|none|
 |recurring|boolean \| null|false|none|Specifies whether or not the payout request is recurring|
-|metadata|object \| null|false|none|You can specify up to 50 keys, with key names up to 40 characters long and values up to 500 characters long. Metadata is useful for storing additional, structured information on an object.|
+|metadata|object \| null|false|none|Legacy vendor/individual details in metadata are a compatibility fallback for Stripe.<br>Explicit sender_details takes precedence and is never merged with that identity.<br>You can specify up to 50 keys, with key names up to 40 characters long and values up to 500 characters long. Metadata is useful for storing additional, structured information on an object.|
+|funds_transfer_type|object \| null|false|none|none|
+|sender_details|object \| null|false|none|none|
 |payout_token|string \| null|false|none|Provide a reference to a stored payout method, used to process the payout.|
 |profile_id|string \| null|false|none|The business profile to use for this payout, especially if there are multiple business profiles associated with the account, otherwise default business profile associated with the merchant account will be used.|
 |priority|object \| null|false|none|none|
 |payout_link|boolean \| null|false|none|Whether to get the payout link (if applicable). Merchant need to specify this during the Payout _Create_, this field can not be updated during Payout _Update_.|
 |payout_link_config|object \| null|false|none|none|
-|session_expiry|integer(int32) \| null|false|none|Will be used to expire client secret after certain amount of time to be supplied in seconds<br>(900) for 15 mins|
+|session_expiry|integer(int32) \| null|false|none|Lifetime of the payout link in seconds, for example 900 for 15 minutes.|
 |email|string \| null|false|none|**Deprecated.** Customer's email. _Deprecated: Use customer object instead._|
 |name|string \| null|false|none|**Deprecated.** Customer's name. _Deprecated: Use customer object instead._|
 |phone|string \| null|false|none|**Deprecated.** Customer's phone. _Deprecated: Use customer object instead._|
@@ -80812,6 +81178,7 @@ Response body for the eligibility endpoint.
 |---|---|
 |connector|adyen|
 |connector|adyenplatform|
+|connector|checkout|
 |connector|cybersource|
 |connector|deutschebank|
 |connector|ebanx|
@@ -80967,6 +81334,32 @@ Custom payout link config for the particular payout, if payout link is to be gen
   "entity_type": "Individual",
   "recurring": false,
   "metadata": {},
+  "funds_transfer_type": {},
+  "sender_details": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "date_of_birth": "1990-01-31",
+    "address": {
+      "city": "New York",
+      "country": {},
+      "line1": "123, King Street",
+      "line2": "Powelson Avenue",
+      "line3": "Bridgewater",
+      "zip": "08807",
+      "state": "New York",
+      "first_name": "John",
+      "last_name": "Doe",
+      "origin_zip": "08807"
+    },
+    "email": "john.doe@example.com",
+    "phone": {
+      "number": "9123456789",
+      "country_code": "+1"
+    },
+    "reference_id": "string",
+    "source_of_funds": {},
+    "type": "individual"
+  },
   "merchant_connector_id": "mca_sAD3OZLATetvjLOYhUSy",
   "status": "success",
   "error_message": "Failed while verifying the card",
@@ -81033,7 +81426,7 @@ Custom payout link config for the particular payout, if payout link is to be gen
 |auto_fulfill|boolean|true|none|Set to true to confirm the payout without review, no further action required|
 |customer_id|string|true|none|**Deprecated.** The identifier for the customer object. If not provided the customer ID will be autogenerated. _Deprecated: Use the customer object instead._|
 |customer|object \| null|false|none|none|
-|client_secret|string|true|none|It's a token used for client side verification.|
+|client_secret|string|true|none|Legacy client secret retained for compatibility. Payout execution requires an API key.|
 |return_url|string|true|none|The URL to redirect after the completion of the operation|
 |business_country|[CountryAlpha2](#schemacountryalpha2)|true|none|none|
 |business_label|string \| null|false|none|**Deprecated.** Business label of the merchant for this payout. _Deprecated: Use profile_id instead._|
@@ -81042,6 +81435,8 @@ Custom payout link config for the particular payout, if payout link is to be gen
 |entity_type|[PayoutEntityType](#schemapayoutentitytype)|true|none|Type of entity to whom the payout is being carried out to, select from the given list of options|
 |recurring|boolean|true|none|Specifies whether or not the payout request is recurring|
 |metadata|object \| null|false|none|You can specify up to 50 keys, with key names up to 40 characters long and values up to 500 characters long. Metadata is useful for storing additional, structured information on an object.|
+|funds_transfer_type|object \| null|false|none|none|
+|sender_details|object \| null|false|none|none|
 |merchant_connector_id|string \| null|false|none|Unique identifier of the merchant connector account|
 |status|[PayoutStatus](#schemapayoutstatus)|true|none|none|
 |error_message|string \| null|false|none|If there was an error while calling the connector the error message is received here|
@@ -81529,6 +81924,19 @@ Type of entity to whom the payout is being carried out to, select from the given
 |---|---|---|---|---|
 |payout_id|string|true|none|Unique identifier for the payout. This ensures idempotency for multiple payouts<br>that have been done by a single merchant. This field is auto generated and is returned in the API response.|
 
+<h2 id="tocS_PayoutFundsTransferType">PayoutFundsTransferType</h2>
+<!-- backwards compatibility -->
+<a id="schemapayoutfundstransfertype"></a>
+<a id="schema_PayoutFundsTransferType"></a>
+<a id="tocSpayoutfundstransfertype"></a>
+<a id="tocspayoutfundstransfertype"></a>
+
+```json
+"account_to_account"
+```
+
+The category of funds transfer to use when processing a payout.
+
 <h2 id="tocS_PayoutLinkInitiateRequest">PayoutLinkInitiateRequest</h2>
 <!-- backwards compatibility -->
 <a id="schemapayoutlinkinitiaterequest"></a>
@@ -81660,6 +82068,7 @@ Type of entity to whom the payout is being carried out to, select from the given
 |---|---|
 |connector|adyen|
 |connector|adyenplatform|
+|connector|checkout|
 |connector|cybersource|
 |connector|deutschebank|
 |connector|ebanx|
@@ -81905,6 +82314,7 @@ Type of entity to whom the payout is being carried out to, select from the given
 |---|---|
 |connector|adyen|
 |connector|adyenplatform|
+|connector|checkout|
 |connector|cybersource|
 |connector|deutschebank|
 |connector|ebanx|
@@ -82197,6 +82607,32 @@ Type of entity to whom the payout is being carried out to, select from the given
       "entity_type": "Individual",
       "recurring": false,
       "metadata": {},
+      "funds_transfer_type": {},
+      "sender_details": {
+        "first_name": "John",
+        "last_name": "Doe",
+        "date_of_birth": "1990-01-31",
+        "address": {
+          "city": "New York",
+          "country": {},
+          "line1": "123, King Street",
+          "line2": "Powelson Avenue",
+          "line3": "Bridgewater",
+          "zip": "08807",
+          "state": "New York",
+          "first_name": "John",
+          "last_name": "Doe",
+          "origin_zip": "08807"
+        },
+        "email": "john.doe@example.com",
+        "phone": {
+          "number": "9123456789",
+          "country_code": "+1"
+        },
+        "reference_id": "string",
+        "source_of_funds": {},
+        "type": "individual"
+      },
       "merchant_connector_id": "mca_sAD3OZLATetvjLOYhUSy",
       "status": "success",
       "error_message": "Failed while verifying the card",
@@ -82499,7 +82935,6 @@ The payout_type of the payout request is a mandatory field for confirming the pa
     },
     "date_of_birth": "1990-01-31"
   },
-  "client_secret": "pay_U42c409qyHwOkWo3vK60_secret_el9ksDkiB8hi6j9N78yo",
   "return_url": "https://hyperswitch.io",
   "business_country": {},
   "business_label": "food",
@@ -82511,6 +82946,32 @@ The payout_type of the payout request is a mandatory field for confirming the pa
   "entity_type": {},
   "recurring": false,
   "metadata": {},
+  "funds_transfer_type": {},
+  "sender_details": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "date_of_birth": "1990-01-31",
+    "address": {
+      "city": "New York",
+      "country": {},
+      "line1": "123, King Street",
+      "line2": "Powelson Avenue",
+      "line3": "Bridgewater",
+      "zip": "08807",
+      "state": "New York",
+      "first_name": "John",
+      "last_name": "Doe",
+      "origin_zip": "08807"
+    },
+    "email": "john.doe@example.com",
+    "phone": {
+      "number": "9123456789",
+      "country_code": "+1"
+    },
+    "reference_id": "string",
+    "source_of_funds": {},
+    "type": "individual"
+  },
   "payout_token": "187282ab-40ef-47a9-9206-5099ba31e432",
   "profile_id": "string",
   "priority": {},
@@ -82567,7 +83028,6 @@ The payout_type of the payout request is a mandatory field for confirming the pa
 |auto_fulfill|boolean \| null|false|none|Set to true to confirm the payout without review, no further action required|
 |customer_id|string \| null|false|none|**Deprecated.** Customer identifier for normal and proxy payouts; normal creates may generate it when omitted, while proxy creates require this or customer.id owning payout_method_id. _Deprecated: Use customer.id instead._|
 |customer|object \| null|false|none|none|
-|client_secret|string \| null|false|none|It's a token used for client side verification.|
 |return_url|string \| null|false|none|The URL to redirect after the completion of the operation|
 |business_country|object \| null|false|none|none|
 |business_label|string \| null|false|none|**Deprecated.** Business label of the merchant for this payout. _Deprecated: Use profile_id instead._|
@@ -82575,13 +83035,15 @@ The payout_type of the payout request is a mandatory field for confirming the pa
 |billing_descriptor|object \| null|false|none|none|
 |entity_type|object \| null|false|none|none|
 |recurring|boolean \| null|false|none|Specifies whether or not the payout request is recurring|
-|metadata|object \| null|false|none|You can specify up to 50 keys, with key names up to 40 characters long and values up to 500 characters long. Metadata is useful for storing additional, structured information on an object.|
+|metadata|object \| null|false|none|Legacy vendor/individual details in metadata are a compatibility fallback for Stripe.<br>Explicit sender_details takes precedence and is never merged with that identity.<br>You can specify up to 50 keys, with key names up to 40 characters long and values up to 500 characters long. Metadata is useful for storing additional, structured information on an object.|
+|funds_transfer_type|object \| null|false|none|none|
+|sender_details|object \| null|false|none|none|
 |payout_token|string \| null|false|none|Provide a reference to a stored payout method, used to process the payout.|
 |profile_id|string \| null|false|none|The business profile to use for this payout, especially if there are multiple business profiles associated with the account, otherwise default business profile associated with the merchant account will be used.|
 |priority|object \| null|false|none|none|
 |payout_link|boolean \| null|false|none|Whether to get the payout link (if applicable). Merchant need to specify this during the Payout _Create_, this field can not be updated during Payout _Update_.|
 |payout_link_config|object \| null|false|none|none|
-|session_expiry|integer(int32) \| null|false|none|Will be used to expire client secret after certain amount of time to be supplied in seconds<br>(900) for 15 mins|
+|session_expiry|integer(int32) \| null|false|none|Lifetime of the payout link in seconds, for example 900 for 15 minutes.|
 |email|string \| null|false|none|**Deprecated.** Customer's email. _Deprecated: Use customer object instead._|
 |name|string \| null|false|none|**Deprecated.** Customer's name. _Deprecated: Use customer object instead._|
 |phone|string \| null|false|none|**Deprecated.** Customer's phone. _Deprecated: Use customer object instead._|
@@ -82595,6 +83057,7 @@ The payout_type of the payout request is a mandatory field for confirming the pa
 |---|---|
 |connector|adyen|
 |connector|adyenplatform|
+|connector|checkout|
 |connector|cybersource|
 |connector|deutschebank|
 |connector|ebanx|
@@ -82727,6 +83190,32 @@ Billing descriptor information for a payout.
   "entity_type": {},
   "recurring": false,
   "metadata": {},
+  "funds_transfer_type": {},
+  "sender_details": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "date_of_birth": "1990-01-31",
+    "address": {
+      "city": "New York",
+      "country": {},
+      "line1": "123, King Street",
+      "line2": "Powelson Avenue",
+      "line3": "Bridgewater",
+      "zip": "08807",
+      "state": "New York",
+      "first_name": "John",
+      "last_name": "Doe",
+      "origin_zip": "08807"
+    },
+    "email": "john.doe@example.com",
+    "phone": {
+      "number": "9123456789",
+      "country_code": "+1"
+    },
+    "reference_id": "string",
+    "source_of_funds": {},
+    "type": "individual"
+  },
   "payout_token": "187282ab-40ef-47a9-9206-5099ba31e432",
   "profile_id": "string",
   "priority": {},
@@ -82790,13 +83279,15 @@ Billing descriptor information for a payout.
 |billing_descriptor|object \| null|false|none|none|
 |entity_type|object \| null|false|none|none|
 |recurring|boolean \| null|false|none|Specifies whether or not the payout request is recurring|
-|metadata|object \| null|false|none|You can specify up to 50 keys, with key names up to 40 characters long and values up to 500 characters long. Metadata is useful for storing additional, structured information on an object.|
+|metadata|object \| null|false|none|Legacy vendor/individual details in metadata are a compatibility fallback for Stripe.<br>Explicit sender_details takes precedence and is never merged with that identity.<br>You can specify up to 50 keys, with key names up to 40 characters long and values up to 500 characters long. Metadata is useful for storing additional, structured information on an object.|
+|funds_transfer_type|object \| null|false|none|none|
+|sender_details|object \| null|false|none|none|
 |payout_token|string \| null|false|none|Provide a reference to a stored payout method, used to process the payout.|
 |profile_id|string \| null|false|none|The business profile to use for this payout, especially if there are multiple business profiles associated with the account, otherwise default business profile associated with the merchant account will be used.|
 |priority|object \| null|false|none|none|
 |payout_link|boolean \| null|false|none|Whether to get the payout link (if applicable). Merchant need to specify this during the Payout _Create_, this field can not be updated during Payout _Update_.|
 |payout_link_config|object \| null|false|none|none|
-|session_expiry|integer(int32) \| null|false|none|Will be used to expire client secret after certain amount of time to be supplied in seconds<br>(900) for 15 mins|
+|session_expiry|integer(int32) \| null|false|none|Lifetime of the payout link in seconds, for example 900 for 15 minutes.|
 |email|string \| null|false|none|**Deprecated.** Customer's email. _Deprecated: Use customer object instead._|
 |name|string \| null|false|none|**Deprecated.** Customer's name. _Deprecated: Use customer object instead._|
 |phone|string \| null|false|none|**Deprecated.** Customer's phone. _Deprecated: Use customer object instead._|
@@ -82970,6 +83461,7 @@ Billing descriptor information for a payout.
 |currency|ZWL|
 |connector|adyen|
 |connector|adyenplatform|
+|connector|checkout|
 |connector|cybersource|
 |connector|deutschebank|
 |connector|ebanx|
@@ -83832,6 +84324,8 @@ Represents Percentage Value between 0 and 100 both inclusive
   "country_code": "+1"
 }
 ```
+
+Phone contact details shared by payment and payout API models.
 
 ### Properties
 
@@ -84708,69 +85202,6 @@ The status of a post-capture void operation
 |country|ZM|
 |country|ZW|
 |country|US|
-
-<h2 id="tocS_PriorityLogicData">PriorityLogicData</h2>
-<!-- backwards compatibility -->
-<a id="schemaprioritylogicdata"></a>
-<a id="schema_PriorityLogicData"></a>
-<a id="tocSprioritylogicdata"></a>
-<a id="tocsprioritylogicdata"></a>
-
-```json
-{
-  "name": "success_rate_logic",
-  "status": "success",
-  "failure_reason": "insufficient_data"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|name|string \| null|false|none|Name of the logic|
-|status|string \| null|false|none|Status of the logic execution|
-|failure_reason|string \| null|false|none|Reason for failure if the logic failed|
-
-<h2 id="tocS_PriorityLogicOutput">PriorityLogicOutput</h2>
-<!-- backwards compatibility -->
-<a id="schemaprioritylogicoutput"></a>
-<a id="schema_PriorityLogicOutput"></a>
-<a id="tocSprioritylogicoutput"></a>
-<a id="tocsprioritylogicoutput"></a>
-
-```json
-{
-  "isEnforcement": false,
-  "gws": [
-    "stripe:mca1",
-    "adyen:mca2"
-  ],
-  "priorityLogicTag": "string",
-  "gatewayReferenceIds": {},
-  "primaryLogic": {
-    "name": "success_rate_logic",
-    "status": "success",
-    "failure_reason": "insufficient_data"
-  },
-  "fallbackLogic": {
-    "name": "success_rate_logic",
-    "status": "success",
-    "failure_reason": "insufficient_data"
-  }
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|isEnforcement|boolean \| null|false|none|Whether enforcement mode is enabled|
-|gws|[string]|false|none|List of gateways returned by the priority logic|
-|priorityLogicTag|string \| null|false|none|Tag identifying the priority logic used|
-|gatewayReferenceIds|object \| null|false|none|Map of gateway reference IDs|
-|primaryLogic|object \| null|false|none|none|
-|fallbackLogic|object \| null|false|none|none|
 
 <h2 id="tocS_ProcessorPaymentToken">ProcessorPaymentToken</h2>
 <!-- backwards compatibility -->
@@ -86317,17 +86748,6 @@ Defines the type of protest for non-payment, such as whether the count is based 
 |bin_number|string|true|none|The first six digit of the card number|
 |last_four|string|true|none|The last four digit of the card number|
 
-<h2 id="tocS_RankingAlgorithm">RankingAlgorithm</h2>
-<!-- backwards compatibility -->
-<a id="schemarankingalgorithm"></a>
-<a id="schema_RankingAlgorithm"></a>
-<a id="tocSrankingalgorithm"></a>
-<a id="tocsrankingalgorithm"></a>
-
-```json
-"SR_BASED_ROUTING"
-```
-
 <h2 id="tocS_RapidDisputeResolution">RapidDisputeResolution</h2>
 <!-- backwards compatibility -->
 <a id="schemarapiddisputeresolution"></a>
@@ -87017,6 +87437,8 @@ Feature metadata for a refund operation.
       "refund_id": "string",
       "payment_id": "string",
       "amount": 6540,
+      "net_amount": 0,
+      "surcharge_refund_amount": 0,
       "currency": "string",
       "status": "succeeded",
       "reason": "string",
@@ -87146,6 +87568,8 @@ Feature metadata for a refund operation.
   "refund_id": "string",
   "payment_id": "string",
   "amount": 6540,
+  "net_amount": 0,
+  "surcharge_refund_amount": 0,
   "currency": "string",
   "status": "succeeded",
   "reason": "string",
@@ -87184,7 +87608,9 @@ Feature metadata for a refund operation.
 |---|---|---|---|---|
 |refund_id|string|true|none|Unique Identifier for the refund|
 |payment_id|string|true|none|The payment id against which refund is initiated|
-|amount|integer(int64)|true|none|The refund amount, which should be less than or equal to the total payment amount. Amount for the payment in lowest denomination of the currency. (i.e) in cents for USD denomination, in paisa for INR denomination etc|
+|amount|integer(int64)|true|none|The refund amount excluding any refunded surcharge, in the currency's lowest denomination.|
+|net_amount|integer(int64) \| null|false|none|The total refund amount, including any refunded surcharge, in the currency's lowest denomination.|
+|surcharge_refund_amount|integer(int64) \| null|false|none|The surcharge amount included in this refund, in the currency's lowest denomination.|
 |currency|string|true|none|The three-letter ISO currency code|
 |status|[RefundStatus](#schemarefundstatus)|true|none|The status for refunds|
 |reason|string \| null|false|none|An arbitrary string attached to the object. Often useful for displaying to users and your customer support executive|
@@ -88317,7 +88743,8 @@ legacy requests that use `event_type` receive the legacy fields, while new reque
   "minimum_amount": {},
   "maximum_amount": {},
   "recurring_enabled": false,
-  "installment_payment_enabled": true
+  "installment_payment_enabled": true,
+  "pay_via_single_use_token": {}
 }
 ```
 
@@ -88334,6 +88761,7 @@ legacy requests that use `event_type` receive the legacy fields, while new reque
 |maximum_amount|object \| null|false|none|none|
 |recurring_enabled|boolean \| null|false|none|Indicates whether the payment method supports recurring payments. Optional.|
 |installment_payment_enabled|boolean \| null|false|none|Indicates whether the payment method is eligible for installment payments (e.g., EMI, BNPL). Optional.|
+|pay_via_single_use_token|object \| null|false|none|none|
 
 #### Enumerated Values
 
@@ -90204,6 +90632,7 @@ Routable Connector chosen for a payment
 |connector|authorizedotnet|
 |connector|bankofamerica|
 |connector|barclaycard|
+|connector|betterpayment|
 |connector|billwerk|
 |connector|bitpay|
 |connector|bambora|
@@ -90518,86 +90947,6 @@ Used in routing dictionary listings.
 |kind|advanced|
 |kind|dynamic|
 |kind|three_ds_decision_rule|
-
-<h2 id="tocS_RoutingEvaluateRequest">RoutingEvaluateRequest</h2>
-<!-- backwards compatibility -->
-<a id="schemaroutingevaluaterequest"></a>
-<a id="schema_RoutingEvaluateRequest"></a>
-<a id="tocSroutingevaluaterequest"></a>
-<a id="tocsroutingevaluaterequest"></a>
-
-```json
-{
-  "created_by": "profile_123",
-  "payment_id": "pay_abc123",
-  "parameters": {},
-  "fallback_output": [
-    {
-      "gateway_name": "absa_sanlam",
-      "gateway_id": "authipay_1705"
-    }
-  ],
-  "algorithm_for": {}
-}
-```
-
-Request body used to evaluate routing rules.
-
-This API evaluates routing logic based on dynamic parameters
-like payment method, amount, country, card_bin, etc.
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|created_by|string|true|none|Identifier of the user/system triggering routing evaluation.<br><br>Example:<br>```json<br>"created_by": "some_id"<br>```|
-|payment_id|string \| null|false|none|Payment ID for debugging and tracing routing decisions.<br><br>Example:<br>```json<br>"payment_id": "pay_abc123"<br>```|
-|parameters|object|true|none|Dynamic parameters used during routing evaluation.<br><br>Each key represents a routing attribute.<br><br>Example fields:<br><br>- `payment_method`<br>- `payment_method_type`<br>- `amount`<br>- `currency`<br>- `authentication_type`<br>- `card_bin`<br>- `capture_method`<br>- `business_country`<br>- `billing_country`<br>- `business_label`<br>- `setup_future_usage`<br>- `card_network`<br>- `payment_type`<br>- `mandate_type`<br>- `mandate_acceptance_type`<br>- `metadata`<br><br>Example:<br>```json<br>{<br>"payment_method": { "type": "enum_variant", "value": "card" },<br>"amount": { "type": "number", "value": 10 },<br>"currency": { "type": "str_value", "value": "INR" },<br>"authentication_type": { "type": "enum_variant", "value": "three_ds" },<br>"card_bin": { "type": "str_value", "value": "424242" },<br>"business_country": { "type": "str_value", "value": "IN" },<br>"setup_future_usage": { "type": "enum_variant", "value": "off_session" },<br>"card_network": { "type": "enum_variant", "value": "visa" },<br>"metadata": {<br>"type": "metadata_variant",<br>"value": { "key": "key1", "value": "value1" }<br>}<br>}<br>```<br><br>For the complete superset of supported routing keys,<br>refer to `routing_configs.keys` in:<br>https://github.com/juspay/decision-engine/blob/main/config/development.toml|
-|fallback_output|[[DeRoutableConnectorChoice](#schemaderoutableconnectorchoice)]|true|none|Fallback connectors used if routing rule evaluation fails.<br><br>These connectors will be returned if no rule matches.<br><br>Example:<br>```json<br>[<br>{<br>"gateway_name": "stripe",<br>"gateway_id": "mca_123"<br>}<br>]<br>```|
-|algorithm_for|object \| null|false|none|none|
-
-<h2 id="tocS_RoutingEvaluateResponse">RoutingEvaluateResponse</h2>
-<!-- backwards compatibility -->
-<a id="schemaroutingevaluateresponse"></a>
-<a id="schema_RoutingEvaluateResponse"></a>
-<a id="tocSroutingevaluateresponse"></a>
-<a id="tocsroutingevaluateresponse"></a>
-
-```json
-{
-  "status": "success",
-  "output": null,
-  "evaluated_output": [
-    {
-      "connector": "absa_sanlam",
-      "merchant_connector_id": "string"
-    }
-  ],
-  "eligible_connectors": [
-    {
-      "connector": "absa_sanlam",
-      "merchant_connector_id": "string"
-    }
-  ]
-}
-```
-
-Response returned after routing evaluation.
-
-Contains:
-- Routing status
-- Raw output structure (priority / volume_split)
-- Final evaluated connectors
-- Eligible connectors list
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|status|string|true|none|Status of routing evaluation.<br><br>Example:<br>```json<br>"success"<br>```|
-|output|object|true|none|Raw routing output returned by routing engine.<br><br>Possible structures:<br><br>1. Volume Split:<br>```json<br>{<br>"type": "volume_split",<br>"splits": [<br>{<br>"connector": { "gateway_name": "adyen", "gateway_id": "mca_124" },<br>"split": 60<br>},<br>{<br>"connector": { "gateway_name": "stripe", "gateway_id": "mca_123" },<br>"split": 40<br>}<br>]<br>}<br>```<br><br>2. Priority:<br>```json<br>{<br>"type": "priority",<br>"connectors": [<br>{ "gateway_name": "stripe", "gateway_id": "mca_123" },<br>{ "gateway_name": "adyen", "gateway_id": "mca_124" }<br>]<br>}<br>```|
-|evaluated_output|[[RoutableConnectorChoice](#schemaroutableconnectorchoice)]|true|none|Final connector(s) selected after evaluation.<br><br>Example:<br>```json<br>[<br>{<br>"connector": "stripe",<br>"merchant_connector_id": "mca_123"<br>}<br>]<br>```|
-|eligible_connectors|[[RoutableConnectorChoice](#schemaroutableconnectorchoice)]|true|none|none|
 
 <h2 id="tocS_RoutingKind">RoutingKind</h2>
 <!-- backwards compatibility -->
@@ -92337,6 +92686,73 @@ Enum representing the type of 3DS SDK.
 |display|string|true|none|none|
 |payment|string|true|none|none|
 
+<h2 id="tocS_SenderDetails">SenderDetails</h2>
+<!-- backwards compatibility -->
+<a id="schemasenderdetails"></a>
+<a id="schema_SenderDetails"></a>
+<a id="tocSsenderdetails"></a>
+<a id="tocssenderdetails"></a>
+
+```json
+{
+  "first_name": "John",
+  "last_name": "Doe",
+  "date_of_birth": "1990-01-31",
+  "address": {
+    "city": "New York",
+    "country": {},
+    "line1": "123, King Street",
+    "line2": "Powelson Avenue",
+    "line3": "Bridgewater",
+    "zip": "08807",
+    "state": "New York",
+    "first_name": "John",
+    "last_name": "Doe",
+    "origin_zip": "08807"
+  },
+  "email": "john.doe@example.com",
+  "phone": {
+    "number": "9123456789",
+    "country_code": "+1"
+  },
+  "reference_id": "string",
+  "source_of_funds": {},
+  "type": "individual"
+}
+```
+
+Details of the party providing the funds.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|object|false|none|none|
+|first_name|string \| null|false|none|The sender's first name. When neither the first nor the last name is provided, the name<br>from the billing address of the payment method is used instead.|
+|last_name|string \| null|false|none|The sender's last name. When neither the first nor the last name is provided, the name<br>from the billing address of the payment method is used instead.|
+|date_of_birth|string(date) \| null|false|none|The sender's date of birth, in the format yyyy-mm-dd.|
+|address|object \| null|false|none|none|
+|email|string \| null|false|none|The sender's email address.|
+|phone|object \| null|false|none|none|
+|reference_id|string \| null|false|none|The merchant's stable identifier for the sender|
+|source_of_funds|object \| null|false|none|none|
+|type|string|true|none|none|
+|*oneOf*|object|false|none|none|
+|company_name|string|true|none|The sender's legal company name.|
+|address|object \| null|false|none|none|
+|email|string \| null|false|none|The sender's email address.|
+|phone|object \| null|false|none|none|
+|reference_id|string \| null|false|none|The merchant's stable identifier for the sender.|
+|source_of_funds|object \| null|false|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|individual|
+|type|corporate|
+
 <h2 id="tocS_SepaAndBacsBillingDetails">SepaAndBacsBillingDetails</h2>
 <!-- backwards compatibility -->
 <a id="schemasepaandbacsbillingdetails"></a>
@@ -93233,6 +93649,19 @@ Gated on `errors` as well as `v1` — see [`crate::payment_methods::PaymentMetho
 ```json
 {}
 ```
+
+<h2 id="tocS_SourceOfFunds">SourceOfFunds</h2>
+<!-- backwards compatibility -->
+<a id="schemasourceoffunds"></a>
+<a id="schema_SourceOfFunds"></a>
+<a id="tocSsourceoffunds"></a>
+<a id="tocssourceoffunds"></a>
+
+```json
+"credit"
+```
+
+Origin of the funds, supplied by the merchant.
 
 <h2 id="tocS_SplitPaymentsRequest">SplitPaymentsRequest</h2>
 <!-- backwards compatibility -->
@@ -96590,16 +97019,95 @@ Masked payout method details for Trustly bank transfer payout method
 |bank_country_code|ZW|
 |bank_country_code|US|
 
-<h2 id="tocS_TxnStatus">TxnStatus</h2>
+<h2 id="tocS_TwilioGenericPayRequest">TwilioGenericPayRequest</h2>
 <!-- backwards compatibility -->
-<a id="schematxnstatus"></a>
-<a id="schema_TxnStatus"></a>
-<a id="tocStxnstatus"></a>
-<a id="tocstxnstatus"></a>
+<a id="schematwiliogenericpayrequest"></a>
+<a id="schema_TwilioGenericPayRequest"></a>
+<a id="tocStwiliogenericpayrequest"></a>
+<a id="tocstwiliogenericpayrequest"></a>
 
 ```json
-"STARTED"
+{
+  "method": "charge",
+  "transaction_id": "IPe16430-39ba-4820-bedc-7aad0762a487",
+  "cardnumber": "4242424242424242",
+  "cvv": "123",
+  "expiry_month": "12",
+  "expiry_year": "28",
+  "postal_code": "94122",
+  "bankaccountnumber": "string",
+  "routingnumber": "string",
+  "amount": "1.00",
+  "currency_code": {},
+  "description": "Order placed over the phone",
+  "parameters": {}
+}
 ```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|method|[TwilioPayMethod](#schematwiliopaymethod)|true|none|The operation Twilio is asking us to perform.|
+|transaction_id|string|true|none|Twilio's id for this attempt. Stable across its retries, and used to derive the `payment_id` so a retry replays the original charge.|
+|cardnumber|string \| null|false|none|Card number collected over DTMF. Required for a charge.|
+|cvv|string \| null|false|none|Card security code collected over DTMF. Required for a charge.|
+|expiry_month|string \| null|false|none|Two digit card expiry month. Required for a charge.|
+|expiry_year|string \| null|false|none|Two or four digit card expiry year. Required for a charge.|
+|postal_code|string \| null|false|none|Billing postal code, collected for AVS.|
+|bankaccountnumber|string \| null|false|none|Bank account number for ACH debits. Not supported.|
+|routingnumber|string \| null|false|none|Bank routing number for ACH debits. Not supported.|
+|amount|string \| null|false|none|Amount in major units, as a decimal string. Absent for `tokenize`.|
+|currency_code|object \| null|false|none|none|
+|description|string \| null|false|none|Free-form description configured on the `<Pay>` verb.|
+|parameters|object \| null|false|none|Values from the IVR's `<Parameter>` tags, stored unmasked in the payment's `metadata`. `profile_id`, `payment_id` and `customer_id` are also read.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|method|charge|
+|method|tokenize|
+
+<h2 id="tocS_TwilioGenericPayResponse">TwilioGenericPayResponse</h2>
+<!-- backwards compatibility -->
+<a id="schematwiliogenericpayresponse"></a>
+<a id="schema_TwilioGenericPayResponse"></a>
+<a id="tocStwiliogenericpayresponse"></a>
+<a id="tocstwiliogenericpayresponse"></a>
+
+```json
+{
+  "charge_id": "pay_8320b449b06630271e378214dab80ce5",
+  "error_code": "PAYMENT_NOT_COMPLETED",
+  "error_message": "Your card was declined.",
+  "parameters": {}
+}
+```
+
+Body Twilio expects back. It reads `error_code` to decide the outcome, so a decline is a `200` with that set.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|charge_id|string \| null|false|none|The Hyperswitch `payment_id`, on a successful charge.|
+|error_code|string \| null|false|none|Set when the payment did not succeed: the connector's decline code, or one of `INVALID_REQUEST`, `PROFILE_NOT_FOUND`, `PAYMENT_NOT_COMPLETED`, `PAYMENT_PENDING`, `DUPLICATE_TRANSACTION`, `PROCESSING_ERROR`, `TOKENIZE_UNSUPPORTED`, `BANK_ACCOUNT_UNSUPPORTED`. On `PAYMENT_PENDING` the funds may be held, so do not re-prompt for a card.|
+|error_message|string \| null|false|none|Human readable counterpart to `error_code`.|
+|parameters|object|true|none|Returned either way, and the only channel carrying a `payment_id` when `charge_id` is `null`. Flat and all-string; the request's own `parameters` are never echoed back.|
+
+<h2 id="tocS_TwilioPayMethod">TwilioPayMethod</h2>
+<!-- backwards compatibility -->
+<a id="schematwiliopaymethod"></a>
+<a id="schema_TwilioPayMethod"></a>
+<a id="tocStwiliopaymethod"></a>
+<a id="tocstwiliopaymethod"></a>
+
+```json
+"charge"
+```
+
+The operation Twilio is asking us to perform.
 
 <h2 id="tocS_UIWidgetFormLayout">UIWidgetFormLayout</h2>
 <!-- backwards compatibility -->
@@ -96669,82 +97177,6 @@ The request body for updating an API Key.
 |name|string \| null|false|none|A unique name for the API Key to help you identify it.|
 |description|string \| null|false|none|A description to provide more context about the API Key.|
 |expiration|object \| null|false|none|none|
-
-<h2 id="tocS_UpdateScorePayload">UpdateScorePayload</h2>
-<!-- backwards compatibility -->
-<a id="schemaupdatescorepayload"></a>
-<a id="schema_UpdateScorePayload"></a>
-<a id="tocSupdatescorepayload"></a>
-<a id="tocsupdatescorepayload"></a>
-
-```json
-{
-  "merchantId": "pro_aMoPnEkgCVnh2WVsFe32",
-  "gateway": "stripe:mca1",
-  "status": "STARTED",
-  "paymentId": "pay_1234"
-}
-```
-
-Request payload to update gateway performance score based on transaction outcome
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|merchantId|string|true|none|Profile ID of the merchant|
-|gateway|string|true|none|Payment Gateway identifier|
-|status|[TxnStatus](#schematxnstatus)|true|none|none|
-|paymentId|string|true|none|Payment ID associated with the transaction|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|status|STARTED|
-|status|AUTHENTICATION_FAILED|
-|status|JUSPAY_DECLINED|
-|status|PENDING_VBV|
-|status|V_B_V_SUCCESSFUL|
-|status|AUTHORIZED|
-|status|AUTHORIZATION_FAILED|
-|status|CHARGED|
-|status|AUTHORIZING|
-|status|C_O_D_INITIATED|
-|status|VOIDED|
-|status|VOIDED_POST_CHARGE|
-|status|VOID_INITIATED|
-|status|NOP|
-|status|CAPTURE_INITIATED|
-|status|CAPTURE_FAILED|
-|status|VOID_FAILED|
-|status|AUTO_REFUNDED|
-|status|PARTIAL_CHARGED|
-|status|TO_BE_CHARGED|
-|status|PENDING|
-|status|FAILURE|
-|status|DECLINED|
-
-<h2 id="tocS_UpdateScoreResponse">UpdateScoreResponse</h2>
-<!-- backwards compatibility -->
-<a id="schemaupdatescoreresponse"></a>
-<a id="schema_UpdateScoreResponse"></a>
-<a id="tocSupdatescoreresponse"></a>
-<a id="tocsupdatescoreresponse"></a>
-
-```json
-{
-  "message": "Gateway score updated successfully"
-}
-```
-
-Response after updating gateway score
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|message|string|true|none|Status message indicating the result of the score update|
 
 <h2 id="tocS_UpdateSubscriptionRequest">UpdateSubscriptionRequest</h2>
 <!-- backwards compatibility -->
@@ -97538,6 +97970,7 @@ Masked payout method details for wallet payout method
   "card_exp_year": "25",
   "issuer_name": "string",
   "issuer_country": {},
+  "payment_checks": null,
   "auth_code": "009825",
   "email": "johntest@test.com"
 }
@@ -97560,6 +97993,7 @@ Masked payout method details for wallet payout method
 |card_exp_year|string \| null|false|none|The card's expiry year|
 |issuer_name|string \| null|false|none|The name of the card issuer, as returned by the connector|
 |issuer_country|object \| null|false|none|none|
+|payment_checks|object \| null|false|none|Additional payment checks done by the processor.|
 |auth_code|string \| null|false|none|Unique authorisation code generated for the payment|
 |email|string \| null|false|none|Email address associated with the wallet (e.g. PayPal email)|
 
@@ -97858,6 +98292,7 @@ Wallet payment method data returned in the client-facing PM list.
     "card_exp_year": "25",
     "issuer_name": "string",
     "issuer_country": {},
+    "payment_checks": null,
     "auth_code": "009825",
     "email": "johntest@test.com"
   }
@@ -97900,6 +98335,7 @@ Wallet payment method data returned in the client-facing PM list.
     "card_exp_year": "25",
     "issuer_name": "string",
     "issuer_country": {},
+    "payment_checks": null,
     "auth_code": "009825",
     "email": "johntest@test.com"
   }

@@ -476,7 +476,7 @@ const CardSchema = z
           "👋Hey there,\n\nTrello's Platform team uses this board to keep developers up-to-date.",
       }),
     descData: z
-      .object({ emoji: z.object({}).exactOptional() })
+      .object({ emoji: z.looseObject({}).exactOptional() })
       .exactOptional()
       .openapi({ required: [] }),
     due: z.iso.date().nullable().exactOptional(),
@@ -698,8 +698,8 @@ const EmojiSchema = z
 
 const OrganizationPrefsSchema = z
   .object({
-    boardVisibilityRestrict: z.object({}).exactOptional(),
-    boardDeleteRestrict: z.object({}).exactOptional(),
+    boardVisibilityRestrict: z.looseObject({}).exactOptional(),
+    boardDeleteRestrict: z.looseObject({}).exactOptional(),
     attachmentRestrictions: z
       .array(z.enum(['computer', 'trello', 'google-drive', 'box', 'onedrive', 'link']))
       .exactOptional(),
@@ -731,7 +731,7 @@ const EnterpriseSchema = z
         mandatoryTransferDate: z.iso.date().nullable().exactOptional().openapi({ example: null }),
         brandingColor: z.string().exactOptional(),
         autoJoinOrganizations: z.boolean().exactOptional().openapi({ example: false }),
-        notifications: z.object({}).exactOptional(),
+        notifications: z.looseObject({}).exactOptional(),
         maxMembers: z.number().nullable().exactOptional().openapi({ example: null }),
       })
       .exactOptional()
@@ -970,7 +970,7 @@ const MemberSchema = z
       }),
     bio: z.string().exactOptional().openapi({ example: "👋 I'm a developer advocate at Trello!" }),
     bioData: z
-      .object({ emoji: z.object({}).exactOptional() })
+      .object({ emoji: z.looseObject({}).exactOptional() })
       .exactOptional()
       .openapi({ required: [] }),
     confirmed: z.boolean().exactOptional().openapi({ example: true }),
@@ -1352,7 +1352,7 @@ const CFValueSchema = z
   .openapi('CFValue')
 
 const CustomFieldItemValueSchema = z
-  .object({ value: z.object({}).exactOptional() })
+  .object({ value: z.looseObject({}).exactOptional() })
   .openapi({ required: [] })
   .openapi('CustomFieldItemValue')
 
@@ -5520,7 +5520,7 @@ export const getCardsIdRoute = createRoute({
           ),
           schema,
         ]))(z.xor([z.literal('cover'), z.boolean()]))
-        .default('false')
+        .default(false)
         .exactOptional()
         .openapi({
           param: {
@@ -6416,7 +6416,6 @@ export const getCardsIdAttachmentsIdAttachmentRoute = createRoute({
                 ),
           z.array(z.union([AttachmentFieldsSchema])),
         )
-        .default(['all'])
         .exactOptional()
         .openapi({
           param: {
@@ -6432,6 +6431,7 @@ export const getCardsIdAttachmentsIdAttachmentRoute = createRoute({
               default: ['all'],
             },
           },
+          default: ['all'],
         }),
     }),
   },

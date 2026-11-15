@@ -381,7 +381,7 @@ const ProductSpecificationSchema = z
 const PutselleraccountconfigRequestSchema = z
   .object({
     mapping: z
-      .object({})
+      .looseObject({})
       .nullable()
       .default({
         'Choose size': 'Size',
@@ -947,9 +947,12 @@ export const getSuggestionsConfigurationRoute = createRoute({
                   description:
                     'All Matchers configured on the marketplace, and their respective details.',
                 }),
-              Rules: z.object({}).exactOptional().openapi({ description: 'Items and products.' }),
+              Rules: z
+                .looseObject({})
+                .exactOptional()
+                .openapi({ description: 'Items and products.' }),
               Score: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -1131,7 +1134,7 @@ export const putSuggestionsConfigurationRoute = createRoute({
               SpecificationsMapping: z
                 .object({
                   Mapping: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:

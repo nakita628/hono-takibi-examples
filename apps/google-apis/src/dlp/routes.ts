@@ -1,231 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const GooglePrivacyDlpV2TransformationConfigSchema = z
-  .object({
-    deidentifyTemplate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'De-identify template. If this template is specified, it will serve as the default de-identify template. This template cannot contain `record_transformations` since it can be used for unstructured content such as free-form text files. If this template is not set, a default `ReplaceWithInfoTypeConfig` will be used to de-identify unstructured content.',
-      }),
-    imageRedactTemplate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Image redact template. If this template is specified, it will serve as the de-identify template for images. If this template is not set, all findings in the image will be redacted with a black box.',
-      }),
-    structuredDeidentifyTemplate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Structured de-identify template. If this template is specified, it will serve as the de-identify template for structured content such as delimited files and tables. If this template is not set but the `deidentify_template` is set, then `deidentify_template` will also apply to the structured content. If neither template is set, a default `ReplaceWithInfoTypeConfig` will be used to de-identify structured content.',
-      }),
-  })
-  .openapi({
-    description:
-      'User specified templates and configs for how to deidentify structured, unstructures, and image files. User must provide either a unstructured deidentify template or at least one redact image config.',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2TransformationConfig')
-
-const GooglePrivacyDlpV2BigQueryTableSchema = z
-  .object({
-    datasetId: z.string().exactOptional().openapi({ description: 'Dataset ID of the table.' }),
-    projectId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The Google Cloud Platform project ID of the project containing the table. If omitted, project ID is inferred from the API call.',
-      }),
-    tableId: z.string().exactOptional().openapi({ description: 'Name of the table.' }),
-  })
-  .openapi({
-    description:
-      'Message defining the location of a BigQuery table. A table is uniquely identified by its project_id, dataset_id, and table_name. Within a query a table is often referenced with a string in the format of: `:.` or `..`.',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2BigQueryTable')
-
-const GooglePrivacyDlpV2TransformationDetailsStorageConfigSchema = z
-  .object({
-    table: GooglePrivacyDlpV2BigQueryTableSchema.exactOptional().openapi({
-      description:
-        'The BigQuery table in which to store the output. This may be an existing table or in a new table in an existing dataset. If table_id is not set a new one will be generated for you with the following format: dlp_googleapis_transformation_details_yyyy_mm_dd_[dlp_job_id]. Pacific time zone will be used for generating the date details.',
-    }),
-  })
-  .openapi({ description: 'Config for storing transformation details.', required: [] })
-  .openapi('GooglePrivacyDlpV2TransformationDetailsStorageConfig')
-
-const GooglePrivacyDlpV2DeidentifySchema = z
-  .object({
-    cloudStorageOutput: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. User settable Cloud Storage bucket and folders to store de-identified files. This field must be set for cloud storage deidentification. The output Cloud Storage bucket must be different from the input bucket. De-identified files will overwrite files in the output path. Form of: gs://bucket/folder/ or gs://bucket',
-      }),
-    fileTypesToTransform: z
-      .array(
-        z.enum([
-          'FILE_TYPE_UNSPECIFIED',
-          'BINARY_FILE',
-          'TEXT_FILE',
-          'IMAGE',
-          'WORD',
-          'PDF',
-          'AVRO',
-          'CSV',
-          'TSV',
-          'POWERPOINT',
-          'EXCEL',
-        ]),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          "List of user-specified file type groups to transform. If specified, only the files with these filetypes will be transformed. If empty, all supported files will be transformed. Supported types may be automatically added over time. If a file type is set in this field that isn't supported by the Deidentify action then the job will fail and will not be successfully created/started. Currently the only filetypes supported are: IMAGES, TEXT_FILES, CSV, TSV.",
-      }),
-    transformationConfig: GooglePrivacyDlpV2TransformationConfigSchema.exactOptional().openapi({
-      description:
-        'User specified deidentify templates and configs for structured, unstructured, and image files.',
-    }),
-    transformationDetailsStorageConfig:
-      GooglePrivacyDlpV2TransformationDetailsStorageConfigSchema.exactOptional().openapi({
-        description:
-          'Config for storing transformation details. This is separate from the de-identified content, and contains metadata about the successful transformations and/or failures that occurred while de-identifying. This needs to be set in order for users to access information about the status of each transformation (see TransformationDetails message for more information about what is noted).',
-      }),
-  })
-  .openapi({
-    description:
-      'Create a de-identified copy of the requested table or files. A TransformationDetail will be created for each transformation. If any rows in BigQuery are skipped during de-identification (transformation errors or row size exceeds BigQuery insert API limits) they are placed in the failure output table. If the original row exceeds the BigQuery insert API limit it will be truncated when written to the failure output table. The failure output table can be set in the action.deidentify.output.big_query_output.deidentified_failure_output_table field, if no table is set, a table will be automatically created in the same project and dataset as the original table. Compatible with: Inspect',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2Deidentify')
-
-const GooglePrivacyDlpV2JobNotificationEmailsSchema = z
-  .object({})
-  .openapi({
-    description:
-      'Sends an email when the job completes. The email goes to IAM project owners and technical [Essential Contacts](https://cloud.google.com/resource-manager/docs/managing-notification-contacts).',
-  })
-  .openapi('GooglePrivacyDlpV2JobNotificationEmails')
-
-const GooglePrivacyDlpV2PublishToPubSubSchema = z
-  .object({
-    topic: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Cloud Pub/Sub topic to send notifications to. The topic must have given publishing access rights to the DLP API service account executing the long running DlpJob sending the notifications. Format is projects/{project}/topics/{topic}.',
-      }),
-  })
-  .openapi({
-    description:
-      "Publish a message into a given Pub/Sub topic when DlpJob has completed. The message contains a single field, `DlpJobName`, which is equal to the finished job's [`DlpJob.name`](https://cloud.google.com/dlp/docs/reference/rest/v2/projects.dlpJobs#DlpJob). Compatible with: Inspect, Risk",
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2PublishToPubSub')
-
-const GooglePrivacyDlpV2PublishFindingsToCloudDataCatalogSchema = z
-  .object({})
-  .openapi({
-    description:
-      'Publish findings of a DlpJob to Data Catalog. In Data Catalog, tag templates are applied to the resource that Cloud DLP scanned. Data Catalog tag templates are stored in the same project and region where the BigQuery table exists. For Cloud DLP to create and apply the tag template, the Cloud DLP service agent must have the `roles/datacatalog.tagTemplateOwner` permission on the project. The tag template contains fields summarizing the results of the DlpJob. Any field values previously written by another DlpJob are deleted. InfoType naming patterns are strictly enforced when using this feature. Findings are persisted in Data Catalog storage and are governed by service-specific policies for Data Catalog. For more information, see [Service Specific Terms](https://cloud.google.com/terms/service-terms). Only a single instance of this action can be specified. This action is allowed only if all resources being scanned are BigQuery tables. Compatible with: Inspect',
-  })
-  .openapi('GooglePrivacyDlpV2PublishFindingsToCloudDataCatalog')
-
-const GooglePrivacyDlpV2PublishSummaryToCsccSchema = z
-  .object({})
-  .openapi({
-    description:
-      'Publish the result summary of a DlpJob to [Security Command Center](https://cloud.google.com/security-command-center). This action is available for only projects that belong to an organization. This action publishes the count of finding instances and their infoTypes. The summary of findings are persisted in Security Command Center and are governed by [service-specific policies for Security Command Center](https://cloud.google.com/terms/service-terms). Only a single instance of this action can be specified. Compatible with: Inspect',
-  })
-  .openapi('GooglePrivacyDlpV2PublishSummaryToCscc')
-
-const GooglePrivacyDlpV2PublishToStackdriverSchema = z
-  .object({})
-  .openapi({
-    description:
-      "Enable Stackdriver metric dlp.googleapis.com/finding_count. This will publish a metric to stack driver on each infotype requested and how many findings were found for it. CustomDetectors will be bucketed as 'Custom' under the Stackdriver label 'info_type'.",
-  })
-  .openapi('GooglePrivacyDlpV2PublishToStackdriver')
-
-const GooglePrivacyDlpV2OutputStorageConfigSchema = z
-  .object({
-    outputSchema: z
-      .enum([
-        'OUTPUT_SCHEMA_UNSPECIFIED',
-        'BASIC_COLUMNS',
-        'GCS_COLUMNS',
-        'DATASTORE_COLUMNS',
-        'BIG_QUERY_COLUMNS',
-        'ALL_COLUMNS',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Schema used for writing the findings for Inspect jobs. This field is only used for Inspect and must be unspecified for Risk jobs. Columns are derived from the `Finding` object. If appending to an existing table, any columns from the predefined schema that are missing will be added. No columns in the existing table will be deleted. If unspecified, then all available columns will be used for a new table or an (existing) table with no schema, and no changes will be made to an existing table that has a schema. Only for use with external storage.',
-      }),
-    table: GooglePrivacyDlpV2BigQueryTableSchema.exactOptional().openapi({
-      description:
-        'Store findings in an existing table or a new table in an existing dataset. If table_id is not set a new one will be generated for you with the following format: dlp_googleapis_yyyy_mm_dd_[dlp_job_id]. Pacific time zone will be used for generating the date details. For Inspect, each column in an existing output table must have the same name, type, and mode of a field in the `Finding` object. For Risk, an existing output table should be the output of a previous Risk analysis job run on the same source table, with the same privacy metric and quasi-identifiers. Risk jobs that analyze the same table but compute a different privacy metric, or use different sets of quasi-identifiers, cannot store their results in the same table.',
-    }),
-  })
-  .openapi({ description: 'Cloud repository for storing output.', required: [] })
-  .openapi('GooglePrivacyDlpV2OutputStorageConfig')
-
-const GooglePrivacyDlpV2SaveFindingsSchema = z
-  .object({
-    outputConfig: GooglePrivacyDlpV2OutputStorageConfigSchema.exactOptional().openapi({
-      description: 'Location to store findings outside of DLP.',
-    }),
-  })
-  .openapi({
-    description:
-      'If set, the detailed findings will be persisted to the specified OutputStorageConfig. Only a single instance of this action can be specified. Compatible with: Inspect, Risk',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2SaveFindings')
-
-const GooglePrivacyDlpV2ActionSchema = z
-  .object({
-    deidentify: GooglePrivacyDlpV2DeidentifySchema.exactOptional().openapi({
-      description: 'Create a de-identified copy of the input data.',
-    }),
-    jobNotificationEmails: GooglePrivacyDlpV2JobNotificationEmailsSchema.exactOptional().openapi({
-      description:
-        'Sends an email when the job completes. The email goes to IAM project owners and technical [Essential Contacts](https://cloud.google.com/resource-manager/docs/managing-notification-contacts).',
-    }),
-    pubSub: GooglePrivacyDlpV2PublishToPubSubSchema.exactOptional().openapi({
-      description: 'Publish a notification to a Pub/Sub topic.',
-    }),
-    publishFindingsToCloudDataCatalog:
-      GooglePrivacyDlpV2PublishFindingsToCloudDataCatalogSchema.exactOptional().openapi({
-        description: 'Publish findings to Cloud Datahub.',
-      }),
-    publishSummaryToCscc: GooglePrivacyDlpV2PublishSummaryToCsccSchema.exactOptional().openapi({
-      description: 'Publish summary to Cloud Security Command Center (Alpha).',
-    }),
-    publishToStackdriver: GooglePrivacyDlpV2PublishToStackdriverSchema.exactOptional().openapi({
-      description: 'Enable Stackdriver metric dlp.googleapis.com/finding_count.',
-    }),
-    saveFindings: GooglePrivacyDlpV2SaveFindingsSchema.exactOptional().openapi({
-      description: 'Save resulting findings in a provided location.',
-    }),
-  })
-  .openapi({
-    description:
-      'A task to execute on the completion of a job. See https://cloud.google.com/dlp/docs/concepts-actions to learn more.',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2Action')
-
 const GooglePrivacyDlpV2DeidentifyDataSourceStatsSchema = z
   .object({
     transformationCount: z
@@ -247,12 +21,12 @@ const GooglePrivacyDlpV2DeidentifyDataSourceStatsSchema = z
   .openapi('GooglePrivacyDlpV2DeidentifyDataSourceStats')
 
 const GooglePrivacyDlpV2AllInfoTypesSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Apply transformation to all findings.' })
   .openapi('GooglePrivacyDlpV2AllInfoTypes')
 
 const GooglePrivacyDlpV2AllTextSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Apply to all text.' })
   .openapi('GooglePrivacyDlpV2AllText')
 
@@ -746,7 +520,7 @@ const GooglePrivacyDlpV2FixedSizeBucketingConfigSchema = z
   .openapi('GooglePrivacyDlpV2FixedSizeBucketingConfig')
 
 const GooglePrivacyDlpV2RedactConfigSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       "Redact a given value. For example, if used with an `InfoTypeTransformation` transforming PHONE_NUMBER, and input 'My phone number is 206-555-0123', the output would be 'My phone number is '.",
@@ -792,7 +566,7 @@ const GooglePrivacyDlpV2ReplaceDictionaryConfigSchema = z
   .openapi('GooglePrivacyDlpV2ReplaceDictionaryConfig')
 
 const GooglePrivacyDlpV2ReplaceWithInfoTypeConfigSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Replace each matching finding with the name of the info_type.' })
   .openapi('GooglePrivacyDlpV2ReplaceWithInfoTypeConfig')
 
@@ -885,22 +659,27 @@ const GooglePrivacyDlpV2InfoTypeTransformationSchema = z
   })
   .openapi('GooglePrivacyDlpV2InfoTypeTransformation')
 
-const GooglePrivacyDlpV2InfoTypeTransformationsSchema = z
-  .object({
-    transformations: z
-      .array(GooglePrivacyDlpV2InfoTypeTransformationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Transformation for each infoType. Cannot specify more than one for a given infoType.',
-      }),
-  })
-  .openapi({
-    description:
-      'A type of transformation that will scan unstructured text and apply various `PrimitiveTransformation`s to each finding, where the transformation is applied to only values that were identified as a specific info_type.',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2InfoTypeTransformations')
+type GooglePrivacyDlpV2InfoTypeTransformationsType = {
+  transformations?: z.infer<typeof GooglePrivacyDlpV2InfoTypeTransformationSchema>[]
+}
+
+const GooglePrivacyDlpV2InfoTypeTransformationsSchema: z.ZodType<GooglePrivacyDlpV2InfoTypeTransformationsType> =
+  z
+    .object({
+      transformations: z
+        .array(GooglePrivacyDlpV2InfoTypeTransformationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Required. Transformation for each infoType. Cannot specify more than one for a given infoType.',
+        }),
+    })
+    .openapi({
+      description:
+        'A type of transformation that will scan unstructured text and apply various `PrimitiveTransformation`s to each finding, where the transformation is applied to only values that were identified as a specific info_type.',
+      required: [],
+    })
+    .openapi('GooglePrivacyDlpV2InfoTypeTransformations')
 
 const GooglePrivacyDlpV2ConditionSchema = z
   .object({
@@ -975,67 +754,89 @@ const GooglePrivacyDlpV2RecordConditionSchema = z
   })
   .openapi('GooglePrivacyDlpV2RecordCondition')
 
-const GooglePrivacyDlpV2FieldTransformationSchema = z
-  .object({
-    condition: GooglePrivacyDlpV2RecordConditionSchema.exactOptional().openapi({
-      description:
-        'Only apply the transformation if the condition evaluates to true for the given `RecordCondition`. The conditions are allowed to reference fields that are not used in the actual transformation. Example Use Cases: - Apply a different bucket transformation to an age column if the zip code column for the same record is within a specific range. - Redact a field if the date of birth field is greater than 85.',
-    }),
-    fields: z
-      .array(GooglePrivacyDlpV2FieldIdSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Input field(s) to apply the transformation to. When you have columns that reference their position within a list, omit the index from the FieldId. FieldId name matching ignores the index. For example, instead of "contact.nums[0].type", use "contact.nums.type".',
-      }),
-    infoTypeTransformations:
-      GooglePrivacyDlpV2InfoTypeTransformationsSchema.exactOptional().openapi({
-        description:
-          'Treat the contents of the field as free text, and selectively transform content that matches an `InfoType`.',
-      }),
-    primitiveTransformation:
-      GooglePrivacyDlpV2PrimitiveTransformationSchema.exactOptional().openapi({
-        description: 'Apply the transformation to the entire field.',
-      }),
-  })
-  .openapi({ description: 'The transformation to apply to the field.', required: [] })
-  .openapi('GooglePrivacyDlpV2FieldTransformation')
+type GooglePrivacyDlpV2FieldTransformationType = {
+  condition?: z.infer<typeof GooglePrivacyDlpV2RecordConditionSchema>
+  fields?: z.infer<typeof GooglePrivacyDlpV2FieldIdSchema>[]
+  infoTypeTransformations?: z.infer<typeof GooglePrivacyDlpV2InfoTypeTransformationsSchema>
+  primitiveTransformation?: z.infer<typeof GooglePrivacyDlpV2PrimitiveTransformationSchema>
+}
 
-const GooglePrivacyDlpV2RecordSuppressionSchema = z
-  .object({
-    condition: GooglePrivacyDlpV2RecordConditionSchema.exactOptional().openapi({
-      description:
-        'A condition that when it evaluates to true will result in the record being evaluated to be suppressed from the transformed content.',
-    }),
-  })
-  .openapi({
-    description: 'Configuration to suppress records whose suppression conditions evaluate to true.',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2RecordSuppression')
-
-const GooglePrivacyDlpV2RecordTransformationsSchema = z
-  .object({
-    fieldTransformations: z
-      .array(GooglePrivacyDlpV2FieldTransformationSchema)
-      .exactOptional()
-      .openapi({ description: 'Transform the record by applying various field transformations.' }),
-    recordSuppressions: z
-      .array(GooglePrivacyDlpV2RecordSuppressionSchema)
-      .exactOptional()
-      .openapi({
+const GooglePrivacyDlpV2FieldTransformationSchema: z.ZodType<GooglePrivacyDlpV2FieldTransformationType> =
+  z
+    .object({
+      condition: GooglePrivacyDlpV2RecordConditionSchema.exactOptional().openapi({
         description:
-          'Configuration defining which records get suppressed entirely. Records that match any suppression rule are omitted from the output.',
+          'Only apply the transformation if the condition evaluates to true for the given `RecordCondition`. The conditions are allowed to reference fields that are not used in the actual transformation. Example Use Cases: - Apply a different bucket transformation to an age column if the zip code column for the same record is within a specific range. - Redact a field if the date of birth field is greater than 85.',
       }),
-  })
-  .openapi({
-    description: 'A type of transformation that is applied over structured data such as a table.',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2RecordTransformations')
+      fields: z
+        .array(GooglePrivacyDlpV2FieldIdSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Required. Input field(s) to apply the transformation to. When you have columns that reference their position within a list, omit the index from the FieldId. FieldId name matching ignores the index. For example, instead of "contact.nums[0].type", use "contact.nums.type".',
+        }),
+      infoTypeTransformations:
+        GooglePrivacyDlpV2InfoTypeTransformationsSchema.exactOptional().openapi({
+          description:
+            'Treat the contents of the field as free text, and selectively transform content that matches an `InfoType`.',
+        }),
+      primitiveTransformation:
+        GooglePrivacyDlpV2PrimitiveTransformationSchema.exactOptional().openapi({
+          description: 'Apply the transformation to the entire field.',
+        }),
+    })
+    .openapi({ description: 'The transformation to apply to the field.', required: [] })
+    .openapi('GooglePrivacyDlpV2FieldTransformation')
+
+type GooglePrivacyDlpV2RecordSuppressionType = {
+  condition?: z.infer<typeof GooglePrivacyDlpV2RecordConditionSchema>
+}
+
+const GooglePrivacyDlpV2RecordSuppressionSchema: z.ZodType<GooglePrivacyDlpV2RecordSuppressionType> =
+  z
+    .object({
+      condition: GooglePrivacyDlpV2RecordConditionSchema.exactOptional().openapi({
+        description:
+          'A condition that when it evaluates to true will result in the record being evaluated to be suppressed from the transformed content.',
+      }),
+    })
+    .openapi({
+      description:
+        'Configuration to suppress records whose suppression conditions evaluate to true.',
+      required: [],
+    })
+    .openapi('GooglePrivacyDlpV2RecordSuppression')
+
+type GooglePrivacyDlpV2RecordTransformationsType = {
+  fieldTransformations?: z.infer<typeof GooglePrivacyDlpV2FieldTransformationSchema>[]
+  recordSuppressions?: z.infer<typeof GooglePrivacyDlpV2RecordSuppressionSchema>[]
+}
+
+const GooglePrivacyDlpV2RecordTransformationsSchema: z.ZodType<GooglePrivacyDlpV2RecordTransformationsType> =
+  z
+    .object({
+      fieldTransformations: z
+        .array(GooglePrivacyDlpV2FieldTransformationSchema)
+        .exactOptional()
+        .openapi({
+          description: 'Transform the record by applying various field transformations.',
+        }),
+      recordSuppressions: z
+        .array(GooglePrivacyDlpV2RecordSuppressionSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Configuration defining which records get suppressed entirely. Records that match any suppression rule are omitted from the output.',
+        }),
+    })
+    .openapi({
+      description: 'A type of transformation that is applied over structured data such as a table.',
+      required: [],
+    })
+    .openapi('GooglePrivacyDlpV2RecordTransformations')
 
 const GooglePrivacyDlpV2LeaveUntransformedSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Skips the data without modifying it if the requested transformation would cause an error. For example, if a `DateShift` transformation were applied an an IP address, this mode would leave the IP address unchanged in the response.',
@@ -1043,7 +844,7 @@ const GooglePrivacyDlpV2LeaveUntransformedSchema = z
   .openapi('GooglePrivacyDlpV2LeaveUntransformed')
 
 const GooglePrivacyDlpV2ThrowErrorSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'Throw an error and fail the request when a transformation error occurs.',
   })
@@ -1065,121 +866,145 @@ const GooglePrivacyDlpV2TransformationErrorHandlingSchema = z
   })
   .openapi('GooglePrivacyDlpV2TransformationErrorHandling')
 
-const GooglePrivacyDlpV2DeidentifyConfigSchema = z
-  .object({
-    imageTransformations: GooglePrivacyDlpV2ImageTransformationsSchema.exactOptional().openapi({
-      description: 'Treat the dataset as an image and redact.',
-    }),
-    infoTypeTransformations:
-      GooglePrivacyDlpV2InfoTypeTransformationsSchema.exactOptional().openapi({
-        description:
-          'Treat the dataset as free-form text and apply the same free text transformation everywhere.',
+type GooglePrivacyDlpV2DeidentifyConfigType = {
+  imageTransformations?: z.infer<typeof GooglePrivacyDlpV2ImageTransformationsSchema>
+  infoTypeTransformations?: z.infer<typeof GooglePrivacyDlpV2InfoTypeTransformationsSchema>
+  recordTransformations?: z.infer<typeof GooglePrivacyDlpV2RecordTransformationsSchema>
+  transformationErrorHandling?: z.infer<typeof GooglePrivacyDlpV2TransformationErrorHandlingSchema>
+}
+
+const GooglePrivacyDlpV2DeidentifyConfigSchema: z.ZodType<GooglePrivacyDlpV2DeidentifyConfigType> =
+  z
+    .object({
+      imageTransformations: GooglePrivacyDlpV2ImageTransformationsSchema.exactOptional().openapi({
+        description: 'Treat the dataset as an image and redact.',
       }),
-    recordTransformations: GooglePrivacyDlpV2RecordTransformationsSchema.exactOptional().openapi({
+      infoTypeTransformations:
+        GooglePrivacyDlpV2InfoTypeTransformationsSchema.exactOptional().openapi({
+          description:
+            'Treat the dataset as free-form text and apply the same free text transformation everywhere.',
+        }),
+      recordTransformations: GooglePrivacyDlpV2RecordTransformationsSchema.exactOptional().openapi({
+        description:
+          'Treat the dataset as structured. Transformations can be applied to specific locations within structured datasets, such as transforming a column within a table.',
+      }),
+      transformationErrorHandling:
+        GooglePrivacyDlpV2TransformationErrorHandlingSchema.exactOptional().openapi({
+          description:
+            'Mode for handling transformation errors. If left unspecified, the default mode is `TransformationErrorHandling.ThrowError`.',
+        }),
+    })
+    .openapi({
+      description: 'The configuration that controls how the data will change.',
+      required: [],
+    })
+    .openapi('GooglePrivacyDlpV2DeidentifyConfig')
+
+type GooglePrivacyDlpV2DeidentifyTemplateType = {
+  createTime?: string
+  deidentifyConfig?: z.infer<typeof GooglePrivacyDlpV2DeidentifyConfigSchema>
+  description?: string
+  displayName?: string
+  name?: string
+  updateTime?: string
+}
+
+const GooglePrivacyDlpV2DeidentifyTemplateSchema: z.ZodType<GooglePrivacyDlpV2DeidentifyTemplateType> =
+  z
+    .object({
+      createTime: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Output only. The creation timestamp of an inspectTemplate.',
+          readOnly: true,
+        }),
+      deidentifyConfig: GooglePrivacyDlpV2DeidentifyConfigSchema.exactOptional().openapi({
+        description: 'The core content of the template.',
+      }),
+      description: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Short description (max 256 chars).' }),
+      displayName: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Display name (max 256 chars).' }),
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Output only. The template name. The template will have one of the following formats: `projects/PROJECT_ID/deidentifyTemplates/TEMPLATE_ID` OR `organizations/ORGANIZATION_ID/deidentifyTemplates/TEMPLATE_ID`',
+          readOnly: true,
+        }),
+      updateTime: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Output only. The last update timestamp of an inspectTemplate.',
+          readOnly: true,
+        }),
+    })
+    .openapi({
       description:
-        'Treat the dataset as structured. Transformations can be applied to specific locations within structured datasets, such as transforming a column within a table.',
-    }),
-    transformationErrorHandling:
-      GooglePrivacyDlpV2TransformationErrorHandlingSchema.exactOptional().openapi({
-        description:
-          'Mode for handling transformation errors. If left unspecified, the default mode is `TransformationErrorHandling.ThrowError`.',
-      }),
-  })
-  .openapi({
-    description: 'The configuration that controls how the data will change.',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2DeidentifyConfig')
+        'DeidentifyTemplates contains instructions on how to de-identify content. See https://cloud.google.com/dlp/docs/concepts-templates to learn more.',
+      required: [],
+    })
+    .openapi('GooglePrivacyDlpV2DeidentifyTemplate')
 
-const GooglePrivacyDlpV2DeidentifyTemplateSchema = z
-  .object({
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The creation timestamp of an inspectTemplate.',
-        readOnly: true,
-      }),
-    deidentifyConfig: GooglePrivacyDlpV2DeidentifyConfigSchema.exactOptional().openapi({
-      description: 'The core content of the template.',
-    }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Short description (max 256 chars).' }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Display name (max 256 chars).' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The template name. The template will have one of the following formats: `projects/PROJECT_ID/deidentifyTemplates/TEMPLATE_ID` OR `organizations/ORGANIZATION_ID/deidentifyTemplates/TEMPLATE_ID`',
-        readOnly: true,
-      }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The last update timestamp of an inspectTemplate.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'DeidentifyTemplates contains instructions on how to de-identify content. See https://cloud.google.com/dlp/docs/concepts-templates to learn more.',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2DeidentifyTemplate')
+type GooglePrivacyDlpV2RequestedDeidentifyOptionsType = {
+  snapshotDeidentifyTemplate?: z.infer<typeof GooglePrivacyDlpV2DeidentifyTemplateSchema>
+  snapshotImageRedactTemplate?: z.infer<typeof GooglePrivacyDlpV2DeidentifyTemplateSchema>
+  snapshotStructuredDeidentifyTemplate?: z.infer<typeof GooglePrivacyDlpV2DeidentifyTemplateSchema>
+}
 
-const GooglePrivacyDlpV2RequestedDeidentifyOptionsSchema = z
-  .object({
-    snapshotDeidentifyTemplate: GooglePrivacyDlpV2DeidentifyTemplateSchema.exactOptional().openapi({
-      description:
-        'Snapshot of the state of the DeidentifyTemplate from the Deidentify action at the time this job was run.',
-    }),
-    snapshotImageRedactTemplate: GooglePrivacyDlpV2DeidentifyTemplateSchema.exactOptional().openapi(
-      {
-        description:
-          'Snapshot of the state of the image redact DeidentifyTemplate from the Deidentify action at the time this job was run.',
-      },
-    ),
-    snapshotStructuredDeidentifyTemplate:
-      GooglePrivacyDlpV2DeidentifyTemplateSchema.exactOptional().openapi({
-        description:
-          'Snapshot of the state of the structured DeidentifyTemplate from the Deidentify action at the time this job was run.',
+const GooglePrivacyDlpV2RequestedDeidentifyOptionsSchema: z.ZodType<GooglePrivacyDlpV2RequestedDeidentifyOptionsType> =
+  z
+    .object({
+      snapshotDeidentifyTemplate:
+        GooglePrivacyDlpV2DeidentifyTemplateSchema.exactOptional().openapi({
+          description:
+            'Snapshot of the state of the DeidentifyTemplate from the Deidentify action at the time this job was run.',
+        }),
+      snapshotImageRedactTemplate:
+        GooglePrivacyDlpV2DeidentifyTemplateSchema.exactOptional().openapi({
+          description:
+            'Snapshot of the state of the image redact DeidentifyTemplate from the Deidentify action at the time this job was run.',
+        }),
+      snapshotStructuredDeidentifyTemplate:
+        GooglePrivacyDlpV2DeidentifyTemplateSchema.exactOptional().openapi({
+          description:
+            'Snapshot of the state of the structured DeidentifyTemplate from the Deidentify action at the time this job was run.',
+        }),
+    })
+    .openapi({ description: 'De-id options.', required: [] })
+    .openapi('GooglePrivacyDlpV2RequestedDeidentifyOptions')
+
+type GooglePrivacyDlpV2DeidentifyDataSourceDetailsType = {
+  deidentifyStats?: z.infer<typeof GooglePrivacyDlpV2DeidentifyDataSourceStatsSchema>
+  requestedOptions?: z.infer<typeof GooglePrivacyDlpV2RequestedDeidentifyOptionsSchema>
+}
+
+const GooglePrivacyDlpV2DeidentifyDataSourceDetailsSchema: z.ZodType<GooglePrivacyDlpV2DeidentifyDataSourceDetailsType> =
+  z
+    .object({
+      deidentifyStats: GooglePrivacyDlpV2DeidentifyDataSourceStatsSchema.exactOptional().openapi({
+        description: 'Stats about de-identification.',
       }),
-  })
-  .openapi({ description: 'De-id options.', required: [] })
-  .openapi('GooglePrivacyDlpV2RequestedDeidentifyOptions')
+      requestedOptions: GooglePrivacyDlpV2RequestedDeidentifyOptionsSchema.exactOptional().openapi({
+        description: 'De-identification config used for the request.',
+      }),
+    })
+    .openapi({
+      description: 'The results of a Deidentify action from an Inspect job.',
+      required: [],
+    })
+    .openapi('GooglePrivacyDlpV2DeidentifyDataSourceDetails')
 
-const GooglePrivacyDlpV2DeidentifyDataSourceDetailsSchema = z
-  .object({
-    deidentifyStats: GooglePrivacyDlpV2DeidentifyDataSourceStatsSchema.exactOptional().openapi({
-      description: 'Stats about de-identification.',
-    }),
-    requestedOptions: GooglePrivacyDlpV2RequestedDeidentifyOptionsSchema.exactOptional().openapi({
-      description: 'De-identification config used for the request.',
-    }),
-  })
-  .openapi({ description: 'The results of a Deidentify action from an Inspect job.', required: [] })
-  .openapi('GooglePrivacyDlpV2DeidentifyDataSourceDetails')
-
-const GooglePrivacyDlpV2ActionDetailsSchema = z
-  .object({
-    deidentifyDetails: GooglePrivacyDlpV2DeidentifyDataSourceDetailsSchema.exactOptional().openapi({
-      description: 'Outcome of a de-identification action.',
-    }),
-  })
-  .openapi({ description: 'The results of an Action.', required: [] })
-  .openapi('GooglePrivacyDlpV2ActionDetails')
-
-const GooglePrivacyDlpV2ActivateJobTriggerRequestSchema = z
-  .object({})
-  .openapi({ description: 'Request message for ActivateJobTrigger.' })
-  .openapi('GooglePrivacyDlpV2ActivateJobTriggerRequest')
+type GooglePrivacyDlpV2ActionDetailsType = {
+  deidentifyDetails?: z.infer<typeof GooglePrivacyDlpV2DeidentifyDataSourceDetailsSchema>
+}
 
 const GooglePrivacyDlpV2ValueFrequencySchema = z
   .object({
@@ -1282,22 +1107,29 @@ const GooglePrivacyDlpV2DeltaPresenceEstimationHistogramBucketSchema = z
   })
   .openapi('GooglePrivacyDlpV2DeltaPresenceEstimationHistogramBucket')
 
-const GooglePrivacyDlpV2DeltaPresenceEstimationResultSchema = z
-  .object({
-    deltaPresenceEstimationHistogram: z
-      .array(GooglePrivacyDlpV2DeltaPresenceEstimationHistogramBucketSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "The intervals [min_probability, max_probability) do not overlap. If a value doesn't correspond to any such interval, the associated frequency is zero. For example, the following records: {min_probability: 0, max_probability: 0.1, frequency: 17} {min_probability: 0.2, max_probability: 0.3, frequency: 42} {min_probability: 0.3, max_probability: 0.4, frequency: 99} mean that there are no record with an estimated probability in [0.1, 0.2) nor larger or equal to 0.4.",
-      }),
-  })
-  .openapi({
-    description:
-      'Result of the δ-presence computation. Note that these results are an estimation, not exact values.',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2DeltaPresenceEstimationResult')
+type GooglePrivacyDlpV2DeltaPresenceEstimationResultType = {
+  deltaPresenceEstimationHistogram?: z.infer<
+    typeof GooglePrivacyDlpV2DeltaPresenceEstimationHistogramBucketSchema
+  >[]
+}
+
+const GooglePrivacyDlpV2DeltaPresenceEstimationResultSchema: z.ZodType<GooglePrivacyDlpV2DeltaPresenceEstimationResultType> =
+  z
+    .object({
+      deltaPresenceEstimationHistogram: z
+        .array(GooglePrivacyDlpV2DeltaPresenceEstimationHistogramBucketSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            "The intervals [min_probability, max_probability) do not overlap. If a value doesn't correspond to any such interval, the associated frequency is zero. For example, the following records: {min_probability: 0, max_probability: 0.1, frequency: 17} {min_probability: 0.2, max_probability: 0.3, frequency: 42} {min_probability: 0.3, max_probability: 0.4, frequency: 99} mean that there are no record with an estimated probability in [0.1, 0.2) nor larger or equal to 0.4.",
+        }),
+    })
+    .openapi({
+      description:
+        'Result of the δ-presence computation. Note that these results are an estimation, not exact values.',
+      required: [],
+    })
+    .openapi('GooglePrivacyDlpV2DeltaPresenceEstimationResult')
 
 const GooglePrivacyDlpV2KAnonymityEquivalenceClassSchema = z
   .object({
@@ -1355,15 +1187,22 @@ const GooglePrivacyDlpV2KAnonymityHistogramBucketSchema = z
   .openapi({ description: 'Histogram of k-anonymity equivalence classes.', required: [] })
   .openapi('GooglePrivacyDlpV2KAnonymityHistogramBucket')
 
-const GooglePrivacyDlpV2KAnonymityResultSchema = z
-  .object({
-    equivalenceClassHistogramBuckets: z
-      .array(GooglePrivacyDlpV2KAnonymityHistogramBucketSchema)
-      .exactOptional()
-      .openapi({ description: 'Histogram of k-anonymity equivalence classes.' }),
-  })
-  .openapi({ description: 'Result of the k-anonymity computation.', required: [] })
-  .openapi('GooglePrivacyDlpV2KAnonymityResult')
+type GooglePrivacyDlpV2KAnonymityResultType = {
+  equivalenceClassHistogramBuckets?: z.infer<
+    typeof GooglePrivacyDlpV2KAnonymityHistogramBucketSchema
+  >[]
+}
+
+const GooglePrivacyDlpV2KAnonymityResultSchema: z.ZodType<GooglePrivacyDlpV2KAnonymityResultType> =
+  z
+    .object({
+      equivalenceClassHistogramBuckets: z
+        .array(GooglePrivacyDlpV2KAnonymityHistogramBucketSchema)
+        .exactOptional()
+        .openapi({ description: 'Histogram of k-anonymity equivalence classes.' }),
+    })
+    .openapi({ description: 'Result of the k-anonymity computation.', required: [] })
+    .openapi('GooglePrivacyDlpV2KAnonymityResult')
 
 const GooglePrivacyDlpV2KMapEstimationQuasiIdValuesSchema = z
   .object({
@@ -1411,22 +1250,27 @@ const GooglePrivacyDlpV2KMapEstimationHistogramBucketSchema = z
   })
   .openapi('GooglePrivacyDlpV2KMapEstimationHistogramBucket')
 
-const GooglePrivacyDlpV2KMapEstimationResultSchema = z
-  .object({
-    kMapEstimationHistogram: z
-      .array(GooglePrivacyDlpV2KMapEstimationHistogramBucketSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "The intervals [min_anonymity, max_anonymity] do not overlap. If a value doesn't correspond to any such interval, the associated frequency is zero. For example, the following records: {min_anonymity: 1, max_anonymity: 1, frequency: 17} {min_anonymity: 2, max_anonymity: 3, frequency: 42} {min_anonymity: 5, max_anonymity: 10, frequency: 99} mean that there are no record with an estimated anonymity of 4, 5, or larger than 10.",
-      }),
-  })
-  .openapi({
-    description:
-      'Result of the reidentifiability analysis. Note that these results are an estimation, not exact values.',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2KMapEstimationResult')
+type GooglePrivacyDlpV2KMapEstimationResultType = {
+  kMapEstimationHistogram?: z.infer<typeof GooglePrivacyDlpV2KMapEstimationHistogramBucketSchema>[]
+}
+
+const GooglePrivacyDlpV2KMapEstimationResultSchema: z.ZodType<GooglePrivacyDlpV2KMapEstimationResultType> =
+  z
+    .object({
+      kMapEstimationHistogram: z
+        .array(GooglePrivacyDlpV2KMapEstimationHistogramBucketSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            "The intervals [min_anonymity, max_anonymity] do not overlap. If a value doesn't correspond to any such interval, the associated frequency is zero. For example, the following records: {min_anonymity: 1, max_anonymity: 1, frequency: 17} {min_anonymity: 2, max_anonymity: 3, frequency: 42} {min_anonymity: 5, max_anonymity: 10, frequency: 99} mean that there are no record with an estimated anonymity of 4, 5, or larger than 10.",
+        }),
+    })
+    .openapi({
+      description:
+        'Result of the reidentifiability analysis. Note that these results are an estimation, not exact values.',
+      required: [],
+    })
+    .openapi('GooglePrivacyDlpV2KMapEstimationResult')
 
 const GooglePrivacyDlpV2LDiversityEquivalenceClassSchema = z
   .object({
@@ -1494,17 +1338,24 @@ const GooglePrivacyDlpV2LDiversityHistogramBucketSchema = z
   })
   .openapi('GooglePrivacyDlpV2LDiversityHistogramBucket')
 
-const GooglePrivacyDlpV2LDiversityResultSchema = z
-  .object({
-    sensitiveValueFrequencyHistogramBuckets: z
-      .array(GooglePrivacyDlpV2LDiversityHistogramBucketSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Histogram of l-diversity equivalence class sensitive value frequencies.',
-      }),
-  })
-  .openapi({ description: 'Result of the l-diversity computation.', required: [] })
-  .openapi('GooglePrivacyDlpV2LDiversityResult')
+type GooglePrivacyDlpV2LDiversityResultType = {
+  sensitiveValueFrequencyHistogramBuckets?: z.infer<
+    typeof GooglePrivacyDlpV2LDiversityHistogramBucketSchema
+  >[]
+}
+
+const GooglePrivacyDlpV2LDiversityResultSchema: z.ZodType<GooglePrivacyDlpV2LDiversityResultType> =
+  z
+    .object({
+      sensitiveValueFrequencyHistogramBuckets: z
+        .array(GooglePrivacyDlpV2LDiversityHistogramBucketSchema)
+        .exactOptional()
+        .openapi({
+          description: 'Histogram of l-diversity equivalence class sensitive value frequencies.',
+        }),
+    })
+    .openapi({ description: 'Result of the l-diversity computation.', required: [] })
+    .openapi('GooglePrivacyDlpV2LDiversityResult')
 
 const GooglePrivacyDlpV2NumericalStatsResultSchema = z
   .object({
@@ -1524,6 +1375,232 @@ const GooglePrivacyDlpV2NumericalStatsResultSchema = z
   })
   .openapi({ description: 'Result of the numerical stats computation.', required: [] })
   .openapi('GooglePrivacyDlpV2NumericalStatsResult')
+
+const GooglePrivacyDlpV2TransformationConfigSchema = z
+  .object({
+    deidentifyTemplate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'De-identify template. If this template is specified, it will serve as the default de-identify template. This template cannot contain `record_transformations` since it can be used for unstructured content such as free-form text files. If this template is not set, a default `ReplaceWithInfoTypeConfig` will be used to de-identify unstructured content.',
+      }),
+    imageRedactTemplate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Image redact template. If this template is specified, it will serve as the de-identify template for images. If this template is not set, all findings in the image will be redacted with a black box.',
+      }),
+    structuredDeidentifyTemplate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Structured de-identify template. If this template is specified, it will serve as the de-identify template for structured content such as delimited files and tables. If this template is not set but the `deidentify_template` is set, then `deidentify_template` will also apply to the structured content. If neither template is set, a default `ReplaceWithInfoTypeConfig` will be used to de-identify structured content.',
+      }),
+  })
+  .openapi({
+    description:
+      'User specified templates and configs for how to deidentify structured, unstructures, and image files. User must provide either a unstructured deidentify template or at least one redact image config.',
+    required: [],
+  })
+  .openapi('GooglePrivacyDlpV2TransformationConfig')
+
+const GooglePrivacyDlpV2BigQueryTableSchema = z
+  .object({
+    datasetId: z.string().exactOptional().openapi({ description: 'Dataset ID of the table.' }),
+    projectId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Google Cloud Platform project ID of the project containing the table. If omitted, project ID is inferred from the API call.',
+      }),
+    tableId: z.string().exactOptional().openapi({ description: 'Name of the table.' }),
+  })
+  .openapi({
+    description:
+      'Message defining the location of a BigQuery table. A table is uniquely identified by its project_id, dataset_id, and table_name. Within a query a table is often referenced with a string in the format of: `:.` or `..`.',
+    required: [],
+  })
+  .openapi('GooglePrivacyDlpV2BigQueryTable')
+
+const GooglePrivacyDlpV2TransformationDetailsStorageConfigSchema = z
+  .object({
+    table: GooglePrivacyDlpV2BigQueryTableSchema.exactOptional().openapi({
+      description:
+        'The BigQuery table in which to store the output. This may be an existing table or in a new table in an existing dataset. If table_id is not set a new one will be generated for you with the following format: dlp_googleapis_transformation_details_yyyy_mm_dd_[dlp_job_id]. Pacific time zone will be used for generating the date details.',
+    }),
+  })
+  .openapi({ description: 'Config for storing transformation details.', required: [] })
+  .openapi('GooglePrivacyDlpV2TransformationDetailsStorageConfig')
+
+const GooglePrivacyDlpV2DeidentifySchema = z
+  .object({
+    cloudStorageOutput: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. User settable Cloud Storage bucket and folders to store de-identified files. This field must be set for cloud storage deidentification. The output Cloud Storage bucket must be different from the input bucket. De-identified files will overwrite files in the output path. Form of: gs://bucket/folder/ or gs://bucket',
+      }),
+    fileTypesToTransform: z
+      .array(
+        z.enum([
+          'FILE_TYPE_UNSPECIFIED',
+          'BINARY_FILE',
+          'TEXT_FILE',
+          'IMAGE',
+          'WORD',
+          'PDF',
+          'AVRO',
+          'CSV',
+          'TSV',
+          'POWERPOINT',
+          'EXCEL',
+        ]),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          "List of user-specified file type groups to transform. If specified, only the files with these filetypes will be transformed. If empty, all supported files will be transformed. Supported types may be automatically added over time. If a file type is set in this field that isn't supported by the Deidentify action then the job will fail and will not be successfully created/started. Currently the only filetypes supported are: IMAGES, TEXT_FILES, CSV, TSV.",
+      }),
+    transformationConfig: GooglePrivacyDlpV2TransformationConfigSchema.exactOptional().openapi({
+      description:
+        'User specified deidentify templates and configs for structured, unstructured, and image files.',
+    }),
+    transformationDetailsStorageConfig:
+      GooglePrivacyDlpV2TransformationDetailsStorageConfigSchema.exactOptional().openapi({
+        description:
+          'Config for storing transformation details. This is separate from the de-identified content, and contains metadata about the successful transformations and/or failures that occurred while de-identifying. This needs to be set in order for users to access information about the status of each transformation (see TransformationDetails message for more information about what is noted).',
+      }),
+  })
+  .openapi({
+    description:
+      'Create a de-identified copy of the requested table or files. A TransformationDetail will be created for each transformation. If any rows in BigQuery are skipped during de-identification (transformation errors or row size exceeds BigQuery insert API limits) they are placed in the failure output table. If the original row exceeds the BigQuery insert API limit it will be truncated when written to the failure output table. The failure output table can be set in the action.deidentify.output.big_query_output.deidentified_failure_output_table field, if no table is set, a table will be automatically created in the same project and dataset as the original table. Compatible with: Inspect',
+    required: [],
+  })
+  .openapi('GooglePrivacyDlpV2Deidentify')
+
+const GooglePrivacyDlpV2JobNotificationEmailsSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'Sends an email when the job completes. The email goes to IAM project owners and technical [Essential Contacts](https://cloud.google.com/resource-manager/docs/managing-notification-contacts).',
+  })
+  .openapi('GooglePrivacyDlpV2JobNotificationEmails')
+
+const GooglePrivacyDlpV2PublishToPubSubSchema = z
+  .object({
+    topic: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Cloud Pub/Sub topic to send notifications to. The topic must have given publishing access rights to the DLP API service account executing the long running DlpJob sending the notifications. Format is projects/{project}/topics/{topic}.',
+      }),
+  })
+  .openapi({
+    description:
+      "Publish a message into a given Pub/Sub topic when DlpJob has completed. The message contains a single field, `DlpJobName`, which is equal to the finished job's [`DlpJob.name`](https://cloud.google.com/dlp/docs/reference/rest/v2/projects.dlpJobs#DlpJob). Compatible with: Inspect, Risk",
+    required: [],
+  })
+  .openapi('GooglePrivacyDlpV2PublishToPubSub')
+
+const GooglePrivacyDlpV2PublishFindingsToCloudDataCatalogSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'Publish findings of a DlpJob to Data Catalog. In Data Catalog, tag templates are applied to the resource that Cloud DLP scanned. Data Catalog tag templates are stored in the same project and region where the BigQuery table exists. For Cloud DLP to create and apply the tag template, the Cloud DLP service agent must have the `roles/datacatalog.tagTemplateOwner` permission on the project. The tag template contains fields summarizing the results of the DlpJob. Any field values previously written by another DlpJob are deleted. InfoType naming patterns are strictly enforced when using this feature. Findings are persisted in Data Catalog storage and are governed by service-specific policies for Data Catalog. For more information, see [Service Specific Terms](https://cloud.google.com/terms/service-terms). Only a single instance of this action can be specified. This action is allowed only if all resources being scanned are BigQuery tables. Compatible with: Inspect',
+  })
+  .openapi('GooglePrivacyDlpV2PublishFindingsToCloudDataCatalog')
+
+const GooglePrivacyDlpV2PublishSummaryToCsccSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'Publish the result summary of a DlpJob to [Security Command Center](https://cloud.google.com/security-command-center). This action is available for only projects that belong to an organization. This action publishes the count of finding instances and their infoTypes. The summary of findings are persisted in Security Command Center and are governed by [service-specific policies for Security Command Center](https://cloud.google.com/terms/service-terms). Only a single instance of this action can be specified. Compatible with: Inspect',
+  })
+  .openapi('GooglePrivacyDlpV2PublishSummaryToCscc')
+
+const GooglePrivacyDlpV2PublishToStackdriverSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      "Enable Stackdriver metric dlp.googleapis.com/finding_count. This will publish a metric to stack driver on each infotype requested and how many findings were found for it. CustomDetectors will be bucketed as 'Custom' under the Stackdriver label 'info_type'.",
+  })
+  .openapi('GooglePrivacyDlpV2PublishToStackdriver')
+
+const GooglePrivacyDlpV2OutputStorageConfigSchema = z
+  .object({
+    outputSchema: z
+      .enum([
+        'OUTPUT_SCHEMA_UNSPECIFIED',
+        'BASIC_COLUMNS',
+        'GCS_COLUMNS',
+        'DATASTORE_COLUMNS',
+        'BIG_QUERY_COLUMNS',
+        'ALL_COLUMNS',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Schema used for writing the findings for Inspect jobs. This field is only used for Inspect and must be unspecified for Risk jobs. Columns are derived from the `Finding` object. If appending to an existing table, any columns from the predefined schema that are missing will be added. No columns in the existing table will be deleted. If unspecified, then all available columns will be used for a new table or an (existing) table with no schema, and no changes will be made to an existing table that has a schema. Only for use with external storage.',
+      }),
+    table: GooglePrivacyDlpV2BigQueryTableSchema.exactOptional().openapi({
+      description:
+        'Store findings in an existing table or a new table in an existing dataset. If table_id is not set a new one will be generated for you with the following format: dlp_googleapis_yyyy_mm_dd_[dlp_job_id]. Pacific time zone will be used for generating the date details. For Inspect, each column in an existing output table must have the same name, type, and mode of a field in the `Finding` object. For Risk, an existing output table should be the output of a previous Risk analysis job run on the same source table, with the same privacy metric and quasi-identifiers. Risk jobs that analyze the same table but compute a different privacy metric, or use different sets of quasi-identifiers, cannot store their results in the same table.',
+    }),
+  })
+  .openapi({ description: 'Cloud repository for storing output.', required: [] })
+  .openapi('GooglePrivacyDlpV2OutputStorageConfig')
+
+const GooglePrivacyDlpV2SaveFindingsSchema = z
+  .object({
+    outputConfig: GooglePrivacyDlpV2OutputStorageConfigSchema.exactOptional().openapi({
+      description: 'Location to store findings outside of DLP.',
+    }),
+  })
+  .openapi({
+    description:
+      'If set, the detailed findings will be persisted to the specified OutputStorageConfig. Only a single instance of this action can be specified. Compatible with: Inspect, Risk',
+    required: [],
+  })
+  .openapi('GooglePrivacyDlpV2SaveFindings')
+
+const GooglePrivacyDlpV2ActionSchema = z
+  .object({
+    deidentify: GooglePrivacyDlpV2DeidentifySchema.exactOptional().openapi({
+      description: 'Create a de-identified copy of the input data.',
+    }),
+    jobNotificationEmails: GooglePrivacyDlpV2JobNotificationEmailsSchema.exactOptional().openapi({
+      description:
+        'Sends an email when the job completes. The email goes to IAM project owners and technical [Essential Contacts](https://cloud.google.com/resource-manager/docs/managing-notification-contacts).',
+    }),
+    pubSub: GooglePrivacyDlpV2PublishToPubSubSchema.exactOptional().openapi({
+      description: 'Publish a notification to a Pub/Sub topic.',
+    }),
+    publishFindingsToCloudDataCatalog:
+      GooglePrivacyDlpV2PublishFindingsToCloudDataCatalogSchema.exactOptional().openapi({
+        description: 'Publish findings to Cloud Datahub.',
+      }),
+    publishSummaryToCscc: GooglePrivacyDlpV2PublishSummaryToCsccSchema.exactOptional().openapi({
+      description: 'Publish summary to Cloud Security Command Center (Alpha).',
+    }),
+    publishToStackdriver: GooglePrivacyDlpV2PublishToStackdriverSchema.exactOptional().openapi({
+      description: 'Enable Stackdriver metric dlp.googleapis.com/finding_count.',
+    }),
+    saveFindings: GooglePrivacyDlpV2SaveFindingsSchema.exactOptional().openapi({
+      description: 'Save resulting findings in a provided location.',
+    }),
+  })
+  .openapi({
+    description:
+      'A task to execute on the completion of a job. See https://cloud.google.com/dlp/docs/concepts-actions to learn more.',
+    required: [],
+  })
+  .openapi('GooglePrivacyDlpV2Action')
 
 const GooglePrivacyDlpV2CategoricalStatsConfigSchema = z
   .object({
@@ -1581,7 +1658,7 @@ const GooglePrivacyDlpV2StatisticalTableSchema = z
   .openapi('GooglePrivacyDlpV2StatisticalTable')
 
 const GoogleProtobufEmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -1827,659 +1904,69 @@ const GooglePrivacyDlpV2PrivacyMetricSchema = z
   })
   .openapi('GooglePrivacyDlpV2PrivacyMetric')
 
-const GooglePrivacyDlpV2RiskAnalysisJobConfigSchema = z
-  .object({
-    actions: z
-      .array(GooglePrivacyDlpV2ActionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Actions to execute at the completion of the job. Are executed in the order provided.',
-      }),
-    privacyMetric: GooglePrivacyDlpV2PrivacyMetricSchema.exactOptional().openapi({
-      description: 'Privacy metric to compute.',
-    }),
-    sourceTable: GooglePrivacyDlpV2BigQueryTableSchema.exactOptional().openapi({
-      description: 'Input dataset to compute metrics over.',
-    }),
-  })
-  .openapi({
-    description:
-      'Configuration for a risk analysis job. See https://cloud.google.com/dlp/docs/concepts-risk-analysis to learn more.',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2RiskAnalysisJobConfig')
+type GooglePrivacyDlpV2RiskAnalysisJobConfigType = {
+  actions?: z.infer<typeof GooglePrivacyDlpV2ActionSchema>[]
+  privacyMetric?: z.infer<typeof GooglePrivacyDlpV2PrivacyMetricSchema>
+  sourceTable?: z.infer<typeof GooglePrivacyDlpV2BigQueryTableSchema>
+}
 
-const GooglePrivacyDlpV2RequestedRiskAnalysisOptionsSchema = z
-  .object({
-    jobConfig: GooglePrivacyDlpV2RiskAnalysisJobConfigSchema.exactOptional().openapi({
-      description: 'The job config for the risk job.',
-    }),
-  })
-  .openapi({ description: 'Risk analysis options.', required: [] })
-  .openapi('GooglePrivacyDlpV2RequestedRiskAnalysisOptions')
-
-const GooglePrivacyDlpV2AnalyzeDataSourceRiskDetailsSchema = z
-  .object({
-    categoricalStatsResult: GooglePrivacyDlpV2CategoricalStatsResultSchema.exactOptional().openapi({
-      description: 'Categorical stats result',
-    }),
-    deltaPresenceEstimationResult:
-      GooglePrivacyDlpV2DeltaPresenceEstimationResultSchema.exactOptional().openapi({
-        description: 'Delta-presence result',
+const GooglePrivacyDlpV2RiskAnalysisJobConfigSchema: z.ZodType<GooglePrivacyDlpV2RiskAnalysisJobConfigType> =
+  z
+    .object({
+      actions: z
+        .array(GooglePrivacyDlpV2ActionSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Actions to execute at the completion of the job. Are executed in the order provided.',
+        }),
+      privacyMetric: GooglePrivacyDlpV2PrivacyMetricSchema.exactOptional().openapi({
+        description: 'Privacy metric to compute.',
       }),
-    kAnonymityResult: GooglePrivacyDlpV2KAnonymityResultSchema.exactOptional().openapi({
-      description: 'K-anonymity result',
-    }),
-    kMapEstimationResult: GooglePrivacyDlpV2KMapEstimationResultSchema.exactOptional().openapi({
-      description: 'K-map result',
-    }),
-    lDiversityResult: GooglePrivacyDlpV2LDiversityResultSchema.exactOptional().openapi({
-      description: 'L-divesity result',
-    }),
-    numericalStatsResult: GooglePrivacyDlpV2NumericalStatsResultSchema.exactOptional().openapi({
-      description: 'Numerical stats result',
-    }),
-    requestedOptions: GooglePrivacyDlpV2RequestedRiskAnalysisOptionsSchema.exactOptional().openapi({
-      description: 'The configuration used for this job.',
-    }),
-    requestedPrivacyMetric: GooglePrivacyDlpV2PrivacyMetricSchema.exactOptional().openapi({
-      description: 'Privacy metric to compute.',
-    }),
-    requestedSourceTable: GooglePrivacyDlpV2BigQueryTableSchema.exactOptional().openapi({
-      description: 'Input dataset to compute metrics over.',
-    }),
-  })
-  .openapi({ description: 'Result of a risk analysis operation request.', required: [] })
-  .openapi('GooglePrivacyDlpV2AnalyzeDataSourceRiskDetails')
-
-const GooglePrivacyDlpV2BigQueryFieldSchema = z
-  .object({
-    field: GooglePrivacyDlpV2FieldIdSchema.exactOptional().openapi({
-      description: 'Designated field in the BigQuery table.',
-    }),
-    table: GooglePrivacyDlpV2BigQueryTableSchema.exactOptional().openapi({
-      description: 'Source table of the field.',
-    }),
-  })
-  .openapi({ description: 'Message defining a field of a BigQuery table.', required: [] })
-  .openapi('GooglePrivacyDlpV2BigQueryField')
-
-const GooglePrivacyDlpV2BigQueryKeySchema = z
-  .object({
-    rowNumber: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Row number inferred at the time the table was scanned. This value is nondeterministic, cannot be queried, and may be null for inspection jobs. To locate findings within a table, specify `inspect_job.storage_config.big_query_options.identifying_fields` in `CreateDlpJobRequest`.',
+      sourceTable: GooglePrivacyDlpV2BigQueryTableSchema.exactOptional().openapi({
+        description: 'Input dataset to compute metrics over.',
       }),
-    tableReference: GooglePrivacyDlpV2BigQueryTableSchema.exactOptional().openapi({
-      description: 'Complete BigQuery table reference.',
-    }),
-  })
-  .openapi({ description: 'Row key for identifying a record in BigQuery table.', required: [] })
-  .openapi('GooglePrivacyDlpV2BigQueryKey')
-
-const GooglePrivacyDlpV2BigQueryOptionsSchema = z
-  .object({
-    excludedFields: z
-      .array(GooglePrivacyDlpV2FieldIdSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'References to fields excluded from scanning. This allows you to skip inspection of entire columns which you know have no findings.',
-      }),
-    identifyingFields: z
-      .array(GooglePrivacyDlpV2FieldIdSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Table fields that may uniquely identify a row within the table. When `actions.saveFindings.outputConfig.table` is specified, the values of columns specified here are available in the output table under `location.content_locations.record_location.record_key.id_values`. Nested fields such as `person.birthdate.year` are allowed.',
-      }),
-    includedFields: z
-      .array(GooglePrivacyDlpV2FieldIdSchema)
-      .exactOptional()
-      .openapi({ description: 'Limit scanning only to these fields.' }),
-    rowsLimit: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Max number of rows to scan. If the table has more rows than this value, the rest of the rows are omitted. If not set, or if set to 0, all rows will be scanned. Only one of rows_limit and rows_limit_percent can be specified. Cannot be used in conjunction with TimespanConfig.',
-      }),
-    rowsLimitPercent: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Max percentage of rows to scan. The rest are omitted. The number of rows scanned is rounded down. Must be between 0 and 100, inclusively. Both 0 and 100 means no limit. Defaults to 0. Only one of rows_limit and rows_limit_percent can be specified. Cannot be used in conjunction with TimespanConfig.',
-      }),
-    sampleMethod: z.enum(['SAMPLE_METHOD_UNSPECIFIED', 'TOP', 'RANDOM_START']).exactOptional(),
-    tableReference: GooglePrivacyDlpV2BigQueryTableSchema.exactOptional().openapi({
-      description: 'Complete BigQuery table reference.',
-    }),
-  })
-  .openapi({ description: 'Options defining BigQuery table and row identifiers.', required: [] })
-  .openapi('GooglePrivacyDlpV2BigQueryOptions')
-
-const GooglePrivacyDlpV2BoundingBoxSchema = z
-  .object({
-    height: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Height of the bounding box in pixels.' }),
-    left: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Left coordinate of the bounding box. (0,0) is upper left.' }),
-    top: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Top coordinate of the bounding box. (0,0) is upper left.' }),
-    width: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Width of the bounding box in pixels.' }),
-  })
-  .openapi({
-    description: 'Bounding box encompassing detected text within an image.',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2BoundingBox')
-
-const GooglePrivacyDlpV2ByteContentItemSchema = z
-  .object({
-    data: z.string().exactOptional().openapi({ description: 'Content data to inspect or redact.' }),
-    type: z
-      .enum([
-        'BYTES_TYPE_UNSPECIFIED',
-        'IMAGE',
-        'IMAGE_JPEG',
-        'IMAGE_BMP',
-        'IMAGE_PNG',
-        'IMAGE_SVG',
-        'TEXT_UTF8',
-        'WORD_DOCUMENT',
-        'PDF',
-        'POWERPOINT_DOCUMENT',
-        'EXCEL_DOCUMENT',
-        'AVRO',
-        'CSV',
-        'TSV',
-      ])
-      .exactOptional()
-      .openapi({
-        description: 'The type of data stored in the bytes string. Default will be TEXT_UTF8.',
-      }),
-  })
-  .openapi({ description: 'Container for bytes to inspect or redact.', required: [] })
-  .openapi('GooglePrivacyDlpV2ByteContentItem')
-
-const GooglePrivacyDlpV2CancelDlpJobRequestSchema = z
-  .object({})
-  .openapi({ description: 'The request message for canceling a DLP job.' })
-  .openapi('GooglePrivacyDlpV2CancelDlpJobRequest')
-
-const GooglePrivacyDlpV2CloudStorageFileSetSchema = z
-  .object({
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The url, in the format `gs:///`. Trailing wildcard in the path is allowed.',
-      }),
-  })
-  .openapi({ description: 'Message representing a set of files in Cloud Storage.', required: [] })
-  .openapi('GooglePrivacyDlpV2CloudStorageFileSet')
-
-const GooglePrivacyDlpV2CloudStorageRegexFileSetSchema = z
-  .object({
-    bucketName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of a Cloud Storage bucket. Required.' }),
-    excludeRegex: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of regular expressions matching file paths to exclude. All files in the bucket that match at least one of these regular expressions will be excluded from the scan. Regular expressions use RE2 [syntax](https://github.com/google/re2/wiki/Syntax); a guide can be found under the google/re2 repository on GitHub.',
-      }),
-    includeRegex: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of regular expressions matching file paths to include. All files in the bucket that match at least one of these regular expressions will be included in the set of files, except for those that also match an item in `exclude_regex`. Leaving this field empty will match all files by default (this is equivalent to including `.*` in the list). Regular expressions use RE2 [syntax](https://github.com/google/re2/wiki/Syntax); a guide can be found under the google/re2 repository on GitHub.',
-      }),
-  })
-  .openapi({
-    description:
-      'Message representing a set of files in a Cloud Storage bucket. Regular expressions are used to allow fine-grained control over which files in the bucket to include. Included files are those that match at least one item in `include_regex` and do not match any items in `exclude_regex`. Note that a file that matches items from both lists will _not_ be included. For a match to occur, the entire file path (i.e., everything in the url after the bucket name) must match the regular expression. For example, given the input `{bucket_name: "mybucket", include_regex: ["directory1/.*"], exclude_regex: ["directory1/excluded.*"]}`: * `gs://mybucket/directory1/myfile` will be included * `gs://mybucket/directory1/directory2/myfile` will be included (`.*` matches across `/`) * `gs://mybucket/directory0/directory1/myfile` will _not_ be included (the full path doesn\'t match any items in `include_regex`) * `gs://mybucket/directory1/excludedfile` will _not_ be included (the path matches an item in `exclude_regex`) If `include_regex` is left empty, it will match all files by default (this is equivalent to setting `include_regex: [".*"]`). Some other common use cases: * `{bucket_name: "mybucket", exclude_regex: [".*\\.pdf"]}` will include all files in `mybucket` except for .pdf files * `{bucket_name: "mybucket", include_regex: ["directory/[^/]+"]}` will include all files directly under `gs://mybucket/directory/`, without matching across `/`',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2CloudStorageRegexFileSet')
-
-const GooglePrivacyDlpV2FileSetSchema = z
-  .object({
-    regexFileSet: GooglePrivacyDlpV2CloudStorageRegexFileSetSchema.exactOptional().openapi({
+    })
+    .openapi({
       description:
-        'The regex-filtered set of files to scan. Exactly one of `url` or `regex_file_set` must be set.',
-    }),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The Cloud Storage url of the file(s) to scan, in the format `gs:///`. Trailing wildcard in the path is allowed. If the url ends in a trailing slash, the bucket or directory represented by the url will be scanned non-recursively (content in sub-directories will not be scanned). This means that `gs://mybucket/` is equivalent to `gs://mybucket/*`, and `gs://mybucket/directory/` is equivalent to `gs://mybucket/directory/*`. Exactly one of `url` or `regex_file_set` must be set.',
-      }),
-  })
-  .openapi({ description: 'Set of files to scan.', required: [] })
-  .openapi('GooglePrivacyDlpV2FileSet')
+        'Configuration for a risk analysis job. See https://cloud.google.com/dlp/docs/concepts-risk-analysis to learn more.',
+      required: [],
+    })
+    .openapi('GooglePrivacyDlpV2RiskAnalysisJobConfig')
 
-const GooglePrivacyDlpV2CloudStorageOptionsSchema = z
-  .object({
-    bytesLimitPerFile: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Max number of bytes to scan from a file. If a scanned file's size is bigger than this value then the rest of the bytes are omitted. Only one of bytes_limit_per_file and bytes_limit_per_file_percent can be specified. Cannot be set if de-identification is requested.",
-      }),
-    bytesLimitPerFilePercent: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Max percentage of bytes to scan from a file. The rest are omitted. The number of bytes scanned is rounded down. Must be between 0 and 100, inclusively. Both 0 and 100 means no limit. Defaults to 0. Only one of bytes_limit_per_file and bytes_limit_per_file_percent can be specified. Cannot be set if de-identification is requested.',
-      }),
-    fileSet: GooglePrivacyDlpV2FileSetSchema.exactOptional().openapi({
-      description: 'The set of one or more files to scan.',
-    }),
-    fileTypes: z
-      .array(
-        z.enum([
-          'FILE_TYPE_UNSPECIFIED',
-          'BINARY_FILE',
-          'TEXT_FILE',
-          'IMAGE',
-          'WORD',
-          'PDF',
-          'AVRO',
-          'CSV',
-          'TSV',
-          'POWERPOINT',
-          'EXCEL',
-        ]),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          "List of file type groups to include in the scan. If empty, all files are scanned and available data format processors are applied. In addition, the binary content of the selected files is always scanned as well. Images are scanned only as binary if the specified region does not support image inspection and no file_types were specified. Image inspection is restricted to 'global', 'us', 'asia', and 'europe'.",
-      }),
-    filesLimitPercent: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Limits the number of files to scan to this percentage of the input FileSet. Number of files scanned is rounded down. Must be between 0 and 100, inclusively. Both 0 and 100 means no limit. Defaults to 0.',
-      }),
-    sampleMethod: z.enum(['SAMPLE_METHOD_UNSPECIFIED', 'TOP', 'RANDOM_START']).exactOptional(),
-  })
-  .openapi({
-    description: 'Options defining a file or a set of files within a Cloud Storage bucket.',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2CloudStorageOptions')
+type GooglePrivacyDlpV2RequestedRiskAnalysisOptionsType = {
+  jobConfig?: z.infer<typeof GooglePrivacyDlpV2RiskAnalysisJobConfigSchema>
+}
 
-const GooglePrivacyDlpV2CloudStoragePathSchema = z
-  .object({
-    path: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A url representing a file or path (no wildcards) in Cloud Storage. Example: gs://[BUCKET_NAME]/dictionary.txt',
+const GooglePrivacyDlpV2RequestedRiskAnalysisOptionsSchema: z.ZodType<GooglePrivacyDlpV2RequestedRiskAnalysisOptionsType> =
+  z
+    .object({
+      jobConfig: GooglePrivacyDlpV2RiskAnalysisJobConfigSchema.exactOptional().openapi({
+        description: 'The job config for the risk job.',
       }),
-  })
-  .openapi({
-    description: 'Message representing a single file or path in Cloud Storage.',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2CloudStoragePath')
+    })
+    .openapi({ description: 'Risk analysis options.', required: [] })
+    .openapi('GooglePrivacyDlpV2RequestedRiskAnalysisOptions')
 
-const GooglePrivacyDlpV2ContainerSchema = z
-  .object({
-    fullPath: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "A string representation of the full container name. Examples: - BigQuery: 'Project:DataSetId.TableId' - Cloud Storage: 'gs://Bucket/folders/filename.txt'",
-      }),
-    projectId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Project where the finding was found. Can be different from the project that owns the finding.',
-      }),
-    relativePath: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The rest of the path after the root. Examples: - For BigQuery table `project_id:dataset_id.table_id`, the relative path is `table_id` - For Cloud Storage file `gs://bucket/folder/filename.txt`, the relative path is `folder/filename.txt`',
-      }),
-    rootPath: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The root of the container. Examples: - For BigQuery table `project_id:dataset_id.table_id`, the root is `dataset_id` - For Cloud Storage file `gs://bucket/folder/filename.txt`, the root is `gs://bucket`',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Container type, for example BigQuery or Cloud Storage.' }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Findings container modification timestamp, if applicable. For Cloud Storage, this field contains the last file modification timestamp. For a BigQuery table, this field contains the last_modified_time property. For Datastore, this field isn't populated.",
-      }),
-    version: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Findings container version, if available ("generation" for Cloud Storage).',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a container that may contain DLP findings. Examples of a container include a file, table, or database record.',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2Container')
+type GooglePrivacyDlpV2AnalyzeDataSourceRiskDetailsType = {
+  categoricalStatsResult?: z.infer<typeof GooglePrivacyDlpV2CategoricalStatsResultSchema>
+  deltaPresenceEstimationResult?: z.infer<
+    typeof GooglePrivacyDlpV2DeltaPresenceEstimationResultSchema
+  >
+  kAnonymityResult?: z.infer<typeof GooglePrivacyDlpV2KAnonymityResultSchema>
+  kMapEstimationResult?: z.infer<typeof GooglePrivacyDlpV2KMapEstimationResultSchema>
+  lDiversityResult?: z.infer<typeof GooglePrivacyDlpV2LDiversityResultSchema>
+  numericalStatsResult?: z.infer<typeof GooglePrivacyDlpV2NumericalStatsResultSchema>
+  requestedOptions?: z.infer<typeof GooglePrivacyDlpV2RequestedRiskAnalysisOptionsSchema>
+  requestedPrivacyMetric?: z.infer<typeof GooglePrivacyDlpV2PrivacyMetricSchema>
+  requestedSourceTable?: z.infer<typeof GooglePrivacyDlpV2BigQueryTableSchema>
+}
 
-const GooglePrivacyDlpV2RowSchema = z
-  .object({
-    values: z
-      .array(GooglePrivacyDlpV2ValueSchema)
-      .exactOptional()
-      .openapi({ description: 'Individual cells.' }),
-  })
-  .openapi({ description: 'Values of the row.', required: [] })
-  .openapi('GooglePrivacyDlpV2Row')
-
-const GooglePrivacyDlpV2TableSchema = z
-  .object({
-    headers: z
-      .array(GooglePrivacyDlpV2FieldIdSchema)
-      .exactOptional()
-      .openapi({ description: 'Headers of the table.' }),
-    rows: z
-      .array(GooglePrivacyDlpV2RowSchema)
-      .exactOptional()
-      .openapi({ description: 'Rows of the table.' }),
-  })
-  .openapi({
-    description:
-      'Structured content to inspect. Up to 50,000 `Value`s per request allowed. See https://cloud.google.com/dlp/docs/inspecting-structured-text#inspecting_a_table to learn more.',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2Table')
-
-const GooglePrivacyDlpV2ContentItemSchema = z
-  .object({
-    byteItem: GooglePrivacyDlpV2ByteContentItemSchema.exactOptional().openapi({
-      description: 'Content data to inspect or redact. Replaces `type` and `data`.',
-    }),
-    table: GooglePrivacyDlpV2TableSchema.exactOptional().openapi({
-      description:
-        'Structured content for inspection. See https://cloud.google.com/dlp/docs/inspecting-text#inspecting_a_table to learn more.',
-    }),
-    value: z.string().exactOptional().openapi({ description: 'String data to inspect or redact.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('GooglePrivacyDlpV2ContentItem')
-
-const GooglePrivacyDlpV2DocumentLocationSchema = z
-  .object({
-    fileOffset: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Offset of the line, from the beginning of the file, where the finding is located.',
-      }),
-  })
-  .openapi({ description: 'Location of a finding within a document.', required: [] })
-  .openapi('GooglePrivacyDlpV2DocumentLocation')
-
-const GooglePrivacyDlpV2ImageLocationSchema = z
-  .object({
-    boundingBoxes: z
-      .array(GooglePrivacyDlpV2BoundingBoxSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Bounding boxes locating the pixels within the image containing the finding.',
-      }),
-  })
-  .openapi({ description: 'Location of the finding within an image.', required: [] })
-  .openapi('GooglePrivacyDlpV2ImageLocation')
-
-const GooglePrivacyDlpV2StorageMetadataLabelSchema = z
-  .object({ key: z.string().exactOptional() })
-  .openapi({
-    description: 'Storage metadata label to indicate which metadata entry contains findings.',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2StorageMetadataLabel')
-
-const GooglePrivacyDlpV2MetadataLocationSchema = z
-  .object({
-    storageLabel: GooglePrivacyDlpV2StorageMetadataLabelSchema.exactOptional().openapi({
-      description: 'Storage metadata.',
-    }),
-    type: z
-      .enum(['METADATATYPE_UNSPECIFIED', 'STORAGE_METADATA'])
-      .exactOptional()
-      .openapi({ description: 'Type of metadata containing the finding.' }),
-  })
-  .openapi({ description: 'Metadata Location', required: [] })
-  .openapi('GooglePrivacyDlpV2MetadataLocation')
-
-const GooglePrivacyDlpV2PartitionIdSchema = z
-  .object({
-    namespaceId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'If not empty, the ID of the namespace to which the entities belong.',
-      }),
-    projectId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the project to which the entities belong.' }),
-  })
-  .openapi({
-    description:
-      'Datastore partition ID. A partition ID identifies a grouping of entities. The grouping is always by project and namespace, however the namespace ID may be empty. A partition ID contains several dimensions: project ID and namespace ID.',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2PartitionId')
-
-const GooglePrivacyDlpV2PathElementSchema = z
-  .object({
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The auto-allocated ID of the entity. Never equal to zero. Values less than zero are discouraged and may not be supported in the future.',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The kind of the entity. A kind matching regex `__.*__` is reserved/read-only. A kind must not contain more than 1500 bytes when UTF-8 encoded. Cannot be `""`.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the entity. A name matching regex `__.*__` is reserved/read-only. A name must not be more than 1500 bytes when UTF-8 encoded. Cannot be `""`.',
-      }),
-  })
-  .openapi({
-    description:
-      'A (kind, ID/name) pair used to construct a key path. If either name or ID is set, the element is complete. If neither is set, the element is incomplete.',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2PathElement')
-
-const GooglePrivacyDlpV2KeySchema = z
-  .object({
-    partitionId: GooglePrivacyDlpV2PartitionIdSchema.exactOptional().openapi({
-      description:
-        'Entities are partitioned into subsets, currently identified by a project ID and namespace ID. Queries are scoped to a single partition.',
-    }),
-    path: z
-      .array(GooglePrivacyDlpV2PathElementSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "The entity path. An entity path consists of one or more elements composed of a kind and a string or numerical identifier, which identify entities. The first element identifies a _root entity_, the second element identifies a _child_ of the root entity, the third element identifies a child of the second entity, and so forth. The entities identified by all prefixes of the path are called the element's _ancestors_. A path can never be empty, and a path can have at most 100 elements.",
-      }),
-  })
-  .openapi({
-    description:
-      "A unique identifier for a Datastore entity. If a key's partition ID or any of its path kinds or names are reserved/read-only, the key is reserved/read-only. A reserved/read-only key is forbidden in certain documented contexts.",
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2Key')
-
-const GooglePrivacyDlpV2DatastoreKeySchema = z
-  .object({
-    entityKey: GooglePrivacyDlpV2KeySchema.exactOptional().openapi({
-      description: 'Datastore entity key.',
-    }),
-  })
-  .openapi({ description: 'Record key for a finding in Cloud Datastore.', required: [] })
-  .openapi('GooglePrivacyDlpV2DatastoreKey')
-
-const GooglePrivacyDlpV2RecordKeySchema = z
-  .object({
-    bigQueryKey: GooglePrivacyDlpV2BigQueryKeySchema.exactOptional(),
-    datastoreKey: GooglePrivacyDlpV2DatastoreKeySchema.exactOptional(),
-    idValues: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Values of identifying columns in the given row. Order of values matches the order of `identifying_fields` specified in the scanning request.',
-      }),
-  })
-  .openapi({
-    description: 'Message for a unique key indicating a record that contains a finding.',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2RecordKey')
-
-const GooglePrivacyDlpV2TableLocationSchema = z
-  .object({
-    rowIndex: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The zero-based index of the row where the finding is located. Only populated for resources that have a natural ordering, not BigQuery. In BigQuery, to identify the row a finding came from, populate BigQueryOptions.identifying_fields with your primary key column names and when you store the findings the value of those columns will be stored inside of Finding.',
-      }),
-  })
-  .openapi({ description: 'Location of a finding within a table.', required: [] })
-  .openapi('GooglePrivacyDlpV2TableLocation')
-
-const GooglePrivacyDlpV2RecordLocationSchema = z
-  .object({
-    fieldId: GooglePrivacyDlpV2FieldIdSchema.exactOptional().openapi({
-      description: 'Field id of the field containing the finding.',
-    }),
-    recordKey: GooglePrivacyDlpV2RecordKeySchema.exactOptional().openapi({
-      description: 'Key of the finding.',
-    }),
-    tableLocation: GooglePrivacyDlpV2TableLocationSchema.exactOptional().openapi({
-      description: 'Location within a `ContentItem.Table`.',
-    }),
-  })
-  .openapi({ description: 'Location of a finding within a row or record.', required: [] })
-  .openapi('GooglePrivacyDlpV2RecordLocation')
-
-const GooglePrivacyDlpV2ContentLocationSchema = z
-  .object({
-    containerName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Name of the container where the finding is located. The top level name is the source file name or table name. Names of some common storage containers are formatted as follows: * BigQuery tables: `{project_id}:{dataset_id}.{table_id}` * Cloud Storage files: `gs://{bucket}/{path}` * Datastore namespace: {namespace} Nested names could be absent if the embedded object has no string identifier (for example, an image contained within a document).',
-      }),
-    containerTimestamp: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Finding container modification timestamp, if applicable. For Cloud Storage, this field contains the last file modification timestamp. For a BigQuery table, this field contains the last_modified_time property. For Datastore, this field isn't populated.",
-      }),
-    containerVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Finding container version, if available ("generation" for Cloud Storage).',
-      }),
-    documentLocation: GooglePrivacyDlpV2DocumentLocationSchema.exactOptional().openapi({
-      description: 'Location data for document files.',
-    }),
-    imageLocation: GooglePrivacyDlpV2ImageLocationSchema.exactOptional().openapi({
-      description: "Location within an image's pixels.",
-    }),
-    metadataLocation: GooglePrivacyDlpV2MetadataLocationSchema.exactOptional().openapi({
-      description: 'Location within the metadata for inspected content.',
-    }),
-    recordLocation: GooglePrivacyDlpV2RecordLocationSchema.exactOptional().openapi({
-      description: 'Location within a row or record of a database table.',
-    }),
-  })
-  .openapi({
-    description:
-      'Precise location of the finding within a document, record, image, or metadata container.',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2ContentLocation')
-
-const GooglePrivacyDlpV2CreateDeidentifyTemplateRequestSchema = z
-  .object({
-    deidentifyTemplate: GooglePrivacyDlpV2DeidentifyTemplateSchema.exactOptional().openapi({
-      description: 'Required. The DeidentifyTemplate to create.',
-    }),
-    locationId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Deprecated. This field has no effect.' }),
-    templateId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The template id can contain uppercase and lowercase letters, numbers, and hyphens; that is, it must match the regular expression: `[a-zA-Z\\d-_]+`. The maximum length is 100 characters. Can be empty to allow the system to generate one.',
-      }),
-  })
-  .openapi({ description: 'Request message for CreateDeidentifyTemplate.', required: [] })
-  .openapi('GooglePrivacyDlpV2CreateDeidentifyTemplateRequest')
+type GooglePrivacyDlpV2CreateDeidentifyTemplateRequestType = {
+  deidentifyTemplate?: z.infer<typeof GooglePrivacyDlpV2DeidentifyTemplateSchema>
+  locationId?: string
+  templateId?: string
+}
 
 const GooglePrivacyDlpV2RegexSchema = z
   .object({
@@ -2582,6 +2069,22 @@ const GooglePrivacyDlpV2DetectionRuleSchema = z
   })
   .openapi('GooglePrivacyDlpV2DetectionRule')
 
+const GooglePrivacyDlpV2CloudStoragePathSchema = z
+  .object({
+    path: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A url representing a file or path (no wildcards) in Cloud Storage. Example: gs://[BUCKET_NAME]/dictionary.txt',
+      }),
+  })
+  .openapi({
+    description: 'Message representing a single file or path in Cloud Storage.',
+    required: [],
+  })
+  .openapi('GooglePrivacyDlpV2CloudStoragePath')
+
 const GooglePrivacyDlpV2DictionarySchema = z
   .object({
     cloudStoragePath: GooglePrivacyDlpV2CloudStoragePathSchema.exactOptional().openapi({
@@ -2620,7 +2123,7 @@ const GooglePrivacyDlpV2StoredTypeSchema = z
   .openapi('GooglePrivacyDlpV2StoredType')
 
 const GooglePrivacyDlpV2SurrogateTypeSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Message for detecting output from deidentification transformations such as [`CryptoReplaceFfxFpeConfig`](https://cloud.google.com/dlp/docs/reference/rest/v2/organizations.deidentifyTemplates#cryptoreplaceffxfpeconfig). These types of transformations are those that perform pseudonymization, thereby producing a "surrogate" as output. This should be used in conjunction with a field on the transformation such as `surrogate_info_type`. This CustomInfoType does not support the use of `detection_rules`.',
@@ -2829,7 +2332,24 @@ const GooglePrivacyDlpV2InspectionRuleSetSchema = z
   })
   .openapi('GooglePrivacyDlpV2InspectionRuleSet')
 
-const GooglePrivacyDlpV2InspectConfigSchema = z
+type GooglePrivacyDlpV2InspectConfigType = {
+  contentOptions?: ('CONTENT_UNSPECIFIED' | 'CONTENT_TEXT' | 'CONTENT_IMAGE')[]
+  customInfoTypes?: z.infer<typeof GooglePrivacyDlpV2CustomInfoTypeSchema>[]
+  excludeInfoTypes?: boolean
+  includeQuote?: boolean
+  infoTypes?: z.infer<typeof GooglePrivacyDlpV2InfoTypeSchema>[]
+  limits?: z.infer<typeof GooglePrivacyDlpV2FindingLimitsSchema>
+  minLikelihood?:
+    | 'LIKELIHOOD_UNSPECIFIED'
+    | 'VERY_UNLIKELY'
+    | 'UNLIKELY'
+    | 'POSSIBLE'
+    | 'LIKELY'
+    | 'VERY_LIKELY'
+  ruleSet?: z.infer<typeof GooglePrivacyDlpV2InspectionRuleSetSchema>[]
+}
+
+const GooglePrivacyDlpV2InspectConfigSchema: z.ZodType<GooglePrivacyDlpV2InspectConfigType> = z
   .object({
     contentOptions: z
       .array(z.enum(['CONTENT_UNSPECIFIED', 'CONTENT_TEXT', 'CONTENT_IMAGE']))
@@ -2896,10 +2416,172 @@ const GooglePrivacyDlpV2InspectConfigSchema = z
   })
   .openapi('GooglePrivacyDlpV2InspectConfig')
 
+const GooglePrivacyDlpV2BigQueryOptionsSchema = z
+  .object({
+    excludedFields: z
+      .array(GooglePrivacyDlpV2FieldIdSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'References to fields excluded from scanning. This allows you to skip inspection of entire columns which you know have no findings.',
+      }),
+    identifyingFields: z
+      .array(GooglePrivacyDlpV2FieldIdSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Table fields that may uniquely identify a row within the table. When `actions.saveFindings.outputConfig.table` is specified, the values of columns specified here are available in the output table under `location.content_locations.record_location.record_key.id_values`. Nested fields such as `person.birthdate.year` are allowed.',
+      }),
+    includedFields: z
+      .array(GooglePrivacyDlpV2FieldIdSchema)
+      .exactOptional()
+      .openapi({ description: 'Limit scanning only to these fields.' }),
+    rowsLimit: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Max number of rows to scan. If the table has more rows than this value, the rest of the rows are omitted. If not set, or if set to 0, all rows will be scanned. Only one of rows_limit and rows_limit_percent can be specified. Cannot be used in conjunction with TimespanConfig.',
+      }),
+    rowsLimitPercent: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Max percentage of rows to scan. The rest are omitted. The number of rows scanned is rounded down. Must be between 0 and 100, inclusively. Both 0 and 100 means no limit. Defaults to 0. Only one of rows_limit and rows_limit_percent can be specified. Cannot be used in conjunction with TimespanConfig.',
+      }),
+    sampleMethod: z.enum(['SAMPLE_METHOD_UNSPECIFIED', 'TOP', 'RANDOM_START']).exactOptional(),
+    tableReference: GooglePrivacyDlpV2BigQueryTableSchema.exactOptional().openapi({
+      description: 'Complete BigQuery table reference.',
+    }),
+  })
+  .openapi({ description: 'Options defining BigQuery table and row identifiers.', required: [] })
+  .openapi('GooglePrivacyDlpV2BigQueryOptions')
+
+const GooglePrivacyDlpV2CloudStorageRegexFileSetSchema = z
+  .object({
+    bucketName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of a Cloud Storage bucket. Required.' }),
+    excludeRegex: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of regular expressions matching file paths to exclude. All files in the bucket that match at least one of these regular expressions will be excluded from the scan. Regular expressions use RE2 [syntax](https://github.com/google/re2/wiki/Syntax); a guide can be found under the google/re2 repository on GitHub.',
+      }),
+    includeRegex: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of regular expressions matching file paths to include. All files in the bucket that match at least one of these regular expressions will be included in the set of files, except for those that also match an item in `exclude_regex`. Leaving this field empty will match all files by default (this is equivalent to including `.*` in the list). Regular expressions use RE2 [syntax](https://github.com/google/re2/wiki/Syntax); a guide can be found under the google/re2 repository on GitHub.',
+      }),
+  })
+  .openapi({
+    description:
+      'Message representing a set of files in a Cloud Storage bucket. Regular expressions are used to allow fine-grained control over which files in the bucket to include. Included files are those that match at least one item in `include_regex` and do not match any items in `exclude_regex`. Note that a file that matches items from both lists will _not_ be included. For a match to occur, the entire file path (i.e., everything in the url after the bucket name) must match the regular expression. For example, given the input `{bucket_name: "mybucket", include_regex: ["directory1/.*"], exclude_regex: ["directory1/excluded.*"]}`: * `gs://mybucket/directory1/myfile` will be included * `gs://mybucket/directory1/directory2/myfile` will be included (`.*` matches across `/`) * `gs://mybucket/directory0/directory1/myfile` will _not_ be included (the full path doesn\'t match any items in `include_regex`) * `gs://mybucket/directory1/excludedfile` will _not_ be included (the path matches an item in `exclude_regex`) If `include_regex` is left empty, it will match all files by default (this is equivalent to setting `include_regex: [".*"]`). Some other common use cases: * `{bucket_name: "mybucket", exclude_regex: [".*\\.pdf"]}` will include all files in `mybucket` except for .pdf files * `{bucket_name: "mybucket", include_regex: ["directory/[^/]+"]}` will include all files directly under `gs://mybucket/directory/`, without matching across `/`',
+    required: [],
+  })
+  .openapi('GooglePrivacyDlpV2CloudStorageRegexFileSet')
+
+const GooglePrivacyDlpV2FileSetSchema = z
+  .object({
+    regexFileSet: GooglePrivacyDlpV2CloudStorageRegexFileSetSchema.exactOptional().openapi({
+      description:
+        'The regex-filtered set of files to scan. Exactly one of `url` or `regex_file_set` must be set.',
+    }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Cloud Storage url of the file(s) to scan, in the format `gs:///`. Trailing wildcard in the path is allowed. If the url ends in a trailing slash, the bucket or directory represented by the url will be scanned non-recursively (content in sub-directories will not be scanned). This means that `gs://mybucket/` is equivalent to `gs://mybucket/*`, and `gs://mybucket/directory/` is equivalent to `gs://mybucket/directory/*`. Exactly one of `url` or `regex_file_set` must be set.',
+      }),
+  })
+  .openapi({ description: 'Set of files to scan.', required: [] })
+  .openapi('GooglePrivacyDlpV2FileSet')
+
+const GooglePrivacyDlpV2CloudStorageOptionsSchema = z
+  .object({
+    bytesLimitPerFile: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Max number of bytes to scan from a file. If a scanned file's size is bigger than this value then the rest of the bytes are omitted. Only one of bytes_limit_per_file and bytes_limit_per_file_percent can be specified. Cannot be set if de-identification is requested.",
+      }),
+    bytesLimitPerFilePercent: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Max percentage of bytes to scan from a file. The rest are omitted. The number of bytes scanned is rounded down. Must be between 0 and 100, inclusively. Both 0 and 100 means no limit. Defaults to 0. Only one of bytes_limit_per_file and bytes_limit_per_file_percent can be specified. Cannot be set if de-identification is requested.',
+      }),
+    fileSet: GooglePrivacyDlpV2FileSetSchema.exactOptional().openapi({
+      description: 'The set of one or more files to scan.',
+    }),
+    fileTypes: z
+      .array(
+        z.enum([
+          'FILE_TYPE_UNSPECIFIED',
+          'BINARY_FILE',
+          'TEXT_FILE',
+          'IMAGE',
+          'WORD',
+          'PDF',
+          'AVRO',
+          'CSV',
+          'TSV',
+          'POWERPOINT',
+          'EXCEL',
+        ]),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          "List of file type groups to include in the scan. If empty, all files are scanned and available data format processors are applied. In addition, the binary content of the selected files is always scanned as well. Images are scanned only as binary if the specified region does not support image inspection and no file_types were specified. Image inspection is restricted to 'global', 'us', 'asia', and 'europe'.",
+      }),
+    filesLimitPercent: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Limits the number of files to scan to this percentage of the input FileSet. Number of files scanned is rounded down. Must be between 0 and 100, inclusively. Both 0 and 100 means no limit. Defaults to 0.',
+      }),
+    sampleMethod: z.enum(['SAMPLE_METHOD_UNSPECIFIED', 'TOP', 'RANDOM_START']).exactOptional(),
+  })
+  .openapi({
+    description: 'Options defining a file or a set of files within a Cloud Storage bucket.',
+    required: [],
+  })
+  .openapi('GooglePrivacyDlpV2CloudStorageOptions')
+
 const GooglePrivacyDlpV2KindExpressionSchema = z
   .object({ name: z.string().exactOptional().openapi({ description: 'The name of the kind.' }) })
   .openapi({ description: 'A representation of a Datastore kind.', required: [] })
   .openapi('GooglePrivacyDlpV2KindExpression')
+
+const GooglePrivacyDlpV2PartitionIdSchema = z
+  .object({
+    namespaceId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'If not empty, the ID of the namespace to which the entities belong.',
+      }),
+    projectId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the project to which the entities belong.' }),
+  })
+  .openapi({
+    description:
+      'Datastore partition ID. A partition ID identifies a grouping of entities. The grouping is always by project and namespace, however the namespace ID may be empty. A partition ID contains several dimensions: project ID and namespace ID.',
+    required: [],
+  })
+  .openapi('GooglePrivacyDlpV2PartitionId')
 
 const GooglePrivacyDlpV2DatastoreOptionsSchema = z
   .object({
@@ -3022,58 +2704,54 @@ const GooglePrivacyDlpV2StorageConfigSchema = z
   .openapi({ description: 'Shared message indicating Cloud storage type.', required: [] })
   .openapi('GooglePrivacyDlpV2StorageConfig')
 
-const GooglePrivacyDlpV2InspectJobConfigSchema = z
-  .object({
-    actions: z
-      .array(GooglePrivacyDlpV2ActionSchema)
-      .exactOptional()
-      .openapi({ description: 'Actions to execute at the completion of the job.' }),
-    inspectConfig: GooglePrivacyDlpV2InspectConfigSchema.exactOptional().openapi({
-      description: 'How and what to scan for.',
-    }),
-    inspectTemplateName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If provided, will be used as the default for all values in InspectConfig. `inspect_config` will be merged into the values persisted as part of the template.',
-      }),
-    storageConfig: GooglePrivacyDlpV2StorageConfigSchema.exactOptional().openapi({
-      description: 'The data to scan.',
-    }),
-  })
-  .openapi({ description: 'Controls what and how to inspect for findings.', required: [] })
-  .openapi('GooglePrivacyDlpV2InspectJobConfig')
+type GooglePrivacyDlpV2InspectJobConfigType = {
+  actions?: z.infer<typeof GooglePrivacyDlpV2ActionSchema>[]
+  inspectConfig?: z.infer<typeof GooglePrivacyDlpV2InspectConfigSchema>
+  inspectTemplateName?: string
+  storageConfig?: z.infer<typeof GooglePrivacyDlpV2StorageConfigSchema>
+}
 
-const GooglePrivacyDlpV2CreateDlpJobRequestSchema = z
-  .object({
-    inspectJob: GooglePrivacyDlpV2InspectJobConfigSchema.exactOptional().openapi({
-      description: 'An inspection job scans a storage repository for InfoTypes.',
-    }),
-    jobId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The job id can contain uppercase and lowercase letters, numbers, and hyphens; that is, it must match the regular expression: `[a-zA-Z\\d-_]+`. The maximum length is 100 characters. Can be empty to allow the system to generate one.',
+const GooglePrivacyDlpV2InspectJobConfigSchema: z.ZodType<GooglePrivacyDlpV2InspectJobConfigType> =
+  z
+    .object({
+      actions: z
+        .array(GooglePrivacyDlpV2ActionSchema)
+        .exactOptional()
+        .openapi({ description: 'Actions to execute at the completion of the job.' }),
+      inspectConfig: GooglePrivacyDlpV2InspectConfigSchema.exactOptional().openapi({
+        description: 'How and what to scan for.',
       }),
-    locationId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Deprecated. This field has no effect.' }),
-    riskJob: GooglePrivacyDlpV2RiskAnalysisJobConfigSchema.exactOptional().openapi({
-      description:
-        'A risk analysis job calculates re-identification risk metrics for a BigQuery table.',
-    }),
-  })
-  .openapi({
-    description:
-      'Request message for CreateDlpJobRequest. Used to initiate long running jobs such as calculating risk metrics or inspecting Google Cloud Storage.',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2CreateDlpJobRequest')
+      inspectTemplateName: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'If provided, will be used as the default for all values in InspectConfig. `inspect_config` will be merged into the values persisted as part of the template.',
+        }),
+      storageConfig: GooglePrivacyDlpV2StorageConfigSchema.exactOptional().openapi({
+        description: 'The data to scan.',
+      }),
+    })
+    .openapi({ description: 'Controls what and how to inspect for findings.', required: [] })
+    .openapi('GooglePrivacyDlpV2InspectJobConfig')
 
-const GooglePrivacyDlpV2InspectTemplateSchema = z
+type GooglePrivacyDlpV2CreateDlpJobRequestType = {
+  inspectJob?: z.infer<typeof GooglePrivacyDlpV2InspectJobConfigSchema>
+  jobId?: string
+  locationId?: string
+  riskJob?: z.infer<typeof GooglePrivacyDlpV2RiskAnalysisJobConfigSchema>
+}
+
+type GooglePrivacyDlpV2InspectTemplateType = {
+  createTime?: string
+  description?: string
+  displayName?: string
+  inspectConfig?: z.infer<typeof GooglePrivacyDlpV2InspectConfigSchema>
+  name?: string
+  updateTime?: string
+}
+
+const GooglePrivacyDlpV2InspectTemplateSchema: z.ZodType<GooglePrivacyDlpV2InspectTemplateType> = z
   .object({
     createTime: z
       .string()
@@ -3116,25 +2794,11 @@ const GooglePrivacyDlpV2InspectTemplateSchema = z
   })
   .openapi('GooglePrivacyDlpV2InspectTemplate')
 
-const GooglePrivacyDlpV2CreateInspectTemplateRequestSchema = z
-  .object({
-    inspectTemplate: GooglePrivacyDlpV2InspectTemplateSchema.exactOptional().openapi({
-      description: 'Required. The InspectTemplate to create.',
-    }),
-    locationId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Deprecated. This field has no effect.' }),
-    templateId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The template id can contain uppercase and lowercase letters, numbers, and hyphens; that is, it must match the regular expression: `[a-zA-Z\\d-_]+`. The maximum length is 100 characters. Can be empty to allow the system to generate one.',
-      }),
-  })
-  .openapi({ description: 'Request message for CreateInspectTemplate.', required: [] })
-  .openapi('GooglePrivacyDlpV2CreateInspectTemplateRequest')
+type GooglePrivacyDlpV2CreateInspectTemplateRequestType = {
+  inspectTemplate?: z.infer<typeof GooglePrivacyDlpV2InspectTemplateSchema>
+  locationId?: string
+  templateId?: string
+}
 
 const GoogleRpcStatusSchema = z
   .object({
@@ -3193,7 +2857,7 @@ const GooglePrivacyDlpV2ErrorSchema = z
   .openapi('GooglePrivacyDlpV2Error')
 
 const GooglePrivacyDlpV2ManualSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'Job trigger option for hybrid jobs. Jobs must be manually created and finished.',
   })
@@ -3224,7 +2888,20 @@ const GooglePrivacyDlpV2TriggerSchema = z
   .openapi({ description: 'What event needs to occur for a new job to be started.', required: [] })
   .openapi('GooglePrivacyDlpV2Trigger')
 
-const GooglePrivacyDlpV2JobTriggerSchema = z
+type GooglePrivacyDlpV2JobTriggerType = {
+  createTime?: string
+  description?: string
+  displayName?: string
+  errors?: z.infer<typeof GooglePrivacyDlpV2ErrorSchema>[]
+  inspectJob?: z.infer<typeof GooglePrivacyDlpV2InspectJobConfigSchema>
+  lastRunTime?: string
+  name?: string
+  status?: 'STATUS_UNSPECIFIED' | 'HEALTHY' | 'PAUSED' | 'CANCELLED'
+  triggers?: z.infer<typeof GooglePrivacyDlpV2TriggerSchema>[]
+  updateTime?: string
+}
+
+const GooglePrivacyDlpV2JobTriggerSchema: z.ZodType<GooglePrivacyDlpV2JobTriggerType> = z
   .object({
     createTime: z
       .string()
@@ -3292,93 +2969,11 @@ const GooglePrivacyDlpV2JobTriggerSchema = z
   })
   .openapi('GooglePrivacyDlpV2JobTrigger')
 
-const GooglePrivacyDlpV2CreateJobTriggerRequestSchema = z
-  .object({
-    jobTrigger: GooglePrivacyDlpV2JobTriggerSchema.exactOptional().openapi({
-      description: 'Required. The JobTrigger to create.',
-    }),
-    locationId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Deprecated. This field has no effect.' }),
-    triggerId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The trigger id can contain uppercase and lowercase letters, numbers, and hyphens; that is, it must match the regular expression: `[a-zA-Z\\d-_]+`. The maximum length is 100 characters. Can be empty to allow the system to generate one.',
-      }),
-  })
-  .openapi({ description: 'Request message for CreateJobTrigger.', required: [] })
-  .openapi('GooglePrivacyDlpV2CreateJobTriggerRequest')
-
-const GooglePrivacyDlpV2LargeCustomDictionaryConfigSchema = z
-  .object({
-    bigQueryField: GooglePrivacyDlpV2BigQueryFieldSchema.exactOptional().openapi({
-      description: 'Field in a BigQuery table where each cell represents a dictionary phrase.',
-    }),
-    cloudStorageFileSet: GooglePrivacyDlpV2CloudStorageFileSetSchema.exactOptional().openapi({
-      description: 'Set of files containing newline-delimited lists of dictionary phrases.',
-    }),
-    outputPath: GooglePrivacyDlpV2CloudStoragePathSchema.exactOptional().openapi({
-      description:
-        'Location to store dictionary artifacts in Cloud Storage. These files will only be accessible by project owners and the DLP API. If any of these artifacts are modified, the dictionary is considered invalid and can no longer be used.',
-    }),
-  })
-  .openapi({
-    description:
-      'Configuration for a custom dictionary created from a data source of any size up to the maximum size defined in the [limits](https://cloud.google.com/dlp/limits) page. The artifacts of dictionary creation are stored in the specified Cloud Storage location. Consider using `CustomInfoType.Dictionary` for smaller dictionaries that satisfy the size requirements.',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2LargeCustomDictionaryConfig')
-
-const GooglePrivacyDlpV2StoredInfoTypeConfigSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Description of the StoredInfoType (max 256 characters).' }),
-    dictionary: GooglePrivacyDlpV2DictionarySchema.exactOptional().openapi({
-      description: 'Store dictionary-based CustomInfoType.',
-    }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Display name of the StoredInfoType (max 256 characters).' }),
-    largeCustomDictionary:
-      GooglePrivacyDlpV2LargeCustomDictionaryConfigSchema.exactOptional().openapi({
-        description: 'StoredInfoType where findings are defined by a dictionary of phrases.',
-      }),
-    regex: GooglePrivacyDlpV2RegexSchema.exactOptional().openapi({
-      description: 'Store regular expression-based StoredInfoType.',
-    }),
-  })
-  .openapi({
-    description:
-      'Configuration for stored infoTypes. All fields and subfield are provided by the user. For more information, see https://cloud.google.com/dlp/docs/creating-custom-infotypes.',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2StoredInfoTypeConfig')
-
-const GooglePrivacyDlpV2CreateStoredInfoTypeRequestSchema = z
-  .object({
-    config: GooglePrivacyDlpV2StoredInfoTypeConfigSchema.exactOptional().openapi({
-      description: 'Required. Configuration of the storedInfoType to create.',
-    }),
-    locationId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Deprecated. This field has no effect.' }),
-    storedInfoTypeId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The storedInfoType ID can contain uppercase and lowercase letters, numbers, and hyphens; that is, it must match the regular expression: `[a-zA-Z\\d-_]+`. The maximum length is 100 characters. Can be empty to allow the system to generate one.',
-      }),
-  })
-  .openapi({ description: 'Request message for CreateStoredInfoType.', required: [] })
-  .openapi('GooglePrivacyDlpV2CreateStoredInfoTypeRequest')
+type GooglePrivacyDlpV2CreateJobTriggerRequestType = {
+  jobTrigger?: z.infer<typeof GooglePrivacyDlpV2JobTriggerSchema>
+  locationId?: string
+  triggerId?: string
+}
 
 const GooglePrivacyDlpV2ExportSchema = z
   .object({
@@ -3506,52 +3101,66 @@ const GooglePrivacyDlpV2DataProfileLocationSchema = z
   .openapi({ description: 'The data that will be profiled.', required: [] })
   .openapi('GooglePrivacyDlpV2DataProfileLocation')
 
-const GooglePrivacyDlpV2DataProfileJobConfigSchema = z
-  .object({
-    dataProfileActions: z
-      .array(GooglePrivacyDlpV2DataProfileActionSchema)
-      .exactOptional()
-      .openapi({ description: 'Actions to execute at the completion of the job.' }),
-    inspectTemplates: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Detection logic for profile generation. Not all template features are used by profiles. FindingLimits, include_quote and exclude_info_types have no impact on data profiling. Multiple templates may be provided if there is data in multiple regions. At most one template must be specified per-region (including "global"). Each region is scanned using the applicable template. If no region-specific template is specified, but a "global" template is specified, it will be copied to that region and used instead. If no global or region-specific template is provided for a region with data, that region\'s data will not be scanned. For more information, see https://cloud.google.com/dlp/docs/data-profiles#data_residency.',
-      }),
-    location: GooglePrivacyDlpV2DataProfileLocationSchema.exactOptional().openapi({
-      description: 'The data to scan.',
-    }),
-    projectId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The project that will run the scan. The DLP service account that exists within this project must have access to all resources that are profiled, and the Cloud DLP API must be enabled.',
-      }),
-  })
-  .openapi({
-    description:
-      'Configuration for setting up a job to scan resources for profile generation. Only one data profile configuration may exist per organization, folder, or project. The generated data profiles are retained according to the [data retention policy] (https://cloud.google.com/dlp/docs/data-profiles#retention).',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2DataProfileJobConfig')
+type GooglePrivacyDlpV2DataProfileJobConfigType = {
+  dataProfileActions?: z.infer<typeof GooglePrivacyDlpV2DataProfileActionSchema>[]
+  inspectTemplates?: string[]
+  location?: z.infer<typeof GooglePrivacyDlpV2DataProfileLocationSchema>
+  projectId?: string
+}
 
-const GooglePrivacyDlpV2DataProfileConfigSnapshotSchema = z
-  .object({
-    dataProfileJob: GooglePrivacyDlpV2DataProfileJobConfigSchema.exactOptional().openapi({
-      description: 'A copy of the configuration used to generate this profile.',
-    }),
-    inspectConfig: GooglePrivacyDlpV2InspectConfigSchema.exactOptional().openapi({
+const GooglePrivacyDlpV2DataProfileJobConfigSchema: z.ZodType<GooglePrivacyDlpV2DataProfileJobConfigType> =
+  z
+    .object({
+      dataProfileActions: z
+        .array(GooglePrivacyDlpV2DataProfileActionSchema)
+        .exactOptional()
+        .openapi({ description: 'Actions to execute at the completion of the job.' }),
+      inspectTemplates: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            'Detection logic for profile generation. Not all template features are used by profiles. FindingLimits, include_quote and exclude_info_types have no impact on data profiling. Multiple templates may be provided if there is data in multiple regions. At most one template must be specified per-region (including "global"). Each region is scanned using the applicable template. If no region-specific template is specified, but a "global" template is specified, it will be copied to that region and used instead. If no global or region-specific template is provided for a region with data, that region\'s data will not be scanned. For more information, see https://cloud.google.com/dlp/docs/data-profiles#data_residency.',
+        }),
+      location: GooglePrivacyDlpV2DataProfileLocationSchema.exactOptional().openapi({
+        description: 'The data to scan.',
+      }),
+      projectId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The project that will run the scan. The DLP service account that exists within this project must have access to all resources that are profiled, and the Cloud DLP API must be enabled.',
+        }),
+    })
+    .openapi({
       description:
-        'A copy of the inspection config used to generate this profile. This is a copy of the inspect_template specified in `DataProfileJobConfig`.',
-    }),
-  })
-  .openapi({
-    description: 'Snapshot of the configurations used to generate the profile.',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2DataProfileConfigSnapshot')
+        'Configuration for setting up a job to scan resources for profile generation. Only one data profile configuration may exist per organization, folder, or project. The generated data profiles are retained according to the [data retention policy] (https://cloud.google.com/dlp/docs/data-profiles#retention).',
+      required: [],
+    })
+    .openapi('GooglePrivacyDlpV2DataProfileJobConfig')
+
+type GooglePrivacyDlpV2DataProfileConfigSnapshotType = {
+  dataProfileJob?: z.infer<typeof GooglePrivacyDlpV2DataProfileJobConfigSchema>
+  inspectConfig?: z.infer<typeof GooglePrivacyDlpV2InspectConfigSchema>
+}
+
+const GooglePrivacyDlpV2DataProfileConfigSnapshotSchema: z.ZodType<GooglePrivacyDlpV2DataProfileConfigSnapshotType> =
+  z
+    .object({
+      dataProfileJob: GooglePrivacyDlpV2DataProfileJobConfigSchema.exactOptional().openapi({
+        description: 'A copy of the configuration used to generate this profile.',
+      }),
+      inspectConfig: GooglePrivacyDlpV2InspectConfigSchema.exactOptional().openapi({
+        description:
+          'A copy of the inspection config used to generate this profile. This is a copy of the inspect_template specified in `DataProfileJobConfig`.',
+      }),
+    })
+    .openapi({
+      description: 'Snapshot of the configurations used to generate the profile.',
+      required: [],
+    })
+    .openapi('GooglePrivacyDlpV2DataProfileConfigSnapshot')
 
 const GooglePrivacyDlpV2DataRiskLevelSchema = z
   .object({
@@ -3631,220 +3240,244 @@ const GooglePrivacyDlpV2SensitivityScoreSchema = z
   })
   .openapi('GooglePrivacyDlpV2SensitivityScore')
 
-const GooglePrivacyDlpV2TableDataProfileSchema = z
-  .object({
-    configSnapshot: GooglePrivacyDlpV2DataProfileConfigSnapshotSchema.exactOptional().openapi({
-      description: 'The snapshot of the configurations used to generate the profile.',
-    }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time at which the table was created.' }),
-    dataRiskLevel: GooglePrivacyDlpV2DataRiskLevelSchema.exactOptional().openapi({
-      description: 'The data risk level of this table.',
-    }),
-    datasetId: z.string().exactOptional().openapi({ description: 'The BigQuery dataset ID.' }),
-    datasetLocation: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The BigQuery location where the dataset's data is stored. See https://cloud.google.com/bigquery/docs/locations for supported locations.",
-      }),
-    datasetProjectId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The GCP project ID that owns the BigQuery dataset.' }),
-    encryptionStatus: z
-      .enum([
-        'ENCRYPTION_STATUS_UNSPECIFIED',
-        'ENCRYPTION_GOOGLE_MANAGED',
-        'ENCRYPTION_CUSTOMER_MANAGED',
-      ])
-      .exactOptional()
-      .openapi({ description: 'How the table is encrypted.' }),
-    expirationTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional. The time when this table expires.' }),
-    failedColumnCount: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The number of columns skipped in the table because of an error.' }),
-    fullResource: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name of the table. https://cloud.google.com/apis/design/resource_names#full_resource_name',
-      }),
-    lastModifiedTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time when this table was last modified' }),
-    name: z.string().exactOptional().openapi({ description: 'The name of the profile.' }),
-    otherInfoTypes: z
-      .array(GooglePrivacyDlpV2OtherInfoTypeSummarySchema)
-      .exactOptional()
-      .openapi({ description: "Other infoTypes found in this table's data." }),
-    predictedInfoTypes: z
-      .array(GooglePrivacyDlpV2InfoTypeSummarySchema)
-      .exactOptional()
-      .openapi({ description: "The infoTypes predicted from this table's data." }),
-    profileLastGenerated: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The last time the profile was generated.' }),
-    profileStatus: GooglePrivacyDlpV2ProfileStatusSchema.exactOptional().openapi({
-      description:
-        'Success or error status from the most recent profile generation attempt. May be empty if the profile is still being generated.',
-    }),
-    projectDataProfile: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The resource name to the project data profile for this table.' }),
-    resourceLabels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description: 'The labels applied to the resource at the time the profile was generated.',
-      }),
-    resourceVisibility: z
-      .enum([
-        'RESOURCE_VISIBILITY_UNSPECIFIED',
-        'RESOURCE_VISIBILITY_PUBLIC',
-        'RESOURCE_VISIBILITY_RESTRICTED',
-      ])
-      .exactOptional()
-      .openapi({ description: 'How broadly a resource has been shared.' }),
-    rowCount: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Number of rows in the table when the profile was generated. This will not be populated for BigLake tables.',
-      }),
-    scannedColumnCount: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The number of columns profiled in the table.' }),
-    sensitivityScore: GooglePrivacyDlpV2SensitivityScoreSchema.exactOptional().openapi({
-      description: 'The sensitivity score of this table.',
-    }),
-    state: z
-      .enum(['STATE_UNSPECIFIED', 'RUNNING', 'DONE'])
-      .exactOptional()
-      .openapi({ description: 'State of a profile.' }),
-    tableId: z.string().exactOptional().openapi({ description: 'The BigQuery table ID.' }),
-    tableSizeBytes: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The size of the table when the profile was generated.' }),
-  })
-  .openapi({ description: 'The profile for a scanned table.', required: [] })
-  .openapi('GooglePrivacyDlpV2TableDataProfile')
+type GooglePrivacyDlpV2TableDataProfileType = {
+  configSnapshot?: z.infer<typeof GooglePrivacyDlpV2DataProfileConfigSnapshotSchema>
+  createTime?: string
+  dataRiskLevel?: z.infer<typeof GooglePrivacyDlpV2DataRiskLevelSchema>
+  datasetId?: string
+  datasetLocation?: string
+  datasetProjectId?: string
+  encryptionStatus?:
+    | 'ENCRYPTION_STATUS_UNSPECIFIED'
+    | 'ENCRYPTION_GOOGLE_MANAGED'
+    | 'ENCRYPTION_CUSTOMER_MANAGED'
+  expirationTime?: string
+  failedColumnCount?: string
+  fullResource?: string
+  lastModifiedTime?: string
+  name?: string
+  otherInfoTypes?: z.infer<typeof GooglePrivacyDlpV2OtherInfoTypeSummarySchema>[]
+  predictedInfoTypes?: z.infer<typeof GooglePrivacyDlpV2InfoTypeSummarySchema>[]
+  profileLastGenerated?: string
+  profileStatus?: z.infer<typeof GooglePrivacyDlpV2ProfileStatusSchema>
+  projectDataProfile?: string
+  resourceLabels?: { [key: string]: string }
+  resourceVisibility?:
+    | 'RESOURCE_VISIBILITY_UNSPECIFIED'
+    | 'RESOURCE_VISIBILITY_PUBLIC'
+    | 'RESOURCE_VISIBILITY_RESTRICTED'
+  rowCount?: string
+  scannedColumnCount?: string
+  sensitivityScore?: z.infer<typeof GooglePrivacyDlpV2SensitivityScoreSchema>
+  state?: 'STATE_UNSPECIFIED' | 'RUNNING' | 'DONE'
+  tableId?: string
+  tableSizeBytes?: string
+}
 
-const GooglePrivacyDlpV2DataProfilePubSubMessageSchema = z
+const GooglePrivacyDlpV2TableDataProfileSchema: z.ZodType<GooglePrivacyDlpV2TableDataProfileType> =
+  z
+    .object({
+      configSnapshot: GooglePrivacyDlpV2DataProfileConfigSnapshotSchema.exactOptional().openapi({
+        description: 'The snapshot of the configurations used to generate the profile.',
+      }),
+      createTime: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The time at which the table was created.' }),
+      dataRiskLevel: GooglePrivacyDlpV2DataRiskLevelSchema.exactOptional().openapi({
+        description: 'The data risk level of this table.',
+      }),
+      datasetId: z.string().exactOptional().openapi({ description: 'The BigQuery dataset ID.' }),
+      datasetLocation: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            "The BigQuery location where the dataset's data is stored. See https://cloud.google.com/bigquery/docs/locations for supported locations.",
+        }),
+      datasetProjectId: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The GCP project ID that owns the BigQuery dataset.' }),
+      encryptionStatus: z
+        .enum([
+          'ENCRYPTION_STATUS_UNSPECIFIED',
+          'ENCRYPTION_GOOGLE_MANAGED',
+          'ENCRYPTION_CUSTOMER_MANAGED',
+        ])
+        .exactOptional()
+        .openapi({ description: 'How the table is encrypted.' }),
+      expirationTime: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Optional. The time when this table expires.' }),
+      failedColumnCount: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'The number of columns skipped in the table because of an error.',
+        }),
+      fullResource: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The resource name of the table. https://cloud.google.com/apis/design/resource_names#full_resource_name',
+        }),
+      lastModifiedTime: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The time when this table was last modified' }),
+      name: z.string().exactOptional().openapi({ description: 'The name of the profile.' }),
+      otherInfoTypes: z
+        .array(GooglePrivacyDlpV2OtherInfoTypeSummarySchema)
+        .exactOptional()
+        .openapi({ description: "Other infoTypes found in this table's data." }),
+      predictedInfoTypes: z
+        .array(GooglePrivacyDlpV2InfoTypeSummarySchema)
+        .exactOptional()
+        .openapi({ description: "The infoTypes predicted from this table's data." }),
+      profileLastGenerated: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The last time the profile was generated.' }),
+      profileStatus: GooglePrivacyDlpV2ProfileStatusSchema.exactOptional().openapi({
+        description:
+          'Success or error status from the most recent profile generation attempt. May be empty if the profile is still being generated.',
+      }),
+      projectDataProfile: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The resource name to the project data profile for this table.' }),
+      resourceLabels: z
+        .record(z.string(), z.string())
+        .exactOptional()
+        .openapi({
+          description: 'The labels applied to the resource at the time the profile was generated.',
+        }),
+      resourceVisibility: z
+        .enum([
+          'RESOURCE_VISIBILITY_UNSPECIFIED',
+          'RESOURCE_VISIBILITY_PUBLIC',
+          'RESOURCE_VISIBILITY_RESTRICTED',
+        ])
+        .exactOptional()
+        .openapi({ description: 'How broadly a resource has been shared.' }),
+      rowCount: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Number of rows in the table when the profile was generated. This will not be populated for BigLake tables.',
+        }),
+      scannedColumnCount: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The number of columns profiled in the table.' }),
+      sensitivityScore: GooglePrivacyDlpV2SensitivityScoreSchema.exactOptional().openapi({
+        description: 'The sensitivity score of this table.',
+      }),
+      state: z
+        .enum(['STATE_UNSPECIFIED', 'RUNNING', 'DONE'])
+        .exactOptional()
+        .openapi({ description: 'State of a profile.' }),
+      tableId: z.string().exactOptional().openapi({ description: 'The BigQuery table ID.' }),
+      tableSizeBytes: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The size of the table when the profile was generated.' }),
+    })
+    .openapi({ description: 'The profile for a scanned table.', required: [] })
+    .openapi('GooglePrivacyDlpV2TableDataProfile')
+
+type GooglePrivacyDlpV2DataProfilePubSubMessageType = {
+  event?:
+    | 'EVENT_TYPE_UNSPECIFIED'
+    | 'NEW_PROFILE'
+    | 'CHANGED_PROFILE'
+    | 'SCORE_INCREASED'
+    | 'ERROR_CHANGED'
+  profile?: z.infer<typeof GooglePrivacyDlpV2TableDataProfileSchema>
+}
+
+const GooglePrivacyDlpV2ByteContentItemSchema = z
   .object({
-    event: z
+    data: z.string().exactOptional().openapi({ description: 'Content data to inspect or redact.' }),
+    type: z
       .enum([
-        'EVENT_TYPE_UNSPECIFIED',
-        'NEW_PROFILE',
-        'CHANGED_PROFILE',
-        'SCORE_INCREASED',
-        'ERROR_CHANGED',
+        'BYTES_TYPE_UNSPECIFIED',
+        'IMAGE',
+        'IMAGE_JPEG',
+        'IMAGE_BMP',
+        'IMAGE_PNG',
+        'IMAGE_SVG',
+        'TEXT_UTF8',
+        'WORD_DOCUMENT',
+        'PDF',
+        'POWERPOINT_DOCUMENT',
+        'EXCEL_DOCUMENT',
+        'AVRO',
+        'CSV',
+        'TSV',
       ])
       .exactOptional()
-      .openapi({ description: 'The event that caused the Pub/Sub message to be sent.' }),
-    profile: GooglePrivacyDlpV2TableDataProfileSchema.exactOptional().openapi({
-      description:
-        'If `DetailLevel` is `TABLE_PROFILE` this will be fully populated. Otherwise, if `DetailLevel` is `RESOURCE_NAME`, then only `name` and `full_resource` will be populated.',
-    }),
+      .openapi({
+        description: 'The type of data stored in the bytes string. Default will be TEXT_UTF8.',
+      }),
+  })
+  .openapi({ description: 'Container for bytes to inspect or redact.', required: [] })
+  .openapi('GooglePrivacyDlpV2ByteContentItem')
+
+const GooglePrivacyDlpV2RowSchema = z
+  .object({
+    values: z
+      .array(GooglePrivacyDlpV2ValueSchema)
+      .exactOptional()
+      .openapi({ description: 'Individual cells.' }),
+  })
+  .openapi({ description: 'Values of the row.', required: [] })
+  .openapi('GooglePrivacyDlpV2Row')
+
+const GooglePrivacyDlpV2TableSchema = z
+  .object({
+    headers: z
+      .array(GooglePrivacyDlpV2FieldIdSchema)
+      .exactOptional()
+      .openapi({ description: 'Headers of the table.' }),
+    rows: z
+      .array(GooglePrivacyDlpV2RowSchema)
+      .exactOptional()
+      .openapi({ description: 'Rows of the table.' }),
   })
   .openapi({
     description:
-      'Pub/Sub topic message for a DataProfileAction.PubSubNotification event. To receive a message of protocol buffer schema type, convert the message data to an object of this proto class.',
+      'Structured content to inspect. Up to 50,000 `Value`s per request allowed. See https://cloud.google.com/dlp/docs/inspecting-structured-text#inspecting_a_table to learn more.',
     required: [],
   })
-  .openapi('GooglePrivacyDlpV2DataProfilePubSubMessage')
+  .openapi('GooglePrivacyDlpV2Table')
 
-const GooglePrivacyDlpV2TimeZoneSchema = z
+const GooglePrivacyDlpV2ContentItemSchema = z
   .object({
-    offsetMinutes: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Set only if the offset can be determined. Positive for time ahead of UTC. E.g. For "UTC-9", this value is -540.',
-      }),
+    byteItem: GooglePrivacyDlpV2ByteContentItemSchema.exactOptional().openapi({
+      description: 'Content data to inspect or redact. Replaces `type` and `data`.',
+    }),
+    table: GooglePrivacyDlpV2TableSchema.exactOptional().openapi({
+      description:
+        'Structured content for inspection. See https://cloud.google.com/dlp/docs/inspecting-text#inspecting_a_table to learn more.',
+    }),
+    value: z.string().exactOptional().openapi({ description: 'String data to inspect or redact.' }),
   })
-  .openapi({ description: 'Time zone of the date time object.', required: [] })
-  .openapi('GooglePrivacyDlpV2TimeZone')
+  .openapi({ required: [] })
+  .openapi('GooglePrivacyDlpV2ContentItem')
 
-const GooglePrivacyDlpV2DateTimeSchema = z
-  .object({
-    date: GoogleTypeDateSchema.exactOptional().openapi({
-      description: 'One or more of the following must be set. Must be a valid date or time value.',
-    }),
-    dayOfWeek: z
-      .enum([
-        'DAY_OF_WEEK_UNSPECIFIED',
-        'MONDAY',
-        'TUESDAY',
-        'WEDNESDAY',
-        'THURSDAY',
-        'FRIDAY',
-        'SATURDAY',
-        'SUNDAY',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Day of week' }),
-    time: GoogleTypeTimeOfDaySchema.exactOptional().openapi({ description: 'Time of day' }),
-    timeZone: GooglePrivacyDlpV2TimeZoneSchema.exactOptional().openapi({
-      description: 'Time zone',
-    }),
-  })
-  .openapi({
-    description: 'Message for a date time object. e.g. 2018-01-01, 5th August.',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2DateTime')
-
-const GooglePrivacyDlpV2DeidentifyContentRequestSchema = z
-  .object({
-    deidentifyConfig: GooglePrivacyDlpV2DeidentifyConfigSchema.exactOptional().openapi({
-      description:
-        'Configuration for the de-identification of the content item. Items specified here will override the template referenced by the deidentify_template_name argument.',
-    }),
-    deidentifyTemplateName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Template to use. Any configuration directly specified in deidentify_config will override those set in the template. Singular fields that are set in this request will replace their corresponding fields in the template. Repeated fields are appended. Singular sub-messages and groups are recursively merged.',
-      }),
-    inspectConfig: GooglePrivacyDlpV2InspectConfigSchema.exactOptional().openapi({
-      description:
-        'Configuration for the inspector. Items specified here will override the template referenced by the inspect_template_name argument.',
-    }),
-    inspectTemplateName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Template to use. Any configuration directly specified in inspect_config will override those set in the template. Singular fields that are set in this request will replace their corresponding fields in the template. Repeated fields are appended. Singular sub-messages and groups are recursively merged.',
-      }),
-    item: GooglePrivacyDlpV2ContentItemSchema.exactOptional().openapi({
-      description:
-        'The item to de-identify. Will be treated as text. This value must be of type Table if your deidentify_config is a RecordTransformations object.',
-    }),
-    locationId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Deprecated. This field has no effect.' }),
-  })
-  .openapi({ description: 'Request to de-identify a ContentItem.', required: [] })
-  .openapi('GooglePrivacyDlpV2DeidentifyContentRequest')
+type GooglePrivacyDlpV2DeidentifyContentRequestType = {
+  deidentifyConfig?: z.infer<typeof GooglePrivacyDlpV2DeidentifyConfigSchema>
+  deidentifyTemplateName?: string
+  inspectConfig?: z.infer<typeof GooglePrivacyDlpV2InspectConfigSchema>
+  inspectTemplateName?: string
+  item?: z.infer<typeof GooglePrivacyDlpV2ContentItemSchema>
+  locationId?: string
+}
 
 const GooglePrivacyDlpV2SummaryResultSchema = z
   .object({
@@ -3871,83 +3504,108 @@ const GooglePrivacyDlpV2SummaryResultSchema = z
   })
   .openapi('GooglePrivacyDlpV2SummaryResult')
 
-const GooglePrivacyDlpV2TransformationSummarySchema = z
-  .object({
-    field: GooglePrivacyDlpV2FieldIdSchema.exactOptional().openapi({
-      description: 'Set if the transformation was limited to a specific FieldId.',
-    }),
-    fieldTransformations: z
-      .array(GooglePrivacyDlpV2FieldTransformationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The field transformation that was applied. If multiple field transformations are requested for a single field, this list will contain all of them; otherwise, only one is supplied.',
+type GooglePrivacyDlpV2TransformationSummaryType = {
+  field?: z.infer<typeof GooglePrivacyDlpV2FieldIdSchema>
+  fieldTransformations?: z.infer<typeof GooglePrivacyDlpV2FieldTransformationSchema>[]
+  infoType?: z.infer<typeof GooglePrivacyDlpV2InfoTypeSchema>
+  recordSuppress?: z.infer<typeof GooglePrivacyDlpV2RecordSuppressionSchema>
+  results?: z.infer<typeof GooglePrivacyDlpV2SummaryResultSchema>[]
+  transformation?: z.infer<typeof GooglePrivacyDlpV2PrimitiveTransformationSchema>
+  transformedBytes?: string
+}
+
+const GooglePrivacyDlpV2TransformationSummarySchema: z.ZodType<GooglePrivacyDlpV2TransformationSummaryType> =
+  z
+    .object({
+      field: GooglePrivacyDlpV2FieldIdSchema.exactOptional().openapi({
+        description: 'Set if the transformation was limited to a specific FieldId.',
       }),
-    infoType: GooglePrivacyDlpV2InfoTypeSchema.exactOptional().openapi({
-      description: 'Set if the transformation was limited to a specific InfoType.',
-    }),
-    recordSuppress: GooglePrivacyDlpV2RecordSuppressionSchema.exactOptional().openapi({
-      description: 'The specific suppression option these stats apply to.',
-    }),
-    results: z
-      .array(GooglePrivacyDlpV2SummaryResultSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Collection of all transformations that took place or had an error.',
+      fieldTransformations: z
+        .array(GooglePrivacyDlpV2FieldTransformationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The field transformation that was applied. If multiple field transformations are requested for a single field, this list will contain all of them; otherwise, only one is supplied.',
+        }),
+      infoType: GooglePrivacyDlpV2InfoTypeSchema.exactOptional().openapi({
+        description: 'Set if the transformation was limited to a specific InfoType.',
       }),
-    transformation: GooglePrivacyDlpV2PrimitiveTransformationSchema.exactOptional().openapi({
-      description: 'The specific transformation these stats apply to.',
-    }),
-    transformedBytes: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Total size in bytes that were transformed in some way.' }),
-  })
-  .openapi({
-    description:
-      "Summary of a single transformation. Only one of 'transformation', 'field_transformation', or 'record_suppress' will be set.",
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2TransformationSummary')
-
-const GooglePrivacyDlpV2TransformationOverviewSchema = z
-  .object({
-    transformationSummaries: z
-      .array(GooglePrivacyDlpV2TransformationSummarySchema)
-      .exactOptional()
-      .openapi({ description: 'Transformations applied to the dataset.' }),
-    transformedBytes: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Total size in bytes that were transformed in some way.' }),
-  })
-  .openapi({ description: 'Overview of the modifications that occurred.', required: [] })
-  .openapi('GooglePrivacyDlpV2TransformationOverview')
-
-const GooglePrivacyDlpV2DeidentifyContentResponseSchema = z
-  .object({
-    item: GooglePrivacyDlpV2ContentItemSchema.exactOptional().openapi({
-      description: 'The de-identified item.',
-    }),
-    overview: GooglePrivacyDlpV2TransformationOverviewSchema.exactOptional().openapi({
-      description: 'An overview of the changes that were made on the `item`.',
-    }),
-  })
-  .openapi({ description: 'Results of de-identifying a ContentItem.', required: [] })
-  .openapi('GooglePrivacyDlpV2DeidentifyContentResponse')
-
-const GooglePrivacyDlpV2RequestedOptionsSchema = z
-  .object({
-    jobConfig: GooglePrivacyDlpV2InspectJobConfigSchema.exactOptional().openapi({
-      description: 'Inspect config.',
-    }),
-    snapshotInspectTemplate: GooglePrivacyDlpV2InspectTemplateSchema.exactOptional().openapi({
+      recordSuppress: GooglePrivacyDlpV2RecordSuppressionSchema.exactOptional().openapi({
+        description: 'The specific suppression option these stats apply to.',
+      }),
+      results: z
+        .array(GooglePrivacyDlpV2SummaryResultSchema)
+        .exactOptional()
+        .openapi({
+          description: 'Collection of all transformations that took place or had an error.',
+        }),
+      transformation: GooglePrivacyDlpV2PrimitiveTransformationSchema.exactOptional().openapi({
+        description: 'The specific transformation these stats apply to.',
+      }),
+      transformedBytes: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Total size in bytes that were transformed in some way.' }),
+    })
+    .openapi({
       description:
-        'If run with an InspectTemplate, a snapshot of its state at the time of this run.',
+        "Summary of a single transformation. Only one of 'transformation', 'field_transformation', or 'record_suppress' will be set.",
+      required: [],
+    })
+    .openapi('GooglePrivacyDlpV2TransformationSummary')
+
+type GooglePrivacyDlpV2TransformationOverviewType = {
+  transformationSummaries?: z.infer<typeof GooglePrivacyDlpV2TransformationSummarySchema>[]
+  transformedBytes?: string
+}
+
+const GooglePrivacyDlpV2TransformationOverviewSchema: z.ZodType<GooglePrivacyDlpV2TransformationOverviewType> =
+  z
+    .object({
+      transformationSummaries: z
+        .array(GooglePrivacyDlpV2TransformationSummarySchema)
+        .exactOptional()
+        .openapi({ description: 'Transformations applied to the dataset.' }),
+      transformedBytes: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Total size in bytes that were transformed in some way.' }),
+    })
+    .openapi({ description: 'Overview of the modifications that occurred.', required: [] })
+    .openapi('GooglePrivacyDlpV2TransformationOverview')
+
+type GooglePrivacyDlpV2DeidentifyContentResponseType = {
+  item?: z.infer<typeof GooglePrivacyDlpV2ContentItemSchema>
+  overview?: z.infer<typeof GooglePrivacyDlpV2TransformationOverviewSchema>
+}
+
+const GooglePrivacyDlpV2ActionDetailsSchema: z.ZodType<GooglePrivacyDlpV2ActionDetailsType> = z
+  .object({
+    deidentifyDetails: GooglePrivacyDlpV2DeidentifyDataSourceDetailsSchema.exactOptional().openapi({
+      description: 'Outcome of a de-identification action.',
     }),
   })
-  .openapi({ description: 'Snapshot of the inspection configuration.', required: [] })
-  .openapi('GooglePrivacyDlpV2RequestedOptions')
+  .openapi({ description: 'The results of an Action.', required: [] })
+  .openapi('GooglePrivacyDlpV2ActionDetails')
+
+type GooglePrivacyDlpV2RequestedOptionsType = {
+  jobConfig?: z.infer<typeof GooglePrivacyDlpV2InspectJobConfigSchema>
+  snapshotInspectTemplate?: z.infer<typeof GooglePrivacyDlpV2InspectTemplateSchema>
+}
+
+const GooglePrivacyDlpV2RequestedOptionsSchema: z.ZodType<GooglePrivacyDlpV2RequestedOptionsType> =
+  z
+    .object({
+      jobConfig: GooglePrivacyDlpV2InspectJobConfigSchema.exactOptional().openapi({
+        description: 'Inspect config.',
+      }),
+      snapshotInspectTemplate: GooglePrivacyDlpV2InspectTemplateSchema.exactOptional().openapi({
+        description:
+          'If run with an InspectTemplate, a snapshot of its state at the time of this run.',
+      }),
+    })
+    .openapi({ description: 'Snapshot of the inspection configuration.', required: [] })
+    .openapi('GooglePrivacyDlpV2RequestedOptions')
 
 const GooglePrivacyDlpV2HybridInspectStatisticsSchema = z
   .object({
@@ -4018,59 +3676,81 @@ const GooglePrivacyDlpV2ResultSchema = z
   })
   .openapi('GooglePrivacyDlpV2Result')
 
-const GooglePrivacyDlpV2InspectDataSourceDetailsSchema = z
-  .object({
-    requestedOptions: GooglePrivacyDlpV2RequestedOptionsSchema.exactOptional().openapi({
-      description: 'The configuration used for this job.',
-    }),
-    result: GooglePrivacyDlpV2ResultSchema.exactOptional().openapi({
-      description: 'A summary of the outcome of this inspection job.',
-    }),
-  })
-  .openapi({ description: 'The results of an inspect DataSource job.', required: [] })
-  .openapi('GooglePrivacyDlpV2InspectDataSourceDetails')
+type GooglePrivacyDlpV2InspectDataSourceDetailsType = {
+  requestedOptions?: z.infer<typeof GooglePrivacyDlpV2RequestedOptionsSchema>
+  result?: z.infer<typeof GooglePrivacyDlpV2ResultSchema>
+}
 
-const GooglePrivacyDlpV2DlpJobSchema = z
-  .object({
-    actionDetails: z
-      .array(GooglePrivacyDlpV2ActionDetailsSchema)
-      .exactOptional()
-      .openapi({ description: 'Events that should occur after the job has completed.' }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Time when the job was created.' }),
-    endTime: z.string().exactOptional().openapi({ description: 'Time when the job finished.' }),
-    errors: z
-      .array(GooglePrivacyDlpV2ErrorSchema)
-      .exactOptional()
-      .openapi({ description: 'A stream of errors encountered running the job.' }),
-    inspectDetails: GooglePrivacyDlpV2InspectDataSourceDetailsSchema.exactOptional().openapi({
-      description: 'Results from inspecting a data source.',
-    }),
-    jobTriggerName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If created by a job trigger, the resource name of the trigger that instantiated the job.',
+const GooglePrivacyDlpV2InspectDataSourceDetailsSchema: z.ZodType<GooglePrivacyDlpV2InspectDataSourceDetailsType> =
+  z
+    .object({
+      requestedOptions: GooglePrivacyDlpV2RequestedOptionsSchema.exactOptional().openapi({
+        description: 'The configuration used for this job.',
       }),
-    name: z.string().exactOptional().openapi({ description: 'The server-assigned name.' }),
-    riskDetails: GooglePrivacyDlpV2AnalyzeDataSourceRiskDetailsSchema.exactOptional().openapi({
-      description: 'Results from analyzing risk of a data source.',
-    }),
-    startTime: z.string().exactOptional().openapi({ description: 'Time when the job started.' }),
-    state: z
-      .enum(['JOB_STATE_UNSPECIFIED', 'PENDING', 'RUNNING', 'DONE', 'CANCELED', 'FAILED', 'ACTIVE'])
-      .exactOptional()
-      .openapi({ description: 'State of a job.' }),
-    type: z
-      .enum(['DLP_JOB_TYPE_UNSPECIFIED', 'INSPECT_JOB', 'RISK_ANALYSIS_JOB'])
-      .exactOptional()
-      .openapi({ description: 'The type of job.' }),
-  })
-  .openapi({ description: 'Combines all of the information about a DLP job.', required: [] })
-  .openapi('GooglePrivacyDlpV2DlpJob')
+      result: GooglePrivacyDlpV2ResultSchema.exactOptional().openapi({
+        description: 'A summary of the outcome of this inspection job.',
+      }),
+    })
+    .openapi({ description: 'The results of an inspect DataSource job.', required: [] })
+    .openapi('GooglePrivacyDlpV2InspectDataSourceDetails')
+
+const GooglePrivacyDlpV2AnalyzeDataSourceRiskDetailsSchema: z.ZodType<GooglePrivacyDlpV2AnalyzeDataSourceRiskDetailsType> =
+  z
+    .object({
+      categoricalStatsResult:
+        GooglePrivacyDlpV2CategoricalStatsResultSchema.exactOptional().openapi({
+          description: 'Categorical stats result',
+        }),
+      deltaPresenceEstimationResult:
+        GooglePrivacyDlpV2DeltaPresenceEstimationResultSchema.exactOptional().openapi({
+          description: 'Delta-presence result',
+        }),
+      kAnonymityResult: GooglePrivacyDlpV2KAnonymityResultSchema.exactOptional().openapi({
+        description: 'K-anonymity result',
+      }),
+      kMapEstimationResult: GooglePrivacyDlpV2KMapEstimationResultSchema.exactOptional().openapi({
+        description: 'K-map result',
+      }),
+      lDiversityResult: GooglePrivacyDlpV2LDiversityResultSchema.exactOptional().openapi({
+        description: 'L-divesity result',
+      }),
+      numericalStatsResult: GooglePrivacyDlpV2NumericalStatsResultSchema.exactOptional().openapi({
+        description: 'Numerical stats result',
+      }),
+      requestedOptions:
+        GooglePrivacyDlpV2RequestedRiskAnalysisOptionsSchema.exactOptional().openapi({
+          description: 'The configuration used for this job.',
+        }),
+      requestedPrivacyMetric: GooglePrivacyDlpV2PrivacyMetricSchema.exactOptional().openapi({
+        description: 'Privacy metric to compute.',
+      }),
+      requestedSourceTable: GooglePrivacyDlpV2BigQueryTableSchema.exactOptional().openapi({
+        description: 'Input dataset to compute metrics over.',
+      }),
+    })
+    .openapi({ description: 'Result of a risk analysis operation request.', required: [] })
+    .openapi('GooglePrivacyDlpV2AnalyzeDataSourceRiskDetails')
+
+type GooglePrivacyDlpV2DlpJobType = {
+  actionDetails?: z.infer<typeof GooglePrivacyDlpV2ActionDetailsSchema>[]
+  createTime?: string
+  endTime?: string
+  errors?: z.infer<typeof GooglePrivacyDlpV2ErrorSchema>[]
+  inspectDetails?: z.infer<typeof GooglePrivacyDlpV2InspectDataSourceDetailsSchema>
+  jobTriggerName?: string
+  name?: string
+  riskDetails?: z.infer<typeof GooglePrivacyDlpV2AnalyzeDataSourceRiskDetailsSchema>
+  startTime?: string
+  state?:
+    | 'JOB_STATE_UNSPECIFIED'
+    | 'PENDING'
+    | 'RUNNING'
+    | 'DONE'
+    | 'CANCELED'
+    | 'FAILED'
+    | 'ACTIVE'
+  type?: 'DLP_JOB_TYPE_UNSPECIFIED' | 'INSPECT_JOB' | 'RISK_ANALYSIS_JOB'
+}
 
 const GooglePrivacyDlpV2RangeSchema = z
   .object({
@@ -4086,7 +3766,305 @@ const GooglePrivacyDlpV2RangeSchema = z
   .openapi({ description: 'Generic half-open interval [start, end)', required: [] })
   .openapi('GooglePrivacyDlpV2Range')
 
-const GooglePrivacyDlpV2LocationSchema = z
+const GooglePrivacyDlpV2ContainerSchema = z
+  .object({
+    fullPath: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "A string representation of the full container name. Examples: - BigQuery: 'Project:DataSetId.TableId' - Cloud Storage: 'gs://Bucket/folders/filename.txt'",
+      }),
+    projectId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Project where the finding was found. Can be different from the project that owns the finding.',
+      }),
+    relativePath: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The rest of the path after the root. Examples: - For BigQuery table `project_id:dataset_id.table_id`, the relative path is `table_id` - For Cloud Storage file `gs://bucket/folder/filename.txt`, the relative path is `folder/filename.txt`',
+      }),
+    rootPath: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The root of the container. Examples: - For BigQuery table `project_id:dataset_id.table_id`, the root is `dataset_id` - For Cloud Storage file `gs://bucket/folder/filename.txt`, the root is `gs://bucket`',
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Container type, for example BigQuery or Cloud Storage.' }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Findings container modification timestamp, if applicable. For Cloud Storage, this field contains the last file modification timestamp. For a BigQuery table, this field contains the last_modified_time property. For Datastore, this field isn't populated.",
+      }),
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Findings container version, if available ("generation" for Cloud Storage).',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a container that may contain DLP findings. Examples of a container include a file, table, or database record.',
+    required: [],
+  })
+  .openapi('GooglePrivacyDlpV2Container')
+
+const GooglePrivacyDlpV2DocumentLocationSchema = z
+  .object({
+    fileOffset: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Offset of the line, from the beginning of the file, where the finding is located.',
+      }),
+  })
+  .openapi({ description: 'Location of a finding within a document.', required: [] })
+  .openapi('GooglePrivacyDlpV2DocumentLocation')
+
+const GooglePrivacyDlpV2BoundingBoxSchema = z
+  .object({
+    height: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Height of the bounding box in pixels.' }),
+    left: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Left coordinate of the bounding box. (0,0) is upper left.' }),
+    top: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Top coordinate of the bounding box. (0,0) is upper left.' }),
+    width: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Width of the bounding box in pixels.' }),
+  })
+  .openapi({
+    description: 'Bounding box encompassing detected text within an image.',
+    required: [],
+  })
+  .openapi('GooglePrivacyDlpV2BoundingBox')
+
+const GooglePrivacyDlpV2ImageLocationSchema = z
+  .object({
+    boundingBoxes: z
+      .array(GooglePrivacyDlpV2BoundingBoxSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Bounding boxes locating the pixels within the image containing the finding.',
+      }),
+  })
+  .openapi({ description: 'Location of the finding within an image.', required: [] })
+  .openapi('GooglePrivacyDlpV2ImageLocation')
+
+const GooglePrivacyDlpV2StorageMetadataLabelSchema = z
+  .object({ key: z.string().exactOptional() })
+  .openapi({
+    description: 'Storage metadata label to indicate which metadata entry contains findings.',
+    required: [],
+  })
+  .openapi('GooglePrivacyDlpV2StorageMetadataLabel')
+
+const GooglePrivacyDlpV2MetadataLocationSchema = z
+  .object({
+    storageLabel: GooglePrivacyDlpV2StorageMetadataLabelSchema.exactOptional().openapi({
+      description: 'Storage metadata.',
+    }),
+    type: z
+      .enum(['METADATATYPE_UNSPECIFIED', 'STORAGE_METADATA'])
+      .exactOptional()
+      .openapi({ description: 'Type of metadata containing the finding.' }),
+  })
+  .openapi({ description: 'Metadata Location', required: [] })
+  .openapi('GooglePrivacyDlpV2MetadataLocation')
+
+const GooglePrivacyDlpV2BigQueryKeySchema = z
+  .object({
+    rowNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Row number inferred at the time the table was scanned. This value is nondeterministic, cannot be queried, and may be null for inspection jobs. To locate findings within a table, specify `inspect_job.storage_config.big_query_options.identifying_fields` in `CreateDlpJobRequest`.',
+      }),
+    tableReference: GooglePrivacyDlpV2BigQueryTableSchema.exactOptional().openapi({
+      description: 'Complete BigQuery table reference.',
+    }),
+  })
+  .openapi({ description: 'Row key for identifying a record in BigQuery table.', required: [] })
+  .openapi('GooglePrivacyDlpV2BigQueryKey')
+
+const GooglePrivacyDlpV2PathElementSchema = z
+  .object({
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The auto-allocated ID of the entity. Never equal to zero. Values less than zero are discouraged and may not be supported in the future.',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The kind of the entity. A kind matching regex `__.*__` is reserved/read-only. A kind must not contain more than 1500 bytes when UTF-8 encoded. Cannot be `""`.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the entity. A name matching regex `__.*__` is reserved/read-only. A name must not be more than 1500 bytes when UTF-8 encoded. Cannot be `""`.',
+      }),
+  })
+  .openapi({
+    description:
+      'A (kind, ID/name) pair used to construct a key path. If either name or ID is set, the element is complete. If neither is set, the element is incomplete.',
+    required: [],
+  })
+  .openapi('GooglePrivacyDlpV2PathElement')
+
+const GooglePrivacyDlpV2KeySchema = z
+  .object({
+    partitionId: GooglePrivacyDlpV2PartitionIdSchema.exactOptional().openapi({
+      description:
+        'Entities are partitioned into subsets, currently identified by a project ID and namespace ID. Queries are scoped to a single partition.',
+    }),
+    path: z
+      .array(GooglePrivacyDlpV2PathElementSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "The entity path. An entity path consists of one or more elements composed of a kind and a string or numerical identifier, which identify entities. The first element identifies a _root entity_, the second element identifies a _child_ of the root entity, the third element identifies a child of the second entity, and so forth. The entities identified by all prefixes of the path are called the element's _ancestors_. A path can never be empty, and a path can have at most 100 elements.",
+      }),
+  })
+  .openapi({
+    description:
+      "A unique identifier for a Datastore entity. If a key's partition ID or any of its path kinds or names are reserved/read-only, the key is reserved/read-only. A reserved/read-only key is forbidden in certain documented contexts.",
+    required: [],
+  })
+  .openapi('GooglePrivacyDlpV2Key')
+
+const GooglePrivacyDlpV2DatastoreKeySchema = z
+  .object({
+    entityKey: GooglePrivacyDlpV2KeySchema.exactOptional().openapi({
+      description: 'Datastore entity key.',
+    }),
+  })
+  .openapi({ description: 'Record key for a finding in Cloud Datastore.', required: [] })
+  .openapi('GooglePrivacyDlpV2DatastoreKey')
+
+const GooglePrivacyDlpV2RecordKeySchema = z
+  .object({
+    bigQueryKey: GooglePrivacyDlpV2BigQueryKeySchema.exactOptional(),
+    datastoreKey: GooglePrivacyDlpV2DatastoreKeySchema.exactOptional(),
+    idValues: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Values of identifying columns in the given row. Order of values matches the order of `identifying_fields` specified in the scanning request.',
+      }),
+  })
+  .openapi({
+    description: 'Message for a unique key indicating a record that contains a finding.',
+    required: [],
+  })
+  .openapi('GooglePrivacyDlpV2RecordKey')
+
+const GooglePrivacyDlpV2TableLocationSchema = z
+  .object({
+    rowIndex: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The zero-based index of the row where the finding is located. Only populated for resources that have a natural ordering, not BigQuery. In BigQuery, to identify the row a finding came from, populate BigQueryOptions.identifying_fields with your primary key column names and when you store the findings the value of those columns will be stored inside of Finding.',
+      }),
+  })
+  .openapi({ description: 'Location of a finding within a table.', required: [] })
+  .openapi('GooglePrivacyDlpV2TableLocation')
+
+const GooglePrivacyDlpV2RecordLocationSchema = z
+  .object({
+    fieldId: GooglePrivacyDlpV2FieldIdSchema.exactOptional().openapi({
+      description: 'Field id of the field containing the finding.',
+    }),
+    recordKey: GooglePrivacyDlpV2RecordKeySchema.exactOptional().openapi({
+      description: 'Key of the finding.',
+    }),
+    tableLocation: GooglePrivacyDlpV2TableLocationSchema.exactOptional().openapi({
+      description: 'Location within a `ContentItem.Table`.',
+    }),
+  })
+  .openapi({ description: 'Location of a finding within a row or record.', required: [] })
+  .openapi('GooglePrivacyDlpV2RecordLocation')
+
+const GooglePrivacyDlpV2ContentLocationSchema = z
+  .object({
+    containerName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of the container where the finding is located. The top level name is the source file name or table name. Names of some common storage containers are formatted as follows: * BigQuery tables: `{project_id}:{dataset_id}.{table_id}` * Cloud Storage files: `gs://{bucket}/{path}` * Datastore namespace: {namespace} Nested names could be absent if the embedded object has no string identifier (for example, an image contained within a document).',
+      }),
+    containerTimestamp: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Finding container modification timestamp, if applicable. For Cloud Storage, this field contains the last file modification timestamp. For a BigQuery table, this field contains the last_modified_time property. For Datastore, this field isn't populated.",
+      }),
+    containerVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Finding container version, if available ("generation" for Cloud Storage).',
+      }),
+    documentLocation: GooglePrivacyDlpV2DocumentLocationSchema.exactOptional().openapi({
+      description: 'Location data for document files.',
+    }),
+    imageLocation: GooglePrivacyDlpV2ImageLocationSchema.exactOptional().openapi({
+      description: "Location within an image's pixels.",
+    }),
+    metadataLocation: GooglePrivacyDlpV2MetadataLocationSchema.exactOptional().openapi({
+      description: 'Location within the metadata for inspected content.',
+    }),
+    recordLocation: GooglePrivacyDlpV2RecordLocationSchema.exactOptional().openapi({
+      description: 'Location within a row or record of a database table.',
+    }),
+  })
+  .openapi({
+    description:
+      'Precise location of the finding within a document, record, image, or metadata container.',
+    required: [],
+  })
+  .openapi('GooglePrivacyDlpV2ContentLocation')
+
+type GooglePrivacyDlpV2LocationType = {
+  byteRange?: z.infer<typeof GooglePrivacyDlpV2RangeSchema>
+  codepointRange?: z.infer<typeof GooglePrivacyDlpV2RangeSchema>
+  container?: z.infer<typeof GooglePrivacyDlpV2ContainerSchema>
+  contentLocations?: z.infer<typeof GooglePrivacyDlpV2ContentLocationSchema>[]
+}
+
+const GooglePrivacyDlpV2LocationSchema: z.ZodType<GooglePrivacyDlpV2LocationType> = z
   .object({
     byteRange: GooglePrivacyDlpV2RangeSchema.exactOptional().openapi({
       description:
@@ -4110,6 +4088,48 @@ const GooglePrivacyDlpV2LocationSchema = z
   .openapi({ description: 'Specifies the location of the finding.', required: [] })
   .openapi('GooglePrivacyDlpV2Location')
 
+const GooglePrivacyDlpV2TimeZoneSchema = z
+  .object({
+    offsetMinutes: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Set only if the offset can be determined. Positive for time ahead of UTC. E.g. For "UTC-9", this value is -540.',
+      }),
+  })
+  .openapi({ description: 'Time zone of the date time object.', required: [] })
+  .openapi('GooglePrivacyDlpV2TimeZone')
+
+const GooglePrivacyDlpV2DateTimeSchema = z
+  .object({
+    date: GoogleTypeDateSchema.exactOptional().openapi({
+      description: 'One or more of the following must be set. Must be a valid date or time value.',
+    }),
+    dayOfWeek: z
+      .enum([
+        'DAY_OF_WEEK_UNSPECIFIED',
+        'MONDAY',
+        'TUESDAY',
+        'WEDNESDAY',
+        'THURSDAY',
+        'FRIDAY',
+        'SATURDAY',
+        'SUNDAY',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Day of week' }),
+    time: GoogleTypeTimeOfDaySchema.exactOptional().openapi({ description: 'Time of day' }),
+    timeZone: GooglePrivacyDlpV2TimeZoneSchema.exactOptional().openapi({
+      description: 'Time zone',
+    }),
+  })
+  .openapi({
+    description: 'Message for a date time object. e.g. 2018-01-01, 5th August.',
+    required: [],
+  })
+  .openapi('GooglePrivacyDlpV2DateTime')
+
 const GooglePrivacyDlpV2QuoteInfoSchema = z
   .object({
     dateTime: GooglePrivacyDlpV2DateTimeSchema.exactOptional().openapi({
@@ -4122,7 +4142,103 @@ const GooglePrivacyDlpV2QuoteInfoSchema = z
   })
   .openapi('GooglePrivacyDlpV2QuoteInfo')
 
-const GooglePrivacyDlpV2FindingSchema = z
+type GooglePrivacyDlpV2FindingType = {
+  createTime?: string
+  findingId?: string
+  infoType?: z.infer<typeof GooglePrivacyDlpV2InfoTypeSchema>
+  jobCreateTime?: string
+  jobName?: string
+  labels?: { [key: string]: string }
+  likelihood?:
+    | 'LIKELIHOOD_UNSPECIFIED'
+    | 'VERY_UNLIKELY'
+    | 'UNLIKELY'
+    | 'POSSIBLE'
+    | 'LIKELY'
+    | 'VERY_LIKELY'
+  location?: z.infer<typeof GooglePrivacyDlpV2LocationSchema>
+  name?: string
+  quote?: string
+  quoteInfo?: z.infer<typeof GooglePrivacyDlpV2QuoteInfoSchema>
+  resourceName?: string
+  triggerName?: string
+}
+
+const GooglePrivacyDlpV2HybridFindingDetailsSchema = z
+  .object({
+    containerDetails: GooglePrivacyDlpV2ContainerSchema.exactOptional().openapi({
+      description: 'Details about the container where the content being inspected is from.',
+    }),
+    fileOffset: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Offset in bytes of the line, from the beginning of the file, where the finding is located. Populate if the item being scanned is only part of a bigger item, such as a shard of a file and you want to track the absolute position of the finding.',
+      }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Labels to represent user provided metadata about the data being inspected. If configured by the job, some key values may be required. The labels associated with `Finding`\'s produced by hybrid inspection. Label keys must be between 1 and 63 characters long and must conform to the following regular expression: `[a-z]([-a-z0-9]*[a-z0-9])?`. Label values must be between 0 and 63 characters long and must conform to the regular expression `([a-z]([-a-z0-9]*[a-z0-9])?)?`. No more than 10 labels can be associated with a given finding. Examples: * `"environment" : "production"` * `"pipeline" : "etl"`',
+      }),
+    rowOffset: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Offset of the row for tables. Populate if the row(s) being scanned are part of a bigger dataset and you want to keep track of their absolute position.',
+      }),
+    tableOptions: GooglePrivacyDlpV2TableOptionsSchema.exactOptional().openapi({
+      description:
+        'If the container is a table, additional information to make findings meaningful such as the columns that are primary keys. If not known ahead of time, can also be set within each inspect hybrid call and the two will be merged. Note that identifying_fields will only be stored to BigQuery, and only if the BigQuery action has been included.',
+    }),
+  })
+  .openapi({
+    description: 'Populate to associate additional data with each finding.',
+    required: [],
+  })
+  .openapi('GooglePrivacyDlpV2HybridFindingDetails')
+
+type GooglePrivacyDlpV2HybridContentItemType = {
+  findingDetails?: z.infer<typeof GooglePrivacyDlpV2HybridFindingDetailsSchema>
+  item?: z.infer<typeof GooglePrivacyDlpV2ContentItemSchema>
+}
+
+const GooglePrivacyDlpV2HybridContentItemSchema: z.ZodType<GooglePrivacyDlpV2HybridContentItemType> =
+  z
+    .object({
+      findingDetails: GooglePrivacyDlpV2HybridFindingDetailsSchema.exactOptional().openapi({
+        description: 'Supplementary information that will be added to each finding.',
+      }),
+      item: GooglePrivacyDlpV2ContentItemSchema.exactOptional().openapi({
+        description: 'The item to inspect.',
+      }),
+    })
+    .openapi({
+      description:
+        'An individual hybrid item to inspect. Will be stored temporarily during processing.',
+      required: [],
+    })
+    .openapi('GooglePrivacyDlpV2HybridContentItem')
+
+type GooglePrivacyDlpV2HybridInspectDlpJobRequestType = {
+  hybridItem?: z.infer<typeof GooglePrivacyDlpV2HybridContentItemSchema>
+}
+
+type GooglePrivacyDlpV2HybridInspectJobTriggerRequestType = {
+  hybridItem?: z.infer<typeof GooglePrivacyDlpV2HybridContentItemSchema>
+}
+
+type GooglePrivacyDlpV2InspectContentRequestType = {
+  inspectConfig?: z.infer<typeof GooglePrivacyDlpV2InspectConfigSchema>
+  inspectTemplateName?: string
+  item?: z.infer<typeof GooglePrivacyDlpV2ContentItemSchema>
+  locationId?: string
+}
+
+const GooglePrivacyDlpV2FindingSchema: z.ZodType<GooglePrivacyDlpV2FindingType> = z
   .object({
     createTime: z
       .string()
@@ -4192,92 +4308,253 @@ const GooglePrivacyDlpV2FindingSchema = z
   .openapi({ description: 'Represents a piece of potentially sensitive content.', required: [] })
   .openapi('GooglePrivacyDlpV2Finding')
 
-const GooglePrivacyDlpV2FinishDlpJobRequestSchema = z
-  .object({})
-  .openapi({ description: 'The request message for finishing a DLP hybrid job.' })
-  .openapi('GooglePrivacyDlpV2FinishDlpJobRequest')
+type GooglePrivacyDlpV2InspectResultType = {
+  findings?: z.infer<typeof GooglePrivacyDlpV2FindingSchema>[]
+  findingsTruncated?: boolean
+}
 
-const GooglePrivacyDlpV2HybridFindingDetailsSchema = z
+const GooglePrivacyDlpV2InspectResultSchema: z.ZodType<GooglePrivacyDlpV2InspectResultType> = z
   .object({
-    containerDetails: GooglePrivacyDlpV2ContainerSchema.exactOptional().openapi({
-      description: 'Details about the container where the content being inspected is from.',
+    findings: z
+      .array(GooglePrivacyDlpV2FindingSchema)
+      .exactOptional()
+      .openapi({ description: 'List of findings for an item.' }),
+    findingsTruncated: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If true, then this item might have more findings than were returned, and the findings returned are an arbitrary subset of all findings. The findings list might be truncated because the input items were too large, or because the server reached the maximum amount of resources allowed for a single API call. For best results, divide the input into smaller batches.',
+      }),
+  })
+  .openapi({ description: 'All the findings for a single scanned item.', required: [] })
+  .openapi('GooglePrivacyDlpV2InspectResult')
+
+type GooglePrivacyDlpV2InspectContentResponseType = {
+  result?: z.infer<typeof GooglePrivacyDlpV2InspectResultSchema>
+}
+
+type GooglePrivacyDlpV2ListDeidentifyTemplatesResponseType = {
+  deidentifyTemplates?: z.infer<typeof GooglePrivacyDlpV2DeidentifyTemplateSchema>[]
+  nextPageToken?: string
+}
+
+const GooglePrivacyDlpV2DlpJobSchema: z.ZodType<GooglePrivacyDlpV2DlpJobType> = z
+  .object({
+    actionDetails: z
+      .array(GooglePrivacyDlpV2ActionDetailsSchema)
+      .exactOptional()
+      .openapi({ description: 'Events that should occur after the job has completed.' }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Time when the job was created.' }),
+    endTime: z.string().exactOptional().openapi({ description: 'Time when the job finished.' }),
+    errors: z
+      .array(GooglePrivacyDlpV2ErrorSchema)
+      .exactOptional()
+      .openapi({ description: 'A stream of errors encountered running the job.' }),
+    inspectDetails: GooglePrivacyDlpV2InspectDataSourceDetailsSchema.exactOptional().openapi({
+      description: 'Results from inspecting a data source.',
     }),
-    fileOffset: z
+    jobTriggerName: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Offset in bytes of the line, from the beginning of the file, where the finding is located. Populate if the item being scanned is only part of a bigger item, such as a shard of a file and you want to track the absolute position of the finding.',
+          'If created by a job trigger, the resource name of the trigger that instantiated the job.',
       }),
-    labels: z
-      .record(z.string(), z.string())
+    name: z.string().exactOptional().openapi({ description: 'The server-assigned name.' }),
+    riskDetails: GooglePrivacyDlpV2AnalyzeDataSourceRiskDetailsSchema.exactOptional().openapi({
+      description: 'Results from analyzing risk of a data source.',
+    }),
+    startTime: z.string().exactOptional().openapi({ description: 'Time when the job started.' }),
+    state: z
+      .enum(['JOB_STATE_UNSPECIFIED', 'PENDING', 'RUNNING', 'DONE', 'CANCELED', 'FAILED', 'ACTIVE'])
       .exactOptional()
-      .openapi({
-        description:
-          'Labels to represent user provided metadata about the data being inspected. If configured by the job, some key values may be required. The labels associated with `Finding`\'s produced by hybrid inspection. Label keys must be between 1 and 63 characters long and must conform to the following regular expression: `[a-z]([-a-z0-9]*[a-z0-9])?`. Label values must be between 0 and 63 characters long and must conform to the regular expression `([a-z]([-a-z0-9]*[a-z0-9])?)?`. No more than 10 labels can be associated with a given finding. Examples: * `"environment" : "production"` * `"pipeline" : "etl"`',
-      }),
-    rowOffset: z
+      .openapi({ description: 'State of a job.' }),
+    type: z
+      .enum(['DLP_JOB_TYPE_UNSPECIFIED', 'INSPECT_JOB', 'RISK_ANALYSIS_JOB'])
+      .exactOptional()
+      .openapi({ description: 'The type of job.' }),
+  })
+  .openapi({ description: 'Combines all of the information about a DLP job.', required: [] })
+  .openapi('GooglePrivacyDlpV2DlpJob')
+
+type GooglePrivacyDlpV2ListDlpJobsResponseType = {
+  jobs?: z.infer<typeof GooglePrivacyDlpV2DlpJobSchema>[]
+  nextPageToken?: string
+}
+
+type GooglePrivacyDlpV2ListInspectTemplatesResponseType = {
+  inspectTemplates?: z.infer<typeof GooglePrivacyDlpV2InspectTemplateSchema>[]
+  nextPageToken?: string
+}
+
+type GooglePrivacyDlpV2ListJobTriggersResponseType = {
+  jobTriggers?: z.infer<typeof GooglePrivacyDlpV2JobTriggerSchema>[]
+  nextPageToken?: string
+}
+
+const GooglePrivacyDlpV2BigQueryFieldSchema = z
+  .object({
+    field: GooglePrivacyDlpV2FieldIdSchema.exactOptional().openapi({
+      description: 'Designated field in the BigQuery table.',
+    }),
+    table: GooglePrivacyDlpV2BigQueryTableSchema.exactOptional().openapi({
+      description: 'Source table of the field.',
+    }),
+  })
+  .openapi({ description: 'Message defining a field of a BigQuery table.', required: [] })
+  .openapi('GooglePrivacyDlpV2BigQueryField')
+
+const GooglePrivacyDlpV2CloudStorageFileSetSchema = z
+  .object({
+    url: z
       .string()
       .exactOptional()
       .openapi({
-        description:
-          'Offset of the row for tables. Populate if the row(s) being scanned are part of a bigger dataset and you want to keep track of their absolute position.',
+        description: 'The url, in the format `gs:///`. Trailing wildcard in the path is allowed.',
       }),
-    tableOptions: GooglePrivacyDlpV2TableOptionsSchema.exactOptional().openapi({
+  })
+  .openapi({ description: 'Message representing a set of files in Cloud Storage.', required: [] })
+  .openapi('GooglePrivacyDlpV2CloudStorageFileSet')
+
+const GooglePrivacyDlpV2LargeCustomDictionaryConfigSchema = z
+  .object({
+    bigQueryField: GooglePrivacyDlpV2BigQueryFieldSchema.exactOptional().openapi({
+      description: 'Field in a BigQuery table where each cell represents a dictionary phrase.',
+    }),
+    cloudStorageFileSet: GooglePrivacyDlpV2CloudStorageFileSetSchema.exactOptional().openapi({
+      description: 'Set of files containing newline-delimited lists of dictionary phrases.',
+    }),
+    outputPath: GooglePrivacyDlpV2CloudStoragePathSchema.exactOptional().openapi({
       description:
-        'If the container is a table, additional information to make findings meaningful such as the columns that are primary keys. If not known ahead of time, can also be set within each inspect hybrid call and the two will be merged. Note that identifying_fields will only be stored to BigQuery, and only if the BigQuery action has been included.',
-    }),
-  })
-  .openapi({
-    description: 'Populate to associate additional data with each finding.',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2HybridFindingDetails')
-
-const GooglePrivacyDlpV2HybridContentItemSchema = z
-  .object({
-    findingDetails: GooglePrivacyDlpV2HybridFindingDetailsSchema.exactOptional().openapi({
-      description: 'Supplementary information that will be added to each finding.',
-    }),
-    item: GooglePrivacyDlpV2ContentItemSchema.exactOptional().openapi({
-      description: 'The item to inspect.',
+        'Location to store dictionary artifacts in Cloud Storage. These files will only be accessible by project owners and the DLP API. If any of these artifacts are modified, the dictionary is considered invalid and can no longer be used.',
     }),
   })
   .openapi({
     description:
-      'An individual hybrid item to inspect. Will be stored temporarily during processing.',
+      'Configuration for a custom dictionary created from a data source of any size up to the maximum size defined in the [limits](https://cloud.google.com/dlp/limits) page. The artifacts of dictionary creation are stored in the specified Cloud Storage location. Consider using `CustomInfoType.Dictionary` for smaller dictionaries that satisfy the size requirements.',
     required: [],
   })
-  .openapi('GooglePrivacyDlpV2HybridContentItem')
+  .openapi('GooglePrivacyDlpV2LargeCustomDictionaryConfig')
 
-const GooglePrivacyDlpV2HybridInspectDlpJobRequestSchema = z
+const GooglePrivacyDlpV2StoredInfoTypeConfigSchema = z
   .object({
-    hybridItem: GooglePrivacyDlpV2HybridContentItemSchema.exactOptional().openapi({
-      description: 'The item to inspect.',
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Description of the StoredInfoType (max 256 characters).' }),
+    dictionary: GooglePrivacyDlpV2DictionarySchema.exactOptional().openapi({
+      description: 'Store dictionary-based CustomInfoType.',
+    }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Display name of the StoredInfoType (max 256 characters).' }),
+    largeCustomDictionary:
+      GooglePrivacyDlpV2LargeCustomDictionaryConfigSchema.exactOptional().openapi({
+        description: 'StoredInfoType where findings are defined by a dictionary of phrases.',
+      }),
+    regex: GooglePrivacyDlpV2RegexSchema.exactOptional().openapi({
+      description: 'Store regular expression-based StoredInfoType.',
     }),
   })
   .openapi({
-    description: 'Request to search for potentially sensitive info in a custom location.',
+    description:
+      'Configuration for stored infoTypes. All fields and subfield are provided by the user. For more information, see https://cloud.google.com/dlp/docs/creating-custom-infotypes.',
     required: [],
   })
-  .openapi('GooglePrivacyDlpV2HybridInspectDlpJobRequest')
+  .openapi('GooglePrivacyDlpV2StoredInfoTypeConfig')
 
-const GooglePrivacyDlpV2HybridInspectJobTriggerRequestSchema = z
+const GooglePrivacyDlpV2LargeCustomDictionaryStatsSchema = z
   .object({
-    hybridItem: GooglePrivacyDlpV2HybridContentItemSchema.exactOptional().openapi({
-      description: 'The item to inspect.',
+    approxNumPhrases: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Approximate number of distinct phrases in the dictionary.' }),
+  })
+  .openapi({ description: 'Summary statistics of a custom dictionary.', required: [] })
+  .openapi('GooglePrivacyDlpV2LargeCustomDictionaryStats')
+
+const GooglePrivacyDlpV2StoredInfoTypeStatsSchema = z
+  .object({
+    largeCustomDictionary:
+      GooglePrivacyDlpV2LargeCustomDictionaryStatsSchema.exactOptional().openapi({
+        description: 'StoredInfoType where findings are defined by a dictionary of phrases.',
+      }),
+  })
+  .openapi({ description: 'Statistics for a StoredInfoType.', required: [] })
+  .openapi('GooglePrivacyDlpV2StoredInfoTypeStats')
+
+const GooglePrivacyDlpV2StoredInfoTypeVersionSchema = z
+  .object({
+    config: GooglePrivacyDlpV2StoredInfoTypeConfigSchema.exactOptional().openapi({
+      description: 'StoredInfoType configuration.',
+    }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Create timestamp of the version. Read-only, determined by the system when the version is created.',
+      }),
+    errors: z
+      .array(GooglePrivacyDlpV2ErrorSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "Errors that occurred when creating this storedInfoType version, or anomalies detected in the storedInfoType data that render it unusable. Only the five most recent errors will be displayed, with the most recent error appearing first. For example, some of the data for stored custom dictionaries is put in the user's Cloud Storage bucket, and if this data is modified or deleted by the user or another system, the dictionary becomes invalid. If any errors occur, fix the problem indicated by the error message and use the UpdateStoredInfoType API method to create another version of the storedInfoType to continue using it, reusing the same `config` if it was not the source of the error.",
+      }),
+    state: z
+      .enum(['STORED_INFO_TYPE_STATE_UNSPECIFIED', 'PENDING', 'READY', 'FAILED', 'INVALID'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Stored info type version state. Read-only, updated by the system during dictionary creation.',
+      }),
+    stats: GooglePrivacyDlpV2StoredInfoTypeStatsSchema.exactOptional().openapi({
+      description: 'Statistics about this storedInfoType version.',
     }),
   })
   .openapi({
-    description: 'Request to search for potentially sensitive info in a custom location.',
+    description:
+      'Version of a StoredInfoType, including the configuration used to build it, create timestamp, and current state.',
     required: [],
   })
-  .openapi('GooglePrivacyDlpV2HybridInspectJobTriggerRequest')
+  .openapi('GooglePrivacyDlpV2StoredInfoTypeVersion')
 
-const GooglePrivacyDlpV2HybridInspectResponseSchema = z
-  .object({})
-  .openapi({ description: 'Quota exceeded errors will be thrown once quota has been met.' })
-  .openapi('GooglePrivacyDlpV2HybridInspectResponse')
+type GooglePrivacyDlpV2StoredInfoTypeType = {
+  currentVersion?: z.infer<typeof GooglePrivacyDlpV2StoredInfoTypeVersionSchema>
+  name?: string
+  pendingVersions?: z.infer<typeof GooglePrivacyDlpV2StoredInfoTypeVersionSchema>[]
+}
+
+const GooglePrivacyDlpV2StoredInfoTypeSchema: z.ZodType<GooglePrivacyDlpV2StoredInfoTypeType> = z
+  .object({
+    currentVersion: GooglePrivacyDlpV2StoredInfoTypeVersionSchema.exactOptional().openapi({
+      description: 'Current version of the stored info type.',
+    }),
+    name: z.string().exactOptional().openapi({ description: 'Resource name.' }),
+    pendingVersions: z
+      .array(GooglePrivacyDlpV2StoredInfoTypeVersionSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Pending versions of the stored info type. Empty if no versions are pending.',
+      }),
+  })
+  .openapi({
+    description:
+      'StoredInfoType resource message that contains information about the current version and any pending updates.',
+    required: [],
+  })
+  .openapi('GooglePrivacyDlpV2StoredInfoType')
+
+type GooglePrivacyDlpV2ListStoredInfoTypesResponseType = {
+  nextPageToken?: string
+  storedInfoTypes?: z.infer<typeof GooglePrivacyDlpV2StoredInfoTypeSchema>[]
+}
 
 const GooglePrivacyDlpV2ImageRedactionConfigSchema = z
   .object({
@@ -4302,6 +4579,282 @@ const GooglePrivacyDlpV2ImageRedactionConfigSchema = z
     required: [],
   })
   .openapi('GooglePrivacyDlpV2ImageRedactionConfig')
+
+type GooglePrivacyDlpV2RedactImageRequestType = {
+  byteItem?: z.infer<typeof GooglePrivacyDlpV2ByteContentItemSchema>
+  imageRedactionConfigs?: z.infer<typeof GooglePrivacyDlpV2ImageRedactionConfigSchema>[]
+  includeFindings?: boolean
+  inspectConfig?: z.infer<typeof GooglePrivacyDlpV2InspectConfigSchema>
+  locationId?: string
+}
+
+type GooglePrivacyDlpV2RedactImageResponseType = {
+  extractedText?: string
+  inspectResult?: z.infer<typeof GooglePrivacyDlpV2InspectResultSchema>
+  redactedImage?: string
+}
+
+type GooglePrivacyDlpV2ReidentifyContentRequestType = {
+  inspectConfig?: z.infer<typeof GooglePrivacyDlpV2InspectConfigSchema>
+  inspectTemplateName?: string
+  item?: z.infer<typeof GooglePrivacyDlpV2ContentItemSchema>
+  locationId?: string
+  reidentifyConfig?: z.infer<typeof GooglePrivacyDlpV2DeidentifyConfigSchema>
+  reidentifyTemplateName?: string
+}
+
+type GooglePrivacyDlpV2ReidentifyContentResponseType = {
+  item?: z.infer<typeof GooglePrivacyDlpV2ContentItemSchema>
+  overview?: z.infer<typeof GooglePrivacyDlpV2TransformationOverviewSchema>
+}
+
+type GooglePrivacyDlpV2UpdateDeidentifyTemplateRequestType = {
+  deidentifyTemplate?: z.infer<typeof GooglePrivacyDlpV2DeidentifyTemplateSchema>
+  updateMask?: string
+}
+
+type GooglePrivacyDlpV2UpdateInspectTemplateRequestType = {
+  inspectTemplate?: z.infer<typeof GooglePrivacyDlpV2InspectTemplateSchema>
+  updateMask?: string
+}
+
+type GooglePrivacyDlpV2UpdateJobTriggerRequestType = {
+  jobTrigger?: z.infer<typeof GooglePrivacyDlpV2JobTriggerSchema>
+  updateMask?: string
+}
+
+const GooglePrivacyDlpV2ActivateJobTriggerRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'Request message for ActivateJobTrigger.' })
+  .openapi('GooglePrivacyDlpV2ActivateJobTriggerRequest')
+
+const GooglePrivacyDlpV2CancelDlpJobRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'The request message for canceling a DLP job.' })
+  .openapi('GooglePrivacyDlpV2CancelDlpJobRequest')
+
+const GooglePrivacyDlpV2CreateDeidentifyTemplateRequestSchema: z.ZodType<GooglePrivacyDlpV2CreateDeidentifyTemplateRequestType> =
+  z
+    .object({
+      deidentifyTemplate: GooglePrivacyDlpV2DeidentifyTemplateSchema.exactOptional().openapi({
+        description: 'Required. The DeidentifyTemplate to create.',
+      }),
+      locationId: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Deprecated. This field has no effect.' }),
+      templateId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The template id can contain uppercase and lowercase letters, numbers, and hyphens; that is, it must match the regular expression: `[a-zA-Z\\d-_]+`. The maximum length is 100 characters. Can be empty to allow the system to generate one.',
+        }),
+    })
+    .openapi({ description: 'Request message for CreateDeidentifyTemplate.', required: [] })
+    .openapi('GooglePrivacyDlpV2CreateDeidentifyTemplateRequest')
+
+const GooglePrivacyDlpV2CreateDlpJobRequestSchema: z.ZodType<GooglePrivacyDlpV2CreateDlpJobRequestType> =
+  z
+    .object({
+      inspectJob: GooglePrivacyDlpV2InspectJobConfigSchema.exactOptional().openapi({
+        description: 'An inspection job scans a storage repository for InfoTypes.',
+      }),
+      jobId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The job id can contain uppercase and lowercase letters, numbers, and hyphens; that is, it must match the regular expression: `[a-zA-Z\\d-_]+`. The maximum length is 100 characters. Can be empty to allow the system to generate one.',
+        }),
+      locationId: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Deprecated. This field has no effect.' }),
+      riskJob: GooglePrivacyDlpV2RiskAnalysisJobConfigSchema.exactOptional().openapi({
+        description:
+          'A risk analysis job calculates re-identification risk metrics for a BigQuery table.',
+      }),
+    })
+    .openapi({
+      description:
+        'Request message for CreateDlpJobRequest. Used to initiate long running jobs such as calculating risk metrics or inspecting Google Cloud Storage.',
+      required: [],
+    })
+    .openapi('GooglePrivacyDlpV2CreateDlpJobRequest')
+
+const GooglePrivacyDlpV2CreateInspectTemplateRequestSchema: z.ZodType<GooglePrivacyDlpV2CreateInspectTemplateRequestType> =
+  z
+    .object({
+      inspectTemplate: GooglePrivacyDlpV2InspectTemplateSchema.exactOptional().openapi({
+        description: 'Required. The InspectTemplate to create.',
+      }),
+      locationId: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Deprecated. This field has no effect.' }),
+      templateId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The template id can contain uppercase and lowercase letters, numbers, and hyphens; that is, it must match the regular expression: `[a-zA-Z\\d-_]+`. The maximum length is 100 characters. Can be empty to allow the system to generate one.',
+        }),
+    })
+    .openapi({ description: 'Request message for CreateInspectTemplate.', required: [] })
+    .openapi('GooglePrivacyDlpV2CreateInspectTemplateRequest')
+
+const GooglePrivacyDlpV2CreateJobTriggerRequestSchema: z.ZodType<GooglePrivacyDlpV2CreateJobTriggerRequestType> =
+  z
+    .object({
+      jobTrigger: GooglePrivacyDlpV2JobTriggerSchema.exactOptional().openapi({
+        description: 'Required. The JobTrigger to create.',
+      }),
+      locationId: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Deprecated. This field has no effect.' }),
+      triggerId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The trigger id can contain uppercase and lowercase letters, numbers, and hyphens; that is, it must match the regular expression: `[a-zA-Z\\d-_]+`. The maximum length is 100 characters. Can be empty to allow the system to generate one.',
+        }),
+    })
+    .openapi({ description: 'Request message for CreateJobTrigger.', required: [] })
+    .openapi('GooglePrivacyDlpV2CreateJobTriggerRequest')
+
+const GooglePrivacyDlpV2CreateStoredInfoTypeRequestSchema = z
+  .object({
+    config: GooglePrivacyDlpV2StoredInfoTypeConfigSchema.exactOptional().openapi({
+      description: 'Required. Configuration of the storedInfoType to create.',
+    }),
+    locationId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Deprecated. This field has no effect.' }),
+    storedInfoTypeId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The storedInfoType ID can contain uppercase and lowercase letters, numbers, and hyphens; that is, it must match the regular expression: `[a-zA-Z\\d-_]+`. The maximum length is 100 characters. Can be empty to allow the system to generate one.',
+      }),
+  })
+  .openapi({ description: 'Request message for CreateStoredInfoType.', required: [] })
+  .openapi('GooglePrivacyDlpV2CreateStoredInfoTypeRequest')
+
+const GooglePrivacyDlpV2DataProfilePubSubMessageSchema: z.ZodType<GooglePrivacyDlpV2DataProfilePubSubMessageType> =
+  z
+    .object({
+      event: z
+        .enum([
+          'EVENT_TYPE_UNSPECIFIED',
+          'NEW_PROFILE',
+          'CHANGED_PROFILE',
+          'SCORE_INCREASED',
+          'ERROR_CHANGED',
+        ])
+        .exactOptional()
+        .openapi({ description: 'The event that caused the Pub/Sub message to be sent.' }),
+      profile: GooglePrivacyDlpV2TableDataProfileSchema.exactOptional().openapi({
+        description:
+          'If `DetailLevel` is `TABLE_PROFILE` this will be fully populated. Otherwise, if `DetailLevel` is `RESOURCE_NAME`, then only `name` and `full_resource` will be populated.',
+      }),
+    })
+    .openapi({
+      description:
+        'Pub/Sub topic message for a DataProfileAction.PubSubNotification event. To receive a message of protocol buffer schema type, convert the message data to an object of this proto class.',
+      required: [],
+    })
+    .openapi('GooglePrivacyDlpV2DataProfilePubSubMessage')
+
+const GooglePrivacyDlpV2DeidentifyContentRequestSchema: z.ZodType<GooglePrivacyDlpV2DeidentifyContentRequestType> =
+  z
+    .object({
+      deidentifyConfig: GooglePrivacyDlpV2DeidentifyConfigSchema.exactOptional().openapi({
+        description:
+          'Configuration for the de-identification of the content item. Items specified here will override the template referenced by the deidentify_template_name argument.',
+      }),
+      deidentifyTemplateName: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Template to use. Any configuration directly specified in deidentify_config will override those set in the template. Singular fields that are set in this request will replace their corresponding fields in the template. Repeated fields are appended. Singular sub-messages and groups are recursively merged.',
+        }),
+      inspectConfig: GooglePrivacyDlpV2InspectConfigSchema.exactOptional().openapi({
+        description:
+          'Configuration for the inspector. Items specified here will override the template referenced by the inspect_template_name argument.',
+      }),
+      inspectTemplateName: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Template to use. Any configuration directly specified in inspect_config will override those set in the template. Singular fields that are set in this request will replace their corresponding fields in the template. Repeated fields are appended. Singular sub-messages and groups are recursively merged.',
+        }),
+      item: GooglePrivacyDlpV2ContentItemSchema.exactOptional().openapi({
+        description:
+          'The item to de-identify. Will be treated as text. This value must be of type Table if your deidentify_config is a RecordTransformations object.',
+      }),
+      locationId: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Deprecated. This field has no effect.' }),
+    })
+    .openapi({ description: 'Request to de-identify a ContentItem.', required: [] })
+    .openapi('GooglePrivacyDlpV2DeidentifyContentRequest')
+
+const GooglePrivacyDlpV2DeidentifyContentResponseSchema: z.ZodType<GooglePrivacyDlpV2DeidentifyContentResponseType> =
+  z
+    .object({
+      item: GooglePrivacyDlpV2ContentItemSchema.exactOptional().openapi({
+        description: 'The de-identified item.',
+      }),
+      overview: GooglePrivacyDlpV2TransformationOverviewSchema.exactOptional().openapi({
+        description: 'An overview of the changes that were made on the `item`.',
+      }),
+    })
+    .openapi({ description: 'Results of de-identifying a ContentItem.', required: [] })
+    .openapi('GooglePrivacyDlpV2DeidentifyContentResponse')
+
+const GooglePrivacyDlpV2FinishDlpJobRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'The request message for finishing a DLP hybrid job.' })
+  .openapi('GooglePrivacyDlpV2FinishDlpJobRequest')
+
+const GooglePrivacyDlpV2HybridInspectDlpJobRequestSchema: z.ZodType<GooglePrivacyDlpV2HybridInspectDlpJobRequestType> =
+  z
+    .object({
+      hybridItem: GooglePrivacyDlpV2HybridContentItemSchema.exactOptional().openapi({
+        description: 'The item to inspect.',
+      }),
+    })
+    .openapi({
+      description: 'Request to search for potentially sensitive info in a custom location.',
+      required: [],
+    })
+    .openapi('GooglePrivacyDlpV2HybridInspectDlpJobRequest')
+
+const GooglePrivacyDlpV2HybridInspectJobTriggerRequestSchema: z.ZodType<GooglePrivacyDlpV2HybridInspectJobTriggerRequestType> =
+  z
+    .object({
+      hybridItem: GooglePrivacyDlpV2HybridContentItemSchema.exactOptional().openapi({
+        description: 'The item to inspect.',
+      }),
+    })
+    .openapi({
+      description: 'Request to search for potentially sensitive info in a custom location.',
+      required: [],
+    })
+    .openapi('GooglePrivacyDlpV2HybridInspectJobTriggerRequest')
+
+const GooglePrivacyDlpV2HybridInspectResponseSchema = z
+  .looseObject({})
+  .openapi({ description: 'Quota exceeded errors will be thrown once quota has been met.' })
+  .openapi('GooglePrivacyDlpV2HybridInspectResponse')
 
 const GooglePrivacyDlpV2InfoTypeCategorySchema = z
   .object({
@@ -4424,104 +4977,81 @@ const GooglePrivacyDlpV2InfoTypeDescriptionSchema = z
   .openapi({ description: 'InfoType description.', required: [] })
   .openapi('GooglePrivacyDlpV2InfoTypeDescription')
 
-const GooglePrivacyDlpV2InspectContentRequestSchema = z
-  .object({
-    inspectConfig: GooglePrivacyDlpV2InspectConfigSchema.exactOptional().openapi({
-      description:
-        'Configuration for the inspector. What specified here will override the template referenced by the inspect_template_name argument.',
-    }),
-    inspectTemplateName: z
-      .string()
-      .exactOptional()
-      .openapi({
+const GooglePrivacyDlpV2InspectContentRequestSchema: z.ZodType<GooglePrivacyDlpV2InspectContentRequestType> =
+  z
+    .object({
+      inspectConfig: GooglePrivacyDlpV2InspectConfigSchema.exactOptional().openapi({
         description:
-          'Template to use. Any configuration directly specified in inspect_config will override those set in the template. Singular fields that are set in this request will replace their corresponding fields in the template. Repeated fields are appended. Singular sub-messages and groups are recursively merged.',
+          'Configuration for the inspector. What specified here will override the template referenced by the inspect_template_name argument.',
       }),
-    item: GooglePrivacyDlpV2ContentItemSchema.exactOptional().openapi({
-      description: 'The item to inspect.',
-    }),
-    locationId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Deprecated. This field has no effect.' }),
-  })
-  .openapi({
-    description: 'Request to search for potentially sensitive info in a ContentItem.',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2InspectContentRequest')
-
-const GooglePrivacyDlpV2InspectResultSchema = z
-  .object({
-    findings: z
-      .array(GooglePrivacyDlpV2FindingSchema)
-      .exactOptional()
-      .openapi({ description: 'List of findings for an item.' }),
-    findingsTruncated: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If true, then this item might have more findings than were returned, and the findings returned are an arbitrary subset of all findings. The findings list might be truncated because the input items were too large, or because the server reached the maximum amount of resources allowed for a single API call. For best results, divide the input into smaller batches.',
+      inspectTemplateName: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Template to use. Any configuration directly specified in inspect_config will override those set in the template. Singular fields that are set in this request will replace their corresponding fields in the template. Repeated fields are appended. Singular sub-messages and groups are recursively merged.',
+        }),
+      item: GooglePrivacyDlpV2ContentItemSchema.exactOptional().openapi({
+        description: 'The item to inspect.',
       }),
-  })
-  .openapi({ description: 'All the findings for a single scanned item.', required: [] })
-  .openapi('GooglePrivacyDlpV2InspectResult')
+      locationId: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Deprecated. This field has no effect.' }),
+    })
+    .openapi({
+      description: 'Request to search for potentially sensitive info in a ContentItem.',
+      required: [],
+    })
+    .openapi('GooglePrivacyDlpV2InspectContentRequest')
 
-const GooglePrivacyDlpV2InspectContentResponseSchema = z
-  .object({
-    result: GooglePrivacyDlpV2InspectResultSchema.exactOptional().openapi({
-      description: 'The findings.',
-    }),
-  })
-  .openapi({ description: 'Results of inspecting an item.', required: [] })
-  .openapi('GooglePrivacyDlpV2InspectContentResponse')
-
-const GooglePrivacyDlpV2LargeCustomDictionaryStatsSchema = z
-  .object({
-    approxNumPhrases: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Approximate number of distinct phrases in the dictionary.' }),
-  })
-  .openapi({ description: 'Summary statistics of a custom dictionary.', required: [] })
-  .openapi('GooglePrivacyDlpV2LargeCustomDictionaryStats')
-
-const GooglePrivacyDlpV2ListDeidentifyTemplatesResponseSchema = z
-  .object({
-    deidentifyTemplates: z
-      .array(GooglePrivacyDlpV2DeidentifyTemplateSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'List of deidentify templates, up to page_size in ListDeidentifyTemplatesRequest.',
+const GooglePrivacyDlpV2InspectContentResponseSchema: z.ZodType<GooglePrivacyDlpV2InspectContentResponseType> =
+  z
+    .object({
+      result: GooglePrivacyDlpV2InspectResultSchema.exactOptional().openapi({
+        description: 'The findings.',
       }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If the next page is available then the next page token to be used in following ListDeidentifyTemplates request.',
-      }),
-  })
-  .openapi({ description: 'Response message for ListDeidentifyTemplates.', required: [] })
-  .openapi('GooglePrivacyDlpV2ListDeidentifyTemplatesResponse')
+    })
+    .openapi({ description: 'Results of inspecting an item.', required: [] })
+    .openapi('GooglePrivacyDlpV2InspectContentResponse')
 
-const GooglePrivacyDlpV2ListDlpJobsResponseSchema = z
-  .object({
-    jobs: z
-      .array(GooglePrivacyDlpV2DlpJobSchema)
-      .exactOptional()
-      .openapi({
-        description: 'A list of DlpJobs that matches the specified filter in the request.',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The standard List next-page token.' }),
-  })
-  .openapi({ description: 'The response message for listing DLP jobs.', required: [] })
-  .openapi('GooglePrivacyDlpV2ListDlpJobsResponse')
+const GooglePrivacyDlpV2ListDeidentifyTemplatesResponseSchema: z.ZodType<GooglePrivacyDlpV2ListDeidentifyTemplatesResponseType> =
+  z
+    .object({
+      deidentifyTemplates: z
+        .array(GooglePrivacyDlpV2DeidentifyTemplateSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'List of deidentify templates, up to page_size in ListDeidentifyTemplatesRequest.',
+        }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'If the next page is available then the next page token to be used in following ListDeidentifyTemplates request.',
+        }),
+    })
+    .openapi({ description: 'Response message for ListDeidentifyTemplates.', required: [] })
+    .openapi('GooglePrivacyDlpV2ListDeidentifyTemplatesResponse')
+
+const GooglePrivacyDlpV2ListDlpJobsResponseSchema: z.ZodType<GooglePrivacyDlpV2ListDlpJobsResponseType> =
+  z
+    .object({
+      jobs: z
+        .array(GooglePrivacyDlpV2DlpJobSchema)
+        .exactOptional()
+        .openapi({
+          description: 'A list of DlpJobs that matches the specified filter in the request.',
+        }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The standard List next-page token.' }),
+    })
+    .openapi({ description: 'The response message for listing DLP jobs.', required: [] })
+    .openapi('GooglePrivacyDlpV2ListDlpJobsResponse')
 
 const GooglePrivacyDlpV2ListInfoTypesResponseSchema = z
   .object({
@@ -4533,129 +5063,65 @@ const GooglePrivacyDlpV2ListInfoTypesResponseSchema = z
   .openapi({ description: 'Response to the ListInfoTypes request.', required: [] })
   .openapi('GooglePrivacyDlpV2ListInfoTypesResponse')
 
-const GooglePrivacyDlpV2ListInspectTemplatesResponseSchema = z
-  .object({
-    inspectTemplates: z
-      .array(GooglePrivacyDlpV2InspectTemplateSchema)
-      .exactOptional()
-      .openapi({
-        description: 'List of inspectTemplates, up to page_size in ListInspectTemplatesRequest.',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If the next page is available then the next page token to be used in following ListInspectTemplates request.',
-      }),
-  })
-  .openapi({ description: 'Response message for ListInspectTemplates.', required: [] })
-  .openapi('GooglePrivacyDlpV2ListInspectTemplatesResponse')
+const GooglePrivacyDlpV2ListInspectTemplatesResponseSchema: z.ZodType<GooglePrivacyDlpV2ListInspectTemplatesResponseType> =
+  z
+    .object({
+      inspectTemplates: z
+        .array(GooglePrivacyDlpV2InspectTemplateSchema)
+        .exactOptional()
+        .openapi({
+          description: 'List of inspectTemplates, up to page_size in ListInspectTemplatesRequest.',
+        }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'If the next page is available then the next page token to be used in following ListInspectTemplates request.',
+        }),
+    })
+    .openapi({ description: 'Response message for ListInspectTemplates.', required: [] })
+    .openapi('GooglePrivacyDlpV2ListInspectTemplatesResponse')
 
-const GooglePrivacyDlpV2ListJobTriggersResponseSchema = z
-  .object({
-    jobTriggers: z
-      .array(GooglePrivacyDlpV2JobTriggerSchema)
-      .exactOptional()
-      .openapi({
-        description: 'List of triggeredJobs, up to page_size in ListJobTriggersRequest.',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If the next page is available then the next page token to be used in following ListJobTriggers request.',
-      }),
-  })
-  .openapi({ description: 'Response message for ListJobTriggers.', required: [] })
-  .openapi('GooglePrivacyDlpV2ListJobTriggersResponse')
+const GooglePrivacyDlpV2ListJobTriggersResponseSchema: z.ZodType<GooglePrivacyDlpV2ListJobTriggersResponseType> =
+  z
+    .object({
+      jobTriggers: z
+        .array(GooglePrivacyDlpV2JobTriggerSchema)
+        .exactOptional()
+        .openapi({
+          description: 'List of triggeredJobs, up to page_size in ListJobTriggersRequest.',
+        }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'If the next page is available then the next page token to be used in following ListJobTriggers request.',
+        }),
+    })
+    .openapi({ description: 'Response message for ListJobTriggers.', required: [] })
+    .openapi('GooglePrivacyDlpV2ListJobTriggersResponse')
 
-const GooglePrivacyDlpV2StoredInfoTypeStatsSchema = z
-  .object({
-    largeCustomDictionary:
-      GooglePrivacyDlpV2LargeCustomDictionaryStatsSchema.exactOptional().openapi({
-        description: 'StoredInfoType where findings are defined by a dictionary of phrases.',
-      }),
-  })
-  .openapi({ description: 'Statistics for a StoredInfoType.', required: [] })
-  .openapi('GooglePrivacyDlpV2StoredInfoTypeStats')
-
-const GooglePrivacyDlpV2StoredInfoTypeVersionSchema = z
-  .object({
-    config: GooglePrivacyDlpV2StoredInfoTypeConfigSchema.exactOptional().openapi({
-      description: 'StoredInfoType configuration.',
-    }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Create timestamp of the version. Read-only, determined by the system when the version is created.',
-      }),
-    errors: z
-      .array(GooglePrivacyDlpV2ErrorSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "Errors that occurred when creating this storedInfoType version, or anomalies detected in the storedInfoType data that render it unusable. Only the five most recent errors will be displayed, with the most recent error appearing first. For example, some of the data for stored custom dictionaries is put in the user's Cloud Storage bucket, and if this data is modified or deleted by the user or another system, the dictionary becomes invalid. If any errors occur, fix the problem indicated by the error message and use the UpdateStoredInfoType API method to create another version of the storedInfoType to continue using it, reusing the same `config` if it was not the source of the error.",
-      }),
-    state: z
-      .enum(['STORED_INFO_TYPE_STATE_UNSPECIFIED', 'PENDING', 'READY', 'FAILED', 'INVALID'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Stored info type version state. Read-only, updated by the system during dictionary creation.',
-      }),
-    stats: GooglePrivacyDlpV2StoredInfoTypeStatsSchema.exactOptional().openapi({
-      description: 'Statistics about this storedInfoType version.',
-    }),
-  })
-  .openapi({
-    description:
-      'Version of a StoredInfoType, including the configuration used to build it, create timestamp, and current state.',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2StoredInfoTypeVersion')
-
-const GooglePrivacyDlpV2StoredInfoTypeSchema = z
-  .object({
-    currentVersion: GooglePrivacyDlpV2StoredInfoTypeVersionSchema.exactOptional().openapi({
-      description: 'Current version of the stored info type.',
-    }),
-    name: z.string().exactOptional().openapi({ description: 'Resource name.' }),
-    pendingVersions: z
-      .array(GooglePrivacyDlpV2StoredInfoTypeVersionSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Pending versions of the stored info type. Empty if no versions are pending.',
-      }),
-  })
-  .openapi({
-    description:
-      'StoredInfoType resource message that contains information about the current version and any pending updates.',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2StoredInfoType')
-
-const GooglePrivacyDlpV2ListStoredInfoTypesResponseSchema = z
-  .object({
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If the next page is available then the next page token to be used in following ListStoredInfoTypes request.',
-      }),
-    storedInfoTypes: z
-      .array(GooglePrivacyDlpV2StoredInfoTypeSchema)
-      .exactOptional()
-      .openapi({
-        description: 'List of storedInfoTypes, up to page_size in ListStoredInfoTypesRequest.',
-      }),
-  })
-  .openapi({ description: 'Response message for ListStoredInfoTypes.', required: [] })
-  .openapi('GooglePrivacyDlpV2ListStoredInfoTypesResponse')
+const GooglePrivacyDlpV2ListStoredInfoTypesResponseSchema: z.ZodType<GooglePrivacyDlpV2ListStoredInfoTypesResponseType> =
+  z
+    .object({
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'If the next page is available then the next page token to be used in following ListStoredInfoTypes request.',
+        }),
+      storedInfoTypes: z
+        .array(GooglePrivacyDlpV2StoredInfoTypeSchema)
+        .exactOptional()
+        .openapi({
+          description: 'List of storedInfoTypes, up to page_size in ListStoredInfoTypesRequest.',
+        }),
+    })
+    .openapi({ description: 'Response message for ListStoredInfoTypes.', required: [] })
+    .openapi('GooglePrivacyDlpV2ListStoredInfoTypesResponse')
 
 const GooglePrivacyDlpV2RecordTransformationSchema = z
   .object({
@@ -4676,105 +5142,110 @@ const GooglePrivacyDlpV2RecordTransformationSchema = z
   .openapi({ required: [] })
   .openapi('GooglePrivacyDlpV2RecordTransformation')
 
-const GooglePrivacyDlpV2RedactImageRequestSchema = z
-  .object({
-    byteItem: GooglePrivacyDlpV2ByteContentItemSchema.exactOptional().openapi({
-      description: 'The content must be PNG, JPEG, SVG or BMP.',
-    }),
-    imageRedactionConfigs: z
-      .array(GooglePrivacyDlpV2ImageRedactionConfigSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The configuration for specifying what content to redact from images.',
+const GooglePrivacyDlpV2RedactImageRequestSchema: z.ZodType<GooglePrivacyDlpV2RedactImageRequestType> =
+  z
+    .object({
+      byteItem: GooglePrivacyDlpV2ByteContentItemSchema.exactOptional().openapi({
+        description: 'The content must be PNG, JPEG, SVG or BMP.',
       }),
-    includeFindings: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether the response should include findings along with the redacted image.',
+      imageRedactionConfigs: z
+        .array(GooglePrivacyDlpV2ImageRedactionConfigSchema)
+        .exactOptional()
+        .openapi({
+          description: 'The configuration for specifying what content to redact from images.',
+        }),
+      includeFindings: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Whether the response should include findings along with the redacted image.',
+        }),
+      inspectConfig: GooglePrivacyDlpV2InspectConfigSchema.exactOptional().openapi({
+        description: 'Configuration for the inspector.',
       }),
-    inspectConfig: GooglePrivacyDlpV2InspectConfigSchema.exactOptional().openapi({
-      description: 'Configuration for the inspector.',
-    }),
-    locationId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Deprecated. This field has no effect.' }),
-  })
-  .openapi({
-    description:
-      'Request to search for potentially sensitive info in an image and redact it by covering it with a colored rectangle.',
-    required: [],
-  })
-  .openapi('GooglePrivacyDlpV2RedactImageRequest')
-
-const GooglePrivacyDlpV2RedactImageResponseSchema = z
-  .object({
-    extractedText: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "If an image was being inspected and the InspectConfig's include_quote was set to true, then this field will include all text, if any, that was found in the image.",
-      }),
-    inspectResult: GooglePrivacyDlpV2InspectResultSchema.exactOptional().openapi({
-      description: 'The findings. Populated when include_findings in the request is true.',
-    }),
-    redactedImage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The redacted image. The type will be the same as the original image.',
-      }),
-  })
-  .openapi({ description: 'Results of redacting an image.', required: [] })
-  .openapi('GooglePrivacyDlpV2RedactImageResponse')
-
-const GooglePrivacyDlpV2ReidentifyContentRequestSchema = z
-  .object({
-    inspectConfig: GooglePrivacyDlpV2InspectConfigSchema.exactOptional().openapi({
-      description: 'Configuration for the inspector.',
-    }),
-    inspectTemplateName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Template to use. Any configuration directly specified in `inspect_config` will override those set in the template. Singular fields that are set in this request will replace their corresponding fields in the template. Repeated fields are appended. Singular sub-messages and groups are recursively merged.',
-      }),
-    item: GooglePrivacyDlpV2ContentItemSchema.exactOptional().openapi({
-      description: 'The item to re-identify. Will be treated as text.',
-    }),
-    locationId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Deprecated. This field has no effect.' }),
-    reidentifyConfig: GooglePrivacyDlpV2DeidentifyConfigSchema.exactOptional().openapi({
+      locationId: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Deprecated. This field has no effect.' }),
+    })
+    .openapi({
       description:
-        'Configuration for the re-identification of the content item. This field shares the same proto message type that is used for de-identification, however its usage here is for the reversal of the previous de-identification. Re-identification is performed by examining the transformations used to de-identify the items and executing the reverse. This requires that only reversible transformations be provided here. The reversible transformations are: - `CryptoDeterministicConfig` - `CryptoReplaceFfxFpeConfig`',
-    }),
-    reidentifyTemplateName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Template to use. References an instance of `DeidentifyTemplate`. Any configuration directly specified in `reidentify_config` or `inspect_config` will override those set in the template. The `DeidentifyTemplate` used must include only reversible transformations. Singular fields that are set in this request will replace their corresponding fields in the template. Repeated fields are appended. Singular sub-messages and groups are recursively merged.',
-      }),
-  })
-  .openapi({ description: 'Request to re-identify an item.', required: [] })
-  .openapi('GooglePrivacyDlpV2ReidentifyContentRequest')
+        'Request to search for potentially sensitive info in an image and redact it by covering it with a colored rectangle.',
+      required: [],
+    })
+    .openapi('GooglePrivacyDlpV2RedactImageRequest')
 
-const GooglePrivacyDlpV2ReidentifyContentResponseSchema = z
-  .object({
-    item: GooglePrivacyDlpV2ContentItemSchema.exactOptional().openapi({
-      description: 'The re-identified item.',
-    }),
-    overview: GooglePrivacyDlpV2TransformationOverviewSchema.exactOptional().openapi({
-      description: 'An overview of the changes that were made to the `item`.',
-    }),
-  })
-  .openapi({ description: 'Results of re-identifying an item.', required: [] })
-  .openapi('GooglePrivacyDlpV2ReidentifyContentResponse')
+const GooglePrivacyDlpV2RedactImageResponseSchema: z.ZodType<GooglePrivacyDlpV2RedactImageResponseType> =
+  z
+    .object({
+      extractedText: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            "If an image was being inspected and the InspectConfig's include_quote was set to true, then this field will include all text, if any, that was found in the image.",
+        }),
+      inspectResult: GooglePrivacyDlpV2InspectResultSchema.exactOptional().openapi({
+        description: 'The findings. Populated when include_findings in the request is true.',
+      }),
+      redactedImage: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'The redacted image. The type will be the same as the original image.',
+        }),
+    })
+    .openapi({ description: 'Results of redacting an image.', required: [] })
+    .openapi('GooglePrivacyDlpV2RedactImageResponse')
+
+const GooglePrivacyDlpV2ReidentifyContentRequestSchema: z.ZodType<GooglePrivacyDlpV2ReidentifyContentRequestType> =
+  z
+    .object({
+      inspectConfig: GooglePrivacyDlpV2InspectConfigSchema.exactOptional().openapi({
+        description: 'Configuration for the inspector.',
+      }),
+      inspectTemplateName: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Template to use. Any configuration directly specified in `inspect_config` will override those set in the template. Singular fields that are set in this request will replace their corresponding fields in the template. Repeated fields are appended. Singular sub-messages and groups are recursively merged.',
+        }),
+      item: GooglePrivacyDlpV2ContentItemSchema.exactOptional().openapi({
+        description: 'The item to re-identify. Will be treated as text.',
+      }),
+      locationId: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Deprecated. This field has no effect.' }),
+      reidentifyConfig: GooglePrivacyDlpV2DeidentifyConfigSchema.exactOptional().openapi({
+        description:
+          'Configuration for the re-identification of the content item. This field shares the same proto message type that is used for de-identification, however its usage here is for the reversal of the previous de-identification. Re-identification is performed by examining the transformations used to de-identify the items and executing the reverse. This requires that only reversible transformations be provided here. The reversible transformations are: - `CryptoDeterministicConfig` - `CryptoReplaceFfxFpeConfig`',
+      }),
+      reidentifyTemplateName: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Template to use. References an instance of `DeidentifyTemplate`. Any configuration directly specified in `reidentify_config` or `inspect_config` will override those set in the template. The `DeidentifyTemplate` used must include only reversible transformations. Singular fields that are set in this request will replace their corresponding fields in the template. Repeated fields are appended. Singular sub-messages and groups are recursively merged.',
+        }),
+    })
+    .openapi({ description: 'Request to re-identify an item.', required: [] })
+    .openapi('GooglePrivacyDlpV2ReidentifyContentRequest')
+
+const GooglePrivacyDlpV2ReidentifyContentResponseSchema: z.ZodType<GooglePrivacyDlpV2ReidentifyContentResponseType> =
+  z
+    .object({
+      item: GooglePrivacyDlpV2ContentItemSchema.exactOptional().openapi({
+        description: 'The re-identified item.',
+      }),
+      overview: GooglePrivacyDlpV2TransformationOverviewSchema.exactOptional().openapi({
+        description: 'An overview of the changes that were made to the `item`.',
+      }),
+    })
+    .openapi({ description: 'Results of re-identifying an item.', required: [] })
+    .openapi('GooglePrivacyDlpV2ReidentifyContentResponse')
 
 const GooglePrivacyDlpV2TransformationDescriptionSchema = z
   .object({
@@ -4914,44 +5385,47 @@ const GooglePrivacyDlpV2TransformationDetailsSchema = z
   })
   .openapi('GooglePrivacyDlpV2TransformationDetails')
 
-const GooglePrivacyDlpV2UpdateDeidentifyTemplateRequestSchema = z
-  .object({
-    deidentifyTemplate: GooglePrivacyDlpV2DeidentifyTemplateSchema.exactOptional().openapi({
-      description: 'New DeidentifyTemplate value.',
-    }),
-    updateMask: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Mask to control which fields get updated.' }),
-  })
-  .openapi({ description: 'Request message for UpdateDeidentifyTemplate.', required: [] })
-  .openapi('GooglePrivacyDlpV2UpdateDeidentifyTemplateRequest')
+const GooglePrivacyDlpV2UpdateDeidentifyTemplateRequestSchema: z.ZodType<GooglePrivacyDlpV2UpdateDeidentifyTemplateRequestType> =
+  z
+    .object({
+      deidentifyTemplate: GooglePrivacyDlpV2DeidentifyTemplateSchema.exactOptional().openapi({
+        description: 'New DeidentifyTemplate value.',
+      }),
+      updateMask: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Mask to control which fields get updated.' }),
+    })
+    .openapi({ description: 'Request message for UpdateDeidentifyTemplate.', required: [] })
+    .openapi('GooglePrivacyDlpV2UpdateDeidentifyTemplateRequest')
 
-const GooglePrivacyDlpV2UpdateInspectTemplateRequestSchema = z
-  .object({
-    inspectTemplate: GooglePrivacyDlpV2InspectTemplateSchema.exactOptional().openapi({
-      description: 'New InspectTemplate value.',
-    }),
-    updateMask: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Mask to control which fields get updated.' }),
-  })
-  .openapi({ description: 'Request message for UpdateInspectTemplate.', required: [] })
-  .openapi('GooglePrivacyDlpV2UpdateInspectTemplateRequest')
+const GooglePrivacyDlpV2UpdateInspectTemplateRequestSchema: z.ZodType<GooglePrivacyDlpV2UpdateInspectTemplateRequestType> =
+  z
+    .object({
+      inspectTemplate: GooglePrivacyDlpV2InspectTemplateSchema.exactOptional().openapi({
+        description: 'New InspectTemplate value.',
+      }),
+      updateMask: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Mask to control which fields get updated.' }),
+    })
+    .openapi({ description: 'Request message for UpdateInspectTemplate.', required: [] })
+    .openapi('GooglePrivacyDlpV2UpdateInspectTemplateRequest')
 
-const GooglePrivacyDlpV2UpdateJobTriggerRequestSchema = z
-  .object({
-    jobTrigger: GooglePrivacyDlpV2JobTriggerSchema.exactOptional().openapi({
-      description: 'New JobTrigger value.',
-    }),
-    updateMask: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Mask to control which fields get updated.' }),
-  })
-  .openapi({ description: 'Request message for UpdateJobTrigger.', required: [] })
-  .openapi('GooglePrivacyDlpV2UpdateJobTriggerRequest')
+const GooglePrivacyDlpV2UpdateJobTriggerRequestSchema: z.ZodType<GooglePrivacyDlpV2UpdateJobTriggerRequestType> =
+  z
+    .object({
+      jobTrigger: GooglePrivacyDlpV2JobTriggerSchema.exactOptional().openapi({
+        description: 'New JobTrigger value.',
+      }),
+      updateMask: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Mask to control which fields get updated.' }),
+    })
+    .openapi({ description: 'Request message for UpdateJobTrigger.', required: [] })
+    .openapi('GooglePrivacyDlpV2UpdateJobTriggerRequest')
 
 const GooglePrivacyDlpV2UpdateStoredInfoTypeRequestSchema = z
   .object({

@@ -5,6 +5,70 @@ type JsonValueOutputType =
   | JsonValueOutputType[]
   | { [key: string]: JsonValueOutputType }
 
+type JitListAccessResponseOutputType = {
+  items: (
+    | {
+        user_id: string
+        primary_email: string | null
+        invite_id: null
+        expires_at: null
+        user_roles: {
+          role: string
+          expires_at?: number
+          allowed_networks?: {
+            allowed_cidrs?: { cidr: string }[]
+            allowed_cidrs_v6?: { cidr: string }[]
+          }
+          branches_only?: boolean
+        }[]
+      }
+    | {
+        user_id: null
+        primary_email: string
+        invite_id: string
+        expires_at: string
+        user_roles: {
+          role: string
+          expires_at?: number
+          allowed_networks?: {
+            allowed_cidrs?: { cidr: string }[]
+            allowed_cidrs_v6?: { cidr: string }[]
+          }
+          branches_only?: boolean
+        }[]
+      }
+  )[]
+}
+
+type ListProvidersResponseOutputType = {
+  items: {
+    id: string
+    saml?: {
+      entity_id: string
+      metadata_url?: string
+      metadata_xml?: string
+      attribute_mapping?: {
+        keys: {
+          [key: string]: {
+            name?: string
+            names?: string[]
+            array?: boolean
+            default?: { [key: string]: unknown } | number | string | boolean
+          }
+        }
+      }
+      name_id_format?:
+        | 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified'
+        | 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
+        | 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'
+        | 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
+    }
+    domains?: { domain?: string; created_at?: string; updated_at?: string }[]
+    created_at?: string
+    updated_at?: string
+  }[]
+}
+
 const BranchDetailResponseOutputSchema = z
   .object({
     ref: z.string(),
@@ -27,6 +91,7 @@ const BranchDetailResponseOutputSchema = z
       'RESTARTING',
       'PAUSE_FAILED',
       'RESIZING',
+      'PROMOTING',
     ]),
     db_host: z.string(),
     db_port: z.int().positive().max(9007199254740991),
@@ -125,17 +190,17 @@ const BranchResponseOutputSchema = z
     created_at: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       ),
     updated_at: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       ),
     review_requested_at: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional(),
     with_data: z.boolean(),
@@ -143,7 +208,7 @@ const BranchResponseOutputSchema = z
     deletion_scheduled_at: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional(),
     preview_project_status: z
@@ -163,6 +228,7 @@ const BranchResponseOutputSchema = z
         'RESTARTING',
         'PAUSE_FAILED',
         'RESIZING',
+        'PROMOTING',
       ])
       .exactOptional(),
   })
@@ -181,6 +247,35 @@ const BranchResponseOutputSchema = z
     ],
   })
   .openapi('BranchResponseOutput')
+
+const PlanGateErrorBodySchema = z
+  .object({
+    message: z.string().openapi({ description: 'Human-readable explanation of the plan gate' }),
+    error: z
+      .object({
+        code: z
+          .literal('entitlement_required')
+          .openapi({ description: 'Machine-readable marker for plan-gated denials' }),
+        feature: z
+          .string()
+          .openapi({ description: 'Entitlement feature key that failed the check' }),
+        upgrade_url: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Billing page URL for the organization, present when the org is resolvable',
+          }),
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          'Present on entitlement denials. Other errors with this status code (validation, billing state) carry only message.',
+        required: ['code', 'feature'],
+      }),
+  })
+  .openapi({ required: ['message'] })
+  .openapi('PlanGateErrorBody')
 
 const BranchDeleteResponseOutputSchema = z
   .object({ message: z.literal('ok') })
@@ -236,6 +331,7 @@ const V1ProjectWithDatabaseResponseOutputSchema = z
       'RESTARTING',
       'PAUSE_FAILED',
       'RESIZING',
+      'PROMOTING',
     ]),
     database: z
       .object({
@@ -447,6 +543,7 @@ const V1ProjectResponseOutputSchema = z
       'RESTARTING',
       'PAUSE_FAILED',
       'RESIZING',
+      'PROMOTING',
     ]),
   })
   .openapi({
@@ -625,8 +722,20 @@ const OAuthTokenResponseOutputSchema = z
       }),
     expires_in: z.int().min(-9007199254740991).max(9007199254740991),
     token_type: z.literal('Bearer'),
+    scope: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Space-delimited scopes granted to the token. Omitted when no scopes were granted.',
+        example: 'projects:read projects:write',
+      }),
+    project_refs: z
+      .array(z.string())
+      .nullable()
+      .openapi({ description: 'Project refs the token is limited to. `null` means all projects.' }),
   })
-  .openapi({ required: ['access_token', 'expires_in', 'token_type'] })
+  .openapi({ required: ['access_token', 'expires_in', 'token_type', 'project_refs'] })
   .openapi('OAuthTokenResponseOutput')
 
 const OAuthRevokeTokenBodySchema = z
@@ -883,14 +992,14 @@ const ApiKeyResponseOutputSchema = z
     inserted_at: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .exactOptional(),
     updated_at: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .exactOptional(),
@@ -1134,17 +1243,39 @@ const NetworkRestrictionsResponseOutputSchema = z
         example: { dbAllowedCidrs: ['203.0.113.0/24'], dbAllowedCidrsV6: ['2001:db8::/32'] },
         required: [],
       }),
+    pending_config: z
+      .object({
+        dbAllowedCidrs: z.array(z.string()).exactOptional(),
+        dbAllowedCidrsV6: z.array(z.string()).exactOptional(),
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          'Present when a change that was never applied is waiting for review. `config` is the list the project enforces. Apply or reject the change with `POST /v1/projects/{ref}/network-restrictions/review`; submitting a new config also replaces it.',
+        example: { dbAllowedCidrs: ['203.0.113.0/24'], dbAllowedCidrsV6: ['2001:db8::/32'] },
+        required: [],
+      }),
+    pending_requested_at: z.iso
+      .datetime({ offset: true })
+      .regex(
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'When the change in `pending_config` was requested. Send it as `requested_at` to the review endpoint.',
+      }),
     status: z.enum(['stored', 'applied']),
     updated_at: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional(),
     applied_at: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional(),
   })
@@ -1225,19 +1356,43 @@ const NetworkRestrictionsV2ResponseOutputSchema = z
     updated_at: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional(),
     applied_at: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional(),
     status: z.enum(['stored', 'applied']),
   })
   .openapi({ required: ['entitlement', 'config', 'status'] })
   .openapi('NetworkRestrictionsV2ResponseOutput')
+
+const NetworkRestrictionsReviewRequestSchema = z
+  .object({
+    action: z
+      .enum(['apply', 'reject'])
+      .openapi({
+        description:
+          '`apply` replaces the enforced list with the pending one and applies it. `reject` discards the pending one and keeps the enforced list.',
+      }),
+    requested_at: z.iso
+      .datetime({ offset: true })
+      .regex(
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+      )
+      .openapi({
+        description:
+          'The `pending_requested_at` of the change being reviewed. Only that change is resolved: if another one has replaced it, the request gets a 409.',
+      }),
+  })
+  .openapi({
+    required: ['action', 'requested_at'],
+    example: { action: 'apply', requested_at: '2026-10-21T20:31:51.116+00:00' },
+  })
+  .openapi('NetworkRestrictionsReviewRequest')
 
 const PgsodiumConfigResponseOutputSchema = z
   .object({
@@ -1441,35 +1596,6 @@ const VanitySubdomainConfigResponseOutputSchema = z
   .openapi({ required: ['status'] })
   .openapi('VanitySubdomainConfigResponseOutput')
 
-const PlanGateErrorBodySchema = z
-  .object({
-    message: z.string().openapi({ description: 'Human-readable explanation of the plan gate' }),
-    error: z
-      .object({
-        code: z
-          .literal('entitlement_required')
-          .openapi({ description: 'Machine-readable marker for plan-gated denials' }),
-        feature: z
-          .string()
-          .openapi({ description: 'Entitlement feature key that failed the check' }),
-        upgrade_url: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Billing page URL for the organization, present when the org is resolvable',
-          }),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'Present on entitlement denials. Other errors with this status code (validation, billing state) carry only message.',
-        required: ['code', 'feature'],
-      }),
-  })
-  .openapi({ required: ['message'] })
-  .openapi('PlanGateErrorBody')
-
 const VanitySubdomainBodySchema = z
   .object({ vanity_subdomain: z.string().max(63) })
   .openapi({ required: ['vanity_subdomain'], example: { vanity_subdomain: 'acme-prod' } })
@@ -1589,6 +1715,15 @@ const ProjectUpgradeEligibilityResponseOutputSchema = z
         z
           .object({ type: z.literal('active_replication_slot'), slot_name: z.string() })
           .openapi({ required: ['type', 'slot_name'] }),
+        z
+          .object({
+            type: z.literal('table_using_reg_type'),
+            schema_name: z.string(),
+            table_name: z.string(),
+            column_name: z.string(),
+            type_name: z.string(),
+          })
+          .openapi({ required: ['type', 'schema_name', 'table_name', 'column_name', 'type_name'] }),
         z.object({ type: z.literal('x86_architecture') }).openapi({ required: ['type'] }),
         z.object({ type: z.literal('project_hibernating') }).openapi({ required: ['type'] }),
       ]),
@@ -1601,6 +1736,7 @@ const ProjectUpgradeEligibilityResponseOutputSchema = z
         z.object({ type: z.literal('ltree_reindex_required') }).openapi({ required: ['type'] }),
         z.object({ type: z.literal('operator_estimator_gate') }).openapi({ required: ['type'] }),
         z.object({ type: z.literal('btree_gist_nan_reindex') }).openapi({ required: ['type'] }),
+        z.object({ type: z.literal('collation_reindex_required') }).openapi({ required: ['type'] }),
       ]),
     ),
   })
@@ -1764,12 +1900,12 @@ const SigningKeyResponseOutputSchema = z
     created_at: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       ),
     updated_at: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       ),
   })
   .openapi({ required: ['id', 'algorithm', 'status', 'public_jwk', 'created_at', 'updated_at'] })
@@ -1891,12 +2027,12 @@ const SigningKeysResponseOutputSchema = z
           created_at: z.iso
             .datetime({ offset: true })
             .regex(
-              /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+              /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
             ),
           updated_at: z.iso
             .datetime({ offset: true })
             .regex(
-              /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+              /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
             ),
         })
         .openapi({
@@ -2117,6 +2253,7 @@ const AuthConfigResponseOutputSchema = z
     saml_external_url: z.string().nullable(),
     saml_allow_encrypted_assertions: z.boolean().nullable(),
     security_sb_forwarded_for_enabled: z.boolean().nullable(),
+    external_email_magic_link_disabled: z.boolean().nullable(),
     security_captcha_enabled: z.boolean().nullable(),
     security_captcha_provider: z
       .union([z.literal('turnstile'), z.literal('hcaptcha'), z.literal(null)])
@@ -2156,7 +2293,7 @@ const AuthConfigResponseOutputSchema = z
     sms_test_otp_valid_until: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable(),
     sms_textlocal_api_key: z.string().nullable(),
@@ -2174,7 +2311,7 @@ const AuthConfigResponseOutputSchema = z
     smtp_admin_email: z
       .email()
       .regex(
-        /^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$/,
+        /^(?:[A-Za-z0-9_'+\-]+\.)*[A-Za-z0-9_'+\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$/,
       )
       .nullable(),
     smtp_host: z.string().nullable(),
@@ -2383,6 +2520,7 @@ const AuthConfigResponseOutputSchema = z
       'saml_external_url',
       'saml_allow_encrypted_assertions',
       'security_sb_forwarded_for_enabled',
+      'external_email_magic_link_disabled',
       'security_captcha_enabled',
       'security_captcha_provider',
       'security_captcha_secret',
@@ -2446,7 +2584,7 @@ const UpdateAuthConfigBodySchema = z
     smtp_admin_email: z
       .email()
       .regex(
-        /^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$/,
+        /^(?:[A-Za-z0-9_'+\-]+\.)*[A-Za-z0-9_'+\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$/,
       )
       .nullable()
       .exactOptional(),
@@ -2509,6 +2647,7 @@ const UpdateAuthConfigBodySchema = z
       .nullable()
       .exactOptional(),
     security_sb_forwarded_for_enabled: z.boolean().nullable().exactOptional(),
+    external_email_magic_link_disabled: z.boolean().exactOptional(),
     security_captcha_enabled: z.boolean().nullable().exactOptional(),
     security_captcha_provider: z
       .union([z.literal('turnstile'), z.literal('hcaptcha'), z.literal(null)])
@@ -2603,7 +2742,7 @@ const UpdateAuthConfigBodySchema = z
     sms_test_otp_valid_until: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .exactOptional(),
@@ -3115,7 +3254,7 @@ const V1ProjectAdvisorsResponseOutputSchema = z
           observed_at: z.iso
             .datetime({ offset: true })
             .regex(
-              /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$/,
+              /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$/,
             )
             .exactOptional(),
         })
@@ -3173,10 +3312,10 @@ const V1GetUsageApiCountResponseOutputSchema = z
       .array(
         z
           .object({
-            timestamp: z.iso
-              .datetime({ offset: true })
+            timestamp: z
+              .string()
               .regex(
-                /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|))$/,
+                /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z)|(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?)$/,
               ),
             total_auth_requests: z.number(),
             total_realtime_requests: z.number(),
@@ -3418,7 +3557,7 @@ const JitAccessResponseOutputSchema = z
                       cidr: z
                         .cidrv6()
                         .regex(
-                          /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|::|([0-9a-fA-F]{1,4})?::([0-9a-fA-F]{1,4}:?){0,6})\/(12[0-8]|1[01][0-9]|[1-9]?[0-9])$/,
+                          /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:))\/(12[0-8]|1[01][0-9]|[1-9]?[0-9])$/,
                         ),
                     })
                     .openapi({ required: ['cidr'] }),
@@ -3489,7 +3628,7 @@ const JitAuthorizeAccessResponseOutputSchema = z
                     cidr: z
                       .cidrv6()
                       .regex(
-                        /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|::|([0-9a-fA-F]{1,4})?::([0-9a-fA-F]{1,4}:?){0,6})\/(12[0-8]|1[01][0-9]|[1-9]?[0-9])$/,
+                        /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:))\/(12[0-8]|1[01][0-9]|[1-9]?[0-9])$/,
                       ),
                   })
                   .openapi({ required: ['cidr'] }),
@@ -3505,7 +3644,7 @@ const JitAuthorizeAccessResponseOutputSchema = z
   .openapi({ required: ['user_role'] })
   .openapi('JitAuthorizeAccessResponseOutput')
 
-const JitListAccessResponseOutputSchema = z
+const JitListAccessResponseOutputSchema: z.ZodType<JitListAccessResponseOutputType> = z
   .object({
     items: z.array(
       z.union([
@@ -3546,7 +3685,7 @@ const JitListAccessResponseOutputSchema = z
                               cidr: z
                                 .cidrv6()
                                 .regex(
-                                  /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|::|([0-9a-fA-F]{1,4})?::([0-9a-fA-F]{1,4}:?){0,6})\/(12[0-8]|1[01][0-9]|[1-9]?[0-9])$/,
+                                  /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:))\/(12[0-8]|1[01][0-9]|[1-9]?[0-9])$/,
                                 ),
                             })
                             .openapi({ required: ['cidr'] }),
@@ -3600,7 +3739,7 @@ const JitListAccessResponseOutputSchema = z
                               cidr: z
                                 .cidrv6()
                                 .regex(
-                                  /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|::|([0-9a-fA-F]{1,4})?::([0-9a-fA-F]{1,4}:?){0,6})\/(12[0-8]|1[01][0-9]|[1-9]?[0-9])$/,
+                                  /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:))\/(12[0-8]|1[01][0-9]|[1-9]?[0-9])$/,
                                 ),
                             })
                             .openapi({ required: ['cidr'] }),
@@ -3658,7 +3797,7 @@ const UpdateJitAccessBodySchema = z
                       cidr: z
                         .cidrv6()
                         .regex(
-                          /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|::|([0-9a-fA-F]{1,4})?::([0-9a-fA-F]{1,4}:?){0,6})\/(12[0-8]|1[01][0-9]|[1-9]?[0-9])$/,
+                          /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:))\/(12[0-8]|1[01][0-9]|[1-9]?[0-9])$/,
                         ),
                     })
                     .openapi({ required: ['cidr'] }),
@@ -3693,7 +3832,7 @@ const InviteExternalUserJitAccessBodySchema = z
     email: z
       .email()
       .regex(
-        /^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$/,
+        /^(?:[A-Za-z0-9_'+\-]+\.)*[A-Za-z0-9_'+\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$/,
       )
       .min(1),
     roles: z.array(
@@ -3723,7 +3862,7 @@ const InviteExternalUserJitAccessBodySchema = z
                       cidr: z
                         .cidrv6()
                         .regex(
-                          /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|::|([0-9a-fA-F]{1,4})?::([0-9a-fA-F]{1,4}:?){0,6})\/(12[0-8]|1[01][0-9]|[1-9]?[0-9])$/,
+                          /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:))\/(12[0-8]|1[01][0-9]|[1-9]?[0-9])$/,
                         ),
                     })
                     .openapi({ required: ['cidr'] }),
@@ -3758,7 +3897,7 @@ const InviteExternalUserJitResponseOutputSchema = z
     email: z
       .email()
       .regex(
-        /^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$/,
+        /^(?:[A-Za-z0-9_'+\-]+\.)*[A-Za-z0-9_'+\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$/,
       ),
     invite_id: z
       .uuid()
@@ -3792,7 +3931,7 @@ const InviteExternalUserJitResponseOutputSchema = z
                       cidr: z
                         .cidrv6()
                         .regex(
-                          /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|::|([0-9a-fA-F]{1,4})?::([0-9a-fA-F]{1,4}:?){0,6})\/(12[0-8]|1[01][0-9]|[1-9]?[0-9])$/,
+                          /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:))\/(12[0-8]|1[01][0-9]|[1-9]?[0-9])$/,
                         ),
                     })
                     .openapi({ required: ['cidr'] }),
@@ -3814,7 +3953,7 @@ const AcceptInviteExternalUserJitAccessBodySchema = z
     email: z
       .email()
       .regex(
-        /^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$/,
+        /^(?:[A-Za-z0-9_'+\-]+\.)*[A-Za-z0-9_'+\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$/,
       )
       .min(1),
     token: z.string().min(1),
@@ -4116,7 +4255,7 @@ const FunctionSlugResponseOutputSchema = z
   .openapi({ required: ['id', 'slug', 'name', 'status', 'version', 'created_at', 'updated_at'] })
   .openapi('FunctionSlugResponseOutput')
 
-const StreamableFileSchema = z.object({}).openapi('StreamableFile')
+const StreamableFileSchema = z.looseObject({}).openapi('StreamableFile')
 
 const V1UpdateFunctionBodyJsonSchema = z
   .object({
@@ -4135,8 +4274,10 @@ const V1UpdateFunctionBodyJsonSchema = z
   .openapi('V1UpdateFunctionBodyJson')
 
 const V1UpdateFunctionBodyEszipSchema = z
-  .string()
+  .file()
   .openapi({
+    type: 'string',
+    format: 'binary',
     description:
       "Raw Brotli-compressed ESZIP binary file.\n\n**Validation requirements** - The file must start with the four magic bytes `EZBR` (hex: `45 5A 42 52`).\n- The `ezbr_sha256` query parameter must contain the SHA-256 hash of the uploaded ESZIP payload.\n\n**Example**\n```javascript\nimport { readFile } from 'node:fs/promises';\nimport { brotliCompress } from 'node:zlib';\nimport { promisify } from 'node:util';\nimport { createHash } from 'node:crypto';\n\nconst compress = promisify(brotliCompress);\nconst marker = Buffer.from('EZBR', 'ascii');\n\nconst file = await readFile('./function.eszip');\nconst compressed = await compress(file);\n\nconst payload = Buffer.concat([marker, compressed]);\n\nconst ezbr_sha256 = createHash('sha256')\n  .update(payload)\n  .digest('hex');\n\nconsole.log(ezbr_sha256);\n```\n\n",
     examples: ['Binary Brotli-compressed ESZIP file'],
@@ -4648,7 +4789,7 @@ const RealtimeConfigResponseOutputSchema = z
     admin_suspended_at: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .openapi({ description: 'If set, the Realtime service has been suspended by an admin.' }),
@@ -4767,7 +4908,9 @@ const CreateProviderBodySchema = z
               name: z.string().exactOptional(),
               names: z.array(z.string()).exactOptional(),
               array: z.boolean().exactOptional(),
-              default: z.union([z.object({}), z.number(), z.string(), z.boolean()]).exactOptional(),
+              default: z
+                .union([z.looseObject({}), z.number(), z.string(), z.boolean()])
+                .exactOptional(),
             })
             .openapi({ required: [] }),
         ),
@@ -4818,7 +4961,7 @@ const CreateProviderResponseOutputSchema = z
                   names: z.array(z.string()).exactOptional(),
                   array: z.boolean().exactOptional(),
                   default: z
-                    .union([z.object({}), z.number(), z.string(), z.boolean()])
+                    .union([z.looseObject({}), z.number(), z.string(), z.boolean()])
                     .exactOptional(),
                 })
                 .openapi({ required: [] }),
@@ -4854,7 +4997,7 @@ const CreateProviderResponseOutputSchema = z
   .openapi({ required: ['id'] })
   .openapi('CreateProviderResponseOutput')
 
-const ListProvidersResponseOutputSchema = z
+const ListProvidersResponseOutputSchema: z.ZodType<ListProvidersResponseOutputType> = z
   .object({
     items: z.array(
       z
@@ -4875,7 +5018,7 @@ const ListProvidersResponseOutputSchema = z
                         names: z.array(z.string()).exactOptional(),
                         array: z.boolean().exactOptional(),
                         default: z
-                          .union([z.object({}), z.number(), z.string(), z.boolean()])
+                          .union([z.looseObject({}), z.number(), z.string(), z.boolean()])
                           .exactOptional(),
                       })
                       .openapi({ required: [] }),
@@ -4932,7 +5075,7 @@ const GetProviderResponseOutputSchema = z
                   names: z.array(z.string()).exactOptional(),
                   array: z.boolean().exactOptional(),
                   default: z
-                    .union([z.object({}), z.number(), z.string(), z.boolean()])
+                    .union([z.looseObject({}), z.number(), z.string(), z.boolean()])
                     .exactOptional(),
                 })
                 .openapi({ required: [] }),
@@ -4982,7 +5125,9 @@ const UpdateProviderBodySchema = z
               name: z.string().exactOptional(),
               names: z.array(z.string()).exactOptional(),
               array: z.boolean().exactOptional(),
-              default: z.union([z.object({}), z.number(), z.string(), z.boolean()]).exactOptional(),
+              default: z
+                .union([z.looseObject({}), z.number(), z.string(), z.boolean()])
+                .exactOptional(),
             })
             .openapi({ required: [] }),
         ),
@@ -5025,7 +5170,7 @@ const UpdateProviderResponseOutputSchema = z
                   names: z.array(z.string()).exactOptional(),
                   array: z.boolean().exactOptional(),
                   default: z
-                    .union([z.object({}), z.number(), z.string(), z.boolean()])
+                    .union([z.looseObject({}), z.number(), z.string(), z.boolean()])
                     .exactOptional(),
                 })
                 .openapi({ required: [] }),
@@ -5079,7 +5224,7 @@ const DeleteProviderResponseOutputSchema = z
                   names: z.array(z.string()).exactOptional(),
                   array: z.boolean().exactOptional(),
                   default: z
-                    .union([z.object({}), z.number(), z.string(), z.boolean()])
+                    .union([z.looseObject({}), z.number(), z.string(), z.boolean()])
                     .exactOptional(),
                 })
                 .openapi({ required: [] }),
@@ -5182,7 +5327,7 @@ const V1RestorePointResponseSchema = z
     completed_on: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable(),
   })
@@ -5206,7 +5351,7 @@ const V1BackupScheduleResponseOutputSchema = z
     updated_at: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({
         description: 'Timestamp of when the backup schedule was last updated.',
@@ -5446,6 +5591,7 @@ const OrganizationProjectsResponseOutputSchema = z
             'RESTARTING',
             'PAUSE_FAILED',
             'RESIZING',
+            'PROMOTING',
           ]),
           inserted_at: z.string(),
           databases: z.array(
@@ -5782,6 +5928,10 @@ export const patchV1BranchesBranchIdOrRefRoute = createRoute({
       content: { 'application/json': { schema: BranchResponseOutputSchema } },
     },
     401: { description: 'Unauthorized' },
+    402: {
+      description: 'Persistent branches are not available on the organization plan',
+      content: { 'application/json': { schema: PlanGateErrorBodySchema } },
+    },
     403: { description: 'Forbidden action' },
     429: { description: 'Rate limit exceeded' },
     500: { description: 'Failed to update database branch' },
@@ -6192,6 +6342,11 @@ export const postV1ProjectsRoute = createRoute({
       content: { 'application/json': { schema: V1ProjectResponseOutputSchema } },
     },
     401: { description: 'Unauthorized' },
+    402: {
+      description:
+        'The instance size is not available on the organization plan, or the organization has overdue invoices',
+      content: { 'application/json': { schema: PlanGateErrorBodySchema } },
+    },
     403: { description: 'Forbidden action' },
     429: { description: 'Rate limit exceeded' },
   },
@@ -6344,6 +6499,7 @@ export const postV1OrganizationsRoute = createRoute({
     },
     401: { description: 'Unauthorized' },
     403: { description: 'Forbidden action' },
+    404: { description: 'User not found' },
     429: { description: 'Rate limit exceeded' },
     500: { description: 'Unexpected error creating an organization' },
   },
@@ -6475,6 +6631,27 @@ export const getV1OauthAuthorizeRoute = createRoute({
             schema: { pattern: '^[\\w-]+$', example: 'tsrqponmlkjihgfedcba', type: 'string' },
           },
           example: 'tsrqponmlkjihgfedcba',
+        }),
+      project_ref: z
+        .string()
+        .regex(/^[a-z]+$/)
+        .length(20)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'project_ref',
+            required: false,
+            in: 'query',
+            description: 'Project ref',
+            schema: {
+              minLength: 20,
+              maxLength: 20,
+              pattern: '^[a-z]+$',
+              example: 'abcdefghijklmnopqrst',
+              type: 'string',
+            },
+          },
+          example: 'abcdefghijklmnopqrst',
         }),
       target_flow: z
         .string()
@@ -6942,27 +7119,24 @@ export const headV1ProjectsRefActionsRoute = createRoute({
     200: {
       description: '',
       headers: z.object({
-        'X-Total-Count': {
-          description: 'total count value',
-          schema: z
-            .preprocess(
-              (val) =>
-                typeof val === 'number' && Number.isSafeInteger(val)
+        'X-Total-Count': z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
                   ? BigInt(val)
-                  : typeof val === 'string' && /^-?\d+$/.test(val)
-                    ? BigInt(val)
-                    : val,
-              z.int64().min(0n),
-            )
-            .exactOptional()
-            .openapi({
-              description: 'total count value',
-              param: { required: false },
-              type: 'integer',
-              format: 'int64',
-              minimum: 0,
-            }),
-        },
+                  : val,
+            z.int64().min(0n),
+          )
+          .exactOptional()
+          .openapi({
+            description: 'total count value',
+            param: { required: false },
+            type: 'integer',
+            format: 'int64',
+            minimum: 0,
+          }),
       }),
     },
     401: { description: 'Unauthorized' },
@@ -7253,6 +7427,11 @@ export const postV1ProjectsRefApiKeysRoute = createRoute({
       content: { 'application/json': { schema: ApiKeyResponseOutputSchema } },
     },
     401: { description: 'Unauthorized' },
+    402: {
+      description:
+        'Custom JWT templates for secret API keys are not available on the organization plan',
+      content: { 'application/json': { schema: PlanGateErrorBodySchema } },
+    },
     403: { description: 'Forbidden action' },
     429: { description: 'Rate limit exceeded' },
   },
@@ -7615,6 +7794,11 @@ export const patchV1ProjectsRefApiKeysIdRoute = createRoute({
       content: { 'application/json': { schema: ApiKeyResponseOutputSchema } },
     },
     401: { description: 'Unauthorized' },
+    402: {
+      description:
+        'Custom JWT templates for secret API keys are not available on the organization plan',
+      content: { 'application/json': { schema: PlanGateErrorBodySchema } },
+    },
     403: { description: 'Forbidden action' },
     404: { description: 'API key not found for project' },
     429: { description: 'Rate limit exceeded' },
@@ -7704,6 +7888,10 @@ export const postV1ProjectsRefBranchesRoute = createRoute({
       content: { 'application/json': { schema: BranchResponseOutputSchema } },
     },
     401: { description: 'Unauthorized' },
+    402: {
+      description: 'Branching or persistent branches are not available on the organization plan',
+      content: { 'application/json': { schema: PlanGateErrorBodySchema } },
+    },
     403: { description: 'Forbidden action' },
     429: { description: 'Rate limit exceeded' },
     500: { description: 'Failed to create database branch' },
@@ -8085,27 +8273,25 @@ export const getV1ProjectsRefJitAccessRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z
-            .xor([
-              z
-                .object({
-                  state: z.enum(['enabled', 'disabled']),
-                  appliedSuccessfully: z.boolean().exactOptional(),
-                })
-                .openapi({ required: ['state'] }),
-              z
-                .object({
-                  state: z.literal('unavailable'),
-                  unavailableReason: z.enum([
-                    'platform_unsupported',
-                    'postgres_upgrade_required',
-                    'ssl_enforcement_required',
-                    'temporarily_unavailable',
-                  ]),
-                })
-                .openapi({ required: ['state', 'unavailableReason'] }),
-            ])
-            .openapi({ $schema: 'https://json-schema.org/draft/2020-12/schema' }),
+          schema: z.xor([
+            z
+              .object({
+                state: z.enum(['enabled', 'disabled']),
+                appliedSuccessfully: z.boolean().exactOptional(),
+              })
+              .openapi({ required: ['state'] }),
+            z
+              .object({
+                state: z.literal('unavailable'),
+                unavailableReason: z.enum([
+                  'platform_unsupported',
+                  'postgres_upgrade_required',
+                  'ssl_enforcement_required',
+                  'temporarily_unavailable',
+                ]),
+              })
+              .openapi({ required: ['state', 'unavailableReason'] }),
+          ]),
         },
       },
     },
@@ -8158,27 +8344,25 @@ export const putV1ProjectsRefJitAccessRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z
-            .xor([
-              z
-                .object({
-                  state: z.enum(['enabled', 'disabled']),
-                  appliedSuccessfully: z.boolean().exactOptional(),
-                })
-                .openapi({ required: ['state'] }),
-              z
-                .object({
-                  state: z.literal('unavailable'),
-                  unavailableReason: z.enum([
-                    'platform_unsupported',
-                    'postgres_upgrade_required',
-                    'ssl_enforcement_required',
-                    'temporarily_unavailable',
-                  ]),
-                })
-                .openapi({ required: ['state', 'unavailableReason'] }),
-            ])
-            .openapi({ $schema: 'https://json-schema.org/draft/2020-12/schema' }),
+          schema: z.xor([
+            z
+              .object({
+                state: z.enum(['enabled', 'disabled']),
+                appliedSuccessfully: z.boolean().exactOptional(),
+              })
+              .openapi({ required: ['state'] }),
+            z
+              .object({
+                state: z.literal('unavailable'),
+                unavailableReason: z.enum([
+                  'platform_unsupported',
+                  'postgres_upgrade_required',
+                  'ssl_enforcement_required',
+                  'temporarily_unavailable',
+                ]),
+              })
+              .openapi({ required: ['state', 'unavailableReason'] }),
+          ]),
         },
       },
     },
@@ -8466,6 +8650,55 @@ export const postV1ProjectsRefNetworkRestrictionsApplyRoute = createRoute({
     403: { description: 'Forbidden action' },
     429: { description: 'Rate limit exceeded' },
     500: { description: 'Failed to update project network restrictions' },
+  },
+  security: [{ bearer: [] }],
+})
+
+export const postV1ProjectsRefNetworkRestrictionsReviewRoute = createRoute({
+  method: 'post',
+  path: '/v1/projects/{ref}/network-restrictions/review',
+  tags: ['Projects'],
+  summary: "Applies or rejects the change in review in a project's network restrictions",
+  description:
+    'This is an **experimental** endpoint. It is subject to change or removal in future versions. Use it with caution, as it may not remain supported or stable.\n\nThis endpoint is currently in its **Alpha** stage.',
+  operationId: 'v1-review-network-restrictions',
+  request: {
+    params: z.object({
+      ref: z
+        .string()
+        .regex(/^[a-z]+$/)
+        .length(20)
+        .openapi({
+          param: {
+            name: 'ref',
+            required: true,
+            in: 'path',
+            description: 'Project ref',
+            schema: {
+              minLength: 20,
+              maxLength: 20,
+              pattern: '^[a-z]+$',
+              example: 'abcdefghijklmnopqrst',
+              type: 'string',
+            },
+          },
+          example: 'abcdefghijklmnopqrst',
+        }),
+    }),
+    body: {
+      content: { 'application/json': { schema: NetworkRestrictionsReviewRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: '',
+      content: { 'application/json': { schema: NetworkRestrictionsResponseOutputSchema } },
+    },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden action' },
+    429: { description: 'Rate limit exceeded' },
+    500: { description: 'Failed to resolve the network restrictions review' },
   },
   security: [{ bearer: [] }],
 })
@@ -10175,6 +10408,10 @@ export const patchV1ProjectsRefConfigAuthRoute = createRoute({
       content: { 'application/json': { schema: AuthConfigResponseOutputSchema } },
     },
     401: { description: 'Unauthorized' },
+    402: {
+      description: 'An auth setting in the request is not available on the organization plan',
+      content: { 'application/json': { schema: PlanGateErrorBodySchema } },
+    },
     403: { description: 'Forbidden action' },
     429: { description: 'Rate limit exceeded' },
     500: { description: "Failed to update project's auth config" },
@@ -10549,6 +10786,11 @@ export const postV1ProjectsRefRestoreRoute = createRoute({
   responses: {
     200: { description: '' },
     401: { description: 'Unauthorized' },
+    402: {
+      description:
+        'The restore is not available on the organization plan, or the organization has overdue invoices or a service restriction',
+      content: { 'application/json': { schema: PlanGateErrorBodySchema } },
+    },
     403: { description: 'Forbidden action' },
     429: { description: 'Rate limit exceeded' },
   },
@@ -11108,7 +11350,7 @@ export const getV1ProjectsRefAnalyticsEndpointsLogsRoute = createRoute({
       iso_timestamp_start: z.iso
         .datetime({ offset: true })
         .regex(
-          /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$/,
+          /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$/,
         )
         .exactOptional()
         .openapi({
@@ -11119,7 +11361,7 @@ export const getV1ProjectsRefAnalyticsEndpointsLogsRoute = createRoute({
             schema: {
               format: 'date-time',
               pattern:
-                '^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$',
+                '^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$',
               example: '2025-03-01T00:00:00Z',
               type: 'string',
             },
@@ -11129,7 +11371,7 @@ export const getV1ProjectsRefAnalyticsEndpointsLogsRoute = createRoute({
       iso_timestamp_end: z.iso
         .datetime({ offset: true })
         .regex(
-          /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$/,
+          /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$/,
         )
         .exactOptional()
         .openapi({
@@ -11140,7 +11382,7 @@ export const getV1ProjectsRefAnalyticsEndpointsLogsRoute = createRoute({
             schema: {
               format: 'date-time',
               pattern:
-                '^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$',
+                '^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$',
               example: '2025-03-01T23:59:59Z',
               type: 'string',
             },
@@ -12471,7 +12713,7 @@ export const getV1ProjectsRefDatabaseOpenapiRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
     401: { description: 'Unauthorized' },
     403: { description: 'Forbidden action' },
     429: { description: 'Rate limit exceeded' },
@@ -12566,7 +12808,10 @@ export const putV1ProjectsRefFunctionsRoute = createRoute({
       content: { 'application/json': { schema: BulkUpdateFunctionResponseOutputSchema } },
     },
     401: { description: 'Unauthorized' },
-    402: { description: 'Maximum number of functions reached for Plan' },
+    402: {
+      description: 'Maximum number of functions reached for Plan',
+      content: { 'application/json': { schema: PlanGateErrorBodySchema } },
+    },
     403: { description: 'Forbidden action' },
     429: { description: 'Rate limit exceeded' },
     500: { description: 'Failed to update functions' },
@@ -12711,7 +12956,10 @@ export const postV1ProjectsRefFunctionsRoute = createRoute({
       content: { 'application/json': { schema: FunctionResponseOutputSchema } },
     },
     401: { description: 'Unauthorized' },
-    402: { description: 'Maximum number of functions reached for Plan' },
+    402: {
+      description: 'Maximum number of functions reached for Plan',
+      content: { 'application/json': { schema: PlanGateErrorBodySchema } },
+    },
     403: { description: 'Forbidden action' },
     429: { description: 'Rate limit exceeded' },
     500: { description: "Failed to create project's function" },
@@ -12827,7 +13075,10 @@ export const postV1ProjectsRefFunctionsDeployRoute = createRoute({
       content: { 'application/json': { schema: DeployFunctionResponseOutputSchema } },
     },
     401: { description: 'Unauthorized' },
-    402: { description: 'Maximum number of functions reached for Plan' },
+    402: {
+      description: 'Maximum number of functions reached for Plan',
+      content: { 'application/json': { schema: PlanGateErrorBodySchema } },
+    },
     403: { description: 'Forbidden action' },
     429: { description: 'Rate limit exceeded' },
     500: { description: 'Failed to deploy function' },
@@ -13271,6 +13522,10 @@ export const postV1ProjectsRefConfigDiskRoute = createRoute({
   responses: {
     201: { description: '' },
     401: { description: 'Unauthorized' },
+    402: {
+      description: 'Disk modifications are not available on the organization plan',
+      content: { 'application/json': { schema: PlanGateErrorBodySchema } },
+    },
     403: { description: 'Forbidden action' },
     429: { description: 'Rate limit exceeded' },
     500: { description: 'Failed to modify database disk' },
@@ -13444,6 +13699,11 @@ export const patchV1ProjectsRefConfigStorageRoute = createRoute({
   responses: {
     200: { description: '' },
     401: { description: 'Unauthorized' },
+    402: {
+      description:
+        'A storage feature or file size limit in the request is not available on the organization plan',
+      content: { 'application/json': { schema: PlanGateErrorBodySchema } },
+    },
     403: { description: 'Forbidden action' },
     429: { description: 'Rate limit exceeded' },
     500: { description: "Failed to update project's storage config" },
@@ -13632,6 +13892,53 @@ export const putV1ProjectsRefConfigDatabasePostgresRoute = createRoute({
   tags: ['Database'],
   summary: "Updates project's Postgres config",
   operationId: 'v1-update-postgres-config',
+  request: {
+    params: z.object({
+      ref: z
+        .string()
+        .regex(/^[a-z]+$/)
+        .length(20)
+        .openapi({
+          param: {
+            name: 'ref',
+            required: true,
+            in: 'path',
+            description: 'Project ref',
+            schema: {
+              minLength: 20,
+              maxLength: 20,
+              pattern: '^[a-z]+$',
+              example: 'abcdefghijklmnopqrst',
+              type: 'string',
+            },
+          },
+          example: 'abcdefghijklmnopqrst',
+        }),
+    }),
+    body: {
+      content: { 'application/json': { schema: UpdatePostgresConfigBodySchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: '',
+      content: { 'application/json': { schema: PostgresConfigResponseOutputSchema } },
+    },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden action' },
+    429: { description: 'Rate limit exceeded' },
+    500: { description: "Failed to update project's Postgres config" },
+  },
+  security: [{ bearer: [] }],
+})
+
+export const patchV1ProjectsRefConfigDatabasePostgresRoute = createRoute({
+  method: 'patch',
+  path: '/v1/projects/{ref}/config/database/postgres',
+  tags: ['Database'],
+  summary: "Partially updates project's Postgres config",
+  operationId: 'v1-patch-postgres-config',
   request: {
     params: z.object({
       ref: z

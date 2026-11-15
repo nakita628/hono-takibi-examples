@@ -107,7 +107,6 @@ export const getAnythingNumbersRoute = createRoute({
             name: 'id-exclusive-required-schema-v4',
             description: 'This is the default for anything pre 3.1',
             schema: {
-              $schema: 'http://json-schema.org/draft-04/schema#',
               type: 'number',
               minimum: 10,
               maximum: 20,
@@ -119,7 +118,6 @@ export const getAnythingNumbersRoute = createRoute({
             },
             required: true,
           },
-          $schema: 'http://json-schema.org/draft-04/schema#',
           example: 14,
         }),
       'id-exclusive-required-schema-v5': z
@@ -140,7 +138,6 @@ export const getAnythingNumbersRoute = createRoute({
             description:
               "This isn't actually a valid version. See https://json-schema.org/draft-06/json-schema-release-notes.html#q-what-happened-to-draft-05",
             schema: {
-              $schema: 'https://json-schema.org/draft-05/schema#',
               type: 'number',
               minimum: 10,
               maximum: 20,
@@ -152,7 +149,6 @@ export const getAnythingNumbersRoute = createRoute({
             },
             required: true,
           },
-          $schema: 'https://json-schema.org/draft-05/schema#',
           example: 14,
         }),
       'id-exclusive-required-schema-v6': z
@@ -171,7 +167,6 @@ export const getAnythingNumbersRoute = createRoute({
             in: 'query',
             name: 'id-exclusive-required-schema-v6',
             schema: {
-              $schema: 'https://json-schema.org/draft-06/schema#',
               type: 'number',
               minimum: 10,
               maximum: 20,
@@ -183,7 +178,6 @@ export const getAnythingNumbersRoute = createRoute({
             },
             required: true,
           },
-          $schema: 'https://json-schema.org/draft-06/schema#',
           example: 14,
         }),
       'id-exclusive-required-schema-v7': z
@@ -202,7 +196,6 @@ export const getAnythingNumbersRoute = createRoute({
             in: 'query',
             name: 'id-exclusive-required-schema-v7',
             schema: {
-              $schema: 'https://json-schema.org/draft-07/schema#',
               type: 'number',
               minimum: 10,
               maximum: 20,
@@ -214,7 +207,6 @@ export const getAnythingNumbersRoute = createRoute({
             },
             required: true,
           },
-          $schema: 'https://json-schema.org/draft-07/schema#',
           example: 14,
         }),
       'id-exclusive-required-schema-v2019': z
@@ -233,7 +225,6 @@ export const getAnythingNumbersRoute = createRoute({
             in: 'query',
             name: 'id-exclusive-required-schema-v2019',
             schema: {
-              $schema: 'https://json-schema.org/draft/2019-09/schema#',
               type: 'number',
               minimum: 10,
               maximum: 20,
@@ -245,7 +236,6 @@ export const getAnythingNumbersRoute = createRoute({
             },
             required: true,
           },
-          $schema: 'https://json-schema.org/draft/2019-09/schema#',
           example: 14,
         }),
       'id-exclusive-required-schema-v2020': z
@@ -265,7 +255,6 @@ export const getAnythingNumbersRoute = createRoute({
             name: 'id-exclusive-required-schema-v2020',
             description: 'This is the default for 3.1',
             schema: {
-              $schema: 'https://json-schema.org/draft/2020-12/schema#',
               type: 'number',
               exclusiveMinimum: 10,
               exclusiveMaximum: 20,
@@ -275,7 +264,6 @@ export const getAnythingNumbersRoute = createRoute({
             },
             required: true,
           },
-          $schema: 'https://json-schema.org/draft/2020-12/schema#',
           example: 14,
         }),
       'id-exclusive-optional': z
