@@ -509,6 +509,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/bunq": {
+      "name": "@apps/bunq",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/calcom": {
       "name": "@apps/calcom",
       "dependencies": {
@@ -2035,6 +2049,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/mailchimp-transactional": {
+      "name": "@apps/mailchimp-transactional",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/martin": {
       "name": "@apps/martin",
       "dependencies": {
@@ -2807,6 +2835,20 @@
     },
     "apps/peertube": {
       "name": "@apps/peertube",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/personio": {
+      "name": "@apps/personio",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -3853,7 +3895,7 @@
     "@hono/zod-openapi": "^1.6.3",
     "@types/node": "^26.6.5",
     "hono": "^4.13.13",
-    "hono-takibi": "^0.30.1",
+    "hono-takibi": "^0.31.0",
     "typescript": "^7.0.2",
     "zod": "^4.6.7",
   },
@@ -3937,6 +3979,8 @@
     "@apps/budibase": ["@apps/budibase@workspace:apps/budibase"],
 
     "@apps/bungie": ["@apps/bungie@workspace:apps/bungie"],
+
+    "@apps/bunq": ["@apps/bunq@workspace:apps/bunq"],
 
     "@apps/calcom": ["@apps/calcom@workspace:apps/calcom"],
 
@@ -4156,6 +4200,8 @@
 
     "@apps/lob": ["@apps/lob@workspace:apps/lob"],
 
+    "@apps/mailchimp-transactional": ["@apps/mailchimp-transactional@workspace:apps/mailchimp-transactional"],
+
     "@apps/martin": ["@apps/martin@workspace:apps/martin"],
 
     "@apps/medusa-admin": ["@apps/medusa-admin@workspace:apps/medusa-admin"],
@@ -4267,6 +4313,8 @@
     "@apps/paypal": ["@apps/paypal@workspace:apps/paypal"],
 
     "@apps/peertube": ["@apps/peertube@workspace:apps/peertube"],
+
+    "@apps/personio": ["@apps/personio@workspace:apps/personio"],
 
     "@apps/petstore": ["@apps/petstore@workspace:apps/petstore"],
 
@@ -4654,7 +4702,7 @@
 
     "hono": ["hono@4.13.14", "", {}, "sha512-yhRLQ21U6qa9Hsu2N7Qcbh8tE+WKEcoErjIo56LeSGiGXGp9sA7UpE86Ui9uexb61KakiGwuHMn2QdV7w6i6kQ=="],
 
-    "hono-takibi": ["hono-takibi@0.30.1", "", { "dependencies": { "@apidevtools/swagger-parser": "^13.1.0", "@effect/platform-node": "4.1.2", "@typespec/compiler": "^1.17.0", "@typespec/openapi3": "^1.17.0", "effect": "4.1.2", "oxc-parser": "^0.157.0", "oxfmt": "^0.77.0" }, "bin": { "hono-takibi": "dist/cli.js" } }, "sha512-iqTVaqCp7E+xQCXFyJx2UyXH9e3Pa+LaXFkcwPd3CMNrt8mMC0PmulHoYAKARQ4gRgEhRKyl+XbuHpFm6fFNow=="],
+    "hono-takibi": ["hono-takibi@0.31.0", "", { "dependencies": { "@apidevtools/swagger-parser": "^13.1.0", "@effect/platform-node": "4.1.2", "@typespec/compiler": "^1.17.0", "@typespec/openapi3": "^1.17.0", "effect": "4.1.2", "oxc-parser": "^0.157.0", "oxfmt": "^0.77.0" }, "bin": { "hono-takibi": "dist/cli.js" } }, "sha512-EM11Wm8G7PGfHna8449odZ7bIRw6H7im3oYN++jlzUqPAOg+wCXcx6QQQ73ikNqCJVRQKJwklTMiE1kVo3Yipw=="],
 
     "is-safe-filename": ["is-safe-filename@0.1.1", "", {}, "sha512-4SrR7AdnY11LHfDKTZY1u6Ga3RuxZdl3YKWWShO5iyuG5h8QS4GD2tOb04peBJ5I7pXbR+CGBNEhTcwK+FzN3g=="],
 
