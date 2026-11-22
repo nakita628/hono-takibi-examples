@@ -39,6 +39,8 @@ git checkout --detach origin/main                         # ローカルに main
 - 失敗していたら、失敗した shard の job を `mcp__github__actions_list`（`method: list_workflow_jobs`, `resource_id: <run id>`）で探し、
   `mcp__github__get_job_logs`（`job_id`, `return_content: true`, `tail_lines: 60`）で、`typecheck failed: apps/<name>/` の行から失敗した app を調べる。
   `tail_lines` が小さいと、その行が後始末のログに押し出されて見えない（14 では見えず、60 で見えた）。
+- ランナーの shutdown（`The runner has received a shutdown signal`）のときは `typecheck failed:` の行が出ない。
+  代わりに、ログの `APPS:` の行でその shard の app を確かめる。`apps/apis-guru-misc/` だけなら既知。今日足した app が入っていたら、その app が原因なので config だけにする。
 
 **既知の失敗（2026-11-22 時点）。これは直さず、無視してよい。** 直ったら、この一覧から消す。
 
@@ -184,7 +186,7 @@ issue とコメントの末尾には、必ず最後の 2 行（`---` と `_Gener
 1. `bun install --frozen-lockfile` が通る（`bun.lock` が `package.json` と食い違っていない）。
 2. 今日追加・変更した app の `tsc --noEmit` が通る。config だけにした app は、`src/` を消した状態で通る。
 3. `git status` で、変更が次に限られている: `apps/<今日の app>`、`README.md`、`docs/candidates.md`、`issue-drafts/`、
-   版を上げた日の `package.json` と `bun.lock`。
+   `bun.lock`（新しい app を足すと必ず変わる）、版を上げた日の `package.json`。
 
 push:
 
